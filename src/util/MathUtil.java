@@ -660,7 +660,7 @@ public class MathUtil {
 		}
 
 		/**
-		 * <code>n<sup>p</sup> (mod m)</code> is:<br>
+		 * <code>n<sup>p</sup> (mod m)</code> is: <br>
 		 * <code>(n<sup>-1</sup> (mod m))<sup>abs(p)</sup> (mod m)</code> if <code>p < 0</code> <br>
 		 * <code>n<sup>abs(p)</sup> (mod m)</code> if <code>p >= 0</code>
 		 */
