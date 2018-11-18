@@ -124,6 +124,7 @@ public class MathUtil {
 			max = min;
 			min = tmp;
 		}
+		// (max == max(a, b)) && (min == min(a, b))
 
 		// Loop until min == 0 since gcd(max, 0) == max.
 		for (long remainder = 0; min != 0; /* Update inside. */) {
@@ -246,14 +247,18 @@ public class MathUtil {
 			throw new ArithmeticException();
 		}
 
-		// Handle the simple special cases to avoid creating two extra long[3].
+		/*
+		 * Handle the special cases where at least one of the two numbers is 0. This is needed so that the
+		 * general case does not attempt a division by 0 (i.e., remainders_0 / result_0) but also it is more
+		 * efficient since it avoids creating two extra long[3].
+		 */
 		if (a == 0) {
 			// 1 * max(0, b) + 0 * min(0, b) == gcd(0, b) == b
 			return new long[] { b, 1, 0 };
 		} else if (b == 0) { // a != 0
 			// 1 * max(a, 0) + 0 * min(a, 0) == gcd(a, 0) == a
 			return new long[] { a, 1, 0 };
-		}
+		} // (a != 0) && (b != 0)
 
 		// Assume a is smaller than b.
 		long min = a, max = b;
@@ -263,6 +268,7 @@ public class MathUtil {
 			max = min;
 			min = tmp;
 		}
+		// (max == max(a, b)) && (min == min(a, b))
 
 		final long[] remainders = { max, 1, 0 };
 		final long[] result = { min, 0, 1 };
@@ -360,20 +366,26 @@ public class MathUtil {
 	 * @return The least common multiple of the two numbers.
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>(a == Long.MIN_VALUE) && (b == Long.MIN_VALUE)</code>
+	 *             If <code>((a == Long.MIN_VALUE) && (b == Long.MIN_VALUE))
+	 *             || (((a / MathUtil.gcd(a, b)) * b) == Long.MIN_VALUE)</code>
 	 */
 	public static long lcm(long a, long b) throws ArithmeticException {
 		// lcm(0, b) == 0 == lcm(a, 0)
 		if ((a == 0) || (b == 0)) {
 			return 0;
-		}
+		} // (a != 0) && (b != 0)
 
 		// lcm is non-negative so make a and b non-negative.
 		a = Math.abs(a);
 		b = Math.abs(b);
 
 		// lcm(a, b) == (a * b) / gcd(a, b)
-		return ((a / MathUtil.gcd(a, b)) * b);
+		final long result = Math.abs((a / MathUtil.gcd(a, b)) * b);
+		// Math.abs(Long.MIN_VALUE) == Long.MIN_VALUE
+		if (result == Long.MIN_VALUE) {
+			throw new ArithmeticException();
+		}
+		return result;
 	}
 
 	/**
@@ -386,14 +398,15 @@ public class MathUtil {
 	 * @return The least common multiple of the two numbers.
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>(a == Integer.MIN_VALUE) && (b == Integer.MIN_VALUE)</code>
+	 *             If <code>((a / MathUtil.gcd(a, b)) * b) == Integer.MIN_VALUE</code>
 	 */
 	public static int lcm(int a, int b) {
-		// Handle the degenerate case where the result cannot be represented as a non-negative int.
-		if ((a == Integer.MIN_VALUE) && (b == Integer.MIN_VALUE)) {
+		final int result = Math.abs((int) MathUtil.lcm((long) a, (long) b));
+		// Math.abs(Integer.MIN_VALUE) == Integer.MIN_VALUE
+		if (result == Integer.MIN_VALUE) {
 			throw new ArithmeticException();
 		}
-		return ((int) MathUtil.lcm((long) a, (long) b));
+		return result;
 	}
 
 	/**
@@ -406,14 +419,15 @@ public class MathUtil {
 	 * @return The least common multiple of the two numbers.
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>(a == Short.MIN_VALUE) && (b == Short.MIN_VALUE)</code>
+	 *             If <code>((a / MathUtil.gcd(a, b)) * b) == Short.MIN_VALUE</code>
 	 */
 	public static short lcm(short a, short b) {
-		// Handle the degenerate case where the result cannot be represented as a non-negative short.
-		if ((a == Short.MIN_VALUE) && (b == Short.MIN_VALUE)) {
+		final short result = (short) Math.abs((short) MathUtil.lcm((long) a, (long) b));
+		// ((short) Math.abs(Short.MIN_VALUE)) == Short.MIN_VALUE
+		if (result == Short.MIN_VALUE) {
 			throw new ArithmeticException();
 		}
-		return ((short) MathUtil.lcm((long) a, (long) b));
+		return result;
 	}
 
 	/**
@@ -426,14 +440,15 @@ public class MathUtil {
 	 * @return The least common multiple of the two numbers.
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>(a == Byte.MIN_VALUE) && (b == Byte.MIN_VALUE)</code>
+	 *             If <code>((a / MathUtil.gcd(a, b)) * b) == Byte.MIN_VALUE</code>
 	 */
 	public static byte lcm(byte a, byte b) {
-		// Handle the degenerate case where the result cannot be represented as a non-negative byte.
-		if ((a == Byte.MIN_VALUE) && (b == Byte.MIN_VALUE)) {
+		final byte result = (byte) Math.abs((byte) MathUtil.lcm((long) a, (long) b));
+		// ((byte) Math.abs(Byte.MIN_VALUE)) == Byte.MIN_VALUE
+		if (result == Byte.MIN_VALUE) {
 			throw new ArithmeticException();
 		}
-		return ((byte) MathUtil.lcm((long) a, (long) b));
+		return result;
 	}
 
 	/**
@@ -514,12 +529,16 @@ public class MathUtil {
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @return <code>n (mod m)</code>.
+	 * @return <code>n<sup>-1</sup> (mod m)</code>.
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>(m <= 0) || (gcd(n, m) != 1)</code>
 	 */
 	public static long modInverse(long n, long m) throws ArithmeticException {
+		if (m <= 0) {
+			throw new ArithmeticException();
+		}
+
 		// Handle the simple special case.
 		if (m == 1) {
 			return 0;
@@ -573,7 +592,7 @@ public class MathUtil {
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @return <code>n (mod m)</code>.
+	 * @return <code>n<sup>-1</sup> (mod m)</code>.
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>(m <= 0) || (gcd(n, m) != 1)</code>
@@ -589,7 +608,7 @@ public class MathUtil {
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @return <code>n (mod m)</code>.
+	 * @return <code>n<sup>-1</sup> (mod m)</code>.
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>(m <= 0) || (gcd(n, m) != 1)</code>
@@ -605,7 +624,7 @@ public class MathUtil {
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @return <code>n (mod m)</code>.
+	 * @return <code>n<sup>-1</sup> (mod m)</code>.
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>(m <= 0) || (gcd(n, m) != 1)</code>
@@ -634,13 +653,18 @@ public class MathUtil {
 		if (p == Long.MIN_VALUE) {
 			throw new ArithmeticException();
 		}
-		return ((p < 0) ? MathUtil.modPow(MathUtil.modInverse(n, m), -p, m)
-				: ((p == 0) ? 1 : MathUtil.modPowRecur(MathUtil.mod(n, m), p, m)));
+
+		// Handle the simple special case.
+		if (m == 1) {
+			return 0;
+		}
+		return ((p < 0) ? MathUtil.modPowRecur(MathUtil.modInverse(n, m), -p, m)
+				: MathUtil.modPowRecur(MathUtil.mod(n, m), p, m));
 	}
 
 	/**
 	 * Compute <code>n<sup>p</sup> (mod m)</code> using the recursive fast power algorithm. <br>
-	 * Precondition: <code>m >= 0</code> <br>
+	 * Precondition: <code>m > 1</code> <br>
 	 * Precondition: <code>n == MathUtil.mod(n, m)</code> <br>
 	 * Precondition: <code>p >= 0</code>
 	 * 
@@ -662,7 +686,7 @@ public class MathUtil {
 		}
 
 		// General recursive case.
-		long tmp = MathUtil.modPowRecur(n, p / 2, m) % m;
+		long tmp = MathUtil.modPowRecur(n, p / 2, m);
 		tmp = (tmp * tmp) % m;
 		return (MathUtil.isEven(p) ? tmp : ((n * tmp) % m));
 	}
@@ -680,13 +704,9 @@ public class MathUtil {
 	 * @return <code>n<sup>p</sup> (mod m)</code>.
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>(m <= 0) || (p == Integer.MIN_VALUE) || ((p < 0) && (gcd(n, m) != 1))</code>
+	 *             If <code>(m <= 0) || ((p < 0) && (gcd(n, m) != 1))</code>
 	 */
 	public static int modPow(int n, int p, int m) throws ArithmeticException {
-		// Handle the degenerate case where p's absolute value is not representable as an int.
-		if (p == Integer.MIN_VALUE) {
-			throw new ArithmeticException();
-		}
 		return ((int) MathUtil.modPow((long) n, (long) p, (long) m));
 	}
 
@@ -703,13 +723,9 @@ public class MathUtil {
 	 * @return <code>n<sup>p</sup> (mod m)</code>.
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>(m <= 0) || (p == Short.MIN_VALUE) || ((p < 0) && (gcd(n, m) != 1))</code>
+	 *             If <code>(m <= 0) || ((p < 0) && (gcd(n, m) != 1))</code>
 	 */
 	public static short modPow(short n, short p, short m) throws ArithmeticException {
-		// Handle the degenerate case where p's absolute value is not representable as a short.
-		if (p == Short.MIN_VALUE) {
-			throw new ArithmeticException();
-		}
 		return ((short) MathUtil.modPow((long) n, (long) p, (long) m));
 	}
 
@@ -726,13 +742,9 @@ public class MathUtil {
 	 * @return <code>n<sup>p</sup> (mod m)</code>.
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>(m <= 0) || (p == Byte.MIN_VALUE) || ((p < 0) && (gcd(n, m) != 1))</code>
+	 *             If <code>(m <= 0) || ((p < 0) && (gcd(n, m) != 1))</code>
 	 */
 	public static byte modPow(byte n, byte p, byte m) throws ArithmeticException {
-		// Handle the degenerate case where p's absolute value is not representable as a byte.
-		if (p == Byte.MIN_VALUE) {
-			throw new ArithmeticException();
-		}
 		return ((byte) MathUtil.modPow((long) n, (long) p, (long) m));
 	}
 }
