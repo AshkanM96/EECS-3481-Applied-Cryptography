@@ -28,16 +28,16 @@ public class T1Q4 {
 		 * subset is just ALPHABET letters shifted by the same character of the vigenere cipher key.
 		 */
 		final char[] keyWord = new char[keyLength];
-		final ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		int[] freq = null;
 		int maxFreq = 0;
 		char maxFreqLetter = '\0';
 		for (int keyWordFilledIndex = 0; keyWordFilledIndex != keyLength; ++keyWordFilledIndex) {
 			for (int i = keyWordFilledIndex; i < ciphertext.length; i += keyLength) {
-				bos.write(ciphertext[i]);
+				baos.write(ciphertext[i]);
 			}
-			freq = CryptoTools.getFrequencies(bos.toByteArray());
-			bos.reset();
+			freq = CryptoTools.getFrequencies(baos.toByteArray());
+			baos.reset();
 
 			for (int i = 0; i != ALPHABET.length; ++i) {
 				System.out.println("freq[" + (char) ('A' + i) + "] == " + freq[i]);
