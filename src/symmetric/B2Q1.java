@@ -67,7 +67,7 @@ public class B2Q1 {
 		System.out.println("The plaintext is:\n" + CryptoTools.toString(B2Q1.PLAINTEXT) + "\n");
 
 		// Create the cipher engine with the appropriate attributes.
-		final SymCipherEng engine = new SymCipherEng(SymCipherEng.ALGO_SYM.DES, B2Q1.KEY, CipherEngUtil.MODE.ECB,
+		final SymCipherEng engine = new SymCipherEng(SymCipherEng.ALGO_SYM.DES, B2Q1.KEY, CipherEngUtil.OPMODE.ECB,
 				CipherEngUtil.PADDING.NoPadding);
 
 		// Encrypt the plaintext using the engine to get the ciphertext.

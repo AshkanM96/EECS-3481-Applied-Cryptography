@@ -51,7 +51,7 @@ public class B2Q2 {
 	public static void main(String[] args) throws InvalidKeyException, InvalidAlgorithmParameterException,
 			IllegalBlockSizeException, BadPaddingException {
 		// Create the cipher engine with the appropriate attributes.
-		final SymCipherEng engine = new SymCipherEng(SymCipherEng.ALGO_SYM.AES, B2Q2.KEY, CipherEngUtil.MODE.CBC,
+		final SymCipherEng engine = new SymCipherEng(SymCipherEng.ALGO_SYM.AES, B2Q2.KEY, CipherEngUtil.OPMODE.CBC,
 				CipherEngUtil.PADDING.PKCS5Padding, B2Q2.IV);
 
 		// Decrypt the ciphertext using the engine to get the plaintext.

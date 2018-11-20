@@ -53,7 +53,7 @@ public class B3Q4 {
 	public static void main(String[] args) throws InvalidKeyException, InvalidAlgorithmParameterException,
 			IllegalBlockSizeException, BadPaddingException {
 		// Create the cipher engine with the appropriate attributes.
-		final SymCipherEng engine = new SymCipherEng(SymCipherEng.ALGO_SYM.DES, B3Q4.KEY, CipherEngUtil.MODE.ECB,
+		final SymCipherEng engine = new SymCipherEng(SymCipherEng.ALGO_SYM.DES, B3Q4.KEY, CipherEngUtil.OPMODE.ECB,
 				CipherEngUtil.PADDING.NoPadding);
 
 		// Decrypt the ciphertext using the engine to get the plaintext.
