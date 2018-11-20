@@ -543,12 +543,13 @@ public class Affine {
 		// TreeMap is used instead of HashMap so that the keys are sorted by alpha values.
 
 		// Iterate through all valid alpha values and check whether they satisfy the equation in step 3.
+		int tmp = 0, beta = 0;
 		for (final int alpha : Affine.VALID_ALPHA_VALUES) {
 			if (lhs == (alpha * rhs_not_multiplied_by_alpha) % m) {
 				// The current value of alpha satisfies the equation.
 				// Now find the associated beta value.
-				final int tmp = (c1 - alpha * p1) % m;
-				final int beta = (tmp < 0 ? tmp + m : tmp);
+				tmp = (c1 - alpha * p1) % m;
+				beta = ((tmp < 0) ? (tmp + m) : tmp);
 
 				// Store the current affine key.
 				affineKey.put(alpha, beta);
@@ -566,8 +567,7 @@ public class Affine {
 		}
 
 		// Create int[] array and return it.
-		final int[][] result = { possibleAlphaValues, possibleBetaValues };
-		return result;
+		return new int[][] { possibleAlphaValues, possibleBetaValues };
 	}
 
 	/**
@@ -596,7 +596,7 @@ public class Affine {
 		c = CryptoTools.upperEnglish(c) - 'A';
 		p = CryptoTools.upperEnglish(p) - 'A';
 
-		// Handle simple special case.
+		// Handle the simple special case.
 		if (p == 0) {
 			if (c != beta) {
 				throw new IllegalArgumentException();
@@ -612,7 +612,7 @@ public class Affine {
 
 		// Precompute known parts of the equation in step 2.
 		final int m = CryptoTools.ENGLISH_ALPHABET_SIZE;
-		final int lhs = (c + m - beta) % m;
+		final int lhs = (c - beta + m) % m;
 
 		// Stores all valid alpha values that satisfy the equation in step 2.
 		final ArrayList<Integer> possibleAlphaValues = new ArrayList<Integer>();
@@ -664,9 +664,7 @@ public class Affine {
 		 * <code>Step 2: c - alpha * p (mod m) = beta</code>
 		 */
 
-		final int m = CryptoTools.ENGLISH_ALPHABET_SIZE;
-		final int tmp = (c - alpha * p) % m;
-		return (tmp < 0 ? tmp + m : tmp);
+		return MathUtil.mod(c - alpha * p, CryptoTools.ENGLISH_ALPHABET_SIZE);
 	}
 
 	/**

@@ -354,26 +354,37 @@ public class MatrixInt implements Iterable<Integer> {
 	}
 
 	/**
-	 * Compute the unknown matrix dimension given the size and one of the dimensions.
+	 * Compute the unknown matrix dimension given the size and one of the dimensions. <br>
+	 * Note that if the given size is not divisible by the given dimension, then the result will be the
+	 * smallest value such that a matrix with those dimensions can store as many entries as the given
+	 * size (i.e., <code>(((long) Result) * dim) >= size</code>).
 	 * 
 	 * @param size
-	 *            the size of the matrix (i.e., numRows * numCols)
+	 *            the given size of the matrix
 	 * 
 	 * @param dim
-	 *            the known matrix dimension (i.e., either numRows or numCols)
+	 *            the given known matrix dimension (i.e., either numRows or numCols)
 	 * 
-	 * @return The unknown matrix dimension (i.e., <code>(int) Math.ceil(((double) size) / dim)</code>).
+	 * @return The unknown matrix dimension.
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(size <= 0) || (dim <= 0) || (dim > size)</code>
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>((long) Math.ceil(((double) size) / dim)) > Integer.MAX_VALUE</code>
 	 */
-	public static int otherDim(long size, int dim) throws IllegalArgumentException {
+	public static int otherDim(long size, int dim) throws IllegalArgumentException, ArithmeticException {
 		if (size <= 0) {
 			throw new IllegalArgumentException();
 		} else if ((dim <= 0) || (dim > size)) {
 			throw new IllegalArgumentException();
 		}
-		return ((int) Math.ceil(((double) size) / dim));
+
+		final long result = (long) Math.ceil(((double) size) / dim);
+		if (result > Integer.MAX_VALUE) {
+			throw new ArithmeticException();
+		}
+		return ((int) result);
 	}
 
 	/**
@@ -1398,7 +1409,7 @@ public class MatrixInt implements Iterable<Integer> {
 				// Integer.MAX_VALUE takes up 10 chars but Integer.MIN_VALUE takes up 11 chars.
 				sb.append(' ').append(String.format("%11d", row[colNum]));
 			}
-			sb.append(' ').append(' ').append('|').append('\n');
+			sb.append("  |\n");
 		}
 		return sb.toString();
 	}

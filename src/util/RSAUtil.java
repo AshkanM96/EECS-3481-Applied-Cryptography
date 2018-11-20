@@ -154,8 +154,7 @@ public class RSAUtil {
 		}
 
 		// Create Result and return it.
-		final BigInteger[] result = { n, e, d };
-		return result;
+		return new BigInteger[] { n, e, d };
 	}
 
 	/**
