@@ -273,13 +273,12 @@ public class MathUtil {
 		final long[] remainders = { max, 1, 0 };
 		final long[] result = { min, 0, 1 };
 		final long[] tmp = new long[3];
-		for (long quotient = 0, remainders_0 = max, result_0 = min; remainders_0
-				- result_0 * (remainders_0 / result_0) > 0; remainders_0 = remainders[0], result_0 = result[0]) {
+		for (long remainders_0 = max, result_0 = min, quotient = remainders_0 / result_0; remainders_0 > result_0
+				* quotient; remainders_0 = remainders[0], result_0 = result[0], quotient = remainders_0 / result_0) {
 			// Save old values of result in tmp.
 			System.arraycopy(result, 0, tmp, 0, 3);
 
 			// Update result.
-			quotient = remainders_0 / result_0;
 			for (int i = 0; i != 3; ++i) {
 				result[i] = (remainders[i] - result[i] * quotient);
 			}
