@@ -27,7 +27,7 @@ public class T2Q2 {
 			IllegalBlockSizeException, BadPaddingException {
 		final byte[] key = Hex.toBytes("4F75725269676874");
 		final byte[] iv = Hex.toBytes("496E566563746F72");
-		final SymCipherEng engine = new SymCipherEng(SymCipherEng.ALGO_SYM.DES, key, CipherEngUtil.MODE.ECB,
+		final SymCipherEng engine = new SymCipherEng(SymCipherEng.ALGO_SYM.DES, key, CipherEngUtil.OPMODE.ECB,
 				CipherEngUtil.PADDING.NoPadding);
 
 		final byte[] ciphertext = Hex.toBytes("A557E4C89356F55AD012625648BE3F22D5E777DAC5172E09");
