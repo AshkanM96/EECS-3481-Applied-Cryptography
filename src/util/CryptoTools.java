@@ -262,13 +262,13 @@ public class CryptoTools {
 	 *             If <code>data == null</code>
 	 */
 	public static byte[] clean(byte[] data) throws NullPointerException {
-		final ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		for (int i = 0, c = 0; i != data.length; ++i) {
 			if (CryptoTools.isUpperEnglish(c = data[i] & CryptoTools.COMPLEMENT_OF_32)) {
-				bos.write(c);
+				baos.write(c);
 			}
 		}
-		return bos.toByteArray();
+		return baos.toByteArray();
 	}
 
 	/**
@@ -531,7 +531,7 @@ public class CryptoTools {
 	 *             If <code>data == null</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>data.length < 2</code>
+	 *             If <code>CryptoTools.clean(data).length < 2</code>
 	 */
 	public static double getIC(byte[] data) throws NullPointerException, IllegalArgumentException {
 		// Even though the following is a repeated check, it'll save a cleaning.
@@ -578,7 +578,7 @@ public class CryptoTools {
 	 *             If <code>data == null</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>data.length < 2</code>
+	 *             If <code>CryptoTools.clean(data).length < 2</code>
 	 */
 	public static double getIC(char[] data) throws NullPointerException, IllegalArgumentException {
 		// Even though the following is a repeated check, it'll save a cleaning.
@@ -608,12 +608,12 @@ public class CryptoTools {
 	 */
 	public static byte[] fileToBytes(String filename) throws NullPointerException, FileNotFoundException, IOException {
 		try (final FileInputStream fis = new FileInputStream(filename)) {
-			final ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			for (int b = 0; (b = fis.read()) != -1; /* Loop condition also performs update. */) {
-				bos.write(b);
+				baos.write(b);
 			}
 			fis.close();
-			return bos.toByteArray();
+			return baos.toByteArray();
 		}
 	}
 

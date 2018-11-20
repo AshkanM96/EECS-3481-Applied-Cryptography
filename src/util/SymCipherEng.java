@@ -86,7 +86,7 @@ public class SymCipherEng {
 	/**
 	 * Mode of operation.
 	 */
-	private CipherEngUtil.MODE mode;
+	private CipherEngUtil.OPMODE opmode;
 
 	/**
 	 * Padding algorithm.
@@ -107,7 +107,7 @@ public class SymCipherEng {
 	 * @param key
 	 *            the given cipher secret key
 	 * 
-	 * @param mode
+	 * @param opmode
 	 *            the given mode of operation
 	 * 
 	 * @param padding
@@ -118,18 +118,19 @@ public class SymCipherEng {
 	 * 
 	 * @throws NullPointerException
 	 *             If
-	 *             <code>(algo == null) || (key == null) || (mode == null) || (padding == null) || (iv == null)</code>
+	 *             <code>(algo == null) || (key == null) || (opmode == null) || (padding == null) || (iv == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>CipherEngUtil.getEngine(algo.name(), mode, padding)</code> throws
+	 *             If <code>CipherEngUtil.getEngine(algo.name(), opmode, padding)</code> throws
 	 *             NoSuchAlgorithmException or NoSuchPaddingException
 	 */
-	public SymCipherEng(ALGO_SYM algo, byte[] key, CipherEngUtil.MODE mode, CipherEngUtil.PADDING padding, byte[] iv)
-			throws NullPointerException, IllegalArgumentException {
+	public SymCipherEng(ALGO_SYM algo, byte[] key, CipherEngUtil.OPMODE opmode, CipherEngUtil.PADDING padding,
+			byte[] iv) throws NullPointerException, IllegalArgumentException {
 		try {
-			// The following is meant to be an assignment of this.engine, this.algo, this.mode, and
-			// this.padding.
-			this.engine = CipherEngUtil.getEngine((this.algo = algo).name(), this.mode = mode, this.padding = padding);
+			// The following is meant to be an assignment of
+			// this.engine, this.algo, this.opmode, and this.padding.
+			this.engine = CipherEngUtil.getEngine((this.algo = algo).name(), this.opmode = opmode,
+					this.padding = padding);
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
 			throw new IllegalArgumentException();
 		}
@@ -146,7 +147,7 @@ public class SymCipherEng {
 	 * @param key
 	 *            the given cipher secret key
 	 * 
-	 * @param mode
+	 * @param opmode
 	 *            the given mode of operation
 	 * 
 	 * @param padding
@@ -154,18 +155,19 @@ public class SymCipherEng {
 	 * 
 	 * @throws NullPointerException
 	 *             If
-	 *             <code>(algo == null) || (key == null) || (mode == null) || (padding == null)</code>
+	 *             <code>(algo == null) || (key == null) || (opmode == null) || (padding == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>CipherEngUtil.getEngine(algo.name(), mode, padding)</code> throws
+	 *             If <code>CipherEngUtil.getEngine(algo.name(), opmode, padding)</code> throws
 	 *             NoSuchAlgorithmException or NoSuchPaddingException
 	 */
-	public SymCipherEng(ALGO_SYM algo, byte[] key, CipherEngUtil.MODE mode, CipherEngUtil.PADDING padding)
+	public SymCipherEng(ALGO_SYM algo, byte[] key, CipherEngUtil.OPMODE opmode, CipherEngUtil.PADDING padding)
 			throws NullPointerException, IllegalArgumentException {
 		try {
-			// The following is meant to be an assignment of this.engine, this.algo, this.mode, and
-			// this.padding.
-			this.engine = CipherEngUtil.getEngine((this.algo = algo).name(), this.mode = mode, this.padding = padding);
+			// The following is meant to be an assignment of
+			// this.engine, this.algo, this.opmode, and this.padding.
+			this.engine = CipherEngUtil.getEngine((this.algo = algo).name(), this.opmode = opmode,
+					this.padding = padding);
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
 			throw new IllegalArgumentException();
 		}
@@ -182,20 +184,20 @@ public class SymCipherEng {
 	 * @param key
 	 *            the given cipher secret key
 	 * 
-	 * @param mode
+	 * @param opmode
 	 *            the given mode of operation
 	 * 
 	 * @throws NullPointerException
-	 *             If <code>(algo == null) || (key == null) || (mode == null)</code>
+	 *             If <code>(algo == null) || (key == null) || (opmode == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If
-	 *             <code>CipherEngUtil.getEngine(algo.name(), mode, CipherEngUtil.DEFAULT_PADDING)</code>
+	 *             <code>CipherEngUtil.getEngine(algo.name(), opmode, CipherEngUtil.DEFAULT_PADDING)</code>
 	 *             throws NoSuchAlgorithmException or NoSuchPaddingException
 	 */
-	public SymCipherEng(ALGO_SYM algo, byte[] key, CipherEngUtil.MODE mode)
+	public SymCipherEng(ALGO_SYM algo, byte[] key, CipherEngUtil.OPMODE opmode)
 			throws NullPointerException, IllegalArgumentException {
-		this(algo, key, mode, CipherEngUtil.DEFAULT_PADDING);
+		this(algo, key, opmode, CipherEngUtil.DEFAULT_PADDING);
 	}
 
 	/**
@@ -232,7 +234,7 @@ public class SymCipherEng {
 		this.engine = other.engine; // Since Cipher is singleton (accessed through getInstance).
 		this.algo = other.algo; // Since enum type assignment is a deep enough copy.
 		this.key = SymCipherEng.key(other.key.getEncoded(), this.algo);
-		this.mode = other.mode; // Since enum type assignment is a deep enough copy.
+		this.opmode = other.opmode; // Since enum type assignment is a deep enough copy.
 		this.padding = other.padding; // Since enum type assignment is a deep enough copy.
 		this.iv = (other.iv == null) ? null : new IvParameterSpec(other.iv.getIV());
 	}
@@ -379,12 +381,13 @@ public class SymCipherEng {
 	 *             If <code>algo == null</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             Thrown by <code>CipherEngUtil.getEngine(algo.name(), this.mode, this.padding)</code>
+	 *             Thrown by
+	 *             <code>CipherEngUtil.getEngine(algo.name(), this.opmode, this.padding)</code>
 	 */
 	public void algo(ALGO_SYM algo) throws NullPointerException, IllegalArgumentException {
 		// The following is meant to be an assignment of this.engine, and this.algo.
 		try {
-			this.engine = CipherEngUtil.getEngine(algo.name(), this.mode, this.padding);
+			this.engine = CipherEngUtil.getEngine(algo.name(), this.opmode, this.padding);
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
 			throw new IllegalArgumentException();
 		}
@@ -436,32 +439,33 @@ public class SymCipherEng {
 	}
 
 	/**
-	 * @return <code>this.mode</code>.
+	 * @return <code>this.opmode</code>.
 	 */
-	public CipherEngUtil.MODE mode() {
-		return this.mode;
+	public CipherEngUtil.OPMODE opmode() {
+		return this.opmode;
 	}
 
 	/**
 	 * Set the calling object's mode of operation to the given mode of operation.
 	 * 
-	 * @param mode
+	 * @param opmode
 	 *            the given mode of operation
 	 * 
 	 * @throws NullPointerException
-	 *             If <code>mode == null</code>
+	 *             If <code>opmode == null</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             Thrown by <code>CipherEngUtil.getEngine(this.algo.name(), mode, this.padding)</code>
+	 *             Thrown by
+	 *             <code>CipherEngUtil.getEngine(this.algo.name(), opmode, this.padding)</code>
 	 */
-	public void mode(CipherEngUtil.MODE mode) throws NullPointerException, IllegalArgumentException {
-		// The following is meant to be an assignment of this.engine, and this.mode.
+	public void opmode(CipherEngUtil.OPMODE opmode) throws NullPointerException, IllegalArgumentException {
+		// The following is meant to be an assignment of this.engine, and this.opmode.
 		try {
-			this.engine = CipherEngUtil.getEngine(this.algo.name(), mode, this.padding);
+			this.engine = CipherEngUtil.getEngine(this.algo.name(), opmode, this.padding);
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
 			throw new IllegalArgumentException();
 		}
-		this.mode = mode;
+		this.opmode = opmode;
 	}
 
 	/**
@@ -481,12 +485,13 @@ public class SymCipherEng {
 	 *             If <code>padding == null</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             Thrown by <code>CipherEngUtil.getEngine(this.algo.name(), this.mode, padding)</code>
+	 *             Thrown by
+	 *             <code>CipherEngUtil.getEngine(this.algo.name(), this.opmode, padding)</code>
 	 */
 	public void padding(CipherEngUtil.PADDING padding) throws NullPointerException, IllegalArgumentException {
 		// The following is meant to be an assignment of this.engine, and this.padding.
 		try {
-			this.engine = CipherEngUtil.getEngine(this.algo.name(), this.mode, padding);
+			this.engine = CipherEngUtil.getEngine(this.algo.name(), this.opmode, padding);
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
 			throw new IllegalArgumentException();
 		}

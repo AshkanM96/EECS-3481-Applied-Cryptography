@@ -740,15 +740,15 @@ public class Vigenere implements Iterable<Character> {
 		 * Coincidence within the range of English is the probable key length. If key length gives such an
 		 * Index of Coincidence then return 0.
 		 */
-		final ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		byte[] subset = null;
 		double IC = 0.0;
 		for (int keyLength = 1; keyLength != maxKeyLength; ++keyLength) {
 			for (int i = 0; i < c.length; i += keyLength) {
-				bos.write(c[i]);
+				baos.write(c[i]);
 			}
-			subset = bos.toByteArray();
-			bos.reset();
+			subset = baos.toByteArray();
+			baos.reset();
 			IC = CryptoTools.getICFixedInput(subset);
 
 			// Only print if requested.
@@ -794,7 +794,7 @@ public class Vigenere implements Iterable<Character> {
 	 *             If <code>c == null</code>
 	 * 
 	 * @throws ShortCiphertextException
-	 *             If <code>c.length < 2</code>
+	 *             If <code>CryptoTools.clean(c).length < 2</code>
 	 */
 	public static int keyLengthExhaustiveAttack(byte[] c, boolean print)
 			throws NullPointerException, ShortCiphertextException {
@@ -816,7 +816,7 @@ public class Vigenere implements Iterable<Character> {
 	 *             If <code>c == null</code>
 	 * 
 	 * @throws ShortCiphertextException
-	 *             If <code>c.length < 2</code>
+	 *             If <code>CryptoTools.clean(c).length < 2</code>
 	 */
 	public static int keyLengthExhaustiveAttack(byte[] c) throws NullPointerException, ShortCiphertextException {
 		return Vigenere.keyLengthExhaustiveAttackFixedInput(CryptoTools.clean(c), false);
@@ -863,17 +863,17 @@ public class Vigenere implements Iterable<Character> {
 		 * subset is just English letters shifted by the same character of the vigenere cipher key.
 		 */
 		final char[] keyWord = new char[keyLength];
-		final ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		int[] freq = null;
 		int maxFreq = 0;
 		char maxFreqLetter = '\0';
 		for (int keyWordFilledIndex = 0; keyWordFilledIndex != keyLength; ++keyWordFilledIndex) {
 			// Cannot use i != c.length as loop condition since incrementing i by keyLength instead of by 1.
 			for (int i = keyWordFilledIndex; i < c.length; i += keyLength) {
-				bos.write(c[i]);
+				baos.write(c[i]);
 			}
-			freq = CryptoTools.getFrequenciesFixedInput(bos.toByteArray());
-			bos.reset();
+			freq = CryptoTools.getFrequenciesFixedInput(baos.toByteArray());
+			baos.reset();
 
 			/*
 			 * 'E' is the most common letter in English and as such the letter with the highest frequency is
@@ -937,7 +937,7 @@ public class Vigenere implements Iterable<Character> {
 	 *             If <code>c == null</code>
 	 * 
 	 * @throws ShortCiphertextException
-	 *             If <code>c.length < 2</code>
+	 *             If <code>CryptoTools.clean(c).length < 2</code>
 	 */
 	public static CryptoInfoVigenere kcaCryptanalytic(byte[] c, boolean print)
 			throws NullPointerException, ShortCiphertextException {
@@ -963,7 +963,7 @@ public class Vigenere implements Iterable<Character> {
 	 *             If <code>c == null</code>
 	 * 
 	 * @throws ShortCiphertextException
-	 *             If <code>c.length < 2</code>
+	 *             If <code>CryptoTools.clean(c).length < 2</code>
 	 */
 	public static CryptoInfoVigenere kcaCryptanalytic(byte[] c) throws NullPointerException, ShortCiphertextException {
 		return Vigenere.kcaCryptanalyticFixedInput(CryptoTools.clean(c), false);

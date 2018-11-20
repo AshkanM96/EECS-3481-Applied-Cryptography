@@ -773,7 +773,7 @@ public class Affine {
 	 *             If <code>c == null</code>
 	 * 
 	 * @throws ShortCiphertextException
-	 *             If <code>c.length < 2</code>
+	 *             If <code>CryptoTools.clean(c).length < 2</code>
 	 */
 	public static CryptoInfoAffine kcaExhaustive(byte[] c, boolean print)
 			throws NullPointerException, ShortCiphertextException {
@@ -799,7 +799,7 @@ public class Affine {
 	 *             If <code>c == null</code>
 	 * 
 	 * @throws ShortCiphertextException
-	 *             If <code>c.length < 2</code>
+	 *             If <code>CryptoTools.clean(c).length < 2</code>
 	 */
 	public static CryptoInfoAffine kcaExhaustive(byte[] c) throws NullPointerException, ShortCiphertextException {
 		return Affine.kcaExhaustiveFixedInput(CryptoTools.clean(c), false);
@@ -931,7 +931,7 @@ public class Affine {
 	 *             If <code>c == null</code>
 	 * 
 	 * @throws ShortCiphertextException
-	 *             If <code>c.length < 2</code>
+	 *             If <code>CryptoTools.clean(c).length < 2</code>
 	 */
 	public static CryptoInfoAffine kcaCryptanalytic(byte[] c, boolean print)
 			throws NullPointerException, ShortCiphertextException {
@@ -956,7 +956,7 @@ public class Affine {
 	 *             If <code>c == null</code>
 	 * 
 	 * @throws ShortCiphertextException
-	 *             If <code>c.length < 2</code>
+	 *             If <code>CryptoTools.clean(c).length < 2</code>
 	 */
 	public static CryptoInfoAffine kcaCryptanalytic(byte[] c) throws NullPointerException, ShortCiphertextException {
 		return Affine.kcaCryptanalyticFixedInput(CryptoTools.clean(c), false);

@@ -20,14 +20,14 @@ public class CipherEngUtil {
 	 * 
 	 * @author Ashkan Moatamed
 	 */
-	public static enum MODE {
+	public static enum OPMODE {
 		ECB, CBC;
 	};
 
 	/**
 	 * Default mode of operation.
 	 */
-	public static final MODE DEFAULT_MODE = MODE.ECB;
+	public static final OPMODE DEFAULT_MODE = OPMODE.ECB;
 
 	/**
 	 * All supported padding algorithms.
@@ -54,24 +54,24 @@ public class CipherEngUtil {
 	 * @param algo
 	 *            the given algorithm
 	 * 
-	 * @param mode
+	 * @param opmode
 	 *            the given mode of operation
 	 * 
 	 * @param padding
 	 *            the given padding
 	 * 
-	 * @return <code>algo + "/" + mode.name() + "/" + padding.name()</code>.
+	 * @return <code>algo + "/" + opmode.name() + "/" + padding.name()</code>.
 	 * 
 	 * @throws NullPointerException
-	 *             If <code>(algo == null) || (mode == null) || (padding == null)</code>
+	 *             If <code>(algo == null) || (opmode == null) || (padding == null)</code>
 	 */
-	public static String getAlgoName(String algo, MODE mode, PADDING padding) throws NullPointerException {
+	public static String getAlgoName(String algo, OPMODE opmode, PADDING padding) throws NullPointerException {
 		if (algo == null) {
 			throw new NullPointerException();
 		}
 
 		final StringBuilder sb = new StringBuilder();
-		sb.append(algo).append('/').append(mode.name()).append('/').append(padding.name());
+		sb.append(algo).append('/').append(opmode.name()).append('/').append(padding.name());
 		return sb.toString();
 	}
 
@@ -79,16 +79,16 @@ public class CipherEngUtil {
 	 * @param algo
 	 *            the given algorithm
 	 * 
-	 * @param mode
+	 * @param opmode
 	 *            the given mode of operation
 	 * 
 	 * @param padding
 	 *            the given padding
 	 * 
-	 * @return <code>Cipher.getInstance(CipherEngUtil.getAlgoName(algo, mode, padding))</code>.
+	 * @return <code>Cipher.getInstance(CipherEngUtil.getAlgoName(algo, opmode, padding))</code>.
 	 * 
 	 * @throws NullPointerException
-	 *             If <code>(algo == null) || (mode == null) || (padding == null)</code>
+	 *             If <code>(algo == null) || (opmode == null) || (padding == null)</code>
 	 * 
 	 * @throws NoSuchAlgorithmException
 	 *             Thrown by <code>Cipher::getInstance</code>
@@ -96,8 +96,8 @@ public class CipherEngUtil {
 	 * @throws NoSuchPaddingException
 	 *             Thrown by <code>Cipher::getInstance</code>
 	 */
-	public static Cipher getEngine(String algo, MODE mode, PADDING padding)
+	public static Cipher getEngine(String algo, OPMODE opmode, PADDING padding)
 			throws NullPointerException, NoSuchAlgorithmException, NoSuchPaddingException {
-		return Cipher.getInstance(CipherEngUtil.getAlgoName(algo, mode, padding));
+		return Cipher.getInstance(CipherEngUtil.getAlgoName(algo, opmode, padding));
 	}
 }

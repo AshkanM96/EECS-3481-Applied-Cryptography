@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * Simple matrix of integers.
+ * Matrix of integers.
  * 
  * @author Ashkan Moatamed
  */
@@ -1007,8 +1007,8 @@ public class MatrixInt implements Iterable<Integer> {
 	 *             || (excludingCol < 0) || (excludingCol > this.numCols)</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>((this.numRows == 1) && (excludingRow != this.numRows))
-	 *             || ((this.numCols == 1) && (excludingCol != this.numCols))</code>
+	 *             If <code>((excludingRow != this.numRows) && (this.numRows == 1))
+	 *             || ((excludingCol != this.numCols) && (this.numCols == 1))</code>
 	 */
 	public MatrixInt submatrix(int excludingRow, int excludingCol)
 			throws IndexOutOfBoundsException, IllegalArgumentException {
@@ -1018,10 +1018,12 @@ public class MatrixInt implements Iterable<Integer> {
 		}
 
 		// Special cases.
-		if ((excludingRow == this.numRows) && (excludingCol == this.numCols)) {
-			// Special case denoting no row exclusion and no column exclusion.
-			return new MatrixInt(this);
-		} else if (excludingRow == this.numRows) { // excludingCol != this.numCols
+		if (excludingRow == this.numRows) {
+			if (excludingCol == this.numCols) {
+				// Special case denoting no row exclusion and no column exclusion.
+				return new MatrixInt(this);
+			} // excludingCol != this.numCols
+
 			// Special case denoting no row exclusion.
 			final MatrixInt result = new MatrixInt(this.numRows, this.numCols - 1);
 			int[] row = null, result_row = null;
@@ -1075,6 +1077,44 @@ public class MatrixInt implements Iterable<Integer> {
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * Get the submatrix of <code>this</code> having excluded the row indexed by the given index. If the
+	 * row exclusion index is equal to the number of rows, then no row will be excluded.
+	 * 
+	 * @param row
+	 *            the given index of the row to be excluded
+	 * 
+	 * @return <code>this.submatrix(row, this.numCols)</code>.
+	 * 
+	 * @throws IndexOutOfBoundsException
+	 *             If <code>(row < 0) || (row > this.numRows)</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(row != this.numRows) && (this.numRows == 1)</code>
+	 */
+	public MatrixInt excludingRow(int row) throws IndexOutOfBoundsException, IllegalArgumentException {
+		return this.submatrix(row, this.numCols);
+	}
+
+	/**
+	 * Get the submatrix of <code>this</code> having excluded the column indexed by the given index. If
+	 * the column exclusion index is equal to the number of columns, then no column will be excluded.
+	 * 
+	 * @param col
+	 *            the given index of the column to be excluded
+	 * 
+	 * @return <code>this.submatrix(this.numRows, col)</code>.
+	 * 
+	 * @throws IndexOutOfBoundsException
+	 *             If <code>(col < 0) || (col > this.numCols)</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(col != this.numCols) && (this.numCols == 1)</code>
+	 */
+	public MatrixInt excludingCol(int col) throws IndexOutOfBoundsException, IllegalArgumentException {
+		return this.submatrix(this.numRows, col);
 	}
 
 	/**

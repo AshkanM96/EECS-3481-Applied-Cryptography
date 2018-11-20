@@ -88,7 +88,7 @@ public class RSACipherEng {
 	/**
 	 * Mode of operation.
 	 */
-	private CipherEngUtil.MODE mode;
+	private CipherEngUtil.OPMODE opmode;
 
 	/**
 	 * Padding algorithm.
@@ -107,7 +107,7 @@ public class RSACipherEng {
 	 * @param e
 	 *            the given cipher public key
 	 * 
-	 * @param mode
+	 * @param opmode
 	 *            the given mode of operation
 	 * 
 	 * @param padding
@@ -121,11 +121,11 @@ public class RSACipherEng {
 	 * 
 	 * @throws NullPointerException
 	 *             If
-	 *             <code>(p == null) || (q == null) || (e == null) || (mode == null) || (padding == null)</code>
+	 *             <code>(p == null) || (q == null) || (e == null) || (opmode == null) || (padding == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             Thrown by <code>BigIntegerUtil.ensurePositive(p, q, e)</code> or if
-	 *             <code>CipherEngUtil.getEngine(RSAUtil.ALGORITHM, mode, padding)</code> throws
+	 *             <code>CipherEngUtil.getEngine(RSAUtil.ALGORITHM, opmode, padding)</code> throws
 	 *             NoSuchAlgorithmException or NoSuchPaddingException
 	 * 
 	 * @throws ArithmeticException
@@ -136,16 +136,16 @@ public class RSACipherEng {
 	 *             <code>RSACipherEng.KEY_FACTORY.generatePublic(new RSAPublicKeySpec(n, e))</code> or
 	 *             <code>RSACipherEng.KEY_FACTORY.generatePrivate(new RSAPrivateKeySpec(n, d))</code>
 	 */
-	protected RSACipherEng(BigInteger p, BigInteger q, BigInteger e, CipherEngUtil.MODE mode,
+	protected RSACipherEng(BigInteger p, BigInteger q, BigInteger e, CipherEngUtil.OPMODE opmode,
 			CipherEngUtil.PADDING padding, Object dummy1, Object dummy2)
 			throws NullPointerException, IllegalArgumentException, ArithmeticException, InvalidKeySpecException {
 		// Ensure all parameters are positive.
 		BigIntegerUtil.ensurePositive(e);
 		final BigInteger phi = RSAUtil.phi(p, q);
 
-		// The following is meant to be an assignment of this.engine, this.mode, and this.padding.
+		// The following is meant to be an assignment of this.engine, this.opmode, and this.padding.
 		try {
-			this.engine = CipherEngUtil.getEngine(RSAUtil.ALGORITHM, this.mode = mode, this.padding = padding);
+			this.engine = CipherEngUtil.getEngine(RSAUtil.ALGORITHM, this.opmode = opmode, this.padding = padding);
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
 			throw new IllegalArgumentException();
 		}
@@ -173,7 +173,7 @@ public class RSACipherEng {
 	 * @param e
 	 *            the given cipher public key
 	 * 
-	 * @param mode
+	 * @param opmode
 	 *            the given mode of operation
 	 * 
 	 * @param padding
@@ -184,11 +184,11 @@ public class RSACipherEng {
 	 * 
 	 * @throws NullPointerException
 	 *             If
-	 *             <code>(phi == null) || (n == null) || (e == null) || (mode == null) || (padding == null)</code>
+	 *             <code>(phi == null) || (n == null) || (e == null) || (opmode == null) || (padding == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             Thrown by <code>BigIntegerUtil.ensurePositive(phi, n, e)</code> or if
-	 *             <code>CipherEngUtil.getEngine(RSAUtil.ALGORITHM, mode, padding)</code> throws
+	 *             <code>CipherEngUtil.getEngine(RSAUtil.ALGORITHM, opmode, padding)</code> throws
 	 *             NoSuchAlgorithmException or NoSuchPaddingException
 	 * 
 	 * @throws ArithmeticException
@@ -199,15 +199,15 @@ public class RSACipherEng {
 	 *             <code>RSACipherEng.KEY_FACTORY.generatePublic(new RSAPublicKeySpec(n, e))</code> or
 	 *             <code>RSACipherEng.KEY_FACTORY.generatePrivate(new RSAPrivateKeySpec(n, d))</code>
 	 */
-	protected RSACipherEng(BigInteger phi, BigInteger n, BigInteger e, CipherEngUtil.MODE mode,
+	protected RSACipherEng(BigInteger phi, BigInteger n, BigInteger e, CipherEngUtil.OPMODE opmode,
 			CipherEngUtil.PADDING padding, Object dummy)
 			throws NullPointerException, IllegalArgumentException, ArithmeticException, InvalidKeySpecException {
 		// Ensure all parameters are positive.
 		BigIntegerUtil.ensurePositive(phi, n, e);
 
-		// The following is meant to be an assignment of this.engine, this.mode, and this.padding.
+		// The following is meant to be an assignment of this.engine, this.opmode, and this.padding.
 		try {
-			this.engine = CipherEngUtil.getEngine(RSAUtil.ALGORITHM, this.mode = mode, this.padding = padding);
+			this.engine = CipherEngUtil.getEngine(RSAUtil.ALGORITHM, this.opmode = opmode, this.padding = padding);
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
 			throw new IllegalArgumentException();
 		}
@@ -235,7 +235,7 @@ public class RSACipherEng {
 	 * @param d
 	 *            the given cipher private key
 	 * 
-	 * @param mode
+	 * @param opmode
 	 *            the given mode of operation
 	 * 
 	 * @param padding
@@ -243,11 +243,11 @@ public class RSACipherEng {
 	 * 
 	 * @throws NullPointerException
 	 *             If
-	 *             <code>(n == null) || (e == null) || (d == null) || (mode == null) || (padding == null)</code>
+	 *             <code>(n == null) || (e == null) || (d == null) || (opmode == null) || (padding == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             Thrown by <code>BigIntegerUtil.ensurePositive(n, e, d)</code> or if
-	 *             <code>CipherEngUtil.getEngine(RSAUtil.ALGORITHM, mode, padding)</code> throws
+	 *             <code>CipherEngUtil.getEngine(RSAUtil.ALGORITHM, opmode, padding)</code> throws
 	 *             NoSuchAlgorithmException or NoSuchPaddingException
 	 * 
 	 * @throws InvalidKeySpecException
@@ -255,15 +255,15 @@ public class RSACipherEng {
 	 *             <code>RSACipherEng.KEY_FACTORY.generatePublic(new RSAPublicKeySpec(n, e))</code> or
 	 *             <code>RSACipherEng.KEY_FACTORY.generatePrivate(new RSAPrivateKeySpec(n, d))</code>
 	 */
-	protected RSACipherEng(BigInteger n, BigInteger e, BigInteger d, CipherEngUtil.MODE mode,
+	protected RSACipherEng(BigInteger n, BigInteger e, BigInteger d, CipherEngUtil.OPMODE opmode,
 			CipherEngUtil.PADDING padding)
 			throws NullPointerException, IllegalArgumentException, InvalidKeySpecException {
 		// Ensure all parameters are positive.
 		BigIntegerUtil.ensurePositive(n, e, d);
 
-		// The following is meant to be an assignment of this.engine, this.mode, and this.padding.
+		// The following is meant to be an assignment of this.engine, this.opmode, and this.padding.
 		try {
-			this.engine = CipherEngUtil.getEngine(RSAUtil.ALGORITHM, this.mode = mode, this.padding = padding);
+			this.engine = CipherEngUtil.getEngine(RSAUtil.ALGORITHM, this.opmode = opmode, this.padding = padding);
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
 			throw new IllegalArgumentException();
 		}
@@ -295,7 +295,7 @@ public class RSACipherEng {
 		this.d = other.d; // Since attribute is immutable, we can do a shallow copy.
 		this.publicKey = other.publicKey; // Since attribute is immutable, we can do a shallow copy.
 		this.privateKey = other.privateKey; // Since attribute is immutable, we can do a shallow copy.
-		this.mode = other.mode; // Since enum type assignment is a deep enough copy.
+		this.opmode = other.opmode; // Since enum type assignment is a deep enough copy.
 		this.padding = other.padding; // Since enum type assignment is a deep enough copy.
 	}
 
@@ -311,7 +311,7 @@ public class RSACipherEng {
 	 * @param e
 	 *            the given cipher public key
 	 * 
-	 * @param mode
+	 * @param opmode
 	 *            the given mode of operation
 	 * 
 	 * @param padding
@@ -321,11 +321,11 @@ public class RSACipherEng {
 	 * 
 	 * @throws NullPointerException
 	 *             If
-	 *             <code>(p == null) || (q == null) || (e == null) || (mode == null) || (padding == null)</code>
+	 *             <code>(p == null) || (q == null) || (e == null) || (opmode == null) || (padding == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             Thrown by <code>BigIntegerUtil.ensurePositive(p, q, e)</code> or if
-	 *             <code>CipherEngUtil.getEngine(RSAUtil.ALGORITHM, mode, padding)</code> throws
+	 *             <code>CipherEngUtil.getEngine(RSAUtil.ALGORITHM, opmode, padding)</code> throws
 	 *             NoSuchAlgorithmException or NoSuchPaddingException
 	 * 
 	 * @throws ArithmeticException
@@ -336,10 +336,10 @@ public class RSACipherEng {
 	 *             <code>RSACipherEng.KEY_FACTORY.generatePublic(new RSAPublicKeySpec(n, e))</code> or
 	 *             <code>RSACipherEng.KEY_FACTORY.generatePrivate(new RSAPrivateKeySpec(n, d))</code>
 	 */
-	public static RSACipherEng knownFactors(BigInteger p, BigInteger q, BigInteger e, CipherEngUtil.MODE mode,
+	public static RSACipherEng knownFactors(BigInteger p, BigInteger q, BigInteger e, CipherEngUtil.OPMODE opmode,
 			CipherEngUtil.PADDING padding)
 			throws NullPointerException, IllegalArgumentException, ArithmeticException, InvalidKeySpecException {
-		return new RSACipherEng(p, q, e, mode, padding, null, null);
+		return new RSACipherEng(p, q, e, opmode, padding, null, null);
 	}
 
 	/**
@@ -354,17 +354,17 @@ public class RSACipherEng {
 	 * @param e
 	 *            the given cipher public key
 	 * 
-	 * @param mode
+	 * @param opmode
 	 *            the given mode of operation
 	 * 
 	 * @return The resulting RSACipherEng object.
 	 * 
 	 * @throws NullPointerException
-	 *             If <code>(p == null) || (q == null) || (e == null) || (mode == null)</code>
+	 *             If <code>(p == null) || (q == null) || (e == null) || (opmode == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             Thrown by <code>BigIntegerUtil.ensurePositive(p, q, e)</code> or if
-	 *             <code>CipherEngUtil.getEngine(RSAUtil.ALGORITHM, mode, CipherEngUtil.DEFAULT_PADDING)</code>
+	 *             <code>CipherEngUtil.getEngine(RSAUtil.ALGORITHM, opmode, CipherEngUtil.DEFAULT_PADDING)</code>
 	 *             throws NoSuchAlgorithmException or NoSuchPaddingException
 	 * 
 	 * @throws ArithmeticException
@@ -375,9 +375,9 @@ public class RSACipherEng {
 	 *             <code>RSACipherEng.KEY_FACTORY.generatePublic(new RSAPublicKeySpec(n, e))</code> or
 	 *             <code>RSACipherEng.KEY_FACTORY.generatePrivate(new RSAPrivateKeySpec(n, d))</code>
 	 */
-	public static RSACipherEng knownFactors(BigInteger p, BigInteger q, BigInteger e, CipherEngUtil.MODE mode)
+	public static RSACipherEng knownFactors(BigInteger p, BigInteger q, BigInteger e, CipherEngUtil.OPMODE opmode)
 			throws NullPointerException, IllegalArgumentException, ArithmeticException, InvalidKeySpecException {
-		return RSACipherEng.knownFactors(p, q, e, mode, CipherEngUtil.DEFAULT_PADDING);
+		return RSACipherEng.knownFactors(p, q, e, opmode, CipherEngUtil.DEFAULT_PADDING);
 	}
 
 	/**
@@ -427,7 +427,7 @@ public class RSACipherEng {
 	 * @param e
 	 *            the given cipher public key
 	 * 
-	 * @param mode
+	 * @param opmode
 	 *            the given mode of operation
 	 * 
 	 * @param padding
@@ -437,11 +437,11 @@ public class RSACipherEng {
 	 * 
 	 * @throws NullPointerException
 	 *             If
-	 *             <code>(phi == null) || (n == null) || (e == null) || (mode == null) || (padding == null)</code>
+	 *             <code>(phi == null) || (n == null) || (e == null) || (opmode == null) || (padding == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             Thrown by <code>BigIntegerUtil.ensurePositive(phi, n, e)</code> or if
-	 *             <code>CipherEngUtil.getEngine(RSAUtil.ALGORITHM, mode, padding)</code> throws
+	 *             <code>CipherEngUtil.getEngine(RSAUtil.ALGORITHM, opmode, padding)</code> throws
 	 *             NoSuchAlgorithmException or NoSuchPaddingException
 	 * 
 	 * @throws ArithmeticException
@@ -452,10 +452,10 @@ public class RSACipherEng {
 	 *             <code>RSACipherEng.KEY_FACTORY.generatePublic(new RSAPublicKeySpec(n, e))</code> or
 	 *             <code>RSACipherEng.KEY_FACTORY.generatePrivate(new RSAPrivateKeySpec(n, d))</code>
 	 */
-	public static RSACipherEng knownTotient(BigInteger phi, BigInteger n, BigInteger e, CipherEngUtil.MODE mode,
+	public static RSACipherEng knownTotient(BigInteger phi, BigInteger n, BigInteger e, CipherEngUtil.OPMODE opmode,
 			CipherEngUtil.PADDING padding)
 			throws NullPointerException, IllegalArgumentException, ArithmeticException, InvalidKeySpecException {
-		return new RSACipherEng(phi, n, e, mode, padding, null);
+		return new RSACipherEng(phi, n, e, opmode, padding, null);
 	}
 
 	/**
@@ -470,17 +470,17 @@ public class RSACipherEng {
 	 * @param e
 	 *            the given cipher public key
 	 * 
-	 * @param mode
+	 * @param opmode
 	 *            the given mode of operation
 	 * 
 	 * @return The resulting RSACipherEng object.
 	 * 
 	 * @throws NullPointerException
-	 *             If <code>(phi == null) || (n == null) || (e == null) || (mode == null)</code>
+	 *             If <code>(phi == null) || (n == null) || (e == null) || (opmode == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             Thrown by <code>BigIntegerUtil.ensurePositive(phi, n, e)</code> or if
-	 *             <code>CipherEngUtil.getEngine(RSAUtil.ALGORITHM, mode, CipherEngUtil.DEFAULT_PADDING)</code>
+	 *             <code>CipherEngUtil.getEngine(RSAUtil.ALGORITHM, opmode, CipherEngUtil.DEFAULT_PADDING)</code>
 	 *             throws NoSuchAlgorithmException or NoSuchPaddingException
 	 * 
 	 * @throws ArithmeticException
@@ -491,9 +491,9 @@ public class RSACipherEng {
 	 *             <code>RSACipherEng.KEY_FACTORY.generatePublic(new RSAPublicKeySpec(n, e))</code> or
 	 *             <code>RSACipherEng.KEY_FACTORY.generatePrivate(new RSAPrivateKeySpec(n, d))</code>
 	 */
-	public static RSACipherEng knownTotient(BigInteger phi, BigInteger n, BigInteger e, CipherEngUtil.MODE mode)
+	public static RSACipherEng knownTotient(BigInteger phi, BigInteger n, BigInteger e, CipherEngUtil.OPMODE opmode)
 			throws NullPointerException, IllegalArgumentException, ArithmeticException, InvalidKeySpecException {
-		return RSACipherEng.knownTotient(phi, n, e, mode, CipherEngUtil.DEFAULT_PADDING);
+		return RSACipherEng.knownTotient(phi, n, e, opmode, CipherEngUtil.DEFAULT_PADDING);
 	}
 
 	/**
@@ -543,7 +543,7 @@ public class RSACipherEng {
 	 * @param d
 	 *            the given cipher private key
 	 * 
-	 * @param mode
+	 * @param opmode
 	 *            the given mode of operation
 	 * 
 	 * @param padding
@@ -553,11 +553,11 @@ public class RSACipherEng {
 	 * 
 	 * @throws NullPointerException
 	 *             If
-	 *             <code>(n == null) || (e == null) || (d == null) || (mode == null) || (padding == null)</code>
+	 *             <code>(n == null) || (e == null) || (d == null) || (opmode == null) || (padding == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             Thrown by <code>BigIntegerUtil.ensurePositive(n, e, d)</code> or if
-	 *             <code>CipherEngUtil.getEngine(RSAUtil.ALGORITHM, mode, padding)</code> throws
+	 *             <code>CipherEngUtil.getEngine(RSAUtil.ALGORITHM, opmode, padding)</code> throws
 	 *             NoSuchAlgorithmException or NoSuchPaddingException
 	 * 
 	 * @throws InvalidKeySpecException
@@ -565,10 +565,10 @@ public class RSACipherEng {
 	 *             <code>RSACipherEng.KEY_FACTORY.generatePublic(new RSAPublicKeySpec(n, e))</code> or
 	 *             <code>RSACipherEng.KEY_FACTORY.generatePrivate(new RSAPrivateKeySpec(n, d))</code>
 	 */
-	public static RSACipherEng knownKeys(BigInteger n, BigInteger e, BigInteger d, CipherEngUtil.MODE mode,
+	public static RSACipherEng knownKeys(BigInteger n, BigInteger e, BigInteger d, CipherEngUtil.OPMODE opmode,
 			CipherEngUtil.PADDING padding)
 			throws NullPointerException, IllegalArgumentException, InvalidKeySpecException {
-		return new RSACipherEng(n, e, d, mode, padding);
+		return new RSACipherEng(n, e, d, opmode, padding);
 	}
 
 	/**
@@ -583,17 +583,17 @@ public class RSACipherEng {
 	 * @param d
 	 *            the given cipher private key
 	 * 
-	 * @param mode
+	 * @param opmode
 	 *            the given mode of operation
 	 * 
 	 * @return The resulting RSACipherEng object.
 	 * 
 	 * @throws NullPointerException
-	 *             If <code>(n == null) || (e == null) || (d == null) || (mode == null)</code>
+	 *             If <code>(n == null) || (e == null) || (d == null) || (opmode == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             Thrown by <code>BigIntegerUtil.ensurePositive(n, e, d)</code> or if
-	 *             <code>CipherEngUtil.getEngine(RSAUtil.ALGORITHM, mode, CipherEngUtil.DEFAULT_PADDING)</code>
+	 *             <code>CipherEngUtil.getEngine(RSAUtil.ALGORITHM, opmode, CipherEngUtil.DEFAULT_PADDING)</code>
 	 *             throws NoSuchAlgorithmException or NoSuchPaddingException
 	 * 
 	 * @throws InvalidKeySpecException
@@ -601,9 +601,9 @@ public class RSACipherEng {
 	 *             <code>RSACipherEng.KEY_FACTORY.generatePublic(new RSAPublicKeySpec(n, e))</code> or
 	 *             <code>RSACipherEng.KEY_FACTORY.generatePrivate(new RSAPrivateKeySpec(n, d))</code>
 	 */
-	public static RSACipherEng knownKeys(BigInteger n, BigInteger e, BigInteger d, CipherEngUtil.MODE mode)
+	public static RSACipherEng knownKeys(BigInteger n, BigInteger e, BigInteger d, CipherEngUtil.OPMODE opmode)
 			throws NullPointerException, IllegalArgumentException, InvalidKeySpecException {
-		return RSACipherEng.knownKeys(n, e, d, mode, CipherEngUtil.DEFAULT_PADDING);
+		return RSACipherEng.knownKeys(n, e, d, opmode, CipherEngUtil.DEFAULT_PADDING);
 	}
 
 	/**
@@ -639,32 +639,33 @@ public class RSACipherEng {
 	}
 
 	/**
-	 * @return <code>this.mode</code>.
+	 * @return <code>this.opmode</code>.
 	 */
-	public CipherEngUtil.MODE mode() {
-		return this.mode;
+	public CipherEngUtil.OPMODE opmode() {
+		return this.opmode;
 	}
 
 	/**
 	 * Set the calling object's mode of operation to the given mode of operation.
 	 * 
-	 * @param mode
+	 * @param opmode
 	 *            the given mode of operation
 	 * 
 	 * @throws NullPointerException
-	 *             If <code>mode == null</code>
+	 *             If <code>opmode == null</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             Thrown by <code>CipherEngUtil.getEngine(RSAUtil.ALGORITHM, mode, this.padding)</code>
+	 *             Thrown by
+	 *             <code>CipherEngUtil.getEngine(RSAUtil.ALGORITHM, opmode, this.padding)</code>
 	 */
-	public void mode(CipherEngUtil.MODE mode) throws NullPointerException, IllegalArgumentException {
-		// The following is meant to be an assignment of this.engine, and this.mode.
+	public void opmode(CipherEngUtil.OPMODE opmode) throws NullPointerException, IllegalArgumentException {
+		// The following is meant to be an assignment of this.engine, and this.opmode.
 		try {
-			this.engine = CipherEngUtil.getEngine(RSAUtil.ALGORITHM, mode, this.padding);
+			this.engine = CipherEngUtil.getEngine(RSAUtil.ALGORITHM, opmode, this.padding);
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
 			throw new IllegalArgumentException();
 		}
-		this.mode = mode;
+		this.opmode = opmode;
 	}
 
 	/**
@@ -684,12 +685,13 @@ public class RSACipherEng {
 	 *             If <code>padding == null</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             Thrown by <code>CipherEngUtil.getEngine(RSAUtil.ALGORITHM, this.mode, padding)</code>
+	 *             Thrown by
+	 *             <code>CipherEngUtil.getEngine(RSAUtil.ALGORITHM, this.opmode, padding)</code>
 	 */
 	public void padding(CipherEngUtil.PADDING padding) throws NullPointerException, IllegalArgumentException {
 		// The following is meant to be an assignment of this.engine, and this.padding.
 		try {
-			this.engine = CipherEngUtil.getEngine(RSAUtil.ALGORITHM, this.mode, padding);
+			this.engine = CipherEngUtil.getEngine(RSAUtil.ALGORITHM, this.opmode, padding);
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
 			throw new IllegalArgumentException();
 		}
@@ -710,7 +712,7 @@ public class RSACipherEng {
 		int result = 1;
 		result = prime * result + this.d.hashCode();
 		result = prime * result + this.e.hashCode();
-		result = prime * result + this.mode.hashCode();
+		result = prime * result + this.opmode.hashCode();
 		result = prime * result + this.n.hashCode();
 		result = prime * result + this.padding.hashCode();
 		return result;
@@ -733,7 +735,7 @@ public class RSACipherEng {
 		}
 
 		// After pointer equality check, first compare the enum types.
-		if ((this.mode != other.mode) || (this.padding != other.padding)) {
+		if ((this.opmode != other.opmode) || (this.padding != other.padding)) {
 			return false;
 		}
 		/*
