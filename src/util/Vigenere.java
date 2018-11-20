@@ -1010,6 +1010,7 @@ public class Vigenere implements Iterable<Character> {
 		 *             If <code>v == null</code>
 		 */
 		public VigenereIterator(Vigenere v, boolean supportsMutation) throws NullPointerException {
+			// The following is meant to be an assignment of this.supportsMutation and this.key.
 			this.key = (this.supportsMutation = supportsMutation) ? v.key : v.key();
 			this.begin();
 		}

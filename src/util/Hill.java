@@ -136,11 +136,11 @@ public class Hill implements Iterable<Integer> {
 	}
 
 	/**
-	 * @return <code>this.key.numRows()</code> or <code>this.key.numCols()</code>.
+	 * @return <code>this.key.numRows</code> or <code>this.key.numCols</code>.
 	 */
 	public int keySide() {
-		// this.key.isSquare()
-		return this.key.numRows();
+		// assert this.key.isSquare();
+		return this.key.numRows;
 	}
 
 	/**
@@ -154,7 +154,7 @@ public class Hill implements Iterable<Integer> {
 	 * @return A deep copy of <code>this.keyInverse</code>.
 	 */
 	public MatrixInt keyInverse() {
-		return (this.keyInverse == null ? null : new MatrixInt(this.keyInverse));
+		return ((this.keyInverse == null) ? null : new MatrixInt(this.keyInverse));
 	}
 
 	/**

@@ -1,6 +1,5 @@
 package util;
 
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -19,17 +18,21 @@ public class MatrixInt implements Iterable<Integer> {
 	 */
 
 	/**
+	 * ints are immutable. Therefore, it is "safe" to make the following final class attributes public.
+	 */
+
+	/**
 	 * Number of rows.
 	 */
-	protected final int numRows;
+	public final int numRows;
 
 	/**
 	 * Number of columns.
 	 */
-	protected final int numCols;
+	public final int numCols;
 
 	/**
-	 * Two dimensional array containing the matrix entries.
+	 * Two dimensional integer array containing the matrix entries.
 	 */
 	protected final int[][] data;
 
@@ -300,20 +303,6 @@ public class MatrixInt implements Iterable<Integer> {
 	}
 
 	/**
-	 * @return <code>this.numRows</code>.
-	 */
-	public int numRows() {
-		return this.numRows;
-	}
-
-	/**
-	 * @return <code>this.numCols</code>.
-	 */
-	public int numCols() {
-		return this.numCols;
-	}
-
-	/**
 	 * @return <code>this.numRows == 1</code>.
 	 */
 	public boolean isRow() {
@@ -342,6 +331,29 @@ public class MatrixInt implements Iterable<Integer> {
 	}
 
 	/**
+	 * @return <code>((long) this.numRows) * this.numCols</code>.
+	 */
+	public long size() {
+		/**
+		 * The maximum value for <code>this.numRows</code> and <code>this.numCols</code> is
+		 * <code>2<sup>31</sup> - 1 (i.e., Integer.MAX_VALUE)</code> which when squared gives
+		 * <code>2<sup>62</sup> + 1 - 2<sup>32</sup></code>. However, this value is not representable by an
+		 * int but is representable by a long since <code>Long.MAX_VALUE == 2<sup>63</sup> - 1</code>.
+		 */
+		return (((long) this.numRows) * this.numCols);
+	}
+
+	/**
+	 * @return <code>Math.multiplyExact(this.numRows, this.numCols)</code>.
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>(((long) this.numRows) * this.numCols) > Integer.MAX_VALUE</code>
+	 */
+	public int sizeExact() throws ArithmeticException {
+		return Math.multiplyExact(this.numRows, this.numCols);
+	}
+
+	/**
 	 * Compute the unknown matrix dimension given the size and one of the dimensions.
 	 * 
 	 * @param size
@@ -350,21 +362,18 @@ public class MatrixInt implements Iterable<Integer> {
 	 * @param dim
 	 *            the known matrix dimension (i.e., either numRows or numCols)
 	 * 
-	 * @return The unknown matrix dimension.
+	 * @return The unknown matrix dimension (i.e., <code>(int) Math.ceil(((double) size) / dim)</code>).
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>dim <= 0</code>
+	 *             If <code>(size <= 0) || (dim <= 0) || (dim > size)</code>
 	 */
-	public static int otherDim(int size, int dim) throws IllegalArgumentException {
-		if (dim <= 0) {
+	public static int otherDim(long size, int dim) throws IllegalArgumentException {
+		if (size <= 0) {
 			throw new IllegalArgumentException();
-		} else if (size <= 1) {
-			// If size == 0 then otherDim == 0
-			// If size == 1 then since dim >= 1, otherDim == 1
-			// Therefore, if size <= 1 then otherDim == size
-			return size;
+		} else if ((dim <= 0) || (dim > size)) {
+			throw new IllegalArgumentException();
 		}
-		return (int) Math.ceil(((double) size) / dim);
+		return ((int) Math.ceil(((double) size) / dim));
 	}
 
 	/**
@@ -1059,7 +1068,7 @@ public class MatrixInt implements Iterable<Integer> {
 				}
 			}
 			return result;
-		}
+		} // (excludingRow != this.numRows) && (excludingCol != this.numCols)
 
 		// General case denoting excluding row indexed by excludingRow
 		// and excluding column indexed by excludingCol.
@@ -1285,7 +1294,7 @@ public class MatrixInt implements Iterable<Integer> {
 
 	/**
 	 * @param m
-	 *            the given mod base
+	 *            the given modulus
 	 * 
 	 * @return <code>this.isSquare() && (MathUtil.gcd(this.determinant(), m) == 1)</code>.
 	 * 
@@ -1307,7 +1316,7 @@ public class MatrixInt implements Iterable<Integer> {
 	 * <code>(gcd(Result.determinant, m) == 1) if and only if (Result.inverse != null)</code>
 	 * 
 	 * @param m
-	 *            the given mod base
+	 *            the given modulus
 	 * 
 	 * @return The resulting InverseInfo object.
 	 * 
@@ -1329,10 +1338,10 @@ public class MatrixInt implements Iterable<Integer> {
 			 * Save the inverse of the determinant in (mod m) as a long instead of an int to ensure that the
 			 * multiplications do NOT overflow. This is guaranteed by the fact that the absolute maximum value
 			 * representable by an int, is <code>2<sup>31</sup> (i.e., abs(Integer.MIN_VALUE))</code> which when
-			 * squared gives <code>2<sup>62</sup></code>. However, this value is not representable by an int
-			 * which means that if determinantInverse was saved as an int, the result of the multiplications may
-			 * have overflowed and caused an int wrap thus changing the actual value and making the computation
-			 * incorrect.
+			 * squared results in <code>2<sup>62</sup></code>. However, this value is not representable by an
+			 * int which means that if determinantInverse was saved as an int, the result of the multiplications
+			 * may have overflowed and caused an int wrap thus changing the actual value and making the
+			 * computation incorrect.
 			 */
 			final long determinantInverse = MathUtil.modInverse(determinant, m);
 
@@ -1356,7 +1365,7 @@ public class MatrixInt implements Iterable<Integer> {
 
 	/**
 	 * @param m
-	 *            the given mod base
+	 *            the given modulus
 	 * 
 	 * @return The inverse of <code>this</code> using <code>(mod m)</code> arithmetic.
 	 * 
@@ -1398,7 +1407,7 @@ public class MatrixInt implements Iterable<Integer> {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + Arrays.deepHashCode(this.data);
+		result = prime * result + ArrayUtil.hashCode(this.data);
 		result = prime * result + this.numCols;
 		result = prime * result + this.numRows;
 		return result;
@@ -1516,6 +1525,7 @@ public class MatrixInt implements Iterable<Integer> {
 		public MatrixIntIterator(MatrixInt m, boolean supportsMutation) throws NullPointerException {
 			this.numRows = m.numRows;
 			this.numCols = m.numCols;
+			// The following is meant to be an assignment of this.supportsMutation and this.data.
 			this.data = (this.supportsMutation = supportsMutation) ? m.data : m.data();
 			this.begin();
 		}
@@ -1623,8 +1633,9 @@ public class MatrixInt implements Iterable<Integer> {
 			}
 
 			// Set the element, return the old value and then move the cursor.
-			final int result = this.data[this.rowNum][this.colNum];
-			this.data[this.rowNum][this.colNum] = t;
+			final int[] row = this.data[this.rowNum];
+			final int result = row[this.colNum];
+			row[this.colNum] = t;
 			if (++this.colNum == this.numCols) {
 				if (++this.rowNum == this.numRows) {
 					// Reached the end of the matrix.
@@ -1682,8 +1693,9 @@ public class MatrixInt implements Iterable<Integer> {
 				this.colNum = this.numCols - 1;
 				--this.rowNum;
 			}
-			final int result = this.data[this.rowNum][this.colNum];
-			this.data[this.rowNum][this.colNum] = t;
+			final int[] row = this.data[this.rowNum];
+			final int result = row[this.colNum];
+			row[this.colNum] = t;
 			return result;
 		}
 	}

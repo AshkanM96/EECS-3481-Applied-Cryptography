@@ -1,5 +1,7 @@
 package util;
 
+import java.util.Arrays;
+
 /**
  * Scytale cipher.
  * 
@@ -135,11 +137,11 @@ public class Scytale implements Iterable<Integer> {
 	}
 
 	/**
-	 * @return <code>this.key.numRows()</code> or <code>this.key.numCols()</code>.
+	 * @return <code>this.key.numRows</code> or <code>this.key.numCols</code>.
 	 */
 	public int keySide() {
-		// this.key.isSquare()
-		return this.key.numRows();
+		// assert this.key.isSquare();
+		return this.key.numRows;
 	}
 
 	/**
@@ -514,17 +516,11 @@ public class Scytale implements Iterable<Integer> {
 	 * @return The resulting char array.
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>numCols <= 0</code>
+	 *             If <code>(numCols <= 0) || (numCols > data.length)</code>
 	 */
 	protected static char[] placeFixedInput(char[] data, int numCols) throws IllegalArgumentException {
-		if (numCols <= 0) {
-			throw new IllegalArgumentException();
-		} else if (data.length == 0) {
-			return new char[0];
-		} else if (data.length == 1) {
-			final char[] result = new char[1];
-			result[0] = data[0];
-			return result;
+		if (data.length <= 1) {
+			return Arrays.copyOf(data, data.length);
 		}
 
 		final MatrixInt matrix = new MatrixInt(MatrixInt.otherDim(data.length, numCols), numCols);
@@ -573,7 +569,7 @@ public class Scytale implements Iterable<Integer> {
 	 *             If <code>data == null</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>numCols <= 0</code>
+	 *             If <code>(numCols <= 0) || (numCols > CryptoTools.clean(data).length)</code>
 	 */
 	public static char[] place(char[] data, int numCols) throws NullPointerException, IllegalArgumentException {
 		// Even though the following is a repeated check, it'll save a cleaning.
@@ -601,17 +597,11 @@ public class Scytale implements Iterable<Integer> {
 	 * @return The resulting byte array.
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>numCols <= 0</code>
+	 *             If <code>(numCols <= 0) || (numCols > data.length)</code>
 	 */
 	protected static byte[] placeFixedInput(byte[] data, int numCols) throws IllegalArgumentException {
-		if (numCols <= 0) {
-			throw new IllegalArgumentException();
-		} else if (data.length == 0) {
-			return new byte[0];
-		} else if (data.length == 1) {
-			final byte[] result = new byte[1];
-			result[0] = data[0];
-			return result;
+		if (data.length <= 1) {
+			return Arrays.copyOf(data, data.length);
 		}
 
 		final MatrixInt matrix = new MatrixInt(MatrixInt.otherDim(data.length, numCols), numCols);
@@ -660,7 +650,7 @@ public class Scytale implements Iterable<Integer> {
 	 *             If <code>data == null</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>numCols <= 0</code>
+	 *             If <code>(numCols <= 0) || (numCols > CryptoTools.clean(data).length)</code>
 	 */
 	public static byte[] place(byte[] data, int numCols) throws NullPointerException, IllegalArgumentException {
 		// Even though the following is a repeated check, it'll save a cleaning.
