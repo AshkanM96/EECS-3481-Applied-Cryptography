@@ -173,13 +173,13 @@ public class BigIntegerUtil {
 	 * @param n
 	 *            the given BigInteger object
 	 * 
-	 * @return <code>n.getLowestSetBit() != 0</code>.
+	 * @return <code>!n.testBit(0)</code>.
 	 * 
 	 * @throws NullPointerException
 	 *             If <code>n == null</code>
 	 */
 	public static boolean isEven(BigInteger n) throws NullPointerException {
-		return (n.getLowestSetBit() != 0);
+		return (!n.testBit(0));
 	}
 
 	/**

@@ -146,7 +146,8 @@ public class MillerRabin {
 				// Create Result and return it.
 				return new TestResultMillerRabin(this.n, true, b);
 			}
-			// Divide the exponent by 2 since we know that it is even.
+
+			// Compute the next exponent since we know that the current exponent is even.
 			exp = exp.divide(BigIntegerUtil.TWO);
 		}
 		// Only print if requested.
@@ -170,37 +171,19 @@ public class MillerRabin {
 			return new TestResultMillerRabin(this.n, true, b);
 		}
 
-		// Apply the Square-Root test to pow(r, 2) = pow(1, 2) (mod n).
+		// Apply the Square-Root test to r, 1, and this.n.
 		final BigInteger superFactor1 = this.n.gcd(r.subtract(BigInteger.ONE));
 		final BigInteger superFactor2 = this.n.gcd(r.add(BigInteger.ONE));
 
-		// If both of the super factors are 1, then the test is inconclusive.
-		final boolean isSuperFactor1Trivial = superFactor1.equals(BigInteger.ONE);
-		final boolean isSuperFactor2Trivial = superFactor2.equals(BigInteger.ONE);
-		final boolean isInconclusive = isSuperFactor1Trivial && isSuperFactor2Trivial;
-
 		// Only print if requested.
 		if (print) {
-			if (isInconclusive) {
-				System.out.println("Test is inconclusive with base " + b + ".\n");
-			} else { // isSuperFactor1Trivial && isSuperFactor2Trivial == false
-				System.out.println("Factors of n are contained in:");
-				if (isSuperFactor1Trivial) {
-					// isSuperFactor1Trivial == true so isSuperFactor2Trivial == false
-					System.out.println("GCD(n, " + r + " + 1) == " + superFactor2);
-				} else { // isSuperFactor1Trivial == false
-					System.out.println("GCD(n, " + r + " - 1) == " + superFactor1);
-					if (!isSuperFactor2Trivial) {
-						System.out.println("and");
-						System.out.println("GCD(n, " + r + " + 1) == " + superFactor2);
-					}
-				}
-				System.out.println("\n" + b + " is a witness of n's compositeness.\n");
-			}
+			System.out.println("GCD(n, " + r + " - 1) == " + superFactor1);
+			System.out.println("and\nGCD(n, " + r + " + 1) == " + superFactor2);
+			System.out.println("\n" + b + " is a witness of n's compositeness.\n");
 		}
 
 		// Create Result and return it.
-		return new TestResultMillerRabin(this.n, isInconclusive, b, superFactor1, superFactor2);
+		return new TestResultMillerRabin(this.n, false, b, superFactor1, superFactor2);
 	}
 
 	/**

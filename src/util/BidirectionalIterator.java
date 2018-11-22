@@ -2,7 +2,7 @@ package util;
 
 /**
  * Bidirectional iterator interface. A simpler version of Java's ListIterator. <br>
- * The iterator can move infinitely many times through the sequence.
+ * The iterator can move through the sequence infinitely many times.
  * 
  * @author Ashkan Moatamed
  */

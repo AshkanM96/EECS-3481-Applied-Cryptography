@@ -3,7 +3,7 @@ package util;
 import java.util.NoSuchElementException;
 
 /**
- * Forward iterator interface. The iterator can only move once through the sequence.
+ * Forward iterator interface. The iterator can only move through the sequence once.
  * 
  * @author Ashkan Moatamed
  */
