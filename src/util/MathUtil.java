@@ -46,7 +46,7 @@ public class MathUtil {
 	public static boolean isEven(byte n) {
 		// Odd numbers have their lowest bit set.
 		// By using bitwise and, we can check this fact.
-		return ((n & 1) == 0);
+		return ((n &= 1) == 0);
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class MathUtil {
 	public static boolean isEven(short n) {
 		// Odd numbers have their lowest bit set.
 		// By using bitwise and, we can check this fact.
-		return ((n & 1) == 0);
+		return ((n &= 1) == 0);
 	}
 
 	/**
@@ -70,7 +70,7 @@ public class MathUtil {
 	public static boolean isEven(int n) {
 		// Odd numbers have their lowest bit set.
 		// By using bitwise and, we can check this fact.
-		return ((n & 1) == 0);
+		return ((n &= 1) == 0);
 	}
 
 	/**
@@ -82,10 +82,13 @@ public class MathUtil {
 	public static boolean isEven(long n) {
 		// Odd numbers have their lowest bit set.
 		// By using bitwise and, we can check this fact.
-		return ((n & 1) == 0);
+		return ((n &= 1) == 0);
 	}
 
 	/**
+	 * Precondition: <code>!((a == Long.MIN_VALUE) && ((b == 0) || (b == Long.MIN_VALUE)))</code> <br>
+	 * Precondition: <code>!((b == Long.MIN_VALUE) && ((a == 0) || (a == Long.MIN_VALUE)))</code>
+	 * 
 	 * @param a
 	 *            the first given number
 	 * 
@@ -93,25 +96,8 @@ public class MathUtil {
 	 *            the second given number
 	 * 
 	 * @return The greatest common divisor of the two numbers.
-	 * 
-	 * @throws ArithmeticException
-	 *             If <code>((a == Long.MIN_VALUE) && ((b == 0) || (b == Long.MIN_VALUE)))
-	 *             || ((b == Long.MIN_VALUE) && ((a == 0) || (a == Long.MIN_VALUE)))</code>
 	 */
-	public static long gcd(long a, long b) throws ArithmeticException {
-		// Handle the degenerate cases where the result cannot be represented as a non-negative long.
-		if (a == Long.MIN_VALUE) {
-			if ((b == 0) || (b == Long.MIN_VALUE)) {
-				// gcd(a, 0) == a == gcd(a, a) but a's absolute value is not representable as a long.
-				throw new ArithmeticException();
-			}
-		} else if (b == Long.MIN_VALUE) { // a != Long.MIN_VALUE
-			if (a == 0) {
-				// gcd(0, b) == b but b's absolute value is not representable as a long.
-				throw new ArithmeticException();
-			}
-		}
-
+	protected static long gcdFixedInput(long a, long b) {
 		// gcd is non-negative so make a and b non-negative.
 		a = Math.abs(a);
 		b = Math.abs(b);
@@ -148,6 +134,35 @@ public class MathUtil {
 	 * @return The greatest common divisor of the two numbers.
 	 * 
 	 * @throws ArithmeticException
+	 *             If <code>((a == Long.MIN_VALUE) && ((b == 0) || (b == Long.MIN_VALUE)))
+	 *             || ((b == Long.MIN_VALUE) && ((a == 0) || (a == Long.MIN_VALUE)))</code>
+	 */
+	public static long gcd(long a, long b) throws ArithmeticException {
+		// Handle the degenerate cases where the result cannot be represented as a non-negative long.
+		if (a == Long.MIN_VALUE) {
+			if ((b == 0) || (b == Long.MIN_VALUE)) {
+				// gcd(a, 0) == a == gcd(a, a) but a's absolute value is not representable as a long.
+				throw new ArithmeticException();
+			}
+		} else if (b == Long.MIN_VALUE) { // a != Long.MIN_VALUE
+			if (a == 0) {
+				// gcd(0, b) == b but b's absolute value is not representable as a long.
+				throw new ArithmeticException();
+			}
+		}
+		return MathUtil.gcdFixedInput(a, b);
+	}
+
+	/**
+	 * @param a
+	 *            the first given number
+	 * 
+	 * @param b
+	 *            the second given number
+	 * 
+	 * @return The greatest common divisor of the two numbers.
+	 * 
+	 * @throws ArithmeticException
 	 *             If <code>((a == Integer.MIN_VALUE) && ((b == 0) || (b == Integer.MIN_VALUE)))
 	 *             || ((b == Integer.MIN_VALUE) && ((a == 0) || (a == Integer.MIN_VALUE)))</code>
 	 */
@@ -164,7 +179,7 @@ public class MathUtil {
 				throw new ArithmeticException();
 			}
 		}
-		return ((int) MathUtil.gcd((long) a, (long) b));
+		return ((int) MathUtil.gcdFixedInput(a, b));
 	}
 
 	/**
@@ -193,7 +208,7 @@ public class MathUtil {
 				throw new ArithmeticException();
 			}
 		}
-		return ((short) MathUtil.gcd((long) a, (long) b));
+		return ((short) MathUtil.gcdFixedInput(a, b));
 	}
 
 	/**
@@ -222,7 +237,7 @@ public class MathUtil {
 				throw new ArithmeticException();
 			}
 		}
-		return ((byte) MathUtil.gcd((long) a, (long) b));
+		return ((byte) MathUtil.gcdFixedInput(a, b));
 	}
 
 	/**
@@ -466,11 +481,7 @@ public class MathUtil {
 		if (m <= 0) {
 			throw new ArithmeticException();
 		}
-
-		// Compute the remainder upon integer division.
-		final long remainder = n % m;
-		// Fix the remainder to be non-negative.
-		return ((remainder < 0) ? (remainder + m) : remainder);
+		return (((n %= m) < 0) ? (n + m) : n);
 	}
 
 	/**
@@ -558,7 +569,7 @@ public class MathUtil {
 
 			// Loop until n == 0 or n == 1.
 			long x = 1;
-			for (long y = 0, quotient = 0, remainder = m, tmp = m; n > 1; /* Update inside. */) {
+			for (long y = 0, quotient = 0, remainder = m, tmp = 0; n > 1; /* Update inside. */) {
 				// Compute the quotient.
 				quotient = n / remainder;
 
@@ -633,6 +644,38 @@ public class MathUtil {
 	}
 
 	/**
+	 * Precondition: <code>p != Long.MIN_VALUE</code>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param p
+	 *            the given power
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>n<sup>p</sup> (mod m)</code>.
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>(m <= 0) || ((p < 0) && (gcd(n, m) != 1))</code>
+	 */
+	protected static long modPowFixedInput(long n, long p, long m) throws ArithmeticException {
+		// Handle the simple special case.
+		if (m == 1) {
+			return 0;
+		}
+
+		/**
+		 * <code>n<sup>p</sup> (mod m)</code> is: <br>
+		 * <code>(n<sup>-1</sup> (mod m))<sup>abs(p)</sup> (mod m)</code> if <code>p < 0</code> <br>
+		 * <code>n<sup>abs(p)</sup> (mod m)</code> if <code>p >= 0</code>
+		 */
+		return ((p < 0) ? MathUtil.modPowRecur(MathUtil.modInverse(n, m), -p, m)
+				: MathUtil.modPowRecur(MathUtil.mod(n, m), p, m));
+	}
+
+	/**
 	 * @param n
 	 *            the given number
 	 * 
@@ -652,19 +695,7 @@ public class MathUtil {
 		if (p == Long.MIN_VALUE) {
 			throw new ArithmeticException();
 		}
-
-		// Handle the simple special case.
-		if (m == 1) {
-			return 0;
-		}
-
-		/**
-		 * <code>n<sup>p</sup> (mod m)</code> is: <br>
-		 * <code>(n<sup>-1</sup> (mod m))<sup>abs(p)</sup> (mod m)</code> if <code>p < 0</code> <br>
-		 * <code>n<sup>abs(p)</sup> (mod m)</code> if <code>p >= 0</code>
-		 */
-		return ((p < 0) ? MathUtil.modPowRecur(MathUtil.modInverse(n, m), -p, m)
-				: MathUtil.modPowRecur(MathUtil.mod(n, m), p, m));
+		return MathUtil.modPowFixedInput(n, p, m);
 	}
 
 	/**
@@ -712,7 +743,7 @@ public class MathUtil {
 	 *             If <code>(m <= 0) || ((p < 0) && (gcd(n, m) != 1))</code>
 	 */
 	public static int modPow(int n, int p, int m) throws ArithmeticException {
-		return ((int) MathUtil.modPow((long) n, (long) p, (long) m));
+		return ((int) MathUtil.modPowFixedInput(n, p, m));
 	}
 
 	/**
@@ -731,7 +762,7 @@ public class MathUtil {
 	 *             If <code>(m <= 0) || ((p < 0) && (gcd(n, m) != 1))</code>
 	 */
 	public static short modPow(short n, short p, short m) throws ArithmeticException {
-		return ((short) MathUtil.modPow((long) n, (long) p, (long) m));
+		return ((short) MathUtil.modPowFixedInput(n, p, m));
 	}
 
 	/**
@@ -750,6 +781,6 @@ public class MathUtil {
 	 *             If <code>(m <= 0) || ((p < 0) && (gcd(n, m) != 1))</code>
 	 */
 	public static byte modPow(byte n, byte p, byte m) throws ArithmeticException {
-		return ((byte) MathUtil.modPow((long) n, (long) p, (long) m));
+		return ((byte) MathUtil.modPowFixedInput(n, p, m));
 	}
 }

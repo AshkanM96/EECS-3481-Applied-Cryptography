@@ -18,6 +18,11 @@ public class Scytale implements Iterable<Integer> {
 	 */
 
 	/**
+	 * Scytale cipher key entries must be in <code>[0, Scytale.MODULUS - 1] \cap \doubleZ</code>.
+	 */
+	public static final int MODULUS = 2;
+
+	/**
 	 * Cipher key.
 	 */
 	protected MatrixInt key;
@@ -154,7 +159,7 @@ public class Scytale implements Iterable<Integer> {
 	/**
 	 * Reset the calling object's key to a have the given key side and the given integer in every entry.
 	 * The actual value used to fill the key will be equivalent to the given integer
-	 * <code>(mod 2)</code>.
+	 * <code>(mod Scytale.MODULUS)</code>.
 	 * 
 	 * @param side
 	 *            the given key side
@@ -169,7 +174,7 @@ public class Scytale implements Iterable<Integer> {
 	 */
 	public MatrixInt key(int side, int n) throws IllegalArgumentException {
 		final MatrixInt oldKey = this.key;
-		this.key = new MatrixInt(side, side, MathUtil.mod(n, 2));
+		this.key = new MatrixInt(side, side, MathUtil.mod(n, Scytale.MODULUS));
 		this.isValidKey = false;
 		return oldKey;
 	}
@@ -186,7 +191,7 @@ public class Scytale implements Iterable<Integer> {
 	 *             If <code>side <= 0</code>
 	 */
 	public MatrixInt key(int side) throws IllegalArgumentException {
-		// No need to modEquals(2) this.key since this.key.isAllZero().
+		// No need to modEquals(Scytale.MODULUS) this.key since this.key.isAllZero().
 		final MatrixInt oldKey = this.key;
 		this.key = new MatrixInt(side, side);
 		this.isValidKey = false;
@@ -216,7 +221,7 @@ public class Scytale implements Iterable<Integer> {
 
 		// Set this.
 		final MatrixInt oldKey = this.key;
-		this.key = tmp.modEquals(2);
+		this.key = tmp.modEquals(Scytale.MODULUS);
 		this.isValidKey = false;
 		return oldKey;
 	}
@@ -241,7 +246,7 @@ public class Scytale implements Iterable<Integer> {
 	 */
 	public MatrixInt key(int[] key) throws NullPointerException, IllegalArgumentException {
 		final MatrixInt oldKey = this.key;
-		this.key = MatrixInt.square(key).modEquals(2);
+		this.key = MatrixInt.square(key).modEquals(Scytale.MODULUS);
 		this.isValidKey = false;
 		return oldKey;
 	}
@@ -267,7 +272,7 @@ public class Scytale implements Iterable<Integer> {
 
 		// Set this.
 		final MatrixInt oldKey = this.key;
-		this.key = key.mod(2);
+		this.key = key.mod(Scytale.MODULUS);
 		this.isValidKey = false;
 		return oldKey;
 	}
@@ -290,7 +295,7 @@ public class Scytale implements Iterable<Integer> {
 	}
 
 	/**
-	 * <code>this.key.set(row, col, MathUtil.mod(entry, 2))</code>.
+	 * <code>this.key.set(row, col, MathUtil.mod(entry, Scytale.MODULUS))</code>.
 	 * 
 	 * @param row
 	 *            the given row index
@@ -306,18 +311,18 @@ public class Scytale implements Iterable<Integer> {
 	 *             <code>(row < 0) || (row >= this.numRows) || (col < 0) || (col >= this.numCols)</code>
 	 */
 	public void set(int row, int col, int entry) throws IndexOutOfBoundsException {
-		this.key.set(row, col, MathUtil.mod(entry, 2));
+		this.key.set(row, col, MathUtil.mod(entry, Scytale.MODULUS));
 		this.isValidKey = false;
 	}
 
 	/**
-	 * Set every entry of <code>this.key</code> to the given integer.
+	 * Set every entry of <code>this.key</code> to <code>MathUtil.mod(n, Scytale.MODULUS)</code>.
 	 * 
 	 * @param n
 	 *            the given integer
 	 */
 	public void fill(int n) {
-		this.key.fill(MathUtil.mod(n, 2));
+		this.key.fill(MathUtil.mod(n, Scytale.MODULUS));
 		this.isValidKey = false;
 	}
 

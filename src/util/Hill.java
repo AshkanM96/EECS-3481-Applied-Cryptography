@@ -9,10 +9,9 @@ public class Hill implements Iterable<Integer> {
 	/**
 	 * Dependencies: <code>
 	 * 		1. util.MatrixInt
-	 * 		2. util.Caesar
-	 * 		3. util.CryptoTools
-	 * 		4. util.MathUtil
-	 * 		5. util.BidirectionalIterator
+	 * 		2. util.CryptoTools
+	 * 		3. util.MathUtil
+	 * 		4. util.BidirectionalIterator
 	 * </code>
 	 */
 
@@ -174,9 +173,8 @@ public class Hill implements Iterable<Integer> {
 	 *             If <code>side <= 0</code>
 	 */
 	public MatrixInt key(int side, int n) throws IllegalArgumentException {
-		// No need to modEquals(CryptoTools.ENGLISH_ALPHABET_SIZE) this.key since Caesar.fixKey is used.
 		final MatrixInt oldKey = this.key;
-		this.key = new MatrixInt(side, side, Caesar.fixKey(n));
+		this.key = new MatrixInt(side, side, MathUtil.mod(n, CryptoTools.ENGLISH_ALPHABET_SIZE));
 		this.keyInverse = null;
 		return oldKey;
 	}
@@ -297,7 +295,7 @@ public class Hill implements Iterable<Integer> {
 	}
 
 	/**
-	 * <code>this.key.set(row, col, Caesar.fixKey(entry))</code>.
+	 * <code>this.key.set(row, col, MathUtil.mod(entry, CryptoTools.ENGLISH_ALPHABET_SIZE))</code>.
 	 * 
 	 * @param row
 	 *            the given row index
@@ -313,18 +311,19 @@ public class Hill implements Iterable<Integer> {
 	 *             <code>(row < 0) || (row >= this.numRows) || (col < 0) || (col >= this.numCols)</code>
 	 */
 	public void set(int row, int col, int entry) throws IndexOutOfBoundsException {
-		this.key.set(row, col, Caesar.fixKey(entry));
+		this.key.set(row, col, MathUtil.mod(entry, CryptoTools.ENGLISH_ALPHABET_SIZE));
 		this.keyInverse = null;
 	}
 
 	/**
-	 * Set every entry of <code>this.key</code> to the given integer.
+	 * Set every entry of <code>this.key</code> to
+	 * <code>MathUtil.mod(n, CryptoTools.ENGLISH_ALPHABET_SIZE)</code>.
 	 * 
 	 * @param n
 	 *            the given integer
 	 */
 	public void fill(int n) {
-		this.key.fill(Caesar.fixKey(n));
+		this.key.fill(MathUtil.mod(n, CryptoTools.ENGLISH_ALPHABET_SIZE));
 		this.keyInverse = null;
 	}
 

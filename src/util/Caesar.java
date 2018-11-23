@@ -30,8 +30,10 @@ public class Caesar {
 	 * @return The fixed key.
 	 */
 	public static int fixKey(int key) {
+		// return MathUtil.mod(key, CryptoTools.ENGLISH_ALPHABET_SIZE);
+
 		key %= CryptoTools.ENGLISH_ALPHABET_SIZE;
-		return (key < 0 ? key + CryptoTools.ENGLISH_ALPHABET_SIZE : key);
+		return ((key < 0) ? (key + CryptoTools.ENGLISH_ALPHABET_SIZE) : key);
 	}
 
 	/**
@@ -48,7 +50,7 @@ public class Caesar {
 	 * @return The encrypted ciphertext char.
 	 */
 	protected static char encryptFixedInput(int key, int p) {
-		return (char) ((p - 'A' + key) % CryptoTools.ENGLISH_ALPHABET_SIZE + 'A');
+		return ((char) ((p - 'A' + key) % CryptoTools.ENGLISH_ALPHABET_SIZE + 'A'));
 	}
 
 	/**
@@ -161,7 +163,7 @@ public class Caesar {
 	 * @return The decrypted plaintext char.
 	 */
 	protected static char decryptFixedInput(int key, int c) {
-		return (char) ((c - 'A' - key + CryptoTools.ENGLISH_ALPHABET_SIZE) % CryptoTools.ENGLISH_ALPHABET_SIZE + 'A');
+		return ((char) ((c - 'A' - key + CryptoTools.ENGLISH_ALPHABET_SIZE) % CryptoTools.ENGLISH_ALPHABET_SIZE + 'A'));
 	}
 
 	/**
