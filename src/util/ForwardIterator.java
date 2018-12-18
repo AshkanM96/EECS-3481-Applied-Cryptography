@@ -23,9 +23,9 @@ public interface ForwardIterator<T> {
 	public boolean hasNext();
 
 	/**
-	 * Returns the next element and moves the cursor forward by one.
+	 * Returns the next element's value and moves the cursor forward by one.
 	 * 
-	 * @return The next element.
+	 * @return The next element's value.
 	 * 
 	 * @throws NoSuchElementException
 	 *             If <code>!this.hasNext()</code>
@@ -33,8 +33,8 @@ public interface ForwardIterator<T> {
 	public T next() throws NoSuchElementException;
 
 	/**
-	 * Sets the next element to the given value and returns the old value. The cursor is also moved
-	 * forward by one.
+	 * Sets the next element's value to the given value and returns the old value. The cursor is also
+	 * moved forward by one.
 	 * 
 	 * @param t
 	 *            the given next element's new value

@@ -730,7 +730,9 @@ public class RSACipherEng {
 	 * @see #equals(Object)
 	 */
 	public boolean equals(RSACipherEng other) {
-		if (this == other) {
+		if (other == null) {
+			return false;
+		} else if (this == other) {
 			return true;
 		}
 

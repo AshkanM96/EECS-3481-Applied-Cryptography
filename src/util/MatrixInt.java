@@ -1436,7 +1436,9 @@ public class MatrixInt implements Iterable<Integer> {
 	 * @see #equals(Object)
 	 */
 	public boolean equals(MatrixInt other) {
-		if (this == other) {
+		if (other == null) {
+			return false;
+		} else if (this == other) {
 			return true;
 		}
 

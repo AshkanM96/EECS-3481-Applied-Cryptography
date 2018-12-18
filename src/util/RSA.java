@@ -311,12 +311,17 @@ public class RSA {
 	 * @see #equals(Object)
 	 */
 	public boolean equals(RSA other) {
+		if (other == null) {
+			return false;
+		} else if (this == other) {
+			return true;
+		}
 		/*
 		 * After pointer equality check, first compare the cipher public key since it should be the
 		 * smallest. Then compare the cipher private key since it should be the second smallest. Finally,
 		 * compare the modulus since it should be the largest.
 		 */
-		return (this == other ? true : this.e.equals(other.e) && this.d.equals(other.d) && this.n.equals(other.n));
+		return (this.e.equals(other.e) && this.d.equals(other.d) && this.n.equals(other.n));
 	}
 
 	/**

@@ -32,7 +32,7 @@ public class Caesar {
 	public static int fixKey(int key) {
 		// return MathUtil.mod(key, CryptoTools.ENGLISH_ALPHABET_SIZE);
 
-		return (((key %= CryptoTools.ENGLISH_ALPHABET_SIZE) < 0) ? (key + CryptoTools.ENGLISH_ALPHABET_SIZE) : key);
+		return (((key %= CryptoTools.ENGLISH_ALPHABET_SIZE) < 0) ? (key += CryptoTools.ENGLISH_ALPHABET_SIZE) : key);
 	}
 
 	/**

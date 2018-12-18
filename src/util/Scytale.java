@@ -351,7 +351,7 @@ public class Scytale implements Iterable<Integer> {
 	 * @see #equals(Object)
 	 */
 	public boolean equals(Scytale other) {
-		return (this == other ? true : this.key.equals(other.key));
+		return ((other == null) ? false : ((this == other) ? true : this.key.equals(other.key)));
 	}
 
 	/**

@@ -167,12 +167,11 @@ public class RSAUtil {
 	 * @param d
 	 *            the given cipher private key
 	 * 
-	 * @return <code>"(" + String.valueOf(n) + ", " + String.valueOf(e) + ", " + String.valueOf(d) + ")"</code>.
+	 * @return <code>"(" + n + ", " + e + ", " + d + ")"</code>.
 	 */
 	public static String toString(BigInteger n, BigInteger e, BigInteger d) {
 		final StringBuilder sb = new StringBuilder();
-		sb.append('(').append(String.valueOf(n)).append(", ").append(String.valueOf(e)).append(", ")
-				.append(String.valueOf(d)).append(')');
+		sb.append('(').append(n).append(", ").append(e).append(", ").append(d).append(')');
 		return sb.toString();
 	}
 
@@ -267,9 +266,15 @@ public class RSAUtil {
 		// primeFactor is not actually a factor of n.
 		BigIntegerUtil.ensureZero(result[1]);
 
+		// Save primeFactor - 1 and ensure that it is positive.
+		final BigInteger primeFactor_minus_1 = primeFactor.subtract(BigInteger.ONE);
+		BigIntegerUtil.ensurePositive(primeFactor_minus_1);
+		// Save otherPrimeFactor - 1 and ensure that it is positive.
+		final BigInteger otherPrimeFactor_minus_1 = otherPrimeFactor.subtract(BigInteger.ONE);
+		BigIntegerUtil.ensurePositive(otherPrimeFactor_minus_1);
+
 		// Compute the Euler's totient function for n.
-		final BigInteger phi = RSAUtil.phi(primeFactor, otherPrimeFactor);
-		BigIntegerUtil.ensurePositive(phi);
+		final BigInteger phi = primeFactor_minus_1.multiply(otherPrimeFactor_minus_1);
 
 		// Return the private key.
 		return e.modInverse(phi);

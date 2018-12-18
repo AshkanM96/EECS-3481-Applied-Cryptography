@@ -297,7 +297,12 @@ public class Affine {
 	 * @see #equals(Object)
 	 */
 	public boolean equals(Affine other) {
-		return (this == other ? true : (this.alpha == other.alpha) && (this.beta == other.beta));
+		if (other == null) {
+			return false;
+		} else if (this == other) {
+			return true;
+		}
+		return ((this.alpha == other.alpha) && (this.beta == other.beta));
 	}
 
 	/**
@@ -310,7 +315,7 @@ public class Affine {
 	 * @return The encrypted ciphertext char.
 	 */
 	protected char encryptFixedInput(int p) {
-		return (char) ((this.alpha * (p - 'A') + this.beta) % CryptoTools.ENGLISH_ALPHABET_SIZE + 'A');
+		return ((char) ((this.alpha * (p - 'A') + this.beta) % CryptoTools.ENGLISH_ALPHABET_SIZE + 'A'));
 	}
 
 	/**
@@ -402,8 +407,8 @@ public class Affine {
 	 * @return The decrypted plaintext char.
 	 */
 	protected char decryptFixedInput(int c) {
-		return (char) (((c - 'A' - this.beta + CryptoTools.ENGLISH_ALPHABET_SIZE) * this.alphaModInverse)
-				% CryptoTools.ENGLISH_ALPHABET_SIZE + 'A');
+		return ((char) (((c - 'A' - this.beta + CryptoTools.ENGLISH_ALPHABET_SIZE) * this.alphaModInverse)
+				% CryptoTools.ENGLISH_ALPHABET_SIZE + 'A'));
 	}
 
 	/**

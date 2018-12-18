@@ -481,7 +481,7 @@ public class MathUtil {
 		if (m <= 0) {
 			throw new ArithmeticException();
 		}
-		return (((n %= m) < 0) ? (n + m) : n);
+		return (((n %= m) < 0) ? (n += m) : n);
 	}
 
 	/**
@@ -583,7 +583,7 @@ public class MathUtil {
 				y = x - quotient * y;
 				x = tmp;
 			}
-			return ((x < 0) ? (x + m) : x);
+			return ((x < 0) ? (x += m) : x);
 		} catch (ArithmeticException ex) {
 			/*
 			 * The cause of this exception is a division by 0 as explained in the comments above the try and it
@@ -644,8 +644,45 @@ public class MathUtil {
 	}
 
 	/**
-	 * Precondition: <code>p != Long.MIN_VALUE</code>
+	 * Compute <code>n<sup>p</sup> (mod m)</code> using the recursive fast power algorithm. <br>
+	 * Precondition: <code>m > 1</code> <br>
+	 * Precondition: <code>n == MathUtil.mod(n, m)</code> <br>
+	 * Precondition: <code>p >= 0</code>
 	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param p
+	 *            the given power
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>n<sup>p</sup> (mod m)</code>.
+	 */
+	protected static long modPowRecur(long n, long p, long m) {
+		// Base case.
+		if (p == 0) {
+			return 1;
+		}
+
+		// General recursive case.
+		long result = MathUtil.modPowRecur(n, p / 2, m);
+		result *= result;
+		result %= m;
+
+		// Handle even power.
+		if (MathUtil.isEven(p)) {
+			return result;
+		}
+
+		// Handle odd power.
+		result *= n;
+		result %= m;
+		return result;
+	}
+
+	/**
 	 * @param n
 	 *            the given number
 	 * 
@@ -660,10 +697,21 @@ public class MathUtil {
 	 * @throws ArithmeticException
 	 *             If <code>(m <= 0) || ((p < 0) && (gcd(n, m) != 1))</code>
 	 */
-	protected static long modPowFixedInput(long n, long p, long m) throws ArithmeticException {
+	public static long modPow(long n, long p, long m) throws ArithmeticException {
 		// Handle the simple special case.
 		if (m == 1) {
 			return 0;
+		}
+
+		// Handle the degenerate case where p's absolute value is not representable as a long.
+		if (p == Long.MIN_VALUE) {
+			/**
+			 * <code>n<sup>(-2<sup>63</sup>)</sup> (mod m) = (n<sup>-1</sup>)<sup>(2<sup>63</sup> - 1)</sup> * n<sup>-1</sup> (mod m)</code>
+			 */
+			final long n_inverse = MathUtil.modInverse(n, m);
+			long result = MathUtil.modPowRecur(n_inverse, Long.MAX_VALUE, m);
+			result *= n_inverse;
+			return (result %= m);
 		}
 
 		/**
@@ -688,62 +736,10 @@ public class MathUtil {
 	 * @return <code>n<sup>p</sup> (mod m)</code>.
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>(m <= 0) || (p == Long.MIN_VALUE) || ((p < 0) && (gcd(n, m) != 1))</code>
-	 */
-	public static long modPow(long n, long p, long m) throws ArithmeticException {
-		// Handle the degenerate case where p's absolute value is not representable as a long.
-		if (p == Long.MIN_VALUE) {
-			throw new ArithmeticException();
-		}
-		return MathUtil.modPowFixedInput(n, p, m);
-	}
-
-	/**
-	 * Compute <code>n<sup>p</sup> (mod m)</code> using the recursive fast power algorithm. <br>
-	 * Precondition: <code>m > 1</code> <br>
-	 * Precondition: <code>n == MathUtil.mod(n, m)</code> <br>
-	 * Precondition: <code>p >= 0</code>
-	 * 
-	 * @param n
-	 *            the given number
-	 * 
-	 * @param p
-	 *            the given power
-	 * 
-	 * @param m
-	 *            the given modulus
-	 * 
-	 * @return <code>n<sup>p</sup> (mod m)</code>.
-	 */
-	protected static long modPowRecur(long n, long p, long m) {
-		// Base case.
-		if (p == 0) {
-			return 1;
-		}
-
-		// General recursive case.
-		long tmp = MathUtil.modPowRecur(n, p / 2, m);
-		tmp = (tmp * tmp) % m;
-		return (MathUtil.isEven(p) ? tmp : ((n * tmp) % m));
-	}
-
-	/**
-	 * @param n
-	 *            the given number
-	 * 
-	 * @param p
-	 *            the given power
-	 * 
-	 * @param m
-	 *            the given modulus
-	 * 
-	 * @return <code>n<sup>p</sup> (mod m)</code>.
-	 * 
-	 * @throws ArithmeticException
 	 *             If <code>(m <= 0) || ((p < 0) && (gcd(n, m) != 1))</code>
 	 */
 	public static int modPow(int n, int p, int m) throws ArithmeticException {
-		return ((int) MathUtil.modPowFixedInput(n, p, m));
+		return ((int) MathUtil.modPow((long) n, (long) p, (long) m));
 	}
 
 	/**
@@ -762,7 +758,7 @@ public class MathUtil {
 	 *             If <code>(m <= 0) || ((p < 0) && (gcd(n, m) != 1))</code>
 	 */
 	public static short modPow(short n, short p, short m) throws ArithmeticException {
-		return ((short) MathUtil.modPowFixedInput(n, p, m));
+		return ((short) MathUtil.modPow((long) n, (long) p, (long) m));
 	}
 
 	/**
@@ -781,6 +777,6 @@ public class MathUtil {
 	 *             If <code>(m <= 0) || ((p < 0) && (gcd(n, m) != 1))</code>
 	 */
 	public static byte modPow(byte n, byte p, byte m) throws ArithmeticException {
-		return ((byte) MathUtil.modPowFixedInput(n, p, m));
+		return ((byte) MathUtil.modPow((long) n, (long) p, (long) m));
 	}
 }

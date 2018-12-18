@@ -214,7 +214,7 @@ public class Vigenere implements Iterable<Character> {
 	 *             If <code>(i < 0) || (i >= this.key.length)</code>
 	 */
 	public char keyWord(int i) throws IndexOutOfBoundsException {
-		return (char) (this.key[i] + 'A');
+		return ((char) (this.key[i] + 'A'));
 	}
 
 	/**
@@ -307,7 +307,7 @@ public class Vigenere implements Iterable<Character> {
 	 * @see #equals(Object)
 	 */
 	public boolean equals(Vigenere other) {
-		return (this == other ? true : Arrays.equals(this.key, other.key));
+		return ((other == null) ? false : ((this == other) ? true : Arrays.equals(this.key, other.key)));
 	}
 
 	/**
@@ -902,7 +902,7 @@ public class Vigenere implements Iterable<Character> {
 
 		// Only print if requested.
 		if (print) {
-			System.out.println("Probable vigenere key is " + String.valueOf(keyWord) + ".\n");
+			System.out.println("Probable vigenere key is " + (new String(keyWord)) + ".\n");
 			System.out.println("Probable plaintext is:");
 			for (final byte b : probablePlaintext) {
 				System.out.print((char) b);
@@ -1079,7 +1079,7 @@ public class Vigenere implements Iterable<Character> {
 				throw new NoSuchElementException();
 			}
 			// Return the element and then move the cursor.
-			return (char) (this.key[this.index++] + 'A');
+			return ((char) (this.key[this.index++] + 'A'));
 		}
 
 		/**
@@ -1125,7 +1125,7 @@ public class Vigenere implements Iterable<Character> {
 				throw new NoSuchElementException();
 			}
 			// Move the cursor and then return the element.
-			return (char) (this.key[--this.index] + 'A');
+			return ((char) (this.key[--this.index] + 'A'));
 		}
 
 		/**

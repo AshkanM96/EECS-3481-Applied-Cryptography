@@ -31,7 +31,7 @@ public class OTP {
 	 * @return <code>(char) (k ^ data)</code>.
 	 */
 	public static char apply(char k, char data) {
-		return (char) (k ^ data);
+		return ((char) (k ^ data));
 	}
 
 	/**
@@ -46,7 +46,7 @@ public class OTP {
 	 * @return <code>(byte) (k ^ data)</code>.
 	 */
 	public static byte apply(byte k, byte data) {
-		return (byte) (k ^ data);
+		return ((byte) (k ^ data));
 	}
 
 	/**
@@ -104,7 +104,7 @@ public class OTP {
 	 * @return <code>(char) (c ^ p)</code>.
 	 */
 	public static char key(char c, char p) {
-		return (char) (c ^ p);
+		return ((char) (c ^ p));
 	}
 
 	/**
@@ -120,7 +120,7 @@ public class OTP {
 	 * @return <code>(byte) (c ^ p)</code>.
 	 */
 	public static byte key(byte c, byte p) {
-		return (byte) (c ^ p);
+		return ((byte) (c ^ p));
 	}
 
 	/**

@@ -29,6 +29,11 @@ public class Digester {
 			public final String toString() {
 				return "SHA-256";
 			}
+		},
+		SHA_512 {
+			public final String toString() {
+				return "SHA-512";
+			}
 		};
 	};
 

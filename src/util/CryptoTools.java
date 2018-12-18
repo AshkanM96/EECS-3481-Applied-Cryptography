@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 
 /**
  * Utility methods useful for cryptography.
@@ -227,6 +228,83 @@ public class CryptoTools {
 	 * @param c
 	 *            the given char
 	 * 
+	 * @return <code>true</code> if and only if the given char is ASCII printable.
+	 */
+	public static boolean isASCIIPrintable(char c) {
+		return ((31 < c) && (c < 127));
+	}
+
+	/**
+	 * @param s
+	 *            the given string
+	 * 
+	 * @return <code>true</code> if and only if the given string is ASCII printable.
+	 */
+	public static boolean isASCIIPrintable(String s) {
+		if (s == null) {
+			return true;
+		}
+
+		for (int i = 0; i != s.length(); ++i) {
+			if (!CryptoTools.isASCIIPrintable(s.charAt(i))) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Print the given string to the given print stream if it is ASCII printable.
+	 * 
+	 * <pre>
+	 * <code>
+	 * if (CryptoTools.isASCIIPrintable(s)) {
+	 * 	ps.print(s);
+	 * }
+	 * </code>
+	 * </pre>
+	 * 
+	 * @param s
+	 *            the given string
+	 * 
+	 * @param ps
+	 *            the given print stream
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>CryptoTools.isASCIIPrintable(s) && (ps == null)</code>
+	 */
+	public static void printASCII(String s, PrintStream ps) throws NullPointerException {
+		if (CryptoTools.isASCIIPrintable(s)) {
+			ps.print(s);
+		}
+	}
+
+	/**
+	 * Print the given string to the given print stream if it is ASCII printable.
+	 * 
+	 * <pre>
+	 * <code>
+	 * ps.println(CryptoTools.isASCIIPrintable(s) ? s : "");
+	 * </code>
+	 * </pre>
+	 * 
+	 * @param s
+	 *            the given string
+	 * 
+	 * @param ps
+	 *            the given print stream
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>ps == null</code>
+	 */
+	public static void printlnASCII(String s, PrintStream ps) throws NullPointerException {
+		ps.println(CryptoTools.isASCIIPrintable(s) ? s : "");
+	}
+
+	/**
+	 * @param c
+	 *            the given char
+	 * 
 	 * @return <code>('A' <= c) && (c <= 'Z')</code>
 	 */
 	public static boolean isUpperEnglish(int c) {
@@ -264,7 +342,8 @@ public class CryptoTools {
 	public static byte[] clean(byte[] data) throws NullPointerException {
 		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		for (int i = 0, c = 0; i != data.length; ++i) {
-			if (CryptoTools.isUpperEnglish(c = data[i] & CryptoTools.COMPLEMENT_OF_32)) {
+			c = data[i] & CryptoTools.COMPLEMENT_OF_32;
+			if (CryptoTools.isUpperEnglish(c)) {
 				baos.write(c);
 			}
 		}
@@ -287,7 +366,8 @@ public class CryptoTools {
 		final StringBuilder sb = new StringBuilder();
 		char c = '\0';
 		for (int i = 0; i != data.length; ++i) {
-			if (CryptoTools.isUpperEnglish(c = Character.toUpperCase(data[i]))) {
+			c = Character.toUpperCase(data[i]);
+			if (CryptoTools.isUpperEnglish(c)) {
 				sb.append(c);
 			}
 		}

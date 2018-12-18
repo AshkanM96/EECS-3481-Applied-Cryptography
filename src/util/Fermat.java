@@ -16,7 +16,7 @@ public class Fermat {
 
 	/**
 	 * BigInteger objects are immutable. Therefore, it is "safe" to make the following final class
-	 * attribute public.
+	 * attributes public.
 	 */
 
 	/**
@@ -81,7 +81,7 @@ public class Fermat {
 	 * @see #equals(Object)
 	 */
 	public boolean equals(Fermat other) {
-		return (this == other ? true : this.n.equals(other.n));
+		return ((other == null) ? false : ((this == other) ? true : this.n.equals(other.n)));
 	}
 
 	/**

@@ -11,12 +11,13 @@ public class MillerRabin {
 	/**
 	 * Dependencies: <code>
 	 * 		1. util.BigIntegerUtil
+	 * 		2. util.SinglyLinkedList
 	 * </code>
 	 */
 
 	/**
 	 * BigInteger objects are immutable. Therefore, it is "safe" to make the following final class
-	 * attribute public.
+	 * attributes public.
 	 */
 
 	/**
@@ -28,6 +29,11 @@ public class MillerRabin {
 	 * <code>this.n.subtract(BigInteger.ONE)</code>.
 	 */
 	public final BigInteger n_minus_1;
+
+	/**
+	 * Iterator over a singly linked list of all exponents.
+	 */
+	protected final SinglyLinkedList.SLLIterator<BigInteger> exponents_it;
 
 	/**
 	 * Construct a MillerRabin object from the given number.
@@ -50,6 +56,25 @@ public class MillerRabin {
 
 		// The following is meant to be an assignment of this.n and this.n_minus_1.
 		this.n_minus_1 = (this.n = n).subtract(BigInteger.ONE);
+
+		/**
+		 * After extensive experimentations, we have concluded that this version of MillerRabin which
+		 * computes and saves the exponent "on-the-go", has the best overall performance compared to the two
+		 * following alternatives: <br>
+		 * 1. Not saving the exponents and just computing them whenever required in the test methods. <br>
+		 * 2. Computing all exponents in the ctor and then just iterating through the list in the test
+		 * methods.
+		 */
+
+		// Fill the singly linked list managed by the iterator with only the first exponent.
+		this.exponents_it = new SinglyLinkedList<BigInteger>().iterator(true);
+		/*
+		 * this.n_minus_1 is guaranteed to be even since this.n is enforced to be odd which means that the
+		 * division by 2 will not have a remainder.
+		 */
+		final BigInteger exp = this.n_minus_1.divide(BigIntegerUtil.TWO);
+		this.exponents_it.insert(exp);
+		this.exponents_it.next();
 	}
 
 	/**
@@ -81,7 +106,7 @@ public class MillerRabin {
 	 * @see #equals(Object)
 	 */
 	public boolean equals(MillerRabin other) {
-		return (this == other ? true : this.n.equals(other.n));
+		return ((other == null) ? false : ((this == other) ? true : this.n.equals(other.n)));
 	}
 
 	/**
@@ -122,10 +147,11 @@ public class MillerRabin {
 		}
 
 		/*
-		 * this.n_minus_1 is guaranteed to be even since this.n is enforced to be odd in the ctor which
-		 * means that the division by 2 will not have a remainder.
+		 * Move the iterator to the first position so that this.exponents_it.next() returns the first
+		 * element.
 		 */
-		BigInteger exp = this.n_minus_1.divide(BigIntegerUtil.TWO);
+		this.exponents_it.begin();
+		BigInteger exp = this.exponents_it.next();
 		// Loop until r != 1.
 		for (long i = 2; (r = b.modPow(exp, this.n)).equals(BigInteger.ONE); ++i) {
 			// Only print if requested.
@@ -133,22 +159,31 @@ public class MillerRabin {
 				System.out.println("r_" + i + " == " + r + ", exp_" + i + " == " + exp);
 			}
 
-			// Check to see if the exponent is even.
-			if (!BigIntegerUtil.isEven(exp)) {
-				// Exponent is odd but r is still 1 therefore the test is inconclusive.
+			// Check to see if the exponent iterator still has more elements.
+			if (this.exponents_it.hasNext()) {
+				// Retrieve the next exponent from the iterator.
+				exp = this.exponents_it.next();
+			} else {
+				// Check to see if the exponent is even.
+				if (!BigIntegerUtil.isEven(exp)) {
+					// Exponent is odd but r is still 1 therefore the test is inconclusive.
 
-				// Only print if requested.
-				if (print) {
-					System.out.println("\nTest is inconclusive with base " + b
-							+ " since the exponent has reached an odd number but the remainder is still 1.\n");
+					// Only print if requested.
+					if (print) {
+						System.out.println("\nTest is inconclusive with base " + b
+								+ " since the exponent has reached an odd number but the remainder is still 1.\n");
+					}
+
+					// Create Result and return it.
+					return new TestResultMillerRabin(this.n, true, b);
 				}
 
-				// Create Result and return it.
-				return new TestResultMillerRabin(this.n, true, b);
+				// Compute the next exponent since we know that the current exponent is even.
+				exp = exp.divide(BigIntegerUtil.TWO);
+				// Save the computed exponent so that it isn't recomputed and then move the iterator.
+				this.exponents_it.insert(exp);
+				this.exponents_it.next();
 			}
-
-			// Compute the next exponent since we know that the current exponent is even.
-			exp = exp.divide(BigIntegerUtil.TWO);
 		}
 		// Only print if requested.
 		if (print) {

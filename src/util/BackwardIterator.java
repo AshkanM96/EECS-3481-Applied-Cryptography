@@ -23,9 +23,9 @@ public interface BackwardIterator<T> {
 	public boolean hasPrev();
 
 	/**
-	 * Returns the previous element and moves the cursor backward by one.
+	 * Returns the previous element's value and moves the cursor backward by one.
 	 * 
-	 * @return The previous element.
+	 * @return The previous element's value.
 	 * 
 	 * @throws NoSuchElementException
 	 *             If <code>!this.hasPrev()</code>
@@ -33,8 +33,8 @@ public interface BackwardIterator<T> {
 	public T prev() throws NoSuchElementException;
 
 	/**
-	 * Sets the previous element to the given value and returns the old value. The cursor is also moved
-	 * backward by one.
+	 * Sets the previous element's value to the given value and returns the old value. The cursor is
+	 * also moved backward by one.
 	 * 
 	 * @param t
 	 *            the given previous element's new value
