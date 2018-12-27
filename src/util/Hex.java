@@ -42,7 +42,7 @@ public class Hex {
 	 */
 	public static byte[] toBytes(String s) throws NullPointerException, NumberFormatException {
 		if (!MathUtil.isEven(s.length())) {
-			s += "0";
+			s = "0" + s;
 		}
 		final int half = s.length() / 2;
 		final byte[] data = new byte[half];

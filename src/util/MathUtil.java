@@ -268,10 +268,10 @@ public class MathUtil {
 		 * efficient since it avoids creating two extra long[3].
 		 */
 		if (a == 0) {
-			// 1 * max(0, b) + 0 * min(0, b) == gcd(0, b) == b
+			// 1 * max(0, b) + 0 * min(0, b) == b == gcd(0, b)
 			return new long[] { b, 1, 0 };
 		} else if (b == 0) { // a != 0
-			// 1 * max(a, 0) + 0 * min(a, 0) == gcd(a, 0) == a
+			// 1 * max(a, 0) + 0 * min(a, 0) == a == gcd(a, 0)
 			return new long[] { a, 1, 0 };
 		} // (a != 0) && (b != 0)
 
@@ -711,7 +711,8 @@ public class MathUtil {
 			final long n_inverse = MathUtil.modInverse(n, m);
 			long result = MathUtil.modPowRecur(n_inverse, Long.MAX_VALUE, m);
 			result *= n_inverse;
-			return (result %= m);
+			result %= m;
+			return result;
 		}
 
 		/**
@@ -778,5 +779,277 @@ public class MathUtil {
 	 */
 	public static byte modPow(byte n, byte p, byte m) throws ArithmeticException {
 		return ((byte) MathUtil.modPow((long) n, (long) p, (long) m));
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param target
+	 *            the given target
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
+	 *         <code>p</code> exists and <code>null</code> otherwise.
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>m <= 0</code>
+	 */
+	public static Long discreteLog(long n, long target, long m) throws ArithmeticException {
+		// Fix n to be in [0, m - 1] \cap \doubleN.
+		n = MathUtil.mod(n, m);
+		// Fix target to be in [0, m - 1] \cap \doubleN.
+		target = MathUtil.mod(target, m);
+
+		// Handle the simple special case.
+		if (target == 1) {
+			// n to the power of 0 is 1 except when n is 0.
+			return ((n == 0) ? null : 0l);
+		}
+
+		// Iteratively compute n to the power of i and compare the result to target.
+		for (long i = 1, tmp = n; i != m; ++i) {
+			if (tmp == target) {
+				return i;
+			}
+
+			tmp *= n;
+			tmp %= m;
+		}
+		// No power of n from [1, m - 1] resulted in target.
+		return null;
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param target
+	 *            the given target
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
+	 *         <code>p</code> exists and <code>null</code> otherwise.
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>m <= 0</code>
+	 */
+	public static Integer discreteLog(int n, int target, int m) throws ArithmeticException {
+		final Long result = MathUtil.discreteLog((long) n, (long) target, (long) m);
+		return ((result == null) ? null : result.intValue());
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param target
+	 *            the given target
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
+	 *         <code>p</code> exists and <code>null</code> otherwise.
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>m <= 0</code>
+	 */
+	public static Short discreteLog(short n, short target, short m) throws ArithmeticException {
+		final Long result = MathUtil.discreteLog((long) n, (long) target, (long) m);
+		return ((result == null) ? null : result.shortValue());
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param target
+	 *            the given target
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
+	 *         <code>p</code> exists and <code>null</code> otherwise.
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>m <= 0</code>
+	 */
+	public static Byte discreteLog(byte n, byte target, byte m) throws ArithmeticException {
+		final Long result = MathUtil.discreteLog((long) n, (long) target, (long) m);
+		return ((result == null) ? null : result.byteValue());
+	}
+
+	/**
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>i</sup> (mod m))</code>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return The resulting long array.
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>(m <= 0) || (m > Integer.MAX_VALUE)</code>
+	 * 
+	 * @throws OutOfMemoryError
+	 *             Thrown by <code>new long[(int) m]</code>
+	 */
+	public static long[] powers(long n, long m) throws ArithmeticException, OutOfMemoryError {
+		// Fix n to be in [0, m - 1] \cap \doubleN.
+		n = MathUtil.mod(n, m);
+		if (m > Integer.MAX_VALUE) {
+			throw new ArithmeticException();
+		}
+
+		// Create resulting long[] and handle the simple special case.
+		final long[] result = new long[(int) m];
+		if (n == 0) {
+			/*
+			 * This case is needed since 0 to any power is 0 and so <code>result[0] = 1;</code> will be wrong in
+			 * this case but also the loop will be unnecessary.
+			 */
+			return result;
+		}
+
+		// Fill and return resulting long[].
+		result[0] = 1; // <code>n<sup>0</sup> (mod m) = 1</code>
+		long tmp = 1;
+		for (int i = 1; i != m; ++i) {
+			tmp *= n;
+			tmp %= m;
+			result[i] = tmp;
+		}
+		return result;
+	}
+
+	/**
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>i</sup> (mod m))</code>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return The resulting int array.
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws OutOfMemoryError
+	 *             Thrown by <code>new int[m]</code>
+	 */
+	public static int[] powers(int n, int m) throws ArithmeticException, OutOfMemoryError {
+		// Fix n to be in [0, m - 1] \cap \doubleN.
+		n = MathUtil.mod(n, m);
+
+		// Create resulting int[] and handle the simple special case.
+		final int[] result = new int[m];
+		if (n == 0) {
+			/*
+			 * This case is needed since 0 to any power is 0 and so <code>result[0] = 1;</code> will be wrong in
+			 * this case but also the loop will be unnecessary.
+			 */
+			return result;
+		}
+
+		// Fill and return resulting int[].
+		result[0] = 1; // <code>n<sup>0</sup> (mod m) = 1</code>
+		for (int i = 1, tmp = 1; i != m; ++i) {
+			tmp *= n;
+			tmp %= m;
+			result[i] = tmp;
+		}
+		return result;
+	}
+
+	/**
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>i</sup> (mod m))</code>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return The resulting short array.
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>m <= 0</code>
+	 */
+	public static short[] powers(short n, short m) throws ArithmeticException {
+		// Fix n to be in [0, m - 1] \cap \doubleN.
+		n = MathUtil.mod(n, m);
+
+		// Create resulting short[] and handle the simple special case.
+		final short[] result = new short[m];
+		if (n == 0) {
+			/*
+			 * This case is needed since 0 to any power is 0 and so <code>result[0] = 1;</code> will be wrong in
+			 * this case but also the loop will be unnecessary.
+			 */
+			return result;
+		}
+
+		// Fill and return resulting short[].
+		result[0] = 1; // <code>n<sup>0</sup> (mod m) = 1</code>
+		short tmp = 1;
+		for (int i = 1; i != m; ++i) {
+			tmp *= n;
+			tmp %= m;
+			result[i] = tmp;
+		}
+		return result;
+	}
+
+	/**
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>i</sup> (mod m))</code>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return The resulting byte array.
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>m <= 0</code>
+	 */
+	public static byte[] powers(byte n, byte m) throws ArithmeticException {
+		// Fix n to be in [0, m - 1] \cap \doubleN.
+		n = MathUtil.mod(n, m);
+
+		// Create resulting byte[] and handle the simple special case.
+		final byte[] result = new byte[m];
+		if (n == 0) {
+			/*
+			 * This case is needed since 0 to any power is 0 and so <code>result[0] = 1;</code> will be wrong in
+			 * this case but also the loop will be unnecessary.
+			 */
+			return result;
+		}
+
+		// Fill and return resulting byte[].
+		result[0] = 1; // <code>n<sup>0</sup> (mod m) = 1</code>
+		byte tmp = 1;
+		for (int i = 1; i != m; ++i) {
+			tmp *= n;
+			tmp %= m;
+			result[i] = tmp;
+		}
+		return result;
 	}
 }
