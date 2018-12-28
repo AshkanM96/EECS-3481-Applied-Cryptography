@@ -15,9 +15,9 @@ public class Hex {
 	 */
 
 	/**
-	 * Radix used for byte parsing.
+	 * Radix used for parsing.
 	 */
-	public static final int BYTE_RADIX = 16;
+	public static final int RADIX = 16;
 
 	/**
 	 * Prevent instantiation.
@@ -38,7 +38,7 @@ public class Hex {
 	 *             If <code>s == null</code>
 	 * 
 	 * @throws NumberFormatException
-	 *             Thrown by <code>Integer::parseInt(s.substring(i, i + 2), Hex.BYTE_RADIX)</code>
+	 *             Thrown by <code>Integer::parseInt(s.substring(i, i + 2), Hex.RADIX)</code>
 	 */
 	public static byte[] toBytes(String s) throws NullPointerException, NumberFormatException {
 		if (!MathUtil.isEven(s.length())) {
@@ -47,7 +47,7 @@ public class Hex {
 		final int half = s.length() / 2;
 		final byte[] data = new byte[half];
 		for (int i = 0, twice_i = 0; i != half; ++i, twice_i += 2) {
-			data[i] = (byte) Integer.parseInt(s.substring(twice_i, twice_i + 2), Hex.BYTE_RADIX);
+			data[i] = (byte) Integer.parseInt(s.substring(twice_i, twice_i + 2), Hex.RADIX);
 		}
 		return data;
 	}
@@ -67,7 +67,7 @@ public class Hex {
 		final StringBuilder sb = new StringBuilder();
 		for (int i = 0, tmp = 0; i != data.length; ++i) {
 			tmp = data[i] & Binary.BYTE_CONVERTER;
-			if (tmp < Hex.BYTE_RADIX) {
+			if (tmp < Hex.RADIX) {
 				sb.append('0');
 			}
 			sb.append(Integer.toHexString(tmp));
