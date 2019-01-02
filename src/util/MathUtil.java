@@ -244,7 +244,7 @@ public class MathUtil {
 	 * Postcondition: <code>Result != null</code> <br>
 	 * Postcondition: <code>Result.length == 3</code> <br>
 	 * Postcondition: <code>Result[0] == gcd(a, b)</code> <br>
-	 * Postcondition: <code>Result[1] * max(a, b) + Result[2] * min(a, b) == gcd(a, b)</code>
+	 * Postcondition: <code>Result[1] * a + Result[2] * b == gcd(a, b)</code>
 	 * 
 	 * @param a
 	 *            the first given number
@@ -262,53 +262,45 @@ public class MathUtil {
 			throw new ArithmeticException();
 		}
 
-		/*
-		 * Handle the special cases where at least one of the two numbers is 0. This is needed so that the
-		 * general case does not attempt a division by 0 (i.e., remainders_0 / result_0) but also it is more
-		 * efficient since it avoids creating two extra long[3].
-		 */
+		// Handle the special cases where at least one of the two numbers is 0.
 		if (a == 0) {
-			// 1 * max(0, b) + 0 * min(0, b) == b == gcd(0, b)
-			return new long[] { b, 1, 0 };
+			if (b == 0) {
+				// 0 * 0 + 0 * 0 == 0
+				return new long[] { 0, 0, 0 };
+			} // b != 0
+
+			// 0 * a + 1 * b == b == gcd(0, b)
+			return new long[] { b, 0, 1 };
 		} else if (b == 0) { // a != 0
-			// 1 * max(a, 0) + 0 * min(a, 0) == a == gcd(a, 0)
+			// 1 * a + 0 * b == a == gcd(a, 0)
 			return new long[] { a, 1, 0 };
 		} // (a != 0) && (b != 0)
 
-		// Assume a is smaller than b.
-		long min = a, max = b;
-		// Fix min and max if needed.
-		if (max < min) {
-			final long tmp = max;
-			max = min;
-			min = tmp;
+		long gcd = a, u = 1;
+		{
+			long x = 0, y = b, remainder = 0, quotient = gcd, tmp = 0;
+			do {
+				// Compute the quotient and the remainder.
+				remainder = gcd - (quotient /= y) * y;
+				// (gcd == quotient * y + remainder) && (remainder == gcd % y)
+
+				// Update all of the variables.
+				tmp = u - quotient * x;
+				u = x;
+				quotient = gcd = y;
+				x = tmp;
+				y = remainder;
+			} while (y != 0);
 		}
-		// (max == max(a, b)) && (min == min(a, b))
-
-		final long[] remainders = { max, 1, 0 };
-		final long[] result = { min, 0, 1 };
-		final long[] tmp = new long[3];
-		for (long remainders_0 = max, result_0 = min, quotient = remainders_0 / result_0; remainders_0 > result_0
-				* quotient; remainders_0 = remainders[0], result_0 = result[0], quotient = remainders_0 / result_0) {
-			// Save old values of result in tmp.
-			System.arraycopy(result, 0, tmp, 0, 3);
-
-			// Update result.
-			for (int i = 0; i != 3; ++i) {
-				result[i] = (remainders[i] - result[i] * quotient);
-			}
-
-			// Copy old values of result saved in tmp, into remainders.
-			System.arraycopy(tmp, 0, remainders, 0, 3);
-		}
-		return result;
+		// u * a + v * b == gcd where v == (gcd - a * u) / b
+		return new long[] { gcd, u, (gcd - a * u) / b };
 	}
 
 	/**
 	 * Postcondition: <code>Result != null</code> <br>
 	 * Postcondition: <code>Result.length == 3</code> <br>
 	 * Postcondition: <code>Result[0] == gcd(a, b)</code> <br>
-	 * Postcondition: <code>Result[1] * max(a, b) + Result[2] * min(a, b) == gcd(a, b)</code>
+	 * Postcondition: <code>Result[1] * a + Result[2] * b == gcd(a, b)</code>
 	 * 
 	 * @param a
 	 *            the first given number
@@ -330,7 +322,7 @@ public class MathUtil {
 	 * Postcondition: <code>Result != null</code> <br>
 	 * Postcondition: <code>Result.length == 3</code> <br>
 	 * Postcondition: <code>Result[0] == gcd(a, b)</code> <br>
-	 * Postcondition: <code>Result[1] * max(a, b) + Result[2] * min(a, b) == gcd(a, b)</code>
+	 * Postcondition: <code>Result[1] * a + Result[2] * b == gcd(a, b)</code>
 	 * 
 	 * @param a
 	 *            the first given number
@@ -352,7 +344,7 @@ public class MathUtil {
 	 * Postcondition: <code>Result != null</code> <br>
 	 * Postcondition: <code>Result.length == 3</code> <br>
 	 * Postcondition: <code>Result[0] == gcd(a, b)</code> <br>
-	 * Postcondition: <code>Result[1] * max(a, b) + Result[2] * min(a, b) == gcd(a, b)</code>
+	 * Postcondition: <code>Result[1] * a + Result[2] * b == gcd(a, b)</code>
 	 * 
 	 * @param a
 	 *            the first given number
