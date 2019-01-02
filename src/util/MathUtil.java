@@ -286,8 +286,8 @@ public class MathUtil {
 
 				// Update all of the variables.
 				tmp = u - quotient * x;
-				u = x;
 				quotient = gcd = y;
+				u = x;
 				x = tmp;
 				y = remainder;
 			} while (y != 0);
