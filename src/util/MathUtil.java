@@ -243,8 +243,8 @@ public class MathUtil {
 	/**
 	 * Postcondition: <code>Result != null</code> <br>
 	 * Postcondition: <code>Result.length == 3</code> <br>
-	 * Postcondition: <code>Result[0] == gcd(a, b)</code> <br>
-	 * Postcondition: <code>Result[1] * a + Result[2] * b == gcd(a, b)</code>
+	 * Postcondition: <code>Result[2] == gcd(a, b)</code> <br>
+	 * Postcondition: <code>Result[0] * a + Result[1] * b == gcd(a, b)</code>
 	 * 
 	 * @param a
 	 *            the first given number
@@ -276,31 +276,32 @@ public class MathUtil {
 			return new long[] { a, 1, 0 };
 		} // (a != 0) && (b != 0)
 
-		long gcd = a, u = 1;
+		// Algorithm is from Introduction to Mathematical Cryptography 2nd Edition Exercise 1.12.
+		long gcd = a, x = 1;
 		{
-			long x = 0, y = b, remainder = 0, quotient = gcd, tmp = 0;
+			long u = 0, v = b, remainder = 0, quotient = gcd, tmp = 0;
 			do {
 				// Compute the quotient and the remainder.
-				remainder = gcd - (quotient /= y) * y;
-				// (gcd == quotient * y + remainder) && (remainder == gcd % y)
+				remainder = gcd - (quotient /= v) * v;
+				// (gcd == quotient * v + remainder) && (remainder == gcd % v)
 
 				// Update all of the variables.
-				tmp = u - quotient * x;
-				quotient = gcd = y;
-				u = x;
-				x = tmp;
-				y = remainder;
-			} while (y != 0);
+				tmp = x - quotient * u;
+				quotient = gcd = v;
+				x = u;
+				u = tmp;
+				v = remainder;
+			} while (v != 0);
 		}
-		// u * a + v * b == gcd where v == (gcd - a * u) / b
-		return new long[] { gcd, u, (gcd - a * u) / b };
+		// x * a + y * b == gcd where y == (gcd - a * x) / b
+		return new long[] { x, (gcd - a * x) / b, gcd };
 	}
 
 	/**
 	 * Postcondition: <code>Result != null</code> <br>
 	 * Postcondition: <code>Result.length == 3</code> <br>
-	 * Postcondition: <code>Result[0] == gcd(a, b)</code> <br>
-	 * Postcondition: <code>Result[1] * a + Result[2] * b == gcd(a, b)</code>
+	 * Postcondition: <code>Result[2] == gcd(a, b)</code> <br>
+	 * Postcondition: <code>Result[0] * a + Result[1] * b == gcd(a, b)</code>
 	 * 
 	 * @param a
 	 *            the first given number
@@ -321,8 +322,8 @@ public class MathUtil {
 	/**
 	 * Postcondition: <code>Result != null</code> <br>
 	 * Postcondition: <code>Result.length == 3</code> <br>
-	 * Postcondition: <code>Result[0] == gcd(a, b)</code> <br>
-	 * Postcondition: <code>Result[1] * a + Result[2] * b == gcd(a, b)</code>
+	 * Postcondition: <code>Result[2] == gcd(a, b)</code> <br>
+	 * Postcondition: <code>Result[0] * a + Result[1] * b == gcd(a, b)</code>
 	 * 
 	 * @param a
 	 *            the first given number
@@ -343,8 +344,8 @@ public class MathUtil {
 	/**
 	 * Postcondition: <code>Result != null</code> <br>
 	 * Postcondition: <code>Result.length == 3</code> <br>
-	 * Postcondition: <code>Result[0] == gcd(a, b)</code> <br>
-	 * Postcondition: <code>Result[1] * a + Result[2] * b == gcd(a, b)</code>
+	 * Postcondition: <code>Result[2] == gcd(a, b)</code> <br>
+	 * Postcondition: <code>Result[0] * a + Result[1] * b == gcd(a, b)</code>
 	 * 
 	 * @param a
 	 *            the first given number
@@ -534,22 +535,18 @@ public class MathUtil {
 	 * @return <code>n<sup>-1</sup> (mod m)</code>.
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>(m <= 0) || (gcd(n, m) != 1)</code>
+	 *             If <code>(m <= 1) || (n (mod m) == 0) || (gcd(n, m) != 1)</code>
 	 */
 	public static long modInverse(long n, long m) throws ArithmeticException {
-		if (m <= 0) {
+		if (m <= 1) {
 			throw new ArithmeticException();
 		}
 
-		// Handle the simple special case.
-		if (m == 1) {
-			return 0;
+		// Fix n to be in [0, m - 1] \cap \doubleN.
+		n = MathUtil.mod(n, m);
+		if (n == 0) {
+			throw new ArithmeticException();
 		}
-
-		/*
-		 * Do not fix n to be in [0, m - 1] \cap \doubleN since it actually slows down the entire function
-		 * instead of speeding it up (i.e., no need for <code>n = MathUtil.mod(n, m);</code>).
-		 */
 
 		/*
 		 * No need to check gcd(n, m) != 1 since if that is the case, then in the body of the following
@@ -695,6 +692,12 @@ public class MathUtil {
 			return 0;
 		}
 
+		// Fix n to be in [0, m - 1] \cap \doubleN.
+		n = MathUtil.mod(n, m);
+		if (n == 0) {
+			return 0;
+		}
+
 		// Handle the degenerate case where p's absolute value is not representable as a long.
 		if (p == Long.MIN_VALUE) {
 			/**
@@ -712,8 +715,7 @@ public class MathUtil {
 		 * <code>(n<sup>-1</sup> (mod m))<sup>abs(p)</sup> (mod m)</code> if <code>p < 0</code> <br>
 		 * <code>n<sup>abs(p)</sup> (mod m)</code> if <code>p >= 0</code>
 		 */
-		return ((p < 0) ? MathUtil.modPowRecur(MathUtil.modInverse(n, m), -p, m)
-				: MathUtil.modPowRecur(MathUtil.mod(n, m), p, m));
+		return ((p < 0) ? MathUtil.modPowRecur(MathUtil.modInverse(n, m), -p, m) : MathUtil.modPowRecur(n, p, m));
 	}
 
 	/**
