@@ -542,14 +542,14 @@ public class MathUtil {
 			throw new ArithmeticException();
 		}
 
-		/*
+		/**
 		 * Do not fix n to be in [0, m - 1] \cap \doubleN since it actually slows down the entire function
 		 * instead of speeding it up (i.e., no need for <code>n = MathUtil.mod(n, m);</code>). Furthermore,
 		 * the following code indirectly checks for <code>n (mod m) == 0</code> and so there is absolutely
 		 * no benefit to doing the fix.
 		 */
 
-		/*
+		/**
 		 * No need to check <code>n (mod m) == 0</code> or <code>gcd(n, m) != 1</code> since if that is the
 		 * case, then in the body of the following loop, remainder will become 0 in some iteration and as a
 		 * result when calculating the quotient (i.e., dividing n by remainder) an ArithmeticException will
@@ -576,7 +576,7 @@ public class MathUtil {
 			}
 			return ((x < 0) ? (x += m) : x);
 		} catch (ArithmeticException ex) {
-			/*
+			/**
 			 * The cause of this exception is a division by 0 as explained in the comments above the try and it
 			 * is either because <code>n (mod m) == 0</code> or <code>gcd(n, m) != 1</code>.
 			 */
@@ -909,7 +909,7 @@ public class MathUtil {
 		// Create resulting long[] and handle the simple special case.
 		final long[] result = new long[(int) m];
 		if (n == 0) {
-			/*
+			/**
 			 * This case is needed since 0 to any power is 0 and so <code>result[0] = 1;</code> will be wrong in
 			 * this case but also the loop will be unnecessary.
 			 */
@@ -952,7 +952,7 @@ public class MathUtil {
 		// Create resulting int[] and handle the simple special case.
 		final int[] result = new int[m];
 		if (n == 0) {
-			/*
+			/**
 			 * This case is needed since 0 to any power is 0 and so <code>result[0] = 1;</code> will be wrong in
 			 * this case but also the loop will be unnecessary.
 			 */
@@ -991,7 +991,7 @@ public class MathUtil {
 		// Create resulting short[] and handle the simple special case.
 		final short[] result = new short[m];
 		if (n == 0) {
-			/*
+			/**
 			 * This case is needed since 0 to any power is 0 and so <code>result[0] = 1;</code> will be wrong in
 			 * this case but also the loop will be unnecessary.
 			 */
@@ -1031,7 +1031,7 @@ public class MathUtil {
 		// Create resulting byte[] and handle the simple special case.
 		final byte[] result = new byte[m];
 		if (n == 0) {
-			/*
+			/**
 			 * This case is needed since 0 to any power is 0 and so <code>result[0] = 1;</code> will be wrong in
 			 * this case but also the loop will be unnecessary.
 			 */
