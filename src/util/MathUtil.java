@@ -542,16 +542,18 @@ public class MathUtil {
 			throw new ArithmeticException();
 		}
 
-		// Fix n to be in [0, m - 1] \cap \doubleN.
-		n = MathUtil.mod(n, m);
-		if (n == 0) {
-			throw new ArithmeticException();
-		}
+		/*
+		 * Do not fix n to be in [0, m - 1] \cap \doubleN since it actually slows down the entire function
+		 * instead of speeding it up (i.e., no need for <code>n = MathUtil.mod(n, m);</code>). Furthermore,
+		 * the following code indirectly checks for <code>n (mod m) == 0</code> and so there is absolutely
+		 * no benefit to doing the fix.
+		 */
 
 		/*
-		 * No need to check gcd(n, m) != 1 since if that is the case, then in the body of the following
-		 * loop, remainder will become 0 in some iteration and as a result when calculating the quotient
-		 * (i.e., dividing n by remainder) an ArithmeticException will automatically be thrown.
+		 * No need to check <code>n (mod m) == 0</code> or <code>gcd(n, m) != 1</code> since if that is the
+		 * case, then in the body of the following loop, remainder will become 0 in some iteration and as a
+		 * result when calculating the quotient (i.e., dividing n by remainder) an ArithmeticException will
+		 * automatically be thrown.
 		 */
 		try {
 			// Note that try blocks do not slow down the code unless an exception is thrown.
@@ -576,7 +578,7 @@ public class MathUtil {
 		} catch (ArithmeticException ex) {
 			/*
 			 * The cause of this exception is a division by 0 as explained in the comments above the try and it
-			 * is only because gcd(n, m) != 1.
+			 * is either because <code>n (mod m) == 0</code> or <code>gcd(n, m) != 1</code>.
 			 */
 
 			// Throw a new ArithmeticException since the caught one (i.e., ex) has message "/ by zero".
