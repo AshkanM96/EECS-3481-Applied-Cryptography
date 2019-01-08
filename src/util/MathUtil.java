@@ -283,7 +283,7 @@ public class MathUtil {
 			do {
 				// Compute the quotient and the remainder.
 				remainder = gcd - (quotient /= v) * v;
-				// (gcd == quotient * v + remainder) && (remainder == gcd % v)
+				// (remainder == gcd % v) && (gcd == quotient * v + remainder)
 
 				// Update all of the variables.
 				tmp = x - quotient * u;
@@ -293,7 +293,7 @@ public class MathUtil {
 				v = remainder;
 			} while (v != 0);
 		}
-		// x * a + y * b == gcd where y == (gcd - a * x) / b
+		// x * a + y * b == gcd where y == (gcd - x * a) / b
 		return new long[] { x, (gcd - a * x) / b, gcd };
 	}
 
@@ -596,7 +596,7 @@ public class MathUtil {
 	 * @return <code>n<sup>-1</sup> (mod m)</code>.
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>(m <= 0) || (gcd(n, m) != 1)</code>
+	 *             If <code>(m <= 1) || (n (mod m) == 0) || (gcd(n, m) != 1)</code>
 	 */
 	public static int modInverse(int n, int m) throws ArithmeticException {
 		return ((int) MathUtil.modInverse((long) n, (long) m));
@@ -612,7 +612,7 @@ public class MathUtil {
 	 * @return <code>n<sup>-1</sup> (mod m)</code>.
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>(m <= 0) || (gcd(n, m) != 1)</code>
+	 *             If <code>(m <= 1) || (n (mod m) == 0) || (gcd(n, m) != 1)</code>
 	 */
 	public static short modInverse(short n, short m) throws ArithmeticException {
 		return ((short) MathUtil.modInverse((long) n, (long) m));
@@ -628,7 +628,7 @@ public class MathUtil {
 	 * @return <code>n<sup>-1</sup> (mod m)</code>.
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>(m <= 0) || (gcd(n, m) != 1)</code>
+	 *             If <code>(m <= 1) || (n (mod m) == 0) || (gcd(n, m) != 1)</code>
 	 */
 	public static byte modInverse(byte n, byte m) throws ArithmeticException {
 		return ((byte) MathUtil.modInverse((long) n, (long) m));
