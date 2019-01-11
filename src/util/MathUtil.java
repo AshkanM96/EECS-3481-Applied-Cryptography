@@ -1,5 +1,7 @@
 package util;
 
+import java.util.Arrays;
+
 /**
  * Utility math methods in addition to Java's Math class.
  * 
@@ -82,7 +84,7 @@ public class MathUtil {
 	public static boolean isEven(long n) {
 		// Odd numbers have their lowest bit set.
 		// By using bitwise and, we can check this fact.
-		return ((n &= 1) == 0);
+		return ((n &= 1L) == 0L);
 	}
 
 	/**
@@ -110,10 +112,10 @@ public class MathUtil {
 			max = min;
 			min = tmp;
 		}
-		// (max == max(a, b)) && (min == min(a, b))
+		// (min == Math.min(a, b)) && (max == Math.max(a, b))
 
 		// Loop until min == 0 since gcd(max, 0) == max.
-		for (long remainder = 0; min != 0; /* Update inside. */) {
+		for (long remainder = 0L; min != 0L; /* Update inside. */) {
 			// Compute the remainder upon integer division.
 			remainder = max % min;
 
@@ -140,13 +142,13 @@ public class MathUtil {
 	public static long gcd(long a, long b) throws ArithmeticException {
 		// Handle the degenerate cases where the result cannot be represented as a non-negative long.
 		if (a == Long.MIN_VALUE) {
-			if ((b == 0) || (b == Long.MIN_VALUE)) {
-				// gcd(a, 0) == a == gcd(a, a) but a's absolute value is not representable as a long.
+			if ((b == 0L) || (b == Long.MIN_VALUE)) {
+				// gcd(a, 0) == a == gcd(a, a) but a's absolute value is not representable as a non-negative long.
 				throw new ArithmeticException();
 			}
 		} else if (b == Long.MIN_VALUE) { // a != Long.MIN_VALUE
-			if (a == 0) {
-				// gcd(0, b) == b but b's absolute value is not representable as a long.
+			if (a == 0L) {
+				// gcd(0, b) == b but b's absolute value is not representable as a non-negative long.
 				throw new ArithmeticException();
 			}
 		}
@@ -170,12 +172,12 @@ public class MathUtil {
 		// Handle the degenerate cases where the result cannot be represented as a non-negative int.
 		if (a == Integer.MIN_VALUE) {
 			if ((b == 0) || (b == Integer.MIN_VALUE)) {
-				// gcd(a, 0) == a == gcd(a, a) but a's absolute value is not representable as an int.
+				// gcd(a, 0) == a == gcd(a, a) but a's absolute value is not representable as a non-negative int.
 				throw new ArithmeticException();
 			}
 		} else if (b == Integer.MIN_VALUE) { // a != Integer.MIN_VALUE
 			if (a == 0) {
-				// gcd(0, b) == b but b's absolute value is not representable as an int.
+				// gcd(0, b) == b but b's absolute value is not representable as a non-negative int.
 				throw new ArithmeticException();
 			}
 		}
@@ -199,12 +201,12 @@ public class MathUtil {
 		// Handle the degenerate cases where the result cannot be represented as a non-negative short.
 		if (a == Short.MIN_VALUE) {
 			if ((b == 0) || (b == Short.MIN_VALUE)) {
-				// gcd(a, 0) == a == gcd(a, a) but a's absolute value is not representable as a short.
+				// gcd(a, 0) == a == gcd(a, a) but a's absolute value is not representable as a non-negative short.
 				throw new ArithmeticException();
 			}
 		} else if (b == Short.MIN_VALUE) { // a != Short.MIN_VALUE
 			if (a == 0) {
-				// gcd(0, b) == b but b's absolute value is not representable as a short.
+				// gcd(0, b) == b but b's absolute value is not representable as a non-negative short.
 				throw new ArithmeticException();
 			}
 		}
@@ -228,12 +230,12 @@ public class MathUtil {
 		// Handle the degenerate cases where the result cannot be represented as a non-negative byte.
 		if (a == Byte.MIN_VALUE) {
 			if ((b == 0) || (b == Byte.MIN_VALUE)) {
-				// gcd(a, 0) == a == gcd(a, a) but a's absolute value is not representable as a byte.
+				// gcd(a, 0) == a == gcd(a, a) but a's absolute value is not representable as a non-negative byte.
 				throw new ArithmeticException();
 			}
 		} else if (b == Byte.MIN_VALUE) { // a != Byte.MIN_VALUE
 			if (a == 0) {
-				// gcd(0, b) == b but b's absolute value is not representable as a byte.
+				// gcd(0, b) == b but b's absolute value is not representable as a non-negative byte.
 				throw new ArithmeticException();
 			}
 		}
@@ -258,28 +260,29 @@ public class MathUtil {
 	 *             If <code>(a < 0) || (b < 0)</code>
 	 */
 	public static long[] gcdExtended(long a, long b) throws ArithmeticException {
-		if ((a < 0) || (b < 0)) {
+		if ((a < 0L) || (b < 0L)) {
 			throw new ArithmeticException();
 		}
 
 		// Handle the special cases where at least one of the two numbers is 0.
-		if (a == 0) {
-			if (b == 0) {
+		if (a == 0L) {
+			if (b == 0L) {
 				// 0 * 0 + 0 * 0 == 0
-				return new long[] { 0, 0, 0 };
+				return new long[] { 0L, 0L, 0L };
 			} // b != 0
 
 			// 0 * a + 1 * b == b == gcd(0, b)
-			return new long[] { b, 0, 1 };
-		} else if (b == 0) { // a != 0
+			return new long[] { b, 0L, 1L };
+		} else if (b == 0L) { // a != 0
 			// 1 * a + 0 * b == a == gcd(a, 0)
-			return new long[] { a, 1, 0 };
-		} // (a != 0) && (b != 0)
+			return new long[] { a, 1L, 0L };
+		}
+		// (a != 0) && (b != 0)
 
 		// Algorithm is from Introduction to Mathematical Cryptography 2nd Edition Exercise 1.12.
-		long gcd = a, x = 1;
+		long gcd = a, x = 1L;
 		{
-			long u = 0, v = b, remainder = 0, quotient = gcd, tmp = 0;
+			long u = 0L, v = b, remainder = 0L, quotient = gcd, tmp = 0L;
 			do {
 				// Compute the quotient and the remainder.
 				remainder = gcd - (quotient /= v) * v;
@@ -291,10 +294,10 @@ public class MathUtil {
 				x = u;
 				u = tmp;
 				v = remainder;
-			} while (v != 0);
+			} while (v != 0L);
 		}
 		// x * a + y * b == gcd where y == (gcd - x * a) / b
-		return new long[] { x, (gcd - a * x) / b, gcd };
+		return new long[] { x, (gcd - x * a) / b, gcd };
 	}
 
 	/**
@@ -378,9 +381,10 @@ public class MathUtil {
 	 */
 	public static long lcm(long a, long b) throws ArithmeticException {
 		// lcm(0, b) == 0 == lcm(a, 0)
-		if ((a == 0) || (b == 0)) {
-			return 0;
-		} // (a != 0) && (b != 0)
+		if ((a == 0L) || (b == 0L)) {
+			return 0L;
+		}
+		// (a != 0) && (b != 0)
 
 		// lcm is non-negative so make a and b non-negative.
 		a = Math.abs(a);
@@ -471,10 +475,10 @@ public class MathUtil {
 	 *             If <code>m <= 0</code>
 	 */
 	public static long mod(long n, long m) throws ArithmeticException {
-		if (m <= 0) {
+		if (m <= 0L) {
 			throw new ArithmeticException();
 		}
-		return (((n %= m) < 0) ? (n += m) : n);
+		return (((n %= m) < 0L) ? (n += m) : n);
 	}
 
 	/**
@@ -538,7 +542,7 @@ public class MathUtil {
 	 *             If <code>(m <= 1) || (n (mod m) == 0) || (gcd(n, m) != 1)</code>
 	 */
 	public static long modInverse(long n, long m) throws ArithmeticException {
-		if (m <= 1) {
+		if (m <= 1L) {
 			throw new ArithmeticException();
 		}
 
@@ -550,17 +554,17 @@ public class MathUtil {
 		 */
 
 		/**
-		 * No need to check <code>n (mod m) == 0</code> or <code>gcd(n, m) != 1</code> since if that is the
-		 * case, then in the body of the following loop, remainder will become 0 in some iteration and as a
-		 * result when calculating the quotient (i.e., dividing n by remainder) an ArithmeticException will
-		 * automatically be thrown.
+		 * No need to check <code>n (mod m) == 0</code> or <code>gcd(n, m) != 1</code> since if either one
+		 * is true, then in the body of the following loop, remainder will become 0 in some iteration and as
+		 * a result when calculating the quotient (i.e., dividing n by remainder) an ArithmeticException
+		 * will automatically be thrown.
 		 */
 		try {
 			// Note that try blocks do not slow down the code unless an exception is thrown.
 
-			// Loop until n == 0 or n == 1.
-			long x = 1;
-			for (long y = 0, quotient = 0, remainder = m, tmp = 0; n > 1; /* Update inside. */) {
+			// Loop until (n == 0) or (n == 1).
+			long x = 1L;
+			for (long y = 0L, quotient = 0L, remainder = m, tmp = 0L; n > 1L; /* Update inside. */) {
 				// Compute the quotient.
 				quotient = n / remainder;
 
@@ -574,7 +578,7 @@ public class MathUtil {
 				y = x - quotient * y;
 				x = tmp;
 			}
-			return ((x < 0) ? (x += m) : x);
+			return ((x < 0L) ? (x += m) : x);
 		} catch (ArithmeticException ex) {
 			/**
 			 * The cause of this exception is a division by 0 as explained in the comments above the try and it
@@ -637,7 +641,7 @@ public class MathUtil {
 	/**
 	 * Compute <code>n<sup>p</sup> (mod m)</code> using the recursive fast power algorithm. <br>
 	 * Precondition: <code>m > 1</code> <br>
-	 * Precondition: <code>n == MathUtil.mod(n, m)</code> <br>
+	 * Precondition: <code>(n == MathUtil.mod(n, m)) && (n > 1)</code> <br>
 	 * Precondition: <code>p >= 0</code>
 	 * 
 	 * @param n
@@ -653,24 +657,14 @@ public class MathUtil {
 	 */
 	protected static long modPowRecur(long n, long p, long m) {
 		// Base case.
-		if (p == 0) {
-			return 1;
+		if (p == 0L) {
+			return 1L;
 		}
 
 		// General recursive case.
-		long result = MathUtil.modPowRecur(n, p / 2, m);
-		result *= result;
-		result %= m;
-
-		// Handle even power.
-		if (MathUtil.isEven(p)) {
-			return result;
-		}
-
-		// Handle odd power.
-		result *= n;
-		result %= m;
-		return result;
+		long result = MathUtil.modPowRecur(n, p / 2L, m);
+		result = (result *= result) % m; // Square result (mod m).
+		return (MathUtil.isEven(p) ? result : (result *= n) % m);
 	}
 
 	/**
@@ -686,30 +680,35 @@ public class MathUtil {
 	 * @return <code>n<sup>p</sup> (mod m)</code>.
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>(m <= 0) || ((p < 0) && (gcd(n, m) != 1))</code>
+	 *             If
+	 *             <code>(m <= 0) || ((n (mod m) == 0) && (p <= 0)) || ((p < 0) && (gcd(n, m) != 1))</code>
 	 */
 	public static long modPow(long n, long p, long m) throws ArithmeticException {
 		// Handle the simple special case.
-		if (m == 1) {
-			return 0;
+		if (m == 1L) {
+			return 0L;
 		}
 
 		// Fix n to be in [0, m - 1] \cap \doubleN.
 		n = MathUtil.mod(n, m);
-		if (n == 0) {
-			return 0;
+		if (n == 0L) {
+			if (p <= 0L) {
+				throw new ArithmeticException();
+			}
+			return 0L;
+		} else if (n == 1L) {
+			return 1L;
 		}
+		// (2 <= n) && (n <= m - 1)
 
-		// Handle the degenerate case where p's absolute value is not representable as a long.
+		// Handle the degenerate case where p's absolute value is not representable as a non-negative long.
 		if (p == Long.MIN_VALUE) {
 			/**
 			 * <code>n<sup>(-2<sup>63</sup>)</sup> (mod m) = (n<sup>-1</sup>)<sup>(2<sup>63</sup> - 1)</sup> * n<sup>-1</sup> (mod m)</code>
 			 */
 			final long n_inverse = MathUtil.modInverse(n, m);
 			long result = MathUtil.modPowRecur(n_inverse, Long.MAX_VALUE, m);
-			result *= n_inverse;
-			result %= m;
-			return result;
+			return ((result *= n_inverse) % m);
 		}
 
 		/**
@@ -717,7 +716,7 @@ public class MathUtil {
 		 * <code>(n<sup>-1</sup> (mod m))<sup>abs(p)</sup> (mod m)</code> if <code>p < 0</code> <br>
 		 * <code>n<sup>abs(p)</sup> (mod m)</code> if <code>p >= 0</code>
 		 */
-		return ((p < 0) ? MathUtil.modPowRecur(MathUtil.modInverse(n, m), -p, m) : MathUtil.modPowRecur(n, p, m));
+		return ((p < 0L) ? MathUtil.modPowRecur(MathUtil.modInverse(n, m), -p, m) : MathUtil.modPowRecur(n, p, m));
 	}
 
 	/**
@@ -800,19 +799,17 @@ public class MathUtil {
 		target = MathUtil.mod(target, m);
 
 		// Handle the simple special case.
-		if (target == 1) {
+		if (target == 1L) {
 			// n to the power of 0 is 1 except when n is 0.
-			return ((n == 0) ? null : 0l);
+			return ((n == 0L) ? null : 0L);
 		}
 
 		// Iteratively compute n to the power of i and compare the result to target.
-		for (long i = 1, tmp = n; i != m; ++i) {
+		for (long i = 1L, tmp = n; i != m; ++i) {
 			if (tmp == target) {
 				return i;
 			}
-
-			tmp *= n;
-			tmp %= m;
+			tmp = (tmp *= n) % m;
 		}
 		// No power of n from [1, m - 1] resulted in target.
 		return null;
@@ -894,35 +891,39 @@ public class MathUtil {
 	 * @return The resulting long array.
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>(m <= 0) || (m > Integer.MAX_VALUE)</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws OutOfMemoryError
-	 *             Thrown by <code>new long[(int) m]</code>
+	 *             Thrown by <code>new long[m]</code>
 	 */
-	public static long[] powers(long n, long m) throws ArithmeticException, OutOfMemoryError {
+	public static long[] powers(long n, int m) throws ArithmeticException, OutOfMemoryError {
 		// Fix n to be in [0, m - 1] \cap \doubleN.
 		n = MathUtil.mod(n, m);
-		if (m > Integer.MAX_VALUE) {
-			throw new ArithmeticException();
-		}
 
 		// Create resulting long[] and handle the simple special case.
-		final long[] result = new long[(int) m];
-		if (n == 0) {
+		final long[] result = new long[m];
+		if (n == 0L) {
 			/**
-			 * This case is needed since 0 to any power is 0 and so <code>result[0] = 1;</code> will be wrong in
-			 * this case but also the loop will be unnecessary.
+			 * This case is needed since 0 to any non-zero power is 0 and so <code>result[0] = 1;</code> will be
+			 * wrong in this case. Note that we are defining 0 to the power of 0 here even though it is
+			 * undefined in math.
 			 */
 			return result;
+		} else if (n == 1L) {
+			/*
+			 * This case is only an optimization since 1 to any power is 1 and so the loop will do extra
+			 * unnecessary work to arrive at the same result.
+			 */
+			Arrays.fill(result, 1L);
+			return result;
 		}
+		// (2 <= n) && (n <= m - 1)
 
 		// Fill and return resulting long[].
-		result[0] = 1; // <code>n<sup>0</sup> (mod m) = 1</code>
-		long tmp = 1;
+		result[0] = 1L; // <code>n<sup>0</sup> (mod m) = 1</code>
+		long tmp = 1L;
 		for (int i = 1; i != m; ++i) {
-			tmp *= n;
-			tmp %= m;
-			result[i] = tmp;
+			result[i] = tmp = (tmp *= n) % m;
 		}
 		return result;
 	}
@@ -953,18 +954,26 @@ public class MathUtil {
 		final int[] result = new int[m];
 		if (n == 0) {
 			/**
-			 * This case is needed since 0 to any power is 0 and so <code>result[0] = 1;</code> will be wrong in
-			 * this case but also the loop will be unnecessary.
+			 * This case is needed since 0 to any non-zero power is 0 and so <code>result[0] = 1;</code> will be
+			 * wrong in this case. Note that we are defining 0 to the power of 0 here even though it is
+			 * undefined in math.
 			 */
 			return result;
+		} else if (n == 1) {
+			/*
+			 * This case is only an optimization since 1 to any power is 1 and so the loop will do extra
+			 * unnecessary work to arrive at the same result.
+			 */
+			Arrays.fill(result, 1);
+			return result;
 		}
+		// (2 <= n) && (n <= m - 1)
 
 		// Fill and return resulting int[].
 		result[0] = 1; // <code>n<sup>0</sup> (mod m) = 1</code>
-		for (int i = 1, tmp = 1; i != m; ++i) {
-			tmp *= n;
-			tmp %= m;
-			result[i] = tmp;
+		int tmp = 1;
+		for (int i = 1; i != m; ++i) {
+			result[i] = tmp = (tmp *= n) % m;
 		}
 		return result;
 	}
@@ -992,19 +1001,26 @@ public class MathUtil {
 		final short[] result = new short[m];
 		if (n == 0) {
 			/**
-			 * This case is needed since 0 to any power is 0 and so <code>result[0] = 1;</code> will be wrong in
-			 * this case but also the loop will be unnecessary.
+			 * This case is needed since 0 to any non-zero power is 0 and so <code>result[0] = 1;</code> will be
+			 * wrong in this case. Note that we are defining 0 to the power of 0 here even though it is
+			 * undefined in math.
 			 */
 			return result;
+		} else if (n == 1) {
+			/*
+			 * This case is only an optimization since 1 to any power is 1 and so the loop will do extra
+			 * unnecessary work to arrive at the same result.
+			 */
+			Arrays.fill(result, (short) 1);
+			return result;
 		}
+		// (2 <= n) && (n <= m - 1)
 
 		// Fill and return resulting short[].
 		result[0] = 1; // <code>n<sup>0</sup> (mod m) = 1</code>
 		short tmp = 1;
 		for (int i = 1; i != m; ++i) {
-			tmp *= n;
-			tmp %= m;
-			result[i] = tmp;
+			result[i] = tmp = (short) ((tmp *= n) % m);
 		}
 		return result;
 	}
@@ -1032,19 +1048,26 @@ public class MathUtil {
 		final byte[] result = new byte[m];
 		if (n == 0) {
 			/**
-			 * This case is needed since 0 to any power is 0 and so <code>result[0] = 1;</code> will be wrong in
-			 * this case but also the loop will be unnecessary.
+			 * This case is needed since 0 to any non-zero power is 0 and so <code>result[0] = 1;</code> will be
+			 * wrong in this case. Note that we are defining 0 to the power of 0 here even though it is
+			 * undefined in math.
 			 */
 			return result;
+		} else if (n == 1) {
+			/*
+			 * This case is only an optimization since 1 to any power is 1 and so the loop will do extra
+			 * unnecessary work to arrive at the same result.
+			 */
+			Arrays.fill(result, (byte) 1);
+			return result;
 		}
+		// (2 <= n) && (n <= m - 1)
 
 		// Fill and return resulting byte[].
 		result[0] = 1; // <code>n<sup>0</sup> (mod m) = 1</code>
 		byte tmp = 1;
 		for (int i = 1; i != m; ++i) {
-			tmp *= n;
-			tmp %= m;
-			result[i] = tmp;
+			result[i] = tmp = (byte) ((tmp *= n) % m);
 		}
 		return result;
 	}
