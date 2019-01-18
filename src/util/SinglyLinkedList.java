@@ -105,7 +105,7 @@ public class SinglyLinkedList<T> implements Iterable<T> {
 
 		// Advance the node pointer to the node with index beginIndex.
 		SLLNode<T> node = this.header.next;
-		for (long i = 0; i != beginIndex; ++i) {
+		for (long i = 0L; i != beginIndex; ++i) {
 			node = node.next;
 		}
 
@@ -228,16 +228,27 @@ public class SinglyLinkedList<T> implements Iterable<T> {
 
 	/**
 	 * Removes all of the nodes in the list.
+	 * 
+	 * @param nullifyAllPtrs
+	 *            specifies whether all pointers should be set to <code>null</code>
 	 */
-	public void clear() {
-		if (this.size != 0) {
-			for (SLLNode<T> curr = this.header, next = null; curr != null; curr = next) {
+	public void clear(boolean nullifyAllPtrs) {
+		if (nullifyAllPtrs) {
+			for (SLLNode<T> curr = this.header.next, next = null; curr != null; curr = next) {
 				next = curr.next;
 				curr.data = null;
 				curr.next = null;
 			}
-			this.size = 0;
 		}
+		this.size = 0;
+		this.header.next = null;
+	}
+
+	/**
+	 * <code>this.clear(true)</code>.
+	 */
+	public void clear() {
+		this.clear(true);
 	}
 
 	@Override

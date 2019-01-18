@@ -1001,7 +1001,7 @@ public class MatrixInt implements Iterable<Integer> {
 			throw new IllegalStateException();
 		}
 
-		long result = 0;
+		long result = 0L;
 		for (int rowNum = 0; rowNum != this.numRows; ++rowNum) {
 			result += this.data[rowNum][rowNum];
 		}

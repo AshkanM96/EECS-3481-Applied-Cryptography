@@ -592,7 +592,7 @@ public class CryptoTools {
 		}
 
 		final int[] freq = CryptoTools.getFrequenciesFixedInput(data);
-		long sum = 0;
+		long sum = 0L;
 		for (final int f : freq) {
 			sum += f * (f - 1);
 		}
@@ -639,7 +639,7 @@ public class CryptoTools {
 		}
 
 		final int[] freq = CryptoTools.getFrequenciesFixedInput(data);
-		long sum = 0;
+		long sum = 0L;
 		for (final int f : freq) {
 			sum += f * (f - 1);
 		}

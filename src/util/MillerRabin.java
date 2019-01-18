@@ -153,7 +153,7 @@ public class MillerRabin {
 		this.exponents_it.begin();
 		BigInteger exp = this.exponents_it.next();
 		// Loop until r != 1.
-		for (long i = 2; (r = b.modPow(exp, this.n)).equals(BigInteger.ONE); ++i) {
+		for (long i = 2L; (r = b.modPow(exp, this.n)).equals(BigInteger.ONE); ++i) {
 			// Only print if requested.
 			if (print) {
 				System.out.println("r_" + i + " == " + r + ", exp_" + i + " == " + exp);
