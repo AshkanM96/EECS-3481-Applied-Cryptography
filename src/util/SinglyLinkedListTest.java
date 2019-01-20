@@ -25,8 +25,7 @@ public class SinglyLinkedListTest {
 	@Test
 	public void test01() {
 		final SinglyLinkedList<Integer> sll = new SinglyLinkedList<Integer>();
-		assertTrue("Correct size", sll.size == 0);
-		assertTrue("Correct size", sll.size() == 0);
+		assertTrue("Correct size", (sll.size == 0) && (sll.size() == 0));
 		assertTrue("Correct header", sll.header != null);
 		assertTrue("Correct header next", sll.header.next == null);
 	}
@@ -39,8 +38,7 @@ public class SinglyLinkedListTest {
 	public void test02() {
 		final SinglyLinkedList<Integer> sll = new SinglyLinkedList<Integer>();
 		sll.addFirst(2);
-		assertTrue("Correct size", sll.size == 1);
-		assertTrue("Correct size", sll.size() == 1);
+		assertTrue("Correct size", (sll.size == 1) && (sll.size() == 1));
 		assertTrue("Correct header", sll.header != null);
 		assertTrue("Correct header next", sll.header.next != null);
 		assertTrue("Correct header next data", (sll.header.next.data != null) && (sll.header.next.data == 2));
@@ -56,8 +54,7 @@ public class SinglyLinkedListTest {
 		final SinglyLinkedList<Integer> sll = new SinglyLinkedList<Integer>();
 		sll.addFirst(2);
 		final Integer firstData = sll.removeFirst();
-		assertTrue("Correct size", sll.size == 0);
-		assertTrue("Correct size", sll.size() == 0);
+		assertTrue("Correct size", (sll.size == 0) && (sll.size() == 0));
 		assertTrue("Correct header", sll.header != null);
 		assertTrue("Correct header next", sll.header.next == null);
 		assertTrue("Correct first data", (firstData != null) && (firstData == 2));
@@ -72,8 +69,7 @@ public class SinglyLinkedListTest {
 		final SinglyLinkedList<Integer> sll = new SinglyLinkedList<Integer>();
 		sll.addFirst(2);
 		sll.addFirst(1);
-		assertTrue("Correct size", sll.size == 2);
-		assertTrue("Correct size", sll.size() == 2);
+		assertTrue("Correct size", (sll.size == 2) && (sll.size() == 2));
 		assertTrue("Correct header", sll.header != null);
 		assertTrue("Correct header next", sll.header.next != null);
 		assertTrue("Correct header next data", (sll.header.next.data != null) && (sll.header.next.data == 1));
@@ -92,8 +88,7 @@ public class SinglyLinkedListTest {
 		final SinglyLinkedList<Integer> sll = new SinglyLinkedList<Integer>();
 		sll.addFirst(2);
 		sll.addFirst(1);
-		assertTrue("Correct size", sll.size == 2);
-		assertTrue("Correct size", sll.size() == 2);
+		assertTrue("Correct size", (sll.size == 2) && (sll.size() == 2));
 		assertTrue("Correct header", sll.header != null);
 		assertTrue("Correct header next", sll.header.next != null);
 		assertTrue("Correct header next data", (sll.header.next.data != null) && (sll.header.next.data == 1));
@@ -102,16 +97,14 @@ public class SinglyLinkedListTest {
 				(sll.header.next.next.data != null) && (sll.header.next.next.data == 2));
 		assertTrue("Correct header next next next", sll.header.next.next.next == null);
 		Integer firstData = sll.removeFirst();
-		assertTrue("Correct size", sll.size == 1);
-		assertTrue("Correct size", sll.size() == 1);
+		assertTrue("Correct size", (sll.size == 1) && (sll.size() == 1));
 		assertTrue("Correct header", sll.header != null);
 		assertTrue("Correct header next", sll.header.next != null);
 		assertTrue("Correct header next data", (sll.header.next.data != null) && (sll.header.next.data == 2));
 		assertTrue("Correct header next next", sll.header.next.next == null);
 		assertTrue("Correct first data", (firstData != null) && (firstData == 1));
 		firstData = sll.removeFirst();
-		assertTrue("Correct size", sll.size == 0);
-		assertTrue("Correct size", sll.size() == 0);
+		assertTrue("Correct size", (sll.size == 0) && (sll.size() == 0));
 		assertTrue("Correct header", sll.header != null);
 		assertTrue("Correct header next", sll.header.next == null);
 		assertTrue("Correct first data", (firstData != null) && (firstData == 2));
@@ -368,7 +361,7 @@ public class SinglyLinkedListTest {
 			item = it.next(data[i]);
 			assertTrue("Correct entry at location " + i, (item != null) && (item == 0));
 		}
-		assertTrue("Correct size", sll.size() == 3);
+		assertTrue("Correct size", (sll.size == 3) && (sll.size() == 3));
 		assertTrue("Correct header", sll.header != null);
 		assertTrue("Correct header next", sll.header.next != null);
 		assertTrue("Correct header next data", (sll.header.next.data != null) && (sll.header.next.data == 1));
@@ -394,7 +387,7 @@ public class SinglyLinkedListTest {
 		it.insert(2);
 		it.insert(1);
 
-		assertTrue("Correct size", sll.size() == 3);
+		assertTrue("Correct size", (sll.size == 3) && (sll.size() == 3));
 		assertTrue("Correct header", sll.header != null);
 		assertTrue("Correct header next", sll.header.next != null);
 		assertTrue("Correct header next data", (sll.header.next.data != null) && (sll.header.next.data == 1));

@@ -9,7 +9,10 @@ import java.util.Arrays;
  */
 public class MathUtil {
 	/**
-	 * No dependencies.
+	 * Dependencies: <code>
+	 * 		1. util.InvalidModulusException
+	 * 		1. util.UndefinedInverseException
+	 * </code>
 	 */
 
 	/**
@@ -367,6 +370,9 @@ public class MathUtil {
 	}
 
 	/**
+	 * Note that the final result of this function may have overflowed and wrapped around which is why
+	 * it returns the absolute value of the final result.
+	 * 
 	 * @param a
 	 *            the first given number
 	 * 
@@ -400,6 +406,9 @@ public class MathUtil {
 	}
 
 	/**
+	 * Note that the final result of this function may have overflowed and wrapped around which is why
+	 * it returns the absolute value of the final result.
+	 * 
 	 * @param a
 	 *            the first given number
 	 * 
@@ -421,6 +430,9 @@ public class MathUtil {
 	}
 
 	/**
+	 * Note that the final result of this function may have overflowed and wrapped around which is why
+	 * it returns the absolute value of the final result.
+	 * 
 	 * @param a
 	 *            the first given number
 	 * 
@@ -442,6 +454,9 @@ public class MathUtil {
 	}
 
 	/**
+	 * Note that the final result of this function may have overflowed and wrapped around which is why
+	 * it returns the absolute value of the final result.
+	 * 
 	 * @param a
 	 *            the first given number
 	 * 
@@ -471,12 +486,12 @@ public class MathUtil {
 	 * 
 	 * @return <code>n (mod m)</code>.
 	 * 
-	 * @throws ArithmeticException
+	 * @throws InvalidModulusException
 	 *             If <code>m <= 0</code>
 	 */
-	public static long mod(long n, long m) throws ArithmeticException {
+	public static long mod(long n, long m) throws InvalidModulusException {
 		if (m <= 0L) {
-			throw new ArithmeticException();
+			throw new InvalidModulusException();
 		}
 		return (((n %= m) < 0L) ? (n += m) : n);
 	}
@@ -490,10 +505,10 @@ public class MathUtil {
 	 * 
 	 * @return <code>n (mod m)</code>.
 	 * 
-	 * @throws ArithmeticException
+	 * @throws InvalidModulusException
 	 *             If <code>m <= 0</code>
 	 */
-	public static int mod(int n, int m) throws ArithmeticException {
+	public static int mod(int n, int m) throws InvalidModulusException {
 		return ((int) MathUtil.mod((long) n, (long) m));
 	}
 
@@ -506,10 +521,10 @@ public class MathUtil {
 	 * 
 	 * @return <code>n (mod m)</code>.
 	 * 
-	 * @throws ArithmeticException
+	 * @throws InvalidModulusException
 	 *             If <code>m <= 0</code>
 	 */
-	public static short mod(short n, short m) throws ArithmeticException {
+	public static short mod(short n, short m) throws InvalidModulusException {
 		return ((short) MathUtil.mod((long) n, (long) m));
 	}
 
@@ -522,10 +537,10 @@ public class MathUtil {
 	 * 
 	 * @return <code>n (mod m)</code>.
 	 * 
-	 * @throws ArithmeticException
+	 * @throws InvalidModulusException
 	 *             If <code>m <= 0</code>
 	 */
-	public static byte mod(byte n, byte m) throws ArithmeticException {
+	public static byte mod(byte n, byte m) throws InvalidModulusException {
 		return ((byte) MathUtil.mod((long) n, (long) m));
 	}
 
@@ -538,39 +553,44 @@ public class MathUtil {
 	 * 
 	 * @return <code>n<sup>-1</sup> (mod m)</code>.
 	 * 
-	 * @throws ArithmeticException
-	 *             If <code>(m <= 1) || (n (mod m) == 0) || (gcd(n, m) != 1)</code>
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 1</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>gcd(n, m) != 1</code>
 	 */
-	public static long modInverse(long n, long m) throws ArithmeticException {
+	public static long modInverse(long n, long m) throws InvalidModulusException, UndefinedInverseException {
 		if (m <= 1L) {
-			throw new ArithmeticException();
+			throw new InvalidModulusException();
 		}
 
-		/**
-		 * Do not fix n to be in [0, m - 1] \cap \doubleN since it actually slows down the entire function
-		 * instead of speeding it up (i.e., no need for <code>n = MathUtil.mod(n, m);</code>). Furthermore,
-		 * the following code indirectly checks for <code>n (mod m) == 0</code> and so there is absolutely
-		 * no benefit to doing the fix.
-		 */
+		// Fix n to be in [0, m - 1] \cap \doubleN.
+		n = MathUtil.mod(n, m);
+		if (n == 0L) {
+			/**
+			 * Handle <code>n == 0</code> case separately because the loop will never actually execute (since
+			 * the loop condition is <code>n > 1</code>) and so the function will return <code>1</code> as the
+			 * multiplicative inverse of <code>0</code> which is wrong since <code>0</code> does not have a
+			 * multiplicative inverse.
+			 */
+			throw new UndefinedInverseException();
+		}
+		// (1 <= n) && (n <= m - 1)
 
 		/**
-		 * No need to check <code>n (mod m) == 0</code> or <code>gcd(n, m) != 1</code> since if either one
-		 * is true, then in the body of the following loop, remainder will become 0 in some iteration and as
-		 * a result when calculating the quotient (i.e., dividing n by remainder) an ArithmeticException
-		 * will automatically be thrown.
+		 * No need to check <code>gcd(n, m) != 1</code> since if that is the case, then in the body of the
+		 * following loop, remainder will become 0 in some iteration and as a result when calculating the
+		 * quotient (i.e., dividing n by remainder) an ArithmeticException will automatically be thrown.
 		 */
 		try {
 			// Note that try blocks do not slow down the code unless an exception is thrown.
 
-			// Loop until (n == 0) or (n == 1).
+			// Loop until (n == 0L) or (n == 1L).
 			long x = 1L;
 			for (long y = 0L, quotient = 0L, remainder = m, tmp = 0L; n > 1L; /* Update inside. */) {
-				// Compute the quotient.
-				quotient = n / remainder;
-
-				// Update remainder and n.
+				// Update quotient, remainder, and n.
 				tmp = remainder;
-				remainder = n % remainder;
+				remainder = n - (quotient = (n / tmp)) * tmp;
 				n = tmp;
 
 				// Update x and y.
@@ -581,12 +601,10 @@ public class MathUtil {
 			return ((x < 0L) ? (x += m) : x);
 		} catch (ArithmeticException ex) {
 			/**
-			 * The cause of this exception is a division by 0 as explained in the comments above the try and it
-			 * is either because <code>n (mod m) == 0</code> or <code>gcd(n, m) != 1</code>.
+			 * The cause of this exception is a division by 0 and is due to <code>gcd(n, m) != 1</code> as
+			 * explained in the comments above the try.
 			 */
-
-			// Throw a new ArithmeticException since the caught one (i.e., ex) has message "/ by zero".
-			throw new ArithmeticException();
+			throw new UndefinedInverseException();
 		}
 	}
 
@@ -599,10 +617,13 @@ public class MathUtil {
 	 * 
 	 * @return <code>n<sup>-1</sup> (mod m)</code>.
 	 * 
-	 * @throws ArithmeticException
-	 *             If <code>(m <= 1) || (n (mod m) == 0) || (gcd(n, m) != 1)</code>
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 1</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>gcd(n, m) != 1</code>
 	 */
-	public static int modInverse(int n, int m) throws ArithmeticException {
+	public static int modInverse(int n, int m) throws InvalidModulusException, UndefinedInverseException {
 		return ((int) MathUtil.modInverse((long) n, (long) m));
 	}
 
@@ -615,10 +636,13 @@ public class MathUtil {
 	 * 
 	 * @return <code>n<sup>-1</sup> (mod m)</code>.
 	 * 
-	 * @throws ArithmeticException
-	 *             If <code>(m <= 1) || (n (mod m) == 0) || (gcd(n, m) != 1)</code>
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 1</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>gcd(n, m) != 1</code>
 	 */
-	public static short modInverse(short n, short m) throws ArithmeticException {
+	public static short modInverse(short n, short m) throws InvalidModulusException, UndefinedInverseException {
 		return ((short) MathUtil.modInverse((long) n, (long) m));
 	}
 
@@ -631,15 +655,19 @@ public class MathUtil {
 	 * 
 	 * @return <code>n<sup>-1</sup> (mod m)</code>.
 	 * 
-	 * @throws ArithmeticException
-	 *             If <code>(m <= 1) || (n (mod m) == 0) || (gcd(n, m) != 1)</code>
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 1</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>gcd(n, m) != 1</code>
 	 */
-	public static byte modInverse(byte n, byte m) throws ArithmeticException {
+	public static byte modInverse(byte n, byte m) throws InvalidModulusException, UndefinedInverseException {
 		return ((byte) MathUtil.modInverse((long) n, (long) m));
 	}
 
 	/**
-	 * Compute <code>n<sup>p</sup> (mod m)</code> using the recursive fast power algorithm. <br>
+	 * Compute <code>n<sup>p</sup> (mod m)</code> using the fast power (i.e., successive squaring)
+	 * algorithm. <br>
 	 * Precondition: <code>m > 1</code> <br>
 	 * Precondition: <code>(n == MathUtil.mod(n, m)) && (n > 1)</code> <br>
 	 * Precondition: <code>p >= 0</code>
@@ -654,17 +682,19 @@ public class MathUtil {
 	 *            the given modulus
 	 * 
 	 * @return <code>n<sup>p</sup> (mod m)</code>.
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>any of the multiplications overflows a long</code>
 	 */
-	protected static long modPowRecur(long n, long p, long m) {
-		// Base case.
-		if (p == 0L) {
-			return 1L;
+	protected static long modPowFixedInput(long n, long p, long m) throws ArithmeticException {
+		long result = 1L;
+		for (long n_to_2_to_i = n; p != 0L; p /= 2L) {
+			if (MathUtil.isEven(p)) {
+				result = Math.multiplyExact(result, n_to_2_to_i) % m;
+			}
+			n_to_2_to_i = Math.multiplyExact(n_to_2_to_i, n_to_2_to_i) % m; // Square n_to_2_to_i (mod m).
 		}
-
-		// General recursive case.
-		long result = MathUtil.modPowRecur(n, p / 2L, m);
-		result = (result *= result) % m; // Square result (mod m).
-		return (MathUtil.isEven(p) ? result : (result *= n) % m);
+		return result;
 	}
 
 	/**
@@ -679,11 +709,18 @@ public class MathUtil {
 	 * 
 	 * @return <code>n<sup>p</sup> (mod m)</code>.
 	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>(p < 0) && (gcd(n, m) != 1)</code>
+	 * 
 	 * @throws ArithmeticException
-	 *             If
-	 *             <code>(m <= 0) || ((n (mod m) == 0) && (p <= 0)) || ((p < 0) && (gcd(n, m) != 1))</code>
+	 *             If <code>((p == 0) && (n (mod m) == 0))
+	 *             || (any of the multiplications overflows a long)</code>
 	 */
-	public static long modPow(long n, long p, long m) throws ArithmeticException {
+	public static long modPow(long n, long p, long m)
+			throws InvalidModulusException, UndefinedInverseException, ArithmeticException {
 		// Handle the simple special case.
 		if (m == 1L) {
 			return 0L;
@@ -692,9 +729,19 @@ public class MathUtil {
 		// Fix n to be in [0, m - 1] \cap \doubleN.
 		n = MathUtil.mod(n, m);
 		if (n == 0L) {
-			if (p <= 0L) {
+			/**
+			 * We could just check <code>p == 0L</code> here, and the case when <code>p < 0L</code> would still
+			 * be handled by the rest of code since the <code>modInverse</code> function would have been called
+			 * and it would have thrown the UndefinedInverseException. However, that will take longer since more
+			 * code has to be executed to arrive at the same result which is why for the sake of efficiency,
+			 * we're performing the check here.
+			 */
+			if (p < 0L) {
+				throw new UndefinedInverseException();
+			} else if (p == 0L) {
 				throw new ArithmeticException();
 			}
+			// p > 0L
 			return 0L;
 		} else if (n == 1L) {
 			return 1L;
@@ -707,8 +754,8 @@ public class MathUtil {
 			 * <code>n<sup>(-2<sup>63</sup>)</sup> (mod m) = (n<sup>-1</sup>)<sup>(2<sup>63</sup> - 1)</sup> * n<sup>-1</sup> (mod m)</code>
 			 */
 			final long n_inverse = MathUtil.modInverse(n, m);
-			long result = MathUtil.modPowRecur(n_inverse, Long.MAX_VALUE, m);
-			return ((result *= n_inverse) % m);
+			long result = MathUtil.modPowFixedInput(n_inverse, Long.MAX_VALUE, m);
+			return (Math.multiplyExact(result, n_inverse) % m);
 		}
 
 		/**
@@ -716,7 +763,8 @@ public class MathUtil {
 		 * <code>(n<sup>-1</sup> (mod m))<sup>abs(p)</sup> (mod m)</code> if <code>p < 0</code> <br>
 		 * <code>n<sup>abs(p)</sup> (mod m)</code> if <code>p >= 0</code>
 		 */
-		return ((p < 0L) ? MathUtil.modPowRecur(MathUtil.modInverse(n, m), -p, m) : MathUtil.modPowRecur(n, p, m));
+		return ((p < 0L) ? MathUtil.modPowFixedInput(MathUtil.modInverse(n, m), -p, m)
+				: MathUtil.modPowFixedInput(n, p, m));
 	}
 
 	/**
@@ -731,8 +779,14 @@ public class MathUtil {
 	 * 
 	 * @return <code>n<sup>p</sup> (mod m)</code>.
 	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>(p < 0) && (gcd(n, m) != 1)</code>
+	 * 
 	 * @throws ArithmeticException
-	 *             If <code>(m <= 0) || ((p < 0) && (gcd(n, m) != 1))</code>
+	 *             If <code>(p == 0) && (n (mod m) == 0)</code>
 	 */
 	public static int modPow(int n, int p, int m) throws ArithmeticException {
 		return ((int) MathUtil.modPow((long) n, (long) p, (long) m));
@@ -750,8 +804,14 @@ public class MathUtil {
 	 * 
 	 * @return <code>n<sup>p</sup> (mod m)</code>.
 	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>(p < 0) && (gcd(n, m) != 1)</code>
+	 * 
 	 * @throws ArithmeticException
-	 *             If <code>(m <= 0) || ((p < 0) && (gcd(n, m) != 1))</code>
+	 *             If <code>(p == 0) && (n (mod m) == 0)</code>
 	 */
 	public static short modPow(short n, short p, short m) throws ArithmeticException {
 		return ((short) MathUtil.modPow((long) n, (long) p, (long) m));
@@ -769,8 +829,14 @@ public class MathUtil {
 	 * 
 	 * @return <code>n<sup>p</sup> (mod m)</code>.
 	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>(p < 0) && (gcd(n, m) != 1)</code>
+	 * 
 	 * @throws ArithmeticException
-	 *             If <code>(m <= 0) || ((p < 0) && (gcd(n, m) != 1))</code>
+	 *             If <code>(p == 0) && (n (mod m) == 0)</code>
 	 */
 	public static byte modPow(byte n, byte p, byte m) throws ArithmeticException {
 		return ((byte) MathUtil.modPow((long) n, (long) p, (long) m));
@@ -789,10 +855,13 @@ public class MathUtil {
 	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
 	 *         <code>p</code> exists and <code>null</code> otherwise.
 	 * 
-	 * @throws ArithmeticException
+	 * @throws InvalidModulusException
 	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>any of the multiplications overflows a long</code>
 	 */
-	public static Long discreteLog(long n, long target, long m) throws ArithmeticException {
+	public static Long discreteLog(long n, long target, long m) throws InvalidModulusException, ArithmeticException {
 		// Fix n to be in [0, m - 1] \cap \doubleN.
 		n = MathUtil.mod(n, m);
 		// Fix target to be in [0, m - 1] \cap \doubleN.
@@ -805,11 +874,11 @@ public class MathUtil {
 		}
 
 		// Iteratively compute n to the power of i and compare the result to target.
-		for (long i = 1L, tmp = n; i != m; ++i) {
-			if (tmp == target) {
+		for (long i = 1L, n_to_i = n; i != m; ++i) {
+			if (n_to_i == target) {
 				return i;
 			}
-			tmp = (tmp *= n) % m;
+			n_to_i = Math.multiplyExact(n_to_i, n) % m;
 		}
 		// No power of n from [1, m - 1] resulted in target.
 		return null;
@@ -828,10 +897,10 @@ public class MathUtil {
 	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
 	 *         <code>p</code> exists and <code>null</code> otherwise.
 	 * 
-	 * @throws ArithmeticException
+	 * @throws InvalidModulusException
 	 *             If <code>m <= 0</code>
 	 */
-	public static Integer discreteLog(int n, int target, int m) throws ArithmeticException {
+	public static Integer discreteLog(int n, int target, int m) throws InvalidModulusException {
 		final Long result = MathUtil.discreteLog((long) n, (long) target, (long) m);
 		return ((result == null) ? null : result.intValue());
 	}
@@ -849,10 +918,10 @@ public class MathUtil {
 	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
 	 *         <code>p</code> exists and <code>null</code> otherwise.
 	 * 
-	 * @throws ArithmeticException
+	 * @throws InvalidModulusException
 	 *             If <code>m <= 0</code>
 	 */
-	public static Short discreteLog(short n, short target, short m) throws ArithmeticException {
+	public static Short discreteLog(short n, short target, short m) throws InvalidModulusException {
 		final Long result = MathUtil.discreteLog((long) n, (long) target, (long) m);
 		return ((result == null) ? null : result.shortValue());
 	}
@@ -870,10 +939,10 @@ public class MathUtil {
 	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
 	 *         <code>p</code> exists and <code>null</code> otherwise.
 	 * 
-	 * @throws ArithmeticException
+	 * @throws InvalidModulusException
 	 *             If <code>m <= 0</code>
 	 */
-	public static Byte discreteLog(byte n, byte target, byte m) throws ArithmeticException {
+	public static Byte discreteLog(byte n, byte target, byte m) throws InvalidModulusException {
 		final Long result = MathUtil.discreteLog((long) n, (long) target, (long) m);
 		return ((result == null) ? null : result.byteValue());
 	}
@@ -890,13 +959,16 @@ public class MathUtil {
 	 * 
 	 * @return The resulting long array.
 	 * 
-	 * @throws ArithmeticException
+	 * @throws InvalidModulusException
 	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws OutOfMemoryError
 	 *             Thrown by <code>new long[m]</code>
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>any of the multiplications overflows a long</code>
 	 */
-	public static long[] powers(long n, int m) throws ArithmeticException, OutOfMemoryError {
+	public static long[] powers(long n, int m) throws InvalidModulusException, OutOfMemoryError, ArithmeticException {
 		// Fix n to be in [0, m - 1] \cap \doubleN.
 		n = MathUtil.mod(n, m);
 
@@ -921,9 +993,9 @@ public class MathUtil {
 
 		// Fill and return resulting long[].
 		result[0] = 1L; // <code>n<sup>0</sup> (mod m) = 1</code>
-		long tmp = 1L;
+		long n_to_i = 1L;
 		for (int i = 1; i != m; ++i) {
-			result[i] = tmp = (tmp *= n) % m;
+			result[i] = n_to_i = Math.multiplyExact(n_to_i, n) % m;
 		}
 		return result;
 	}
@@ -940,13 +1012,16 @@ public class MathUtil {
 	 * 
 	 * @return The resulting int array.
 	 * 
-	 * @throws ArithmeticException
+	 * @throws InvalidModulusException
 	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws OutOfMemoryError
 	 *             Thrown by <code>new int[m]</code>
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>any of the multiplications overflows an int</code>
 	 */
-	public static int[] powers(int n, int m) throws ArithmeticException, OutOfMemoryError {
+	public static int[] powers(int n, int m) throws InvalidModulusException, OutOfMemoryError, ArithmeticException {
 		// Fix n to be in [0, m - 1] \cap \doubleN.
 		n = MathUtil.mod(n, m);
 
@@ -971,9 +1046,9 @@ public class MathUtil {
 
 		// Fill and return resulting int[].
 		result[0] = 1; // <code>n<sup>0</sup> (mod m) = 1</code>
-		int tmp = 1;
+		int n_to_i = 1;
 		for (int i = 1; i != m; ++i) {
-			result[i] = tmp = (tmp *= n) % m;
+			result[i] = n_to_i = Math.multiplyExact(n_to_i, n) % m;
 		}
 		return result;
 	}
@@ -990,10 +1065,14 @@ public class MathUtil {
 	 * 
 	 * @return The resulting short array.
 	 * 
-	 * @throws ArithmeticException
+	 * @throws InvalidModulusException
 	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>any of the multiplications overflows a short</code>
 	 */
-	public static short[] powers(short n, short m) throws ArithmeticException {
+	@SuppressWarnings("cast")
+	public static short[] powers(short n, short m) throws InvalidModulusException, ArithmeticException {
 		// Fix n to be in [0, m - 1] \cap \doubleN.
 		n = MathUtil.mod(n, m);
 
@@ -1018,9 +1097,12 @@ public class MathUtil {
 
 		// Fill and return resulting short[].
 		result[0] = 1; // <code>n<sup>0</sup> (mod m) = 1</code>
-		short tmp = 1;
-		for (int i = 1; i != m; ++i) {
-			result[i] = tmp = (short) ((tmp *= n) % m);
+		short n_to_i = 1;
+		for (int i = 1, tmp = 0; i != m; ++i) {
+			tmp = ((int) n_to_i) * ((int) n);
+			if ((result[i] = n_to_i = (short) tmp) != tmp) {
+				throw new ArithmeticException();
+			}
 		}
 		return result;
 	}
@@ -1037,10 +1119,14 @@ public class MathUtil {
 	 * 
 	 * @return The resulting byte array.
 	 * 
-	 * @throws ArithmeticException
+	 * @throws InvalidModulusException
 	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>any of the multiplications overflows a byte</code>
 	 */
-	public static byte[] powers(byte n, byte m) throws ArithmeticException {
+	@SuppressWarnings("cast")
+	public static byte[] powers(byte n, byte m) throws InvalidModulusException, ArithmeticException {
 		// Fix n to be in [0, m - 1] \cap \doubleN.
 		n = MathUtil.mod(n, m);
 
@@ -1063,11 +1149,14 @@ public class MathUtil {
 		}
 		// (2 <= n) && (n <= m - 1)
 
-		// Fill and return resulting byte[].
+		// Fill and return resulting short[].
 		result[0] = 1; // <code>n<sup>0</sup> (mod m) = 1</code>
-		byte tmp = 1;
-		for (int i = 1; i != m; ++i) {
-			result[i] = tmp = (byte) ((tmp *= n) % m);
+		byte n_to_i = 1;
+		for (int i = 1, tmp = 0; i != m; ++i) {
+			tmp = ((int) n_to_i) * ((int) n);
+			if ((result[i] = n_to_i = (byte) tmp) != tmp) {
+				throw new ArithmeticException();
+			}
 		}
 		return result;
 	}

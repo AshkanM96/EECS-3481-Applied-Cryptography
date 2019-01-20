@@ -26,7 +26,7 @@ public class ShortCiphertextException extends IllegalArgumentException {
 	 * Constructs a <code>ShortCiphertextException</code> with the specified detail message.
 	 *
 	 * @param s
-	 *            the detail message.
+	 *            the detail message
 	 */
 	public ShortCiphertextException(String s) {
 		super(s);
@@ -42,11 +42,11 @@ public class ShortCiphertextException extends IllegalArgumentException {
 	 *
 	 * @param message
 	 *            the detail message (which is saved for later retrieval by the
-	 *            {@link Throwable#getMessage()} method).
+	 *            {@link Throwable#getMessage()} method)
 	 * 
 	 * @param cause
 	 *            the cause (which is saved for later retrieval by the {@link Throwable#getCause()}
-	 *            method). (A <code>null</code> value is permitted and indicates that the cause is
+	 *            method. <code>null</code> value is permitted and indicates that the cause is
 	 *            nonexistent or unknown.)
 	 */
 	public ShortCiphertextException(String message, Throwable cause) {
@@ -62,7 +62,7 @@ public class ShortCiphertextException extends IllegalArgumentException {
 	 *
 	 * @param cause
 	 *            the cause (which is saved for later retrieval by the {@link Throwable#getCause()}
-	 *            method). (A <code>null</code> value is permitted and indicates that the cause is
+	 *            method. <code>null</code> value is permitted and indicates that the cause is
 	 *            nonexistent or unknown.)
 	 */
 	public ShortCiphertextException(Throwable cause) {

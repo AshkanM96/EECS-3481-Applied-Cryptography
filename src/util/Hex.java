@@ -38,13 +38,17 @@ public class Hex {
 	 *             If <code>s == null</code>
 	 * 
 	 * @throws NumberFormatException
-	 *             Thrown by <code>Integer::parseInt(s.substring(i, i + 2), Hex.RADIX)</code>
+	 *             Thrown by <code>Integer.parseInt(s.substring(i, i + 2), Hex.RADIX)</code> where
+	 *             <code>i</code> is <code>valid</code>
 	 */
 	public static byte[] toBytes(String s) throws NullPointerException, NumberFormatException {
-		if (!MathUtil.isEven(s.length())) {
+		final int l = s.length();
+		if (!MathUtil.isEven(l)) {
+			// When the string has an odd length, prepend a '0' to it.
 			s = "0" + s;
 		}
-		final int half = s.length() / 2;
+
+		final int half = l / 2;
 		final byte[] data = new byte[half];
 		for (int i = 0, twice_i = 0; i != half; ++i, twice_i += 2) {
 			data[i] = (byte) Integer.parseInt(s.substring(twice_i, twice_i + 2), Hex.RADIX);

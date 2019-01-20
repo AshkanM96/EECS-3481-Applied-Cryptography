@@ -37,8 +37,8 @@ public class Affine {
 	/**
 	 * An array of all valid alpha values in sorted order. The following is true for all valid
 	 * <code>i</code>: <br>
-	 * <code>(Affine.MIN_ALPHA_VALUE <= Affine.VALID_ALPHA_VALUES[i]) && (Affine.VALID_ALPHA_VALUES[i] <= Affine.MAX_CIPHER_KEY_VALUE)</code>
-	 * <br>
+	 * <code>(Affine.MIN_ALPHA_VALUE <= Affine.VALID_ALPHA_VALUES[i])
+	 * && (Affine.VALID_ALPHA_VALUES[i] <= Affine.MAX_CIPHER_KEY_VALUE)</code> <br>
 	 * <code>gcd(Affine.VALID_ALPHA_VALUES[i], CryptoTools.ENGLISH_ALPHABET_SIZE) == 1</code>
 	 */
 	private static final int[] VALID_ALPHA_VALUES = { 1, 3, 5, 7, 9, 11, 15, 17, 19, 21, 23, 25 };
@@ -654,8 +654,8 @@ public class Affine {
 	 * @return The resulting beta affine key.
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If
-	 *             <code>(!Affine.isValidAlpha(alpha)) || (!CryptoTools.isUpperEnglish(c)) || (!CryptoTools.isUpperEnglish(p))</code>
+	 *             If <code>(!Affine.isValidAlpha(alpha))
+	 *             || (!CryptoTools.isUpperEnglish(c)) || (!CryptoTools.isUpperEnglish(p))</code>
 	 */
 	public static int keyBeta(int alpha, int c, int p) throws IllegalArgumentException {
 		// Fix and validate arguments.
