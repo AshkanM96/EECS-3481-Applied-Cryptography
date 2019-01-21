@@ -91,10 +91,12 @@ public class CipherEngUtil {
 	 *             If <code>(algo == null) || (opmode == null) || (padding == null)</code>
 	 * 
 	 * @throws NoSuchAlgorithmException
-	 *             Thrown by <code>Cipher::getInstance</code>
+	 *             Thrown by
+	 *             <code>Cipher.getInstance(CipherEngUtil.getAlgoName(algo, opmode, padding))</code>
 	 * 
 	 * @throws NoSuchPaddingException
-	 *             Thrown by <code>Cipher::getInstance</code>
+	 *             Thrown by
+	 *             <code>Cipher.getInstance(CipherEngUtil.getAlgoName(algo, opmode, padding))</code>
 	 */
 	public static Cipher getEngine(String algo, OPMODE opmode, PADDING padding)
 			throws NullPointerException, NoSuchAlgorithmException, NoSuchPaddingException {

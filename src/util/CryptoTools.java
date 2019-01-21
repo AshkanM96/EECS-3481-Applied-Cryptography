@@ -714,8 +714,7 @@ public class CryptoTools {
 	 * 
 	 * @throws IOException
 	 *             Thrown by <code>new FileOutputStream(filename)</code>,
-	 *             <code>FileOutputStream.write(byte[])</code>, and
-	 *             <code>FileOutputStream.close()</code>
+	 *             <code>FileOutputStream.write(data)</code>, and <code>FileOutputStream.close()</code>
 	 */
 	public static void bytesToFile(byte[] data, String filename)
 			throws NullPointerException, FileNotFoundException, IOException {

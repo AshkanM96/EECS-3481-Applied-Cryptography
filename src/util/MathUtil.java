@@ -36,6 +36,13 @@ public class MathUtil {
 	public static final long LARGEST_PRIME_LONG = 9223372036854775783L;
 
 	/**
+	 * Largest modulus than poses no potential risk of overflow for operations such as
+	 * <code>modPow</code> and <code>discreteLog</code> which require <code>modMult</code> (i.e.,
+	 * <code>2<sup>62</sup> = floor((2<sup>63</sup> - 1) / 2) + 1</code>).
+	 */
+	public static final long MAX_NO_RISK_MODULUS = (Long.MAX_VALUE / 2L) + 1L;
+
+	/**
 	 * Prevent instantiation.
 	 */
 	private MathUtil() {
@@ -88,6 +95,46 @@ public class MathUtil {
 		// Odd numbers have their lowest bit set.
 		// By using bitwise and, we can check this fact.
 		return ((n &= 1L) == 0L);
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return <code>(n < 0) ? -1 : ((n == 0) ? 0 : 1)</code>.
+	 */
+	public static int signum(byte n) {
+		return ((n < 0) ? -1 : ((n == 0) ? 0 : 1));
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return <code>(n < 0) ? -1 : ((n == 0) ? 0 : 1)</code>.
+	 */
+	public static int signum(short n) {
+		return ((n < 0) ? -1 : ((n == 0) ? 0 : 1));
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return <code>(n < 0) ? -1 : ((n == 0) ? 0 : 1)</code>.
+	 */
+	public static int signum(int n) {
+		return ((n < 0) ? -1 : ((n == 0) ? 0 : 1));
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return <code>(n < 0) ? -1 : ((n == 0) ? 0 : 1)</code>.
+	 */
+	public static int signum(long n) {
+		return ((n < 0L) ? -1 : ((n == 0L) ? 0 : 1));
 	}
 
 	/**
@@ -582,10 +629,7 @@ public class MathUtil {
 		 * following loop, remainder will become 0 in some iteration and as a result when calculating the
 		 * quotient (i.e., dividing n by remainder) an ArithmeticException will automatically be thrown.
 		 */
-		try {
-			// Note that try blocks do not slow down the code unless an exception is thrown.
-
-			// Loop until (n == 0L) or (n == 1L).
+		try { // Note that try blocks do not slow down the code unless an exception is thrown.
 			long x = 1L;
 			for (long y = 0L, quotient = 0L, remainder = m, tmp = 0L; n > 1L; /* Update inside. */) {
 				// Update quotient, remainder, and n.
@@ -666,10 +710,263 @@ public class MathUtil {
 	}
 
 	/**
+	 * Precondition: <code>m > 1</code> <br>
+	 * Precondition: <code>abs(n) < m</code> (i.e., <code>n == n % m</code>) <br>
+	 * Postcondition: <code>abs(Result) <= (m / 2)</code>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>((m - N < N) ? (N - m) : N)</code> where <code>N == n (mod m)</code>.
+	 */
+	protected static long modMinFixedInput(long n, long m) {
+		if (n < 0L) {
+			/**
+			 * By the precondition on <code>n</code>, we know that <code>(1 - m <= n) && (n <= -1)</code>.
+			 * Therefore, <code>(1 <= other) && (other <= m - 1)</code> and <code>-n</code> will not overflow
+			 * since <code>(1 <= -n) && (-n <= m - 1 < m <= Long.MAX_VALUE)</code>.
+			 */
+			final long other = n + m, abs_n = -n;
+			return ((abs_n < other) ? n : other);
+		}
+		// n >= 0
+
+		/**
+		 * By the precondition on <code>n</code>, we know that <code>(0 <= n) && (n <= m - 1)</code>.
+		 * Therefore, <code>(-m <= other) && (other <= -1)</code> and so <code>other < 0</code> but
+		 * <code>-other</code> will not overflow since
+		 * <code>(1 <= -other) && (-other <= m <= Long.MAX_VALUE)</code>.
+		 */
+		final long other = n - m, abs_other = -other;
+		return ((abs_other < n) ? other : n);
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>((m - N < N) ? (N - m) : N)</code> where <code>N == n (mod m)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 */
+	public static long modMin(long n, long m) throws InvalidModulusException {
+		if (m <= 0L) {
+			throw new InvalidModulusException();
+		}
+		return MathUtil.modMinFixedInput(n %= m, m);
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>((m - N < N) ? (N - m) : N)</code> where <code>N == n (mod m)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 */
+	public static int modMin(int n, int m) throws InvalidModulusException {
+		if (m <= 0) {
+			throw new InvalidModulusException();
+		}
+		return ((int) MathUtil.modMinFixedInput(n %= m, m));
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>((m - N < N) ? (N - m) : N)</code> where <code>N == n (mod m)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 */
+	public static short modMin(short n, short m) throws InvalidModulusException {
+		if (m <= 0) {
+			throw new InvalidModulusException();
+		}
+		return ((short) MathUtil.modMinFixedInput(n %= m, m));
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>((m - N < N) ? (N - m) : N)</code> where <code>N == n (mod m)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 */
+	public static byte modMin(byte n, byte m) throws InvalidModulusException {
+		if (m <= 0) {
+			throw new InvalidModulusException();
+		}
+		return ((byte) MathUtil.modMinFixedInput(n %= m, m));
+	}
+
+	/**
+	 * We first attempt to multiply <code>a (mod m)</code> and <code>b (mod m)</code> normally using
+	 * <code>Math.multiplyExact</code>. If an overflow occurs during the multiplication, then we attempt
+	 * to perform <code>O(lg(min(abs(a), abs(b))))</code> many additions. <br>
+	 * Precondition: <code>m > 1</code> <br>
+	 * Precondition: <code>a == MathUtil.modMinFixedInput(a, m)</code> <br>
+	 * Precondition: <code>b == MathUtil.modMinFixedInput(b, m)</code>
+	 * 
+	 * @param a
+	 *            the first given number
+	 * 
+	 * @param b
+	 *            the second given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>MathUtil.modMinFixedInput(a * b (mod m), m)</code>.
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>(any of the additions overflows a long) && (m >= 2<sup>62</sup> + 1)</code>
+	 */
+	protected static long modMultFixedInput(long a, long b, long m) throws ArithmeticException {
+		/**
+		 * The following multiplication will not overflow so long as
+		 * <code>(m / 2)<sup>2</sup> < Long.MAX_VALUE</code>. Its runtime is in <code>O(1)</code>.
+		 */
+		try {
+			return MathUtil.modMinFixedInput(Math.multiplyExact(a, b) % m, m);
+		} catch (ArithmeticException ex) {
+			// a * b >= Long.MAX_VALUE
+		}
+		// (a != 0) && (b != 0)
+
+		/**
+		 * The following algorithm will not throw so long as <code>2 * (m - 1) < Long.MAX_VALUE</code> or
+		 * equivalently <code>m < 2<sup>62</sup> + 1</code>. Its runtime is in <code>O(lg(min))</code>.
+		 */
+		// The algorithm only works for min >= 0.
+
+		// Assume a (mod m) is smaller than b (mod m).
+		long min = (a < 0L) ? (a + m) : a, tmp = (b < 0L) ? (b + m) : b, max = b;
+		// Fix min and max if needed.
+		if (tmp < min) {
+			min = tmp;
+			max = a;
+		}
+		// min == Math.min(MathUtil.mod(a, m), MathUtil.mod(b, m))
+
+		long result = 0L;
+		for (; min != 0L; min /= 2L) {
+			if (!MathUtil.isEven(min)) {
+				result = MathUtil.modMinFixedInput(Math.addExact(result, max) % m, m);
+			}
+			max = MathUtil.modMinFixedInput(Math.addExact(max, max) % m, m); // Double max (mod m).
+		}
+		return result;
+	}
+
+	/**
+	 * @param a
+	 *            the first given number
+	 * 
+	 * @param b
+	 *            the second given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>a * b (mod m)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>(any of the additions overflows a long) && (m >= 2<sup>62</sup> + 1)</code>
+	 */
+	public static long modMult(long a, long b, long m) throws InvalidModulusException, ArithmeticException {
+		long result = MathUtil.modMultFixedInput(MathUtil.modMin(a, m), MathUtil.modMin(b, m), m);
+		return ((result < 0L) ? (result += m) : result);
+	}
+
+	/**
+	 * @param a
+	 *            the first given number
+	 * 
+	 * @param b
+	 *            the second given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>a * b (mod m)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 */
+	public static int modMult(int a, int b, int m) throws InvalidModulusException {
+		int result = (int) MathUtil.modMultFixedInput(MathUtil.modMin(a, m), MathUtil.modMin(b, m), m);
+		return ((result < 0) ? (result += m) : result);
+	}
+
+	/**
+	 * @param a
+	 *            the first given number
+	 * 
+	 * @param b
+	 *            the second given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>a * b (mod m)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 */
+	public static short modMult(short a, short b, short m) throws InvalidModulusException {
+		short result = (short) MathUtil.modMultFixedInput(MathUtil.modMin(a, m), MathUtil.modMin(b, m), m);
+		return ((result < 0) ? (result += m) : result);
+	}
+
+	/**
+	 * @param a
+	 *            the first given number
+	 * 
+	 * @param b
+	 *            the second given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>a * b (mod m)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 */
+	public static byte modMult(byte a, byte b, byte m) throws InvalidModulusException {
+		byte result = (byte) MathUtil.modMultFixedInput(MathUtil.modMin(a, m), MathUtil.modMin(b, m), m);
+		return ((result < 0) ? (result += m) : result);
+	}
+
+	/**
 	 * Compute <code>n<sup>p</sup> (mod m)</code> using the fast power (i.e., successive squaring)
 	 * algorithm. <br>
 	 * Precondition: <code>m > 1</code> <br>
-	 * Precondition: <code>(n == MathUtil.mod(n, m)) && (n > 1)</code> <br>
+	 * Precondition: <code>(1 < n) && (n < m - 1)</code> <br>
 	 * Precondition: <code>p >= 0</code>
 	 * 
 	 * @param n
@@ -681,18 +978,20 @@ public class MathUtil {
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @return <code>n<sup>p</sup> (mod m)</code>.
+	 * @return <code>MathUtil.modMinFixedInput(n<sup>p</sup> (mod m), m)</code>.
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>any of the multiplications overflows a long</code>
+	 *             Thrown by <code>MathUtil.modMultFixedInput</code>
+	 * 
+	 * @see #modMult(long, long, long)
 	 */
-	protected static long modPowFixedInput(long n, long p, long m) throws ArithmeticException {
+	protected static long modPowHelper(long n, long p, long m) throws ArithmeticException {
 		long result = 1L;
-		for (long n_to_2_to_i = n; p != 0L; p /= 2L) {
+		for (long n_to_2_to_i = MathUtil.modMinFixedInput(n, m); p != 0L; p /= 2L) {
 			if (MathUtil.isEven(p)) {
-				result = Math.multiplyExact(result, n_to_2_to_i) % m;
+				result = MathUtil.modMultFixedInput(result, n_to_2_to_i, m);
 			}
-			n_to_2_to_i = Math.multiplyExact(n_to_2_to_i, n_to_2_to_i) % m; // Square n_to_2_to_i (mod m).
+			n_to_2_to_i = MathUtil.modMultFixedInput(n_to_2_to_i, n_to_2_to_i, m); // Square n_to_2_to_i (mod m).
 		}
 		return result;
 	}
@@ -716,8 +1015,10 @@ public class MathUtil {
 	 *             If <code>(p < 0) && (gcd(n, m) != 1)</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>((p == 0) && (n (mod m) == 0))
-	 *             || (any of the multiplications overflows a long)</code>
+	 *             If <code>((p == 0) && (n (mod m) == 0))</code> or thrown by
+	 *             <code>MathUtil.modMultFixedInput</code>
+	 * 
+	 * @see #modMult(long, long, long)
 	 */
 	public static long modPow(long n, long p, long m)
 			throws InvalidModulusException, UndefinedInverseException, ArithmeticException {
@@ -741,12 +1042,18 @@ public class MathUtil {
 			} else if (p == 0L) {
 				throw new ArithmeticException();
 			}
-			// p > 0L
 			return 0L;
 		} else if (n == 1L) {
 			return 1L;
+		} else if (n == m - 1L) { // i.e., n == -1 (mod m)
+			/**
+			 * <code>-1<sup>p</sup> (mod m)</code> is: <br>
+			 * <code>-1 (mod m)</code> if <code>p</code> is odd <br>
+			 * <code>1 (mod m)</code> if <code>p</code> is even
+			 */
+			return (MathUtil.isEven(p) ? 1L : n);
 		}
-		// (2 <= n) && (n <= m - 1)
+		// (1 < n) && (n < m - 1)
 
 		// Handle the degenerate case where p's absolute value is not representable as a non-negative long.
 		if (p == Long.MIN_VALUE) {
@@ -754,8 +1061,9 @@ public class MathUtil {
 			 * <code>n<sup>(-2<sup>63</sup>)</sup> (mod m) = (n<sup>-1</sup>)<sup>(2<sup>63</sup> - 1)</sup> * n<sup>-1</sup> (mod m)</code>
 			 */
 			final long n_inverse = MathUtil.modInverse(n, m);
-			long result = MathUtil.modPowFixedInput(n_inverse, Long.MAX_VALUE, m);
-			return (Math.multiplyExact(result, n_inverse) % m);
+			long result = MathUtil.modPowHelper(n_inverse, Long.MAX_VALUE, m);
+			result = MathUtil.modMultFixedInput(result, MathUtil.modMinFixedInput(n_inverse, m), m);
+			return ((result < 0L) ? (result += m) : result);
 		}
 
 		/**
@@ -763,8 +1071,9 @@ public class MathUtil {
 		 * <code>(n<sup>-1</sup> (mod m))<sup>abs(p)</sup> (mod m)</code> if <code>p < 0</code> <br>
 		 * <code>n<sup>abs(p)</sup> (mod m)</code> if <code>p >= 0</code>
 		 */
-		return ((p < 0L) ? MathUtil.modPowFixedInput(MathUtil.modInverse(n, m), -p, m)
-				: MathUtil.modPowFixedInput(n, p, m));
+		long result = (p < 0L) ? MathUtil.modPowHelper(MathUtil.modInverse(n, m), -p, m)
+				: MathUtil.modPowHelper(n, p, m);
+		return ((result < 0L) ? (result += m) : result);
 	}
 
 	/**
@@ -859,7 +1168,9 @@ public class MathUtil {
 	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>any of the multiplications overflows a long</code>
+	 *             Thrown by <code>MathUtil.modMultFixedInput</code>
+	 * 
+	 * @see #modMult(long, long, long)
 	 */
 	public static Long discreteLog(long n, long target, long m) throws InvalidModulusException, ArithmeticException {
 		// Fix n to be in [0, m - 1] \cap \doubleN.
@@ -867,18 +1178,35 @@ public class MathUtil {
 		// Fix target to be in [0, m - 1] \cap \doubleN.
 		target = MathUtil.mod(target, m);
 
-		// Handle the simple special case.
-		if (target == 1L) {
-			// n to the power of 0 is 1 except when n is 0.
-			return ((n == 0L) ? null : 0L);
+		// Handle the simple special cases.
+		if (n == 0L) {
+			// 0 to any non-zero power 0. 0 to the power of 0 is undefined.
+			return ((target == 0L) ? 1L : null);
+		} else if (target == 1L) {
+			// n to the power of 0 is 1 except when n is 0 which we know isn't the case.
+			return 0L;
 		}
+		// (n != 0) && (target != 1)
 
+		if (n == 1L) {
+			// 1 to any power is 1.
+			return null;
+		} else if (n == m - 1L) { // i.e., n == -1 (mod m)
+			// -1 to any even power is 1 and otherwise is -1.
+			return ((target == n) ? 1L : null);
+		}
+		// (1 < n) && (n < m - 1)
+
+		// Fix n to be in [-m / 2, m / 2] \cap \doubleZ.
+		n = MathUtil.modMinFixedInput(n, m);
+		// Fix target to be in [-m / 2, m / 2] \cap \doubleZ.
+		target = MathUtil.modMinFixedInput(target, m);
 		// Iteratively compute n to the power of i and compare the result to target.
 		for (long i = 1L, n_to_i = n; i != m; ++i) {
 			if (n_to_i == target) {
 				return i;
 			}
-			n_to_i = Math.multiplyExact(n_to_i, n) % m;
+			n_to_i = MathUtil.modMultFixedInput(n_to_i, n, m);
 		}
 		// No power of n from [1, m - 1] resulted in target.
 		return null;
@@ -966,13 +1294,16 @@ public class MathUtil {
 	 *             Thrown by <code>new long[m]</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>any of the multiplications overflows a long</code>
+	 *             Thrown by <code>MathUtil.modMultFixedInput</code>
+	 * 
+	 * @see #modMult(long, long, long)
 	 */
 	public static long[] powers(long n, int m) throws InvalidModulusException, OutOfMemoryError, ArithmeticException {
 		// Fix n to be in [0, m - 1] \cap \doubleN.
 		n = MathUtil.mod(n, m);
+		// m >= 1
 
-		// Create resulting long[] and handle the simple special case.
+		// Create resulting long[] and handle the simple special cases.
 		final long[] result = new long[m];
 		if (n == 0L) {
 			/**
@@ -981,21 +1312,37 @@ public class MathUtil {
 			 * undefined in math.
 			 */
 			return result;
-		} else if (n == 1L) {
+		}
+		// (n != 0) && (m != 1)
+		// i.e., m > 2
+
+		if (n == 1L) {
 			/*
 			 * This case is only an optimization since 1 to any power is 1 and so the loop will do extra
 			 * unnecessary work to arrive at the same result.
 			 */
 			Arrays.fill(result, 1L);
 			return result;
+		} else if (n == m - 1L) {
+			/*
+			 * This case is only an optimization since -1 to any even power is 1 and otherwise is -1. So the
+			 * loop will do extra unnecessary work to arrive at the same result.
+			 */
+			for (int i = 1; i < m; i += 2) {
+				result[i] = n;
+			}
+			return result;
 		}
-		// (2 <= n) && (n <= m - 1)
+		// (1 < n) && (n < m - 1)
 
 		// Fill and return resulting long[].
 		result[0] = 1L; // <code>n<sup>0</sup> (mod m) = 1</code>
-		long n_to_i = 1L;
-		for (int i = 1; i != m; ++i) {
-			result[i] = n_to_i = Math.multiplyExact(n_to_i, n) % m;
+		result[1] = n; // <code>n<sup>1</sup> (mod m) = n</code>
+		long n_to_i = n = MathUtil.modMinFixedInput(n, m);
+		for (int i = 2; i != m; ++i) {
+			n_to_i = MathUtil.modMultFixedInput(n_to_i, n, m);
+			// Don't do <code>(n_to_i < 0L) ? (n_to_i += m) : n_to_i</code>.
+			result[i] = (n_to_i < 0L) ? (n_to_i + m) : n_to_i;
 		}
 		return result;
 	}
@@ -1017,15 +1364,13 @@ public class MathUtil {
 	 * 
 	 * @throws OutOfMemoryError
 	 *             Thrown by <code>new int[m]</code>
-	 * 
-	 * @throws ArithmeticException
-	 *             If <code>any of the multiplications overflows an int</code>
 	 */
-	public static int[] powers(int n, int m) throws InvalidModulusException, OutOfMemoryError, ArithmeticException {
+	public static int[] powers(int n, int m) throws InvalidModulusException, OutOfMemoryError {
 		// Fix n to be in [0, m - 1] \cap \doubleN.
 		n = MathUtil.mod(n, m);
+		// m >= 1
 
-		// Create resulting int[] and handle the simple special case.
+		// Create resulting int[] and handle the simple special cases.
 		final int[] result = new int[m];
 		if (n == 0) {
 			/**
@@ -1034,21 +1379,37 @@ public class MathUtil {
 			 * undefined in math.
 			 */
 			return result;
-		} else if (n == 1) {
+		}
+		// (n != 0) && (m != 1)
+		// i.e., m > 2
+
+		if (n == 1) {
 			/*
 			 * This case is only an optimization since 1 to any power is 1 and so the loop will do extra
 			 * unnecessary work to arrive at the same result.
 			 */
 			Arrays.fill(result, 1);
 			return result;
+		} else if (n == m - 1) {
+			/*
+			 * This case is only an optimization since -1 to any even power is 1 and otherwise is -1. So the
+			 * loop will do extra unnecessary work to arrive at the same result.
+			 */
+			for (int i = 1; i < m; i += 2) {
+				result[i] = n;
+			}
+			return result;
 		}
-		// (2 <= n) && (n <= m - 1)
+		// (1 < n) && (n < m - 1)
 
 		// Fill and return resulting int[].
 		result[0] = 1; // <code>n<sup>0</sup> (mod m) = 1</code>
-		int n_to_i = 1;
-		for (int i = 1; i != m; ++i) {
-			result[i] = n_to_i = Math.multiplyExact(n_to_i, n) % m;
+		result[1] = n; // <code>n<sup>1</sup> (mod m) = n</code>
+		int n_to_i = n = (int) MathUtil.modMinFixedInput(n, m);
+		for (int i = 2; i != m; ++i) {
+			n_to_i = (int) MathUtil.modMultFixedInput(n_to_i, n, m);
+			// Don't do <code>(n_to_i < 0) ? (n_to_i += m) : n_to_i</code>.
+			result[i] = (n_to_i < 0) ? (n_to_i + m) : n_to_i;
 		}
 		return result;
 	}
@@ -1067,16 +1428,13 @@ public class MathUtil {
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m <= 0</code>
-	 * 
-	 * @throws ArithmeticException
-	 *             If <code>any of the multiplications overflows a short</code>
 	 */
-	@SuppressWarnings("cast")
-	public static short[] powers(short n, short m) throws InvalidModulusException, ArithmeticException {
+	public static short[] powers(short n, short m) throws InvalidModulusException {
 		// Fix n to be in [0, m - 1] \cap \doubleN.
 		n = MathUtil.mod(n, m);
+		// m >= 1
 
-		// Create resulting short[] and handle the simple special case.
+		// Create resulting short[] and handle the simple special cases.
 		final short[] result = new short[m];
 		if (n == 0) {
 			/**
@@ -1085,24 +1443,37 @@ public class MathUtil {
 			 * undefined in math.
 			 */
 			return result;
-		} else if (n == 1) {
+		}
+		// (n != 0) && (m != 1)
+		// i.e., m > 2
+
+		if (n == 1) {
 			/*
 			 * This case is only an optimization since 1 to any power is 1 and so the loop will do extra
 			 * unnecessary work to arrive at the same result.
 			 */
 			Arrays.fill(result, (short) 1);
 			return result;
+		} else if (n == m - 1) {
+			/*
+			 * This case is only an optimization since -1 to any even power is 1 and otherwise is -1. So the
+			 * loop will do extra unnecessary work to arrive at the same result.
+			 */
+			for (int i = 1; i < m; i += 2) {
+				result[i] = n;
+			}
+			return result;
 		}
-		// (2 <= n) && (n <= m - 1)
+		// (1 < n) && (n < m - 1)
 
 		// Fill and return resulting short[].
 		result[0] = 1; // <code>n<sup>0</sup> (mod m) = 1</code>
-		short n_to_i = 1;
-		for (int i = 1, tmp = 0; i != m; ++i) {
-			tmp = ((int) n_to_i) * ((int) n);
-			if ((result[i] = n_to_i = (short) tmp) != tmp) {
-				throw new ArithmeticException();
-			}
+		result[1] = n; // <code>n<sup>1</sup> (mod m) = n</code>
+		short n_to_i = n = (short) MathUtil.modMinFixedInput(n, m);
+		for (int i = 2; i != m; ++i) {
+			n_to_i = (short) MathUtil.modMultFixedInput(n_to_i, n, m);
+			// Don't do <code>(n_to_i < 0) ? (n_to_i += m) : n_to_i</code>.
+			result[i] = (short) ((n_to_i < 0) ? (n_to_i + m) : n_to_i);
 		}
 		return result;
 	}
@@ -1121,16 +1492,13 @@ public class MathUtil {
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m <= 0</code>
-	 * 
-	 * @throws ArithmeticException
-	 *             If <code>any of the multiplications overflows a byte</code>
 	 */
-	@SuppressWarnings("cast")
-	public static byte[] powers(byte n, byte m) throws InvalidModulusException, ArithmeticException {
+	public static byte[] powers(byte n, byte m) throws InvalidModulusException {
 		// Fix n to be in [0, m - 1] \cap \doubleN.
 		n = MathUtil.mod(n, m);
+		// m >= 1
 
-		// Create resulting byte[] and handle the simple special case.
+		// Create resulting byte[] and handle the simple special cases.
 		final byte[] result = new byte[m];
 		if (n == 0) {
 			/**
@@ -1139,24 +1507,37 @@ public class MathUtil {
 			 * undefined in math.
 			 */
 			return result;
-		} else if (n == 1) {
+		}
+		// (n != 0) && (m != 1)
+		// i.e., m > 2
+
+		if (n == 1) {
 			/*
 			 * This case is only an optimization since 1 to any power is 1 and so the loop will do extra
 			 * unnecessary work to arrive at the same result.
 			 */
 			Arrays.fill(result, (byte) 1);
 			return result;
+		} else if (n == m - 1) {
+			/*
+			 * This case is only an optimization since -1 to any even power is 1 and otherwise is -1. So the
+			 * loop will do extra unnecessary work to arrive at the same result.
+			 */
+			for (int i = 1; i < m; i += 2) {
+				result[i] = n;
+			}
+			return result;
 		}
-		// (2 <= n) && (n <= m - 1)
+		// (1 < n) && (n < m - 1)
 
 		// Fill and return resulting short[].
 		result[0] = 1; // <code>n<sup>0</sup> (mod m) = 1</code>
-		byte n_to_i = 1;
-		for (int i = 1, tmp = 0; i != m; ++i) {
-			tmp = ((int) n_to_i) * ((int) n);
-			if ((result[i] = n_to_i = (byte) tmp) != tmp) {
-				throw new ArithmeticException();
-			}
+		result[1] = n; // <code>n<sup>1</sup> (mod m) = n</code>
+		byte n_to_i = n = (byte) MathUtil.modMinFixedInput(n, m);
+		for (int i = 2; i != m; ++i) {
+			n_to_i = (byte) MathUtil.modMultFixedInput(n_to_i, n, m);
+			// Don't do <code>(n_to_i < 0) ? (n_to_i += m) : n_to_i</code>.
+			result[i] = (byte) ((n_to_i < 0) ? (n_to_i + m) : n_to_i);
 		}
 		return result;
 	}
