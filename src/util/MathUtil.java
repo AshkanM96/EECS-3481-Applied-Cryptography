@@ -704,7 +704,7 @@ public class MathUtil {
 
 	/**
 	 * Precondition: <code>m > 1</code> <br>
-	 * Precondition: <code>|n| < m</code> (i.e., <code>n == n % m</code>) <br>
+	 * Precondition: <code>|n| < m</code> <br>
 	 * Postcondition: <code>|Result| <= (m / 2)</code>
 	 * 
 	 * @param n
@@ -713,7 +713,7 @@ public class MathUtil {
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @return <code>((m - N < N) ? (N - m) : N)</code> where <code>N == n (mod m)</code>.
+	 * @return <code>N</code> where <code>N (mod m) == n (mod m)</code>.
 	 */
 	protected static long modMinFixedInput(long n, long m) {
 		if (n < 0L) {
@@ -745,7 +745,7 @@ public class MathUtil {
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @return <code>((m - N < N) ? (N - m) : N)</code> where <code>N == n (mod m)</code>.
+	 * @return <code>N</code> where <code>N (mod m) == n (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m <= 0</code>
@@ -766,7 +766,7 @@ public class MathUtil {
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @return <code>((m - N < N) ? (N - m) : N)</code> where <code>N == n (mod m)</code>.
+	 * @return <code>N</code> where <code>N (mod m) == n (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m <= 0</code>
@@ -787,7 +787,7 @@ public class MathUtil {
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @return <code>((m - N < N) ? (N - m) : N)</code> where <code>N == n (mod m)</code>.
+	 * @return <code>N</code> where <code>N (mod m) == n (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m <= 0</code>
@@ -808,7 +808,7 @@ public class MathUtil {
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @return <code>((m - N < N) ? (N - m) : N)</code> where <code>N == n (mod m)</code>.
+	 * @return <code>N</code> where <code>N (mod m) == n (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m <= 0</code>
@@ -818,6 +818,240 @@ public class MathUtil {
 			throw new InvalidModulusException();
 		}
 		return ((byte) MathUtil.modMinFixedInput(n %= m, m));
+	}
+
+	/**
+	 * Precondition: <code>m > 1</code> <br>
+	 * Precondition: <code>|a| <= (m / 2)</code> <br>
+	 * Precondition: <code>|b| <= (m / 2)</code> <br>
+	 * Postcondition: <code>|Result| <= (m / 2)</code>
+	 * 
+	 * @param a
+	 *            the first given number
+	 * 
+	 * @param b
+	 *            the second given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>N</code> where <code>N (mod m) == a + b (mod m)</code>.
+	 */
+	protected static long modAddFixedInput(long a, long b, long m) {
+		return MathUtil.modMinFixedInput((a += b) % m, m);
+	}
+
+	/**
+	 * @param a
+	 *            the first given number
+	 * 
+	 * @param b
+	 *            the second given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>a + b (mod m)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 */
+	public static long modAdd(long a, long b, long m) throws InvalidModulusException {
+		if (m <= 0L) {
+			throw new InvalidModulusException();
+		}
+		long result = MathUtil.modAddFixedInput(MathUtil.modMinFixedInput(a %= m, m),
+				MathUtil.modMinFixedInput(b %= m, m), m);
+		return ((result < 0L) ? (result += m) : result);
+	}
+
+	/**
+	 * @param a
+	 *            the first given number
+	 * 
+	 * @param b
+	 *            the second given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>a + b (mod m)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 */
+	public static int modAdd(int a, int b, int m) throws InvalidModulusException {
+		if (m <= 0) {
+			throw new InvalidModulusException();
+		}
+		int result = (int) MathUtil.modAddFixedInput(MathUtil.modMinFixedInput(a %= m, m),
+				MathUtil.modMinFixedInput(b %= m, m), m);
+		return ((result < 0) ? (result += m) : result);
+	}
+
+	/**
+	 * @param a
+	 *            the first given number
+	 * 
+	 * @param b
+	 *            the second given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>a + b (mod m)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 */
+	public static short modAdd(short a, short b, short m) throws InvalidModulusException {
+		if (m <= 0) {
+			throw new InvalidModulusException();
+		}
+		short result = (short) MathUtil.modAddFixedInput(MathUtil.modMinFixedInput(a %= m, m),
+				MathUtil.modMinFixedInput(b %= m, m), m);
+		return ((result < 0) ? (result += m) : result);
+	}
+
+	/**
+	 * @param a
+	 *            the first given number
+	 * 
+	 * @param b
+	 *            the second given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>a + b (mod m)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 */
+	public static byte modAdd(byte a, byte b, byte m) throws InvalidModulusException {
+		if (m <= 0) {
+			throw new InvalidModulusException();
+		}
+		byte result = (byte) MathUtil.modAddFixedInput(MathUtil.modMinFixedInput(a %= m, m),
+				MathUtil.modMinFixedInput(b %= m, m), m);
+		return ((result < 0) ? (result += m) : result);
+	}
+
+	/**
+	 * Precondition: <code>m > 1</code> <br>
+	 * Precondition: <code>|a| <= (m / 2)</code> <br>
+	 * Precondition: <code>|b| <= (m / 2)</code> <br>
+	 * Postcondition: <code>|Result| <= (m / 2)</code>
+	 * 
+	 * @param a
+	 *            the first given number
+	 * 
+	 * @param b
+	 *            the second given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>N</code> where <code>N (mod m) == a - b (mod m)</code>.
+	 */
+	protected static long modSubFixedInput(long a, long b, long m) {
+		return MathUtil.modMinFixedInput((a -= b) % m, m);
+	}
+
+	/**
+	 * @param a
+	 *            the first given number
+	 * 
+	 * @param b
+	 *            the second given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>a - b (mod m)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 */
+	public static long modSub(long a, long b, long m) throws InvalidModulusException {
+		if (m <= 0L) {
+			throw new InvalidModulusException();
+		}
+		long result = MathUtil.modSubFixedInput(MathUtil.modMinFixedInput(a %= m, m),
+				MathUtil.modMinFixedInput(b %= m, m), m);
+		return ((result < 0L) ? (result += m) : result);
+	}
+
+	/**
+	 * @param a
+	 *            the first given number
+	 * 
+	 * @param b
+	 *            the second given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>a - b (mod m)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 */
+	public static int modSub(int a, int b, int m) throws InvalidModulusException {
+		if (m <= 0) {
+			throw new InvalidModulusException();
+		}
+		int result = (int) MathUtil.modSubFixedInput(MathUtil.modMinFixedInput(a %= m, m),
+				MathUtil.modMinFixedInput(b %= m, m), m);
+		return ((result < 0) ? (result += m) : result);
+	}
+
+	/**
+	 * @param a
+	 *            the first given number
+	 * 
+	 * @param b
+	 *            the second given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>a - b (mod m)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 */
+	public static short modSub(short a, short b, short m) throws InvalidModulusException {
+		if (m <= 0) {
+			throw new InvalidModulusException();
+		}
+		short result = (short) MathUtil.modSubFixedInput(MathUtil.modMinFixedInput(a %= m, m),
+				MathUtil.modMinFixedInput(b %= m, m), m);
+		return ((result < 0) ? (result += m) : result);
+	}
+
+	/**
+	 * @param a
+	 *            the first given number
+	 * 
+	 * @param b
+	 *            the second given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>a - b (mod m)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 */
+	public static byte modSub(byte a, byte b, byte m) throws InvalidModulusException {
+		if (m <= 0) {
+			throw new InvalidModulusException();
+		}
+		byte result = (byte) MathUtil.modSubFixedInput(MathUtil.modMinFixedInput(a %= m, m),
+				MathUtil.modMinFixedInput(b %= m, m), m);
+		return ((result < 0) ? (result += m) : result);
 	}
 
 	/**
@@ -844,7 +1078,7 @@ public class MathUtil {
 	protected static long modMultFixedInput(long a, long b, long m) {
 		/**
 		 * The following multiplication will not overflow so long as
-		 * <code>(m / 2)<sup>2</sup> < Long.MAX_VALUE</code>. Its runtime is in <code>O(1)</code>.
+		 * <code>(m / 2)<sup>2</sup> <= Long.MAX_VALUE</code>. Its runtime is in <code>O(1)</code>.
 		 */
 		try {
 			return MathUtil.modMinFixedInput(Math.multiplyExact(a, b) % m, m);
@@ -854,13 +1088,13 @@ public class MathUtil {
 		// (a != 0) && (b != 0)
 
 		/**
-		 * The following algorithm will never encounter an overflow due to the following invariants: <br>
+		 * The following algorithm will never trigger an overflow due to the following invariants: <br>
 		 * 1. <code>(|max| <= (m / 2)) implies (-(m / 2) <= max <= (m / 2))</code> <br>
 		 * 2. <code>(|result| <= (m / 2)) implies (-(m / 2) <= result <= (m / 2))</code> <br>
-		 * Therefore, when adding <code>result</code> and <code>max</code> or doubling <code>max</code> we
+		 * Therefore, when adding <code>result</code> and <code>max</code> or doubling <code>max</code>, we
 		 * will get a number in <code>[-m, m] \cap \doubleZ</code>. Since
-		 * <code>2 <= m <= Long.MAX_VALUE</code>, then the entirety of that interval is a valid
-		 * <code>long</code> and so no overflows. Its runtime is in <code>O(lg(min))</code>.
+		 * <code>2 <= m <= Long.MAX_VALUE</code>, then every value in the result set is a valid
+		 * <code>long</code> and so no overflows. The algorithm's runtime is in <code>O(lg(min))</code>.
 		 */
 		// The algorithm only works for min >= 0.
 
@@ -1001,7 +1235,7 @@ public class MathUtil {
 	protected static long modPowHelper(long n, long p, long m) {
 		long result = 1L;
 		for (long n_to_2_to_i = MathUtil.modMinFixedInput(n, m); p != 0L; p /= 2L) {
-			if (MathUtil.isEven(p)) {
+			if (!MathUtil.isEven(p)) {
 				result = MathUtil.modMultFixedInput(result, n_to_2_to_i, m);
 			}
 			n_to_2_to_i = MathUtil.modMultFixedInput(n_to_2_to_i, n_to_2_to_i, m); // Square n_to_2_to_i (mod m).
