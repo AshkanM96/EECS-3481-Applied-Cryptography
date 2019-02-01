@@ -1,6 +1,7 @@
 package util;
 
 import java.util.Arrays;
+import java.util.HashMap;
 
 /**
  * Utility math methods in addition to Java's Math class.
@@ -603,6 +604,7 @@ public class MathUtil {
 		if (m <= 1L) {
 			throw new InvalidModulusException();
 		}
+		// m > 1
 
 		// Fix n to be in [0, m - 1] \cap \doubleZ.
 		n = MathUtil.mod(n, m);
@@ -619,30 +621,25 @@ public class MathUtil {
 
 		/**
 		 * No need to check <code>gcd(n, m) != 1</code> since if that is the case, then in the body of the
-		 * following loop, remainder will become 0 in some iteration and as a result when calculating the
-		 * quotient (i.e., dividing n by remainder) an ArithmeticException will automatically be thrown.
+		 * following loop, remainder will become 0 in some iteration and so the code handles the non-coprime
+		 * case indirectly.
 		 */
-		try { // Note that try blocks do not slow down the code unless an exception is thrown.
-			long x = 1L;
-			for (long y = 0L, quotient = 0L, remainder = m, tmp = 0L; n > 1L; /* Update inside. */) {
-				// Update quotient, remainder, and n.
-				tmp = remainder;
-				remainder = n - (quotient = (n / tmp)) * tmp;
-				n = tmp;
-
-				// Update x and y.
-				tmp = y;
-				y = x - quotient * y;
-				x = tmp;
+		long x = 1L;
+		for (long y = 0L, quotient = 0L, remainder = m, tmp = 0L; n > 1L; /* Update inside. */) {
+			// The following is meant to be an assignment of tmp.
+			if ((tmp = remainder) == 0L) {
+				throw new UndefinedInverseException();
 			}
-			return ((x < 0L) ? (x += m) : x);
-		} catch (ArithmeticException ex) {
-			/**
-			 * The cause of this exception is a division by 0 and is due to <code>gcd(n, m) != 1</code> as
-			 * explained in the comments above the try.
-			 */
-			throw new UndefinedInverseException();
+			// Update quotient, remainder, and n.
+			remainder = n - (quotient = (n / tmp)) * tmp;
+			n = tmp;
+
+			// Update x and y.
+			tmp = y;
+			y = x - quotient * y;
+			x = tmp;
 		}
+		return ((x < 0L) ? (x += m) : x);
 	}
 
 	/**
@@ -703,7 +700,7 @@ public class MathUtil {
 	}
 
 	/**
-	 * Precondition: <code>m > 1</code> <br>
+	 * Precondition: <code>m > 0</code> <br>
 	 * Precondition: <code>|n| < m</code> <br>
 	 * Postcondition: <code>|Result| <= (m / 2)</code>
 	 * 
@@ -821,7 +818,7 @@ public class MathUtil {
 	}
 
 	/**
-	 * Precondition: <code>m > 1</code> <br>
+	 * Precondition: <code>m > 0</code> <br>
 	 * Precondition: <code>|a| <= (m / 2)</code> <br>
 	 * Precondition: <code>|b| <= (m / 2)</code> <br>
 	 * Postcondition: <code>|Result| <= (m / 2)</code>
@@ -938,7 +935,7 @@ public class MathUtil {
 	}
 
 	/**
-	 * Precondition: <code>m > 1</code> <br>
+	 * Precondition: <code>m > 0</code> <br>
 	 * Precondition: <code>|a| <= (m / 2)</code> <br>
 	 * Precondition: <code>|b| <= (m / 2)</code> <br>
 	 * Postcondition: <code>|Result| <= (m / 2)</code>
@@ -1059,7 +1056,7 @@ public class MathUtil {
 	 * <code>Math.multiplyExact</code> in <code>O(1) time</code>. If an overflow occurs during the
 	 * multiplication, then we perform <code>O(lg(min(a (mod m), b (mod m))))</code> many additions in
 	 * <code>mod m</code>. <br>
-	 * Precondition: <code>m > 1</code> <br>
+	 * Precondition: <code>m > 0</code> <br>
 	 * Precondition: <code>|a| <= (m / 2)</code> <br>
 	 * Precondition: <code>|b| <= (m / 2)</code> <br>
 	 * Postcondition: <code>|Result| <= (m / 2)</code>
@@ -1214,7 +1211,7 @@ public class MathUtil {
 	}
 
 	/**
-	 * Compute <code>n<sup>p</sup> (mod m)</code> using the fast power (i.e., successive squaring)
+	 * Compute <code>n<sup>p</sup> (mod m)</code> using the fast power (a.k.a., successive squaring)
 	 * algorithm. <br>
 	 * Precondition: <code>m > 1</code> <br>
 	 * Precondition: <code>1 < n < m - 1</code> <br>
@@ -1270,9 +1267,12 @@ public class MathUtil {
 		if (m == 1L) {
 			return 0L;
 		}
+		// m != 1
 
 		// Fix n to be in [0, m - 1] \cap \doubleZ.
 		n = MathUtil.mod(n, m);
+		// m > 0
+		// i.e., m > 1
 		if (n == 0L) {
 			/**
 			 * We could just check <code>p == 0L</code> here, and the case when <code>p < 0L</code> would still
@@ -1303,7 +1303,7 @@ public class MathUtil {
 		// Handle the degenerate case where p's absolute value is not representable as a non-negative long.
 		if (p == Long.MIN_VALUE) {
 			/**
-			 * <code>n<sup>(-2<sup>63</sup>)</sup> (mod m) = (n<sup>-1</sup>)<sup>(2<sup>63</sup> - 1)</sup> * n<sup>-1</sup> (mod m)</code>
+			 * <code>n<sup>(-2<sup>63</sup>)</sup> (mod m) == (n<sup>-1</sup>)<sup>(2<sup>63</sup> - 1)</sup> * n<sup>-1</sup> (mod m)</code>
 			 */
 			final long n_inverse = MathUtil.modInverse(n, m);
 			long result = MathUtil.modPowHelper(n_inverse, Long.MAX_VALUE, m);
@@ -1313,8 +1313,8 @@ public class MathUtil {
 
 		/**
 		 * <code>n<sup>p</sup> (mod m)</code> is: <br>
-		 * <code>(n<sup>-1</sup> (mod m))<sup>abs(p)</sup> (mod m)</code> if <code>p < 0</code> <br>
-		 * <code>n<sup>abs(p)</sup> (mod m)</code> if <code>p >= 0</code>
+		 * <code>(n<sup>-1</sup> (mod m))<sup>|p|</sup> (mod m)</code> if <code>p < 0</code> <br>
+		 * <code>n<sup>|p|</sup> (mod m)</code> if <code>p >= 0</code>
 		 */
 		long result = (p < 0L) ? MathUtil.modPowHelper(MathUtil.modInverse(n, m), -p, m)
 				: MathUtil.modPowHelper(n, p, m);
@@ -1411,10 +1411,14 @@ public class MathUtil {
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws OutOfMemoryError
+	 *             If <code>((long) Math.ceil(Math.sqrt(m))) > Integer.MAX_VALUE</code>
 	 */
-	public static Long discreteLog(long n, long target, long m) throws InvalidModulusException {
+	public static Long discreteLogBabyGiant(long n, long target, long m) throws ArithmeticException, OutOfMemoryError {
 		// Fix n to be in [0, m - 1] \cap \doubleZ.
 		n = MathUtil.mod(n, m);
+		// m > 0
 		// Fix target to be in [0, m - 1] \cap \doubleZ.
 		target = MathUtil.mod(target, m);
 
@@ -1426,10 +1430,11 @@ public class MathUtil {
 			// n to the power of 0 is 1 except when n is 0 which we know isn't the case.
 			return 0L;
 		}
-		// (n != 0) && (target != 1)
+		// (n != 0) && (target != 1) && (m != 1)
+		// i.e., (n != 0) && (target != 1) && (m > 1)
 
 		if (n == 1L) {
-			// 1 to any power is 1.
+			// 1 to any power is 1 (but target != 1).
 			return null;
 		} else if (n == m - 1L) { // i.e., n == -1 (mod m)
 			// -1 to any even power is 1 (but target != 1) and otherwise is -1.
@@ -1441,6 +1446,153 @@ public class MathUtil {
 		n = MathUtil.modMinFixedInput(n, m);
 		// Fix target to be in [-m / 2, m / 2] \cap \doubleZ.
 		target = MathUtil.modMinFixedInput(target, m);
+
+		// Shanks' Babystep Giantstep Algorithm.
+		final long bound = (long) Math.ceil(Math.sqrt(m)); // bound >= 2
+		if (bound > Integer.MAX_VALUE) {
+			throw new OutOfMemoryError();
+		}
+		final HashMap<Long, Long> table = new HashMap<Long, Long>();
+		for (long i = 0L, n_to_i = 1L; i != bound; ++i) {
+			table.put(n_to_i, i);
+			n_to_i = MathUtil.modMultFixedInput(n_to_i, n, m);
+		}
+		/**
+		 * We know that <code>m > 1</code> at this point and so if <code>m == 2</code> then
+		 * <code>bound == 2 == m</code> otherwise <code>bound < m</code>. Therefore, if <code>m == 2</code>
+		 * then <code>exponent == -1</code> otherwise <code>exponent >= 0</code>.
+		 */
+		final long exponent = m - bound - 1L;
+		final long factor = (exponent == -1L) ? MathUtil.modMinFixedInput(MathUtil.modInverse(n, m), m)
+				: MathUtil.modPowHelper(n, exponent, m);
+		Long j = null;
+		for (long i = 0L, guess = target; i != bound; ++i) {
+			if ((j = table.get(guess)) != null) {
+				/**
+				 * The following expression will never overflow since its maximum value is
+				 * <code>(bound - 1) * bound + (bound - 1) = bound<sup>2</sup> - 1</code>. However, since we enforce
+				 * <code>bound <= Integer.MAX_VALUE == 2<sup>31</sup> - 1</code> then we can conclude that
+				 * <code>bound<sup>2</sup> - 1 <= (2<sup>62</sup> - 2<sup>32</sup> + 1) - 1 == 2<sup>62</sup> - 2<sup>32</sup>
+				 * << 2<sup>63</sup> - 1 == Long.MAX_VALUE</code>.
+				 */
+				return ((i *= bound) + j);
+			}
+			guess = MathUtil.modMultFixedInput(guess, factor, m);
+		}
+		return null;
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param target
+	 *            the given target
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
+	 *         <code>p</code> exists and <code>null</code> otherwise.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 */
+	public static Integer discreteLogBabyGiant(int n, int target, int m) throws InvalidModulusException {
+		final Long result = MathUtil.discreteLogBabyGiant((long) n, (long) target, (long) m);
+		return ((result == null) ? null : result.intValue());
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param target
+	 *            the given target
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
+	 *         <code>p</code> exists and <code>null</code> otherwise.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 */
+	public static Short discreteLogBabyGiant(short n, short target, short m) throws InvalidModulusException {
+		final Long result = MathUtil.discreteLogBabyGiant((long) n, (long) target, (long) m);
+		return ((result == null) ? null : result.shortValue());
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param target
+	 *            the given target
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
+	 *         <code>p</code> exists and <code>null</code> otherwise.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 */
+	public static Byte discreteLogBabyGiant(byte n, byte target, byte m) throws InvalidModulusException {
+		final Long result = MathUtil.discreteLogBabyGiant((long) n, (long) target, (long) m);
+		return ((result == null) ? null : result.byteValue());
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param target
+	 *            the given target
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
+	 *         <code>p</code> exists and <code>null</code> otherwise.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 */
+	public static Long discreteLogLinearSearch(long n, long target, long m) throws InvalidModulusException {
+		// Fix n to be in [0, m - 1] \cap \doubleZ.
+		n = MathUtil.mod(n, m);
+		// m > 0
+		// Fix target to be in [0, m - 1] \cap \doubleZ.
+		target = MathUtil.mod(target, m);
+
+		// Handle the simple special cases.
+		if (n == 0L) {
+			// 0 to any non-zero power 0. 0 to the power of 0 is undefined.
+			return ((target == 0L) ? 1L : null);
+		} else if (target == 1L) {
+			// n to the power of 0 is 1 except when n is 0 which we know isn't the case.
+			return 0L;
+		}
+		// (n != 0) && (target != 1) && (m != 1)
+		// i.e., (n != 0) && (target != 1) && (m > 1)
+
+		if (n == 1L) {
+			// 1 to any power is 1 (but target != 1).
+			return null;
+		} else if (n == m - 1L) { // i.e., n == -1 (mod m)
+			// -1 to any even power is 1 (but target != 1) and otherwise is -1.
+			return ((target == n) ? 1L : null);
+		}
+		// (1 < n) && (n < m - 1)
+
+		// Fix n to be in [-m / 2, m / 2] \cap \doubleZ.
+		n = MathUtil.modMinFixedInput(n, m);
+		// Fix target to be in [-m / 2, m / 2] \cap \doubleZ.
+		target = MathUtil.modMinFixedInput(target, m);
+
 		// Iteratively compute n to the power of i in mod m and compare the result to target.
 		for (long i = 1L, n_to_i = n; i != m; ++i) {
 			if (n_to_i == target) {
@@ -1468,8 +1620,8 @@ public class MathUtil {
 	 * @throws InvalidModulusException
 	 *             If <code>m <= 0</code>
 	 */
-	public static Integer discreteLog(int n, int target, int m) throws InvalidModulusException {
-		final Long result = MathUtil.discreteLog((long) n, (long) target, (long) m);
+	public static Integer discreteLogLinearSearch(int n, int target, int m) throws InvalidModulusException {
+		final Long result = MathUtil.discreteLogLinearSearch((long) n, (long) target, (long) m);
 		return ((result == null) ? null : result.intValue());
 	}
 
@@ -1489,8 +1641,8 @@ public class MathUtil {
 	 * @throws InvalidModulusException
 	 *             If <code>m <= 0</code>
 	 */
-	public static Short discreteLog(short n, short target, short m) throws InvalidModulusException {
-		final Long result = MathUtil.discreteLog((long) n, (long) target, (long) m);
+	public static Short discreteLogLinearSearch(short n, short target, short m) throws InvalidModulusException {
+		final Long result = MathUtil.discreteLogLinearSearch((long) n, (long) target, (long) m);
 		return ((result == null) ? null : result.shortValue());
 	}
 
@@ -1510,8 +1662,8 @@ public class MathUtil {
 	 * @throws InvalidModulusException
 	 *             If <code>m <= 0</code>
 	 */
-	public static Byte discreteLog(byte n, byte target, byte m) throws InvalidModulusException {
-		final Long result = MathUtil.discreteLog((long) n, (long) target, (long) m);
+	public static Byte discreteLogLinearSearch(byte n, byte target, byte m) throws InvalidModulusException {
+		final Long result = MathUtil.discreteLogLinearSearch((long) n, (long) target, (long) m);
 		return ((result == null) ? null : result.byteValue());
 	}
 
@@ -1537,7 +1689,7 @@ public class MathUtil {
 	public static long[] powers(long n, int m) throws InvalidModulusException, OutOfMemoryError {
 		// Fix n to be in [0, m - 1] \cap \doubleZ.
 		n = MathUtil.mod(n, m);
-		// m > 1
+		// m > 0
 
 		// Create resulting long[] and handle the simple special cases.
 		final long[] result = new long[m];
@@ -1550,7 +1702,7 @@ public class MathUtil {
 			return result;
 		}
 		// (n != 0) && (m != 1)
-		// i.e., (n != 0) && (m > 2)
+		// i.e., (n != 0) && (m > 1)
 
 		if (n == 1L) {
 			/*
@@ -1610,7 +1762,7 @@ public class MathUtil {
 	public static int[] powers(int n, int m) throws InvalidModulusException, OutOfMemoryError {
 		// Fix n to be in [0, m - 1] \cap \doubleZ.
 		n = MathUtil.mod(n, m);
-		// m > 1
+		// m > 0
 
 		// Create resulting int[] and handle the simple special cases.
 		final int[] result = new int[m];
@@ -1623,7 +1775,7 @@ public class MathUtil {
 			return result;
 		}
 		// (n != 0) && (m != 1)
-		// i.e., (n != 0) && (m > 2)
+		// i.e., (n != 0) && (m > 1)
 
 		if (n == 1) {
 			/*
@@ -1680,7 +1832,7 @@ public class MathUtil {
 	public static short[] powers(short n, short m) throws InvalidModulusException {
 		// Fix n to be in [0, m - 1] \cap \doubleZ.
 		n = MathUtil.mod(n, m);
-		// m > 1
+		// m > 0
 
 		// Create resulting short[] and handle the simple special cases.
 		final short[] result = new short[m];
@@ -1693,7 +1845,7 @@ public class MathUtil {
 			return result;
 		}
 		// (n != 0) && (m != 1)
-		// i.e., (n != 0) && (m > 2)
+		// i.e., (n != 0) && (m > 1)
 
 		if (n == 1) {
 			/*
@@ -1750,7 +1902,7 @@ public class MathUtil {
 	public static byte[] powers(byte n, byte m) throws InvalidModulusException {
 		// Fix n to be in [0, m - 1] \cap \doubleZ.
 		n = MathUtil.mod(n, m);
-		// m > 1
+		// m > 0
 
 		// Create resulting byte[] and handle the simple special cases.
 		final byte[] result = new byte[m];
@@ -1763,7 +1915,7 @@ public class MathUtil {
 			return result;
 		}
 		// (n != 0) && (m != 1)
-		// i.e., (n != 0) && (m > 2)
+		// i.e., (n != 0) && (m > 1)
 
 		if (n == 1) {
 			/*
