@@ -316,10 +316,10 @@ public class MathUtil {
 			} // b != 0
 
 			// 0 * a + 1 * b == b == gcd(0, b)
-			return new long[] { b, 0L, 1L };
+			return new long[] { 0L, 1L, b };
 		} else if (b == 0L) { // a != 0
 			// 1 * a + 0 * b == a == gcd(a, 0)
-			return new long[] { a, 1L, 0L };
+			return new long[] { 1L, 0L, a };
 		}
 		// (a != 0) && (b != 0)
 
@@ -1214,7 +1214,7 @@ public class MathUtil {
 	 * Compute <code>n<sup>p</sup> (mod m)</code> using the fast power (a.k.a., successive squaring)
 	 * algorithm. <br>
 	 * Precondition: <code>m > 1</code> <br>
-	 * Precondition: <code>1 < n < m - 1</code> <br>
+	 * Precondition: <code>|n| < m</code> <br>
 	 * Precondition: <code>p >= 0</code> <br>
 	 * Postcondition: <code>|Result| <= (m / 2)</code>
 	 * 
@@ -1412,10 +1412,14 @@ public class MathUtil {
 	 * @throws InvalidModulusException
 	 *             If <code>m <= 0</code>
 	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>gcd(n, m) != 1</code>
+	 * 
 	 * @throws OutOfMemoryError
 	 *             If <code>((long) Math.ceil(Math.sqrt(m))) > Integer.MAX_VALUE</code>
 	 */
-	public static Long discreteLogBabyGiant(long n, long target, long m) throws ArithmeticException, OutOfMemoryError {
+	public static Long discreteLogBabyGiant(long n, long target, long m)
+			throws InvalidModulusException, UndefinedInverseException, OutOfMemoryError {
 		// Fix n to be in [0, m - 1] \cap \doubleZ.
 		n = MathUtil.mod(n, m);
 		// m > 0
@@ -1446,32 +1450,27 @@ public class MathUtil {
 		n = MathUtil.modMinFixedInput(n, m);
 		// Fix target to be in [-m / 2, m / 2] \cap \doubleZ.
 		target = MathUtil.modMinFixedInput(target, m);
+		// Compute and save <code>n<sup>-1</sup> (mod m)</code> for later.
+		final long n_inverse = MathUtil.modInverse(n, m);
 
 		// Shanks' Babystep Giantstep Algorithm.
 		final long bound = (long) Math.ceil(Math.sqrt(m)); // bound >= 2
 		if (bound > Integer.MAX_VALUE) {
 			throw new OutOfMemoryError();
 		}
-		final HashMap<Long, Long> table = new HashMap<Long, Long>();
+		final HashMap<Long, Long> table = new HashMap<Long, Long>((int) bound);
 		for (long i = 0L, n_to_i = 1L; i != bound; ++i) {
 			table.put(n_to_i, i);
 			n_to_i = MathUtil.modMultFixedInput(n_to_i, n, m);
 		}
-		/**
-		 * We know that <code>m > 1</code> at this point and so if <code>m == 2</code> then
-		 * <code>bound == 2 == m</code> otherwise <code>bound < m</code>. Therefore, if <code>m == 2</code>
-		 * then <code>exponent == -1</code> otherwise <code>exponent >= 0</code>.
-		 */
-		final long exponent = m - bound - 1L;
-		final long factor = (exponent == -1L) ? MathUtil.modMinFixedInput(MathUtil.modInverse(n, m), m)
-				: MathUtil.modPowHelper(n, exponent, m);
+		final long factor = MathUtil.modPowHelper(n_inverse, bound, m);
 		Long j = null;
 		for (long i = 0L, guess = target; i != bound; ++i) {
 			if ((j = table.get(guess)) != null) {
 				/**
 				 * The following expression will never overflow since its maximum value is
-				 * <code>(bound - 1) * bound + (bound - 1) = bound<sup>2</sup> - 1</code>. However, since we enforce
-				 * <code>bound <= Integer.MAX_VALUE == 2<sup>31</sup> - 1</code> then we can conclude that
+				 * <code>(bound - 1) * bound + (bound - 1) == bound<sup>2</sup> - 1</code>. However, since we
+				 * enforce <code>bound <= Integer.MAX_VALUE == 2<sup>31</sup> - 1</code> then we can conclude that
 				 * <code>bound<sup>2</sup> - 1 <= (2<sup>62</sup> - 2<sup>32</sup> + 1) - 1 == 2<sup>62</sup> - 2<sup>32</sup>
 				 * << 2<sup>63</sup> - 1 == Long.MAX_VALUE</code>.
 				 */
@@ -1497,8 +1496,12 @@ public class MathUtil {
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>gcd(n, m) != 1</code>
 	 */
-	public static Integer discreteLogBabyGiant(int n, int target, int m) throws InvalidModulusException {
+	public static Integer discreteLogBabyGiant(int n, int target, int m)
+			throws InvalidModulusException, UndefinedInverseException {
 		final Long result = MathUtil.discreteLogBabyGiant((long) n, (long) target, (long) m);
 		return ((result == null) ? null : result.intValue());
 	}
@@ -1518,8 +1521,12 @@ public class MathUtil {
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>gcd(n, m) != 1</code>
 	 */
-	public static Short discreteLogBabyGiant(short n, short target, short m) throws InvalidModulusException {
+	public static Short discreteLogBabyGiant(short n, short target, short m)
+			throws InvalidModulusException, UndefinedInverseException {
 		final Long result = MathUtil.discreteLogBabyGiant((long) n, (long) target, (long) m);
 		return ((result == null) ? null : result.shortValue());
 	}
@@ -1539,8 +1546,12 @@ public class MathUtil {
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>gcd(n, m) != 1</code>
 	 */
-	public static Byte discreteLogBabyGiant(byte n, byte target, byte m) throws InvalidModulusException {
+	public static Byte discreteLogBabyGiant(byte n, byte target, byte m)
+			throws InvalidModulusException, UndefinedInverseException {
 		final Long result = MathUtil.discreteLogBabyGiant((long) n, (long) target, (long) m);
 		return ((result == null) ? null : result.byteValue());
 	}
@@ -1724,8 +1735,8 @@ public class MathUtil {
 		// (1 < n) && (n < m - 1)
 
 		// Fill and return resulting long[].
-		result[0] = 1L; // <code>n<sup>0</sup> (mod m) = 1</code>
-		result[1] = n; // <code>n<sup>1</sup> (mod m) = n</code>
+		result[0] = 1L; // <code>n<sup>0</sup> (mod m) == 1</code>
+		result[1] = n; // <code>n<sup>1</sup> (mod m) == n</code>
 		long n_to_i = n = MathUtil.modMinFixedInput(n, m);
 		for (int i = 2; i != m; ++i) {
 			n_to_i = MathUtil.modMultFixedInput(n_to_i, n, m);
@@ -1797,8 +1808,8 @@ public class MathUtil {
 		// (1 < n) && (n < m - 1)
 
 		// Fill and return resulting int[].
-		result[0] = 1; // <code>n<sup>0</sup> (mod m) = 1</code>
-		result[1] = n; // <code>n<sup>1</sup> (mod m) = n</code>
+		result[0] = 1; // <code>n<sup>0</sup> (mod m) == 1</code>
+		result[1] = n; // <code>n<sup>1</sup> (mod m) == n</code>
 		int n_to_i = n = (int) MathUtil.modMinFixedInput(n, m);
 		for (int i = 2; i != m; ++i) {
 			n_to_i = (int) MathUtil.modMultFixedInput(n_to_i, n, m);
@@ -1867,8 +1878,8 @@ public class MathUtil {
 		// (1 < n) && (n < m - 1)
 
 		// Fill and return resulting short[].
-		result[0] = 1; // <code>n<sup>0</sup> (mod m) = 1</code>
-		result[1] = n; // <code>n<sup>1</sup> (mod m) = n</code>
+		result[0] = 1; // <code>n<sup>0</sup> (mod m) == 1</code>
+		result[1] = n; // <code>n<sup>1</sup> (mod m) == n</code>
 		short n_to_i = n = (short) MathUtil.modMinFixedInput(n, m);
 		for (int i = 2; i != m; ++i) {
 			n_to_i = (short) MathUtil.modMultFixedInput(n_to_i, n, m);
@@ -1937,8 +1948,8 @@ public class MathUtil {
 		// (1 < n) && (n < m - 1)
 
 		// Fill and return resulting short[].
-		result[0] = 1; // <code>n<sup>0</sup> (mod m) = 1</code>
-		result[1] = n; // <code>n<sup>1</sup> (mod m) = n</code>
+		result[0] = 1; // <code>n<sup>0</sup> (mod m) == 1</code>
+		result[1] = n; // <code>n<sup>1</sup> (mod m) == n</code>
 		byte n_to_i = n = (byte) MathUtil.modMinFixedInput(n, m);
 		for (int i = 2; i != m; ++i) {
 			n_to_i = (byte) MathUtil.modMultFixedInput(n_to_i, n, m);
