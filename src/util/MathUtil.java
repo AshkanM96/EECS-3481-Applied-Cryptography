@@ -1213,8 +1213,16 @@ public class MathUtil {
 	/**
 	 * Compute <code>n<sup>p</sup> (mod m)</code> using the fast power (a.k.a., successive squaring)
 	 * algorithm. <br>
+	 * Note that this function does not check the special cases <code>n (mod m) == 1</code> or
+	 * <code>n (mod m) == -1 (mod m) == m - 1</code> and so it will still take <code>O(lg(p))</code>
+	 * steps even though the answer can be trivially determined in <code>O(1)</code> steps. Therefore,
+	 * for the best performance, it is recommended to check those cases before calling this function.
+	 * The reason why it does not check for the special cases, is that this function is specified as
+	 * protected and is only called by other public functions which do handle those special cases
+	 * themselves (in their own unique ways) and so checking for the special cases here, would only
+	 * serve to slow down the overall runtime. <br>
 	 * Precondition: <code>m > 1</code> <br>
-	 * Precondition: <code>|n| < m</code> <br>
+	 * Precondition: <code>0 < |n| < m</code> <br>
 	 * Precondition: <code>p >= 0</code> <br>
 	 * Postcondition: <code>|Result| <= (m / 2)</code>
 	 * 
@@ -1229,7 +1237,7 @@ public class MathUtil {
 	 * 
 	 * @return <code>N</code> where <code>N (mod m) == n<sup>p</sup> (mod m)</code>.
 	 */
-	protected static long modPowHelper(long n, long p, long m) {
+	protected static long modPowFixedInput(long n, long p, long m) {
 		long result = 1L;
 		for (long n_to_2_to_i = MathUtil.modMinFixedInput(n, m); p != 0L; p /= 2L) {
 			if (!MathUtil.isEven(p)) {
@@ -1306,7 +1314,7 @@ public class MathUtil {
 			 * <code>n<sup>(-2<sup>63</sup>)</sup> (mod m) == (n<sup>-1</sup>)<sup>(2<sup>63</sup> - 1)</sup> * n<sup>-1</sup> (mod m)</code>
 			 */
 			final long n_inverse = MathUtil.modInverse(n, m);
-			long result = MathUtil.modPowHelper(n_inverse, Long.MAX_VALUE, m);
+			long result = MathUtil.modPowFixedInput(n_inverse, Long.MAX_VALUE, m);
 			result = MathUtil.modMultFixedInput(result, MathUtil.modMinFixedInput(n_inverse, m), m);
 			return ((result < 0L) ? (result += m) : result);
 		}
@@ -1316,8 +1324,8 @@ public class MathUtil {
 		 * <code>(n<sup>-1</sup> (mod m))<sup>|p|</sup> (mod m)</code> if <code>p < 0</code> <br>
 		 * <code>n<sup>|p|</sup> (mod m)</code> if <code>p >= 0</code>
 		 */
-		long result = (p < 0L) ? MathUtil.modPowHelper(MathUtil.modInverse(n, m), -p, m)
-				: MathUtil.modPowHelper(n, p, m);
+		long result = (p < 0L) ? MathUtil.modPowFixedInput(MathUtil.modInverse(n, m), -p, m)
+				: MathUtil.modPowFixedInput(n, p, m);
 		return ((result < 0L) ? (result += m) : result);
 	}
 
@@ -1463,7 +1471,7 @@ public class MathUtil {
 			table.put(n_to_i, i);
 			n_to_i = MathUtil.modMultFixedInput(n_to_i, n, m);
 		}
-		final long factor = MathUtil.modPowHelper(n_inverse, bound, m);
+		final long factor = MathUtil.modPowFixedInput(n_inverse, bound, m);
 		Long j = null;
 		for (long i = 0L, guess = target; i != bound; ++i) {
 			if ((j = table.get(guess)) != null) {
