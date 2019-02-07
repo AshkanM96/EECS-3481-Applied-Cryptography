@@ -1428,7 +1428,7 @@ public class MathUtil {
 	 *             If <code>gcd(n, m) != 1</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>((long) Math.ceil(Math.sqrt(m))) > Integer.MAX_VALUE</code>
+	 *             If <code>((long) Math.floor(Math.sqrt(m)) + 1) > Integer.MAX_VALUE</code>
 	 */
 	public static Long discreteLogBabyGiant(long n, long target, long m)
 			throws InvalidModulusException, UndefinedInverseException, ArithmeticException {
@@ -1466,7 +1466,7 @@ public class MathUtil {
 		final long n_inverse = MathUtil.modInverse(n, m);
 
 		// Shanks' Babystep Giantstep Algorithm.
-		final long bound = (long) Math.ceil(Math.sqrt(m)); // bound >= 2
+		final long bound = ((long) Math.floor(Math.sqrt(m))) + 1L; // bound >= 2
 		if (bound > Integer.MAX_VALUE) {
 			throw new ArithmeticException();
 		}
