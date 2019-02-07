@@ -313,7 +313,8 @@ public class MathUtil {
 			if (b == 0L) {
 				// 0 * 0 + 0 * 0 == 0
 				return new long[] { 0L, 0L, 0L };
-			} // b != 0
+			}
+			// b != 0
 
 			// 0 * a + 1 * b == b == gcd(0, b)
 			return new long[] { 0L, 1L, b };
@@ -1073,10 +1074,6 @@ public class MathUtil {
 	 * @return <code>N</code> where <code>N (mod m) == a * b (mod m)</code>.
 	 */
 	protected static long modMultFixedInput(long a, long b, long m) {
-		/**
-		 * The following multiplication will not overflow so long as
-		 * <code>(m / 2)<sup>2</sup> <= Long.MAX_VALUE</code>. Its runtime is in <code>O(1)</code>.
-		 */
 		try {
 			return MathUtil.modMinFixedInput(Math.multiplyExact(a, b) % m, m);
 		} catch (ArithmeticException ex) {
@@ -1308,24 +1305,31 @@ public class MathUtil {
 		}
 		// (1 < n) && (n < m - 1)
 
-		// Handle the degenerate case where p's absolute value is not representable as a non-negative long.
-		if (p == Long.MIN_VALUE) {
-			/**
-			 * <code>n<sup>(-2<sup>63</sup>)</sup> (mod m) == (n<sup>-1</sup>)<sup>(2<sup>63</sup> - 1)</sup> * n<sup>-1</sup> (mod m)</code>
-			 */
-			final long n_inverse = MathUtil.modInverse(n, m);
-			long result = MathUtil.modPowFixedInput(n_inverse, Long.MAX_VALUE, m);
-			result = MathUtil.modMultFixedInput(result, MathUtil.modMinFixedInput(n_inverse, m), m);
-			return ((result < 0L) ? (result += m) : result);
-		}
-
 		/**
 		 * <code>n<sup>p</sup> (mod m)</code> is: <br>
 		 * <code>(n<sup>-1</sup> (mod m))<sup>|p|</sup> (mod m)</code> if <code>p < 0</code> <br>
-		 * <code>n<sup>|p|</sup> (mod m)</code> if <code>p >= 0</code>
+		 * <code>1</code> if <code>p == 0</code> <br>
+		 * <code>n<sup>|p|</sup> (mod m)</code> if <code>p > 0</code>
 		 */
-		long result = (p < 0L) ? MathUtil.modPowFixedInput(MathUtil.modInverse(n, m), -p, m)
-				: MathUtil.modPowFixedInput(n, p, m);
+		if (p < 0L) {
+			final long n_inverse = MathUtil.modInverse(n, m);
+			// Handle the degenerate case where p's absolute value is not representable as a non-negative long.
+			if (p == Long.MIN_VALUE) { // i.e., -p == p < 0
+				/**
+				 * <code>n<sup>(-2<sup>63</sup>)</sup> (mod m) == (n<sup>-1</sup>)<sup>(2<sup>63</sup> - 1)</sup> * n<sup>-1</sup> (mod m)</code>
+				 */
+				long result = MathUtil.modPowFixedInput(n_inverse, Long.MAX_VALUE, m);
+				result = MathUtil.modMultFixedInput(result, MathUtil.modMinFixedInput(n_inverse, m), m);
+				return ((result < 0L) ? (result += m) : result);
+			}
+			// -p > 0
+			long result = MathUtil.modPowFixedInput(n_inverse, -p, m);
+			return ((result < 0L) ? (result += m) : result);
+		} else if (p == 0L) {
+			return 1L;
+		}
+		// p > 0
+		long result = MathUtil.modPowFixedInput(n, p, m);
 		return ((result < 0L) ? (result += m) : result);
 	}
 
@@ -1423,11 +1427,11 @@ public class MathUtil {
 	 * @throws UndefinedInverseException
 	 *             If <code>gcd(n, m) != 1</code>
 	 * 
-	 * @throws OutOfMemoryError
+	 * @throws ArithmeticException
 	 *             If <code>((long) Math.ceil(Math.sqrt(m))) > Integer.MAX_VALUE</code>
 	 */
 	public static Long discreteLogBabyGiant(long n, long target, long m)
-			throws InvalidModulusException, UndefinedInverseException, OutOfMemoryError {
+			throws InvalidModulusException, UndefinedInverseException, ArithmeticException {
 		// Fix n to be in [0, m - 1] \cap \doubleZ.
 		n = MathUtil.mod(n, m);
 		// m > 0
@@ -1464,11 +1468,11 @@ public class MathUtil {
 		// Shanks' Babystep Giantstep Algorithm.
 		final long bound = (long) Math.ceil(Math.sqrt(m)); // bound >= 2
 		if (bound > Integer.MAX_VALUE) {
-			throw new OutOfMemoryError();
+			throw new ArithmeticException();
 		}
 		final HashMap<Long, Long> table = new HashMap<Long, Long>((int) bound);
 		for (long i = 0L, n_to_i = 1L; i != bound; ++i) {
-			table.put(n_to_i, i);
+			table.putIfAbsent(n_to_i, i);
 			n_to_i = MathUtil.modMultFixedInput(n_to_i, n, m);
 		}
 		final long factor = MathUtil.modPowFixedInput(n_inverse, bound, m);
@@ -1687,9 +1691,68 @@ public class MathUtil {
 	}
 
 	/**
+	 * @param begin
+	 *            the given begin power
+	 * 
+	 * @param end
+	 *            the given end power
+	 * 
+	 * @return <code>end - begin + 1</code>.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>begin > end</code>
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>(end - begin + 1) > Integer.MAX_VALUE</code>
+	 */
+	protected static int powersLength(long begin, long end) throws IllegalArgumentException, ArithmeticException {
+		if (begin > end) {
+			throw new IllegalArgumentException();
+		}
+		// begin <= end
+
+		if (begin == end) {
+			return 1;
+		}
+		// begin < end
+
+		if (begin >= 0L) {
+			// 0 <= begin < end so end - begin will not overflow but end - begin + 1 may.
+			long result = end - begin;
+			if (result > Integer.MAX_VALUE - 1L) {
+				throw new ArithmeticException();
+			}
+			return ((int) (++result));
+		}
+		// begin < 0
+
+		// Therefore, (Integer.MAX_VALUE - 1L) + begin will not overflow.
+		if (end > (Integer.MAX_VALUE - 1L) + begin) {
+			throw new ArithmeticException();
+		}
+		// end <= (Integer.MAX_VALUE - 1L) + begin
+
+		/*
+		 * Handle the degenerate case where begin's absolute value is not representable as a non-negative
+		 * long.
+		 */
+		if (begin == Long.MIN_VALUE) { // i.e., -begin == begin < 0
+			// -begin == Long.MAX_VALUE + 1 so length == end + (Long.MAX_VALUE + 1) + 1
+			/**
+			 * Due to the above check, we know that
+			 * <code>end <= (Integer.MAX_VALUE - 1L) + Long.MIN_VALUE</code> which is much less than
+			 * <code>0</code> and so <code>Long.MAX_VALUE + end + 2L</code> will not overflow.
+			 */
+			return ((int) (Long.MAX_VALUE + end + 2L));
+		}
+		// -begin > 0
+		return ((int) (end - begin + 1L));
+	}
+
+	/**
 	 * This function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in math. <br>
 	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>i</sup> (mod m))</code>
+	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>(i + begin)</sup> (mod m))</code>
 	 * 
 	 * @param n
 	 *            the given number
@@ -1697,26 +1760,41 @@ public class MathUtil {
 	 * @param m
 	 *            the given modulus
 	 * 
+	 * @param begin
+	 *            the given begin power
+	 * 
+	 * @param end
+	 *            the given end power
+	 * 
 	 * @return The resulting long array.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>begin > end</code>
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>(end - begin + 1) > Integer.MAX_VALUE</code>
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m <= 0</code>
 	 * 
-	 * @throws OutOfMemoryError
-	 *             Thrown by <code>new long[m]</code>
+	 * @throws UndefinedInverseException
+	 *             If <code>(begin < 0) && (gcd(n, m) != 1)</code>
 	 */
-	public static long[] powers(long n, int m) throws InvalidModulusException, OutOfMemoryError {
+	public static long[] powers(long n, int m, long begin, long end)
+			throws IllegalArgumentException, ArithmeticException, InvalidModulusException, UndefinedInverseException {
+		final int length = MathUtil.powersLength(begin, end);
+
 		// Fix n to be in [0, m - 1] \cap \doubleZ.
 		n = MathUtil.mod(n, m);
 		// m > 0
 
-		// Create resulting long[] and handle the simple special cases.
-		final long[] result = new long[m];
+		// Create resulting long array and handle the simple special cases.
+		final long[] result = new long[length];
 		if (n == 0L) {
 			/**
-			 * This case is needed since 0 to any non-zero power is 0 and so <code>result[0] = 1;</code> will be
-			 * wrong in this case. Note that we are defining <code>0<sup>0</sup></code> here even though it is
-			 * undefined in math.
+			 * This case is needed since 0 to any non-zero power is 0 and so any non-zero assignment of
+			 * <code>result[i]</code> will be wrong in this case. Furthermore, note that we are defining
+			 * <code>0<sup>0</sup> == 0</code> here even though it is undefined in math.
 			 */
 			return result;
 		}
@@ -1735,19 +1813,19 @@ public class MathUtil {
 			 * This case is only an optimization since -1 to any even power is 1 and otherwise is -1. So the
 			 * loop will do extra unnecessary work to arrive at the same result.
 			 */
-			for (int i = 1; i < m; i += 2) {
+			for (int i = MathUtil.isEven(begin) ? 1 : 0; i < length; i += 2) {
 				result[i] = n;
 			}
 			return result;
 		}
 		// (1 < n) && (n < m - 1)
 
-		// Fill and return resulting long[].
-		result[0] = 1L; // <code>n<sup>0</sup> (mod m) == 1</code>
-		result[1] = n; // <code>n<sup>1</sup> (mod m) == n</code>
-		long n_to_i = n = MathUtil.modMinFixedInput(n, m);
-		for (int i = 2; i != m; ++i) {
-			n_to_i = MathUtil.modMultFixedInput(n_to_i, n, m);
+		// Fix n to be in [-m / 2, m / 2] \cap \doubleZ.
+		n = MathUtil.modMinFixedInput(n, m);
+
+		// Fill and return resulting long array.
+		long n_to_i = MathUtil.modPow(n, begin, m);
+		for (int i = 0; i != length; ++i, n_to_i = MathUtil.modMultFixedInput(n_to_i, n, m)) {
 			/**
 			 * Don't do <code>(n_to_i < 0L) ? (n_to_i += m) : n_to_i</code> since we want to maintain the
 			 * following invariant <code>|n_to_i| <= (m / 2)</code>. Note that the difference is the
@@ -1770,26 +1848,61 @@ public class MathUtil {
 	 * @param m
 	 *            the given modulus
 	 * 
+	 * @return The resulting long array.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 */
+	public static long[] powers(long n, int m) throws InvalidModulusException {
+		return MathUtil.powers(n, m, 0, m - 1);
+	}
+
+	/**
+	 * This function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in math. <br>
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>(i + begin)</sup> (mod m))</code>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param begin
+	 *            the given begin power
+	 * 
+	 * @param end
+	 *            the given end power
+	 * 
 	 * @return The resulting int array.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>begin > end</code>
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>(end - begin + 1) > Integer.MAX_VALUE</code>
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m <= 0</code>
 	 * 
-	 * @throws OutOfMemoryError
-	 *             Thrown by <code>new int[m]</code>
+	 * @throws UndefinedInverseException
+	 *             If <code>(begin < 0) && (gcd(n, m) != 1)</code>
 	 */
-	public static int[] powers(int n, int m) throws InvalidModulusException, OutOfMemoryError {
+	public static int[] powers(int n, int m, long begin, long end)
+			throws IllegalArgumentException, ArithmeticException, InvalidModulusException, UndefinedInverseException {
+		final int length = MathUtil.powersLength(begin, end);
+
 		// Fix n to be in [0, m - 1] \cap \doubleZ.
 		n = MathUtil.mod(n, m);
 		// m > 0
 
-		// Create resulting int[] and handle the simple special cases.
-		final int[] result = new int[m];
-		if (n == 0L) {
+		// Create resulting int array and handle the simple special cases.
+		final int[] result = new int[length];
+		if (n == 0) {
 			/**
-			 * This case is needed since 0 to any non-zero power is 0 and so <code>result[0] = 1;</code> will be
-			 * wrong in this case. Note that we are defining <code>0<sup>0</sup></code> here even though it is
-			 * undefined in math.
+			 * This case is needed since 0 to any non-zero power is 0 and so any non-zero assignment of
+			 * <code>result[i]</code> will be wrong in this case. Furthermore, note that we are defining
+			 * <code>0<sup>0</sup> == 0</code> here even though it is undefined in math.
 			 */
 			return result;
 		}
@@ -1808,19 +1921,19 @@ public class MathUtil {
 			 * This case is only an optimization since -1 to any even power is 1 and otherwise is -1. So the
 			 * loop will do extra unnecessary work to arrive at the same result.
 			 */
-			for (int i = 1; i < m; i += 2) {
+			for (int i = MathUtil.isEven(begin) ? 1 : 0; i < length; i += 2) {
 				result[i] = n;
 			}
 			return result;
 		}
 		// (1 < n) && (n < m - 1)
 
-		// Fill and return resulting int[].
-		result[0] = 1; // <code>n<sup>0</sup> (mod m) == 1</code>
-		result[1] = n; // <code>n<sup>1</sup> (mod m) == n</code>
-		int n_to_i = n = (int) MathUtil.modMinFixedInput(n, m);
-		for (int i = 2; i != m; ++i) {
-			n_to_i = (int) MathUtil.modMultFixedInput(n_to_i, n, m);
+		// Fix n to be in [-m / 2, m / 2] \cap \doubleZ.
+		n = (int) MathUtil.modMinFixedInput(n, m);
+
+		// Fill and return resulting int array.
+		int n_to_i = (int) MathUtil.modPow(n, begin, m);
+		for (int i = 0; i != length; ++i, n_to_i = (int) MathUtil.modMultFixedInput(n_to_i, n, m)) {
 			/**
 			 * Don't do <code>(n_to_i < 0) ? (n_to_i += m) : n_to_i</code> since we want to maintain the
 			 * following invariant <code>|n_to_i| <= (m / 2)</code>. Note that the difference is the
@@ -1843,23 +1956,61 @@ public class MathUtil {
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @return The resulting short array.
+	 * @return The resulting int array.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m <= 0</code>
 	 */
-	public static short[] powers(short n, short m) throws InvalidModulusException {
+	public static int[] powers(int n, int m) throws InvalidModulusException {
+		return MathUtil.powers(n, m, 0, m - 1);
+	}
+
+	/**
+	 * This function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in math. <br>
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>(i + begin)</sup> (mod m))</code>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param begin
+	 *            the given begin power
+	 * 
+	 * @param end
+	 *            the given end power
+	 * 
+	 * @return The resulting short array.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>begin > end</code>
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>(end - begin + 1) > Integer.MAX_VALUE</code>
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>(begin < 0) && (gcd(n, m) != 1)</code>
+	 */
+	public static short[] powers(short n, short m, long begin, long end)
+			throws IllegalArgumentException, ArithmeticException, InvalidModulusException, UndefinedInverseException {
+		final int length = MathUtil.powersLength(begin, end);
+
 		// Fix n to be in [0, m - 1] \cap \doubleZ.
 		n = MathUtil.mod(n, m);
 		// m > 0
 
-		// Create resulting short[] and handle the simple special cases.
-		final short[] result = new short[m];
-		if (n == 0L) {
+		// Create resulting short array and handle the simple special cases.
+		final short[] result = new short[length];
+		if (n == 0) {
 			/**
-			 * This case is needed since 0 to any non-zero power is 0 and so <code>result[0] = 1;</code> will be
-			 * wrong in this case. Note that we are defining <code>0<sup>0</sup></code> here even though it is
-			 * undefined in math.
+			 * This case is needed since 0 to any non-zero power is 0 and so any non-zero assignment of
+			 * <code>result[i]</code> will be wrong in this case. Furthermore, note that we are defining
+			 * <code>0<sup>0</sup> == 0</code> here even though it is undefined in math.
 			 */
 			return result;
 		}
@@ -1878,19 +2029,19 @@ public class MathUtil {
 			 * This case is only an optimization since -1 to any even power is 1 and otherwise is -1. So the
 			 * loop will do extra unnecessary work to arrive at the same result.
 			 */
-			for (int i = 1; i < m; i += 2) {
+			for (int i = MathUtil.isEven(begin) ? 1 : 0; i < length; i += 2) {
 				result[i] = n;
 			}
 			return result;
 		}
 		// (1 < n) && (n < m - 1)
 
-		// Fill and return resulting short[].
-		result[0] = 1; // <code>n<sup>0</sup> (mod m) == 1</code>
-		result[1] = n; // <code>n<sup>1</sup> (mod m) == n</code>
-		short n_to_i = n = (short) MathUtil.modMinFixedInput(n, m);
-		for (int i = 2; i != m; ++i) {
-			n_to_i = (short) MathUtil.modMultFixedInput(n_to_i, n, m);
+		// Fix n to be in [-m / 2, m / 2] \cap \doubleZ.
+		n = (short) MathUtil.modMinFixedInput(n, m);
+
+		// Fill and return resulting short array.
+		short n_to_i = (short) MathUtil.modPow(n, begin, m);
+		for (int i = 0; i != length; ++i, n_to_i = (short) MathUtil.modMultFixedInput(n_to_i, n, m)) {
 			/**
 			 * Don't do <code>(n_to_i < 0) ? (n_to_i += m) : n_to_i</code> since we want to maintain the
 			 * following invariant <code>|n_to_i| <= (m / 2)</code>. Note that the difference is the
@@ -1913,23 +2064,61 @@ public class MathUtil {
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @return The resulting byte array.
+	 * @return The resulting short array.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m <= 0</code>
 	 */
-	public static byte[] powers(byte n, byte m) throws InvalidModulusException {
+	public static short[] powers(short n, short m) throws InvalidModulusException {
+		return MathUtil.powers(n, m, 0, m - 1);
+	}
+
+	/**
+	 * This function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in math. <br>
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>(i + begin)</sup> (mod m))</code>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param begin
+	 *            the given begin power
+	 * 
+	 * @param end
+	 *            the given end power
+	 * 
+	 * @return The resulting byte array.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>begin > end</code>
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>(end - begin + 1) > Integer.MAX_VALUE</code>
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>(begin < 0) && (gcd(n, m) != 1)</code>
+	 */
+	public static byte[] powers(byte n, byte m, long begin, long end)
+			throws IllegalArgumentException, ArithmeticException, InvalidModulusException, UndefinedInverseException {
+		final int length = MathUtil.powersLength(begin, end);
+
 		// Fix n to be in [0, m - 1] \cap \doubleZ.
 		n = MathUtil.mod(n, m);
 		// m > 0
 
-		// Create resulting byte[] and handle the simple special cases.
-		final byte[] result = new byte[m];
-		if (n == 0L) {
+		// Create resulting byte array and handle the simple special cases.
+		final byte[] result = new byte[length];
+		if (n == 0) {
 			/**
-			 * This case is needed since 0 to any non-zero power is 0 and so <code>result[0] = 1;</code> will be
-			 * wrong in this case. Note that we are defining <code>0<sup>0</sup></code> here even though it is
-			 * undefined in math.
+			 * This case is needed since 0 to any non-zero power is 0 and so any non-zero assignment of
+			 * <code>result[i]</code> will be wrong in this case. Furthermore, note that we are defining
+			 * <code>0<sup>0</sup> == 0</code> here even though it is undefined in math.
 			 */
 			return result;
 		}
@@ -1948,19 +2137,19 @@ public class MathUtil {
 			 * This case is only an optimization since -1 to any even power is 1 and otherwise is -1. So the
 			 * loop will do extra unnecessary work to arrive at the same result.
 			 */
-			for (int i = 1; i < m; i += 2) {
+			for (int i = MathUtil.isEven(begin) ? 1 : 0; i < length; i += 2) {
 				result[i] = n;
 			}
 			return result;
 		}
 		// (1 < n) && (n < m - 1)
 
-		// Fill and return resulting short[].
-		result[0] = 1; // <code>n<sup>0</sup> (mod m) == 1</code>
-		result[1] = n; // <code>n<sup>1</sup> (mod m) == n</code>
-		byte n_to_i = n = (byte) MathUtil.modMinFixedInput(n, m);
-		for (int i = 2; i != m; ++i) {
-			n_to_i = (byte) MathUtil.modMultFixedInput(n_to_i, n, m);
+		// Fix n to be in [-m / 2, m / 2] \cap \doubleZ.
+		n = (byte) MathUtil.modMinFixedInput(n, m);
+
+		// Fill and return resulting byte array.
+		byte n_to_i = (byte) MathUtil.modPow(n, begin, m);
+		for (int i = 0; i != length; ++i, n_to_i = (byte) MathUtil.modMultFixedInput(n_to_i, n, m)) {
 			/**
 			 * Don't do <code>(n_to_i < 0) ? (n_to_i += m) : n_to_i</code> since we want to maintain the
 			 * following invariant <code>|n_to_i| <= (m / 2)</code>. Note that the difference is the
@@ -1970,5 +2159,25 @@ public class MathUtil {
 			result[i] = (byte) ((n_to_i < 0) ? (n_to_i + m) : n_to_i);
 		}
 		return result;
+	}
+
+	/**
+	 * This function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in math. <br>
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>i</sup> (mod m))</code>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return The resulting byte array.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 */
+	public static byte[] powers(byte n, byte m) throws InvalidModulusException {
+		return MathUtil.powers(n, m, 0, m - 1);
 	}
 }
