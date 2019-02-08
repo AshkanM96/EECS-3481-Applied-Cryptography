@@ -1487,10 +1487,11 @@ public class MathUtil {
 		if (generateBoth) {
 			final Map<Long, Long> giantlist = (hash ? new HashMap<Long, Long>((int) bound) : new TreeMap<Long, Long>());
 			Long baby_index = null, giant_index = null;
+			Long order_n = null, order_giant_factor = null;
 			for (long index = 0L, baby = 1L, giant = target; index != bound; ++index) {
 				// Update the two lists.
-				babylist.put(baby, index);
-				giantlist.put(giant, index);
+				babylist.putIfAbsent(baby, index);
+				giantlist.putIfAbsent(giant, index);
 
 				// Search for matches between the two lists.
 				/**
@@ -1514,12 +1515,24 @@ public class MathUtil {
 					 * This will only happen when <code>n</code>'s multiplicative order has been reached and
 					 * <code>baby</code> has wrapped back to <code>1</code>.
 					 */
-					break;
+					if (order_n == null) {
+						order_n = index;
+					}
 				}
 				if ((giant = MathUtil.modMultFixedInput(giant, giant_factor, m)) == target) {
 					/**
 					 * This will only happen when <code>giant_factor</code>'s multiplicative order has been reached and
 					 * <code>giant</code> has wrapped back to <code>target</code>.
+					 */
+					if (order_giant_factor == null) {
+						order_giant_factor = index;
+					}
+				}
+				if ((order_n != null) && (order_giant_factor != null)) {
+					/**
+					 * This will only happen when the multiplicative order of both <code>n</code> and
+					 * <code>giant_factor</code> has been reached and both <code>baby</code> and <code>giant</code> have
+					 * wrapped back to their original values thus we can conclude that an answer cannot be found.
 					 */
 					break;
 				}
