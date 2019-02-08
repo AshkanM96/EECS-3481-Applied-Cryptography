@@ -2,6 +2,8 @@ package util;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Utility math methods in addition to Java's Math class.
@@ -1418,6 +1420,15 @@ public class MathUtil {
 	 * @param m
 	 *            the given modulus
 	 * 
+	 * @param generateBoth
+	 *            specifies whether both the babylist and the giantlist should be generated and stored
+	 *            simultaneously instead of fully generating the babylist first and then generating the
+	 *            giantlist in-place
+	 * 
+	 * @param hash
+	 *            specifies whether the data structure used to store the lists, should be a
+	 *            <code>HashMap</code> instead of a <code>TreeMap</code>
+	 * 
 	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
 	 *         <code>p</code> exists and <code>null</code> otherwise.
 	 * 
@@ -1430,7 +1441,7 @@ public class MathUtil {
 	 * @throws ArithmeticException
 	 *             If <code>((long) Math.floor(Math.sqrt(m)) + 1) > Integer.MAX_VALUE</code>
 	 */
-	public static Long discreteLogBabyGiant(long n, long target, long m)
+	public static Long discreteLogBabyGiant(long n, long target, long m, boolean generateBoth, boolean hash)
 			throws InvalidModulusException, UndefinedInverseException, ArithmeticException {
 		// Fix n to be in [0, m - 1] \cap \doubleZ.
 		n = MathUtil.mod(n, m);
@@ -1470,27 +1481,205 @@ public class MathUtil {
 		if (bound > Integer.MAX_VALUE) {
 			throw new ArithmeticException();
 		}
-		final HashMap<Long, Long> table = new HashMap<Long, Long>((int) bound);
-		for (long i = 0L, n_to_i = 1L; i != bound; ++i) {
-			table.putIfAbsent(n_to_i, i);
-			n_to_i = MathUtil.modMultFixedInput(n_to_i, n, m);
+		final long giant_factor = MathUtil.modPowFixedInput(n_inverse, bound, m);
+
+		final Map<Long, Long> babylist = (hash ? new HashMap<Long, Long>((int) bound) : new TreeMap<Long, Long>());
+		if (generateBoth) {
+			final Map<Long, Long> giantlist = (hash ? new HashMap<Long, Long>((int) bound) : new TreeMap<Long, Long>());
+			Long baby_index = null, giant_index = null;
+			for (long index = 0L, baby = 1L, giant = target; index != bound; ++index) {
+				// Update the two lists.
+				babylist.put(baby, index);
+				giantlist.put(giant, index);
+
+				// Search for matches between the two lists.
+				/**
+				 * The following expressions will never overflow since the maximum value is
+				 * <code>(bound - 1) * bound + (bound - 1) == bound<sup>2</sup> - 1</code>. However, since we
+				 * enforce <code>bound <= Integer.MAX_VALUE == 2<sup>31</sup> - 1</code> then we can conclude that
+				 * <code>bound<sup>2</sup> - 1 <= (2<sup>62</sup> - 2<sup>32</sup> + 1) - 1 == 2<sup>62</sup> - 2<sup>32</sup></code>
+				 * which is much smaller than <code>2<sup>63</sup> - 1 == Long.MAX_VALUE</code>.
+				 */
+				if (baby == giant) {
+					return (index *= (bound + 1L));
+				} else if ((baby_index = babylist.get(giant)) != null) {
+					return ((index *= bound) + baby_index);
+				} else if ((giant_index = giantlist.get(baby)) != null) {
+					return ((giant_index *= bound) + index);
+				}
+
+				// Update baby and giant.
+				if ((baby = MathUtil.modMultFixedInput(baby, n, m)) == 1L) {
+					/**
+					 * This will only happen when <code>n</code>'s multiplicative order has been reached and
+					 * <code>baby</code> has wrapped back to <code>1</code>.
+					 */
+					break;
+				}
+				if ((giant = MathUtil.modMultFixedInput(giant, giant_factor, m)) == target) {
+					/**
+					 * This will only happen when <code>giant_factor</code>'s multiplicative order has been reached and
+					 * <code>giant</code> has wrapped back to <code>target</code>.
+					 */
+					break;
+				}
+			}
+			return null;
 		}
-		final long factor = MathUtil.modPowFixedInput(n_inverse, bound, m);
-		Long j = null;
-		for (long i = 0L, guess = target; i != bound; ++i) {
-			if ((j = table.get(guess)) != null) {
+		// !generateBoth so fully generate the babylist and then generate the giantlist in-place.
+		for (long baby_index = 0L, baby = 1L; baby_index != bound; ++baby_index) {
+			babylist.put(baby, baby_index);
+			if ((baby = MathUtil.modMultFixedInput(baby, n, m)) == 1L) {
+				/**
+				 * This will only happen when <code>n</code>'s multiplicative order has been reached and
+				 * <code>baby</code> has wrapped back to <code>1</code>.
+				 */
+				break;
+			}
+		}
+		Long baby_index = null;
+		for (long giant_index = 0L, giant = target; giant_index != bound; ++giant_index) {
+			if ((baby_index = babylist.get(giant)) != null) {
 				/**
 				 * The following expression will never overflow since its maximum value is
 				 * <code>(bound - 1) * bound + (bound - 1) == bound<sup>2</sup> - 1</code>. However, since we
 				 * enforce <code>bound <= Integer.MAX_VALUE == 2<sup>31</sup> - 1</code> then we can conclude that
-				 * <code>bound<sup>2</sup> - 1 <= (2<sup>62</sup> - 2<sup>32</sup> + 1) - 1 == 2<sup>62</sup> - 2<sup>32</sup>
-				 * << 2<sup>63</sup> - 1 == Long.MAX_VALUE</code>.
+				 * <code>bound<sup>2</sup> - 1 <= (2<sup>62</sup> - 2<sup>32</sup> + 1) - 1 == 2<sup>62</sup> - 2<sup>32</sup></code>
+				 * which is much smaller than <code>2<sup>63</sup> - 1 == Long.MAX_VALUE</code>.
 				 */
-				return ((i *= bound) + j);
+				return ((giant_index *= bound) + baby_index);
 			}
-			guess = MathUtil.modMultFixedInput(guess, factor, m);
+			if ((giant = MathUtil.modMultFixedInput(giant, giant_factor, m)) == target) {
+				/**
+				 * This will only happen when <code>giant_factor</code>'s multiplicative order has been reached and
+				 * <code>giant</code> has wrapped back to <code>target</code>.
+				 */
+				break;
+			}
 		}
 		return null;
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param target
+	 *            the given target
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param generateBoth
+	 *            specifies whether both the babylist and the giantlist should be generated and stored
+	 *            simultaneously instead of fully generating the babylist first and then generating the
+	 *            giantlist in-place
+	 * 
+	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
+	 *         <code>p</code> exists and <code>null</code> otherwise.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>gcd(n, m) != 1</code>
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>((long) Math.floor(Math.sqrt(m)) + 1) > Integer.MAX_VALUE</code>
+	 */
+	public static Long discreteLogBabyGiant(long n, long target, long m, boolean generateBoth)
+			throws InvalidModulusException, UndefinedInverseException, ArithmeticException {
+		return MathUtil.discreteLogBabyGiant(n, target, m, generateBoth, true);
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param target
+	 *            the given target
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
+	 *         <code>p</code> exists and <code>null</code> otherwise.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>gcd(n, m) != 1</code>
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>((long) Math.floor(Math.sqrt(m)) + 1) > Integer.MAX_VALUE</code>
+	 */
+	public static Long discreteLogBabyGiant(long n, long target, long m)
+			throws InvalidModulusException, UndefinedInverseException, ArithmeticException {
+		return MathUtil.discreteLogBabyGiant(n, target, m, true);
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param target
+	 *            the given target
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param generateBoth
+	 *            specifies whether both the babylist and the giantlist should be generated and stored
+	 *            simultaneously instead of fully generating the babylist first and then generating the
+	 *            giantlist in-place
+	 * 
+	 * @param hash
+	 *            specifies whether the data structure used to store the lists, should be a
+	 *            <code>HashMap</code> instead of a <code>TreeMap</code>
+	 * 
+	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
+	 *         <code>p</code> exists and <code>null</code> otherwise.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>gcd(n, m) != 1</code>
+	 */
+	public static Integer discreteLogBabyGiant(int n, int target, int m, boolean generateBoth, boolean hash)
+			throws InvalidModulusException, UndefinedInverseException {
+		final Long result = MathUtil.discreteLogBabyGiant((long) n, (long) target, (long) m, generateBoth, hash);
+		return ((result == null) ? null : result.intValue());
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param target
+	 *            the given target
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param generateBoth
+	 *            specifies whether both the babylist and the giantlist should be generated and stored
+	 *            simultaneously instead of fully generating the babylist first and then generating the
+	 *            giantlist in-place
+	 * 
+	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
+	 *         <code>p</code> exists and <code>null</code> otherwise.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>gcd(n, m) != 1</code>
+	 */
+	public static Integer discreteLogBabyGiant(int n, int target, int m, boolean generateBoth)
+			throws InvalidModulusException, UndefinedInverseException {
+		return MathUtil.discreteLogBabyGiant(n, target, m, generateBoth, true);
 	}
 
 	/**
@@ -1514,8 +1703,70 @@ public class MathUtil {
 	 */
 	public static Integer discreteLogBabyGiant(int n, int target, int m)
 			throws InvalidModulusException, UndefinedInverseException {
-		final Long result = MathUtil.discreteLogBabyGiant((long) n, (long) target, (long) m);
-		return ((result == null) ? null : result.intValue());
+		return MathUtil.discreteLogBabyGiant(n, target, m, true);
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param target
+	 *            the given target
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param generateBoth
+	 *            specifies whether both the babylist and the giantlist should be generated and stored
+	 *            simultaneously instead of fully generating the babylist first and then generating the
+	 *            giantlist in-place
+	 * 
+	 * @param hash
+	 *            specifies whether the data structure used to store the lists, should be a
+	 *            <code>HashMap</code> instead of a <code>TreeMap</code>
+	 * 
+	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
+	 *         <code>p</code> exists and <code>null</code> otherwise.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>gcd(n, m) != 1</code>
+	 */
+	public static Short discreteLogBabyGiant(short n, short target, short m, boolean generateBoth, boolean hash)
+			throws InvalidModulusException, UndefinedInverseException {
+		final Long result = MathUtil.discreteLogBabyGiant((long) n, (long) target, (long) m, generateBoth, hash);
+		return ((result == null) ? null : result.shortValue());
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param target
+	 *            the given target
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param generateBoth
+	 *            specifies whether both the babylist and the giantlist should be generated and stored
+	 *            simultaneously instead of fully generating the babylist first and then generating the
+	 *            giantlist in-place
+	 * 
+	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
+	 *         <code>p</code> exists and <code>null</code> otherwise.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>gcd(n, m) != 1</code>
+	 */
+	public static Short discreteLogBabyGiant(short n, short target, short m, boolean generateBoth)
+			throws InvalidModulusException, UndefinedInverseException {
+		return MathUtil.discreteLogBabyGiant(n, target, m, generateBoth, true);
 	}
 
 	/**
@@ -1539,8 +1790,70 @@ public class MathUtil {
 	 */
 	public static Short discreteLogBabyGiant(short n, short target, short m)
 			throws InvalidModulusException, UndefinedInverseException {
-		final Long result = MathUtil.discreteLogBabyGiant((long) n, (long) target, (long) m);
-		return ((result == null) ? null : result.shortValue());
+		return MathUtil.discreteLogBabyGiant(n, target, m, true);
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param target
+	 *            the given target
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param generateBoth
+	 *            specifies whether both the babylist and the giantlist should be generated and stored
+	 *            simultaneously instead of fully generating the babylist first and then generating the
+	 *            giantlist in-place
+	 * 
+	 * @param hash
+	 *            specifies whether the data structure used to store the lists, should be a
+	 *            <code>HashMap</code> instead of a <code>TreeMap</code>
+	 * 
+	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
+	 *         <code>p</code> exists and <code>null</code> otherwise.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>gcd(n, m) != 1</code>
+	 */
+	public static Byte discreteLogBabyGiant(byte n, byte target, byte m, boolean generateBoth, boolean hash)
+			throws InvalidModulusException, UndefinedInverseException {
+		final Long result = MathUtil.discreteLogBabyGiant((long) n, (long) target, (long) m, generateBoth, hash);
+		return ((result == null) ? null : result.byteValue());
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param target
+	 *            the given target
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param generateBoth
+	 *            specifies whether both the babylist and the giantlist should be generated and stored
+	 *            simultaneously instead of fully generating the babylist first and then generating the
+	 *            giantlist in-place
+	 * 
+	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
+	 *         <code>p</code> exists and <code>null</code> otherwise.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>gcd(n, m) != 1</code>
+	 */
+	public static Byte discreteLogBabyGiant(byte n, byte target, byte m, boolean generateBoth)
+			throws InvalidModulusException, UndefinedInverseException {
+		return MathUtil.discreteLogBabyGiant(n, target, m, generateBoth, true);
 	}
 
 	/**
@@ -1564,8 +1877,7 @@ public class MathUtil {
 	 */
 	public static Byte discreteLogBabyGiant(byte n, byte target, byte m)
 			throws InvalidModulusException, UndefinedInverseException {
-		final Long result = MathUtil.discreteLogBabyGiant((long) n, (long) target, (long) m);
-		return ((result == null) ? null : result.byteValue());
+		return MathUtil.discreteLogBabyGiant(n, target, m, true);
 	}
 
 	/**
