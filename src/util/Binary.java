@@ -16,27 +16,47 @@ public class Binary {
 	/**
 	 * Number of bits per one byte.
 	 */
-	public static final int BITS_PER_BYTE = 8;
+	public static final int BITS_PER_BYTE = Byte.SIZE;
 
 	/**
 	 * Number of bits per one short.
 	 */
-	public static final int BITS_PER_SHORT = 16;
+	public static final int BITS_PER_SHORT = Short.SIZE;
 
 	/**
 	 * Number of bits per one int.
 	 */
-	public static final int BITS_PER_INT = 32;
+	public static final int BITS_PER_INT = Integer.SIZE;
 
 	/**
 	 * Number of bits per one long.
 	 */
-	public static final int BITS_PER_LONG = 64;
+	public static final int BITS_PER_LONG = Long.SIZE;
 
 	/**
-	 * Mask for byte conversion.
+	 * Mask for byte to int conversion using & (i.e., bitwise and).
 	 */
-	public static final int BYTE_CONVERTER = 0xFF;
+	public static final int MASK_BYTE_TO_INT = 0xFF;
+
+	/**
+	 * Mask for short to int conversion using & (i.e., bitwise and).
+	 */
+	public static final int MASK_SHORT_TO_INT = 0xFFFF;
+
+	/**
+	 * Mask for byte to long conversion using & (i.e., bitwise and).
+	 */
+	public static final long MASK_BYTE_TO_LONG = 0xFFL;
+
+	/**
+	 * Mask for short to long conversion using & (i.e., bitwise and).
+	 */
+	public static final long MASK_SHORT_TO_LONG = 0xFFFFL;
+
+	/**
+	 * Mask for int to long conversion using & (i.e., bitwise and).
+	 */
+	public static final long MASK_INT_TO_LONG = 0xFFFFFFFFL;
 
 	/**
 	 * Prevent instantiation.
@@ -67,7 +87,7 @@ public class Binary {
 	 */
 	public static String toString(byte b) {
 		final StringBuilder sb = new StringBuilder();
-		final String result = Integer.toBinaryString(b & Binary.BYTE_CONVERTER);
+		final String result = Integer.toBinaryString(b & Binary.MASK_BYTE_TO_INT);
 		// Pad with zeroes on the left to have Binary.BITS_PER_BYTE chars in total.
 		for (int i = Binary.BITS_PER_BYTE - result.length(); i != 0; --i) {
 			sb.append('0');
@@ -130,7 +150,7 @@ public class Binary {
 	 * @return The number of "on" bits (i.e., equal to 1) in the given byte.
 	 */
 	public static int countOnes(byte b) {
-		final String binStr = Integer.toBinaryString(b & Binary.BYTE_CONVERTER);
+		final String binStr = Integer.toBinaryString(b & Binary.MASK_BYTE_TO_INT);
 		int result = 0;
 		for (int i = 0; i != binStr.length(); ++i) {
 			if (binStr.charAt(i) == '1') {

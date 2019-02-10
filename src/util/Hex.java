@@ -70,7 +70,7 @@ public class Hex {
 	public static String toString(byte[] data) throws NullPointerException {
 		final StringBuilder sb = new StringBuilder();
 		for (int i = 0, tmp = 0; i != data.length; ++i) {
-			tmp = data[i] & Binary.BYTE_CONVERTER;
+			tmp = data[i] & Binary.MASK_BYTE_TO_INT;
 			if (tmp < Hex.RADIX) {
 				sb.append('0');
 			}

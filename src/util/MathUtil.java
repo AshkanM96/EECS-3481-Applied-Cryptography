@@ -1493,7 +1493,7 @@ public class MathUtil {
 				babylist.putIfAbsent(baby, index);
 				giantlist.putIfAbsent(giant, index);
 
-				// Search for matches between the two lists.
+				// Search for match between the two lists.
 				/**
 				 * The following expressions will never overflow since the maximum value is
 				 * <code>(bound - 1) * bound + (bound - 1) == bound<sup>2</sup> - 1</code>. However, since we
@@ -1510,13 +1510,15 @@ public class MathUtil {
 				}
 
 				// Update baby and giant.
-				if ((baby = MathUtil.modMultFixedInput(baby, n, m)) == 1L) {
+				if (((baby = MathUtil.modMultFixedInput(baby, n, m)) == n) && (index != 0L)) {
 					/**
 					 * This will only happen when <code>n</code>'s multiplicative order has been reached and
-					 * <code>baby</code> has wrapped back to <code>1</code>.
+					 * <code>baby</code> has wrapped back to <code>n</code>. Note that for some choices of
+					 * <code>n</code> and <code>m</code>, <code>baby</code> will never wrap back to <code>1</code> but
+					 * it may wrap back to <code>n</code>.
 					 */
 					if (order_n == null) {
-						order_n = index;
+						order_n = index - 1L;
 					}
 				}
 				if ((giant = MathUtil.modMultFixedInput(giant, giant_factor, m)) == target) {
@@ -1540,20 +1542,28 @@ public class MathUtil {
 			return null;
 		}
 		// !generateBoth so fully generate the babylist and then generate the giantlist in-place.
-		for (long baby_index = 0L, baby = 1L; baby_index != bound; ++baby_index) {
+		babylist.put(1L, 0L);
+		for (long baby_index = 1L, baby = n; baby_index != bound; ++baby_index) {
+			// Check for match.
+			if (baby == target) {
+				return baby_index;
+			}
+
+			// Update babylist and baby.
 			babylist.put(baby, baby_index);
-			if ((baby = MathUtil.modMultFixedInput(baby, n, m)) == 1L) {
+			if ((baby = MathUtil.modMultFixedInput(baby, n, m)) == n) {
 				/**
 				 * This will only happen when <code>n</code>'s multiplicative order has been reached and
-				 * <code>baby</code> has wrapped back to <code>1</code>.
+				 * <code>baby</code> has wrapped back to <code>n</code>. Note that for some choices of
+				 * <code>n</code> and <code>m</code>, <code>baby</code> will never wrap back to <code>1</code> but
+				 * it may wrap back to <code>n</code>.
 				 */
 				break;
-			} else if (baby == target) {
-				return baby_index;
 			}
 		}
 		Long baby_index = null;
 		for (long giant_index = 0L, giant = target; giant_index != bound; ++giant_index) {
+			// Search for match between the two lists.
 			if ((baby_index = babylist.get(giant)) != null) {
 				/**
 				 * The following expression will never overflow since its maximum value is
@@ -1564,6 +1574,8 @@ public class MathUtil {
 				 */
 				return ((giant_index *= bound) + baby_index);
 			}
+
+			// Update giant.
 			if ((giant = MathUtil.modMultFixedInput(giant, giant_factor, m)) == target) {
 				/**
 				 * This will only happen when <code>giant_factor</code>'s multiplicative order has been reached and
@@ -1945,12 +1957,23 @@ public class MathUtil {
 
 		// Iteratively compute n to the power of i in mod m and compare the result to target.
 		for (long i = 1L, n_to_i = n; i != m; ++i) {
+			// Check for match.
 			if (n_to_i == target) {
 				return i;
 			}
-			n_to_i = MathUtil.modMultFixedInput(n_to_i, n, m);
+
+			// Update n_to_i.
+			if ((n_to_i = MathUtil.modMultFixedInput(n_to_i, n, m)) == n) {
+				/**
+				 * This will only happen when <code>n</code>'s multiplicative order has been reached and
+				 * <code>n_to_i</code> has wrapped back to <code>n</code>. Note that for some choices of
+				 * <code>n</code> and <code>m</code>, <code>n_to_i</code> will never wrap back to <code>1</code> but
+				 * it may wrap back to <code>n</code>.
+				 */
+				break;
+			}
 		}
-		// No power of n from [1, m - 1] \cap \doubleN resulted in target.
+		// No power of n resulted in target.
 		return null;
 	}
 
@@ -2581,13 +2604,20 @@ public class MathUtil {
 	 * 
 	 * @return <code>n1 * m2 * (m2<sup>-1</sup> (mod m1)) + n2 * m1 * (m1<sup>-1</sup> (mod m2)) (mod m1 * m2)</code>.
 	 * 
+	 * @throws ArithmeticException
+	 *             If <code>((long) m1) * ((long) m2) > Integer.MAX_VALUE</code>
+	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>(m1 <= 0) || (m2 <= 0)</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>gcd(m1, m2) != 1</code>
 	 */
-	public static int crt(int n1, int m1, int n2, int m2) throws InvalidModulusException, UndefinedInverseException {
+	public static int crt(int n1, int m1, int n2, int m2)
+			throws ArithmeticException, InvalidModulusException, UndefinedInverseException {
+		if (((long) m1) * ((long) m2) > Integer.MAX_VALUE) {
+			throw new ArithmeticException();
+		}
 		return ((int) MathUtil.crt((long) n1, (long) m1, (long) n2, (long) m2));
 	}
 
@@ -2608,6 +2638,9 @@ public class MathUtil {
 	 * 
 	 * @return <code>n1 * m2 * (m2<sup>-1</sup> (mod m1)) + n2 * m1 * (m1<sup>-1</sup> (mod m2)) (mod m1 * m2)</code>.
 	 * 
+	 * @throws ArithmeticException
+	 *             If <code>((long) m1) * ((long) m2) > Short.MAX_VALUE</code>
+	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>(m1 <= 0) || (m2 <= 0)</code>
 	 * 
@@ -2615,7 +2648,10 @@ public class MathUtil {
 	 *             If <code>gcd(m1, m2) != 1</code>
 	 */
 	public static short crt(short n1, short m1, short n2, short m2)
-			throws InvalidModulusException, UndefinedInverseException {
+			throws ArithmeticException, InvalidModulusException, UndefinedInverseException {
+		if (((long) m1) * ((long) m2) > Short.MAX_VALUE) {
+			throw new ArithmeticException();
+		}
 		return ((short) MathUtil.crt((long) n1, (long) m1, (long) n2, (long) m2));
 	}
 
@@ -2636,6 +2672,9 @@ public class MathUtil {
 	 * 
 	 * @return <code>n1 * m2 * (m2<sup>-1</sup> (mod m1)) + n2 * m1 * (m1<sup>-1</sup> (mod m2)) (mod m1 * m2)</code>.
 	 * 
+	 * @throws ArithmeticException
+	 *             If <code>((long) m1) * ((long) m2) > Byte.MAX_VALUE</code>
+	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>(m1 <= 0) || (m2 <= 0)</code>
 	 * 
@@ -2643,7 +2682,10 @@ public class MathUtil {
 	 *             If <code>gcd(m1, m2) != 1</code>
 	 */
 	public static byte crt(byte n1, byte m1, byte n2, byte m2)
-			throws InvalidModulusException, UndefinedInverseException {
+			throws ArithmeticException, InvalidModulusException, UndefinedInverseException {
+		if (((long) m1) * ((long) m2) > Byte.MAX_VALUE) {
+			throw new ArithmeticException();
+		}
 		return ((byte) MathUtil.crt((long) n1, (long) m1, (long) n2, (long) m2));
 	}
 }
