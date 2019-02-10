@@ -1055,9 +1055,9 @@ public class MathUtil {
 	}
 
 	/**
-	 * We first attempt to multiply <code>a</code> and <code>b</code> normally using
+	 * First attempt to multiply <code>a</code> and <code>b</code> normally using
 	 * <code>Math.multiplyExact</code> in <code>O(1) time</code>. If an overflow occurs during the
-	 * multiplication, then we perform <code>O(lg(min(a (mod m), b (mod m))))</code> many additions in
+	 * multiplication, then perform <code>O(lg(min(a (mod m), b (mod m))))</code> many additions in
 	 * <code>mod m</code>. <br>
 	 * Precondition: <code>m > 0</code> <br>
 	 * Precondition: <code>|a| <= (m / 2)</code> <br>
@@ -1548,6 +1548,8 @@ public class MathUtil {
 				 * <code>baby</code> has wrapped back to <code>1</code>.
 				 */
 				break;
+			} else if (baby == target) {
+				return baby_index;
 			}
 		}
 		Long baby_index = null;
@@ -2504,5 +2506,144 @@ public class MathUtil {
 	 */
 	public static byte[] powers(byte n, byte m) throws InvalidModulusException {
 		return MathUtil.powers(n, m, 0, m - 1);
+	}
+
+	/**
+	 * Chinese Remainder Theorem.
+	 * 
+	 * @param n1
+	 *            the first given number
+	 * 
+	 * @param m1
+	 *            the first given modulus
+	 * 
+	 * @param n2
+	 *            the second given number
+	 * 
+	 * @param m2
+	 *            the second given modulus
+	 * 
+	 * @return <code>n1 * m2 * (m2<sup>-1</sup> (mod m1)) + n2 * m1 * (m1<sup>-1</sup> (mod m2)) (mod m1 * m2)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>(m1 <= 0) || (m2 <= 0)</code>
+	 * 
+	 * @throws ArithmeticException
+	 *             Thrown by <code>Math.multiplyExact(m1, m2)</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>gcd(m1, m2) != 1</code>
+	 */
+	public static long crt(long n1, long m1, long n2, long m2)
+			throws InvalidModulusException, ArithmeticException, UndefinedInverseException {
+		if ((m1 <= 0L) || (m2 <= 0L)) {
+			throw new InvalidModulusException();
+		}
+		// (m1 > 0) && (m2 > 0)
+
+		// Compute the new modulus.
+		final long m = Math.multiplyExact(m1, m2);
+
+		// Find integers x and y such that x * m1 + y * m2 == gcd(m1, m2).
+		final long[] result = MathUtil.gcdExtended(m1, m2);
+		if (result[2] != 1L) {
+			throw new UndefinedInverseException();
+		}
+
+		// Fix all variables to be in [-m / 2, m / 2] \cap \doubleZ.
+		final long m1_inverse = MathUtil.modMinFixedInput(result[0] %= m2, m),
+				m2_inverse = MathUtil.modMinFixedInput(result[1] %= m1, m);
+		n1 = MathUtil.modMinFixedInput(n1 %= m, m);
+		n2 = MathUtil.modMinFixedInput(n2 %= m, m);
+		m1 = MathUtil.modMinFixedInput(m1, m);
+		m2 = MathUtil.modMinFixedInput(m2, m);
+
+		// Compute the result but maintain all variables being in [-m / 2, m / 2] \cap \doubleZ.
+		long lhs = MathUtil.modMultFixedInput(MathUtil.modMultFixedInput(n1, m2, m), m2_inverse, m);
+		final long rhs = MathUtil.modMultFixedInput(MathUtil.modMultFixedInput(n2, m1, m), m1_inverse, m);
+		return (((lhs = (lhs += rhs) % m) < 0L) ? (lhs += m) : lhs);
+	}
+
+	/**
+	 * Chinese Remainder Theorem.
+	 * 
+	 * @param n1
+	 *            the first given number
+	 * 
+	 * @param m1
+	 *            the first given modulus
+	 * 
+	 * @param n2
+	 *            the second given number
+	 * 
+	 * @param m2
+	 *            the second given modulus
+	 * 
+	 * @return <code>n1 * m2 * (m2<sup>-1</sup> (mod m1)) + n2 * m1 * (m1<sup>-1</sup> (mod m2)) (mod m1 * m2)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>(m1 <= 0) || (m2 <= 0)</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>gcd(m1, m2) != 1</code>
+	 */
+	public static int crt(int n1, int m1, int n2, int m2) throws InvalidModulusException, UndefinedInverseException {
+		return ((int) MathUtil.crt((long) n1, (long) m1, (long) n2, (long) m2));
+	}
+
+	/**
+	 * Chinese Remainder Theorem.
+	 * 
+	 * @param n1
+	 *            the first given number
+	 * 
+	 * @param m1
+	 *            the first given modulus
+	 * 
+	 * @param n2
+	 *            the second given number
+	 * 
+	 * @param m2
+	 *            the second given modulus
+	 * 
+	 * @return <code>n1 * m2 * (m2<sup>-1</sup> (mod m1)) + n2 * m1 * (m1<sup>-1</sup> (mod m2)) (mod m1 * m2)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>(m1 <= 0) || (m2 <= 0)</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>gcd(m1, m2) != 1</code>
+	 */
+	public static short crt(short n1, short m1, short n2, short m2)
+			throws InvalidModulusException, UndefinedInverseException {
+		return ((short) MathUtil.crt((long) n1, (long) m1, (long) n2, (long) m2));
+	}
+
+	/**
+	 * Chinese Remainder Theorem.
+	 * 
+	 * @param n1
+	 *            the first given number
+	 * 
+	 * @param m1
+	 *            the first given modulus
+	 * 
+	 * @param n2
+	 *            the second given number
+	 * 
+	 * @param m2
+	 *            the second given modulus
+	 * 
+	 * @return <code>n1 * m2 * (m2<sup>-1</sup> (mod m1)) + n2 * m1 * (m1<sup>-1</sup> (mod m2)) (mod m1 * m2)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>(m1 <= 0) || (m2 <= 0)</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>gcd(m1, m2) != 1</code>
+	 */
+	public static byte crt(byte n1, byte m1, byte n2, byte m2)
+			throws InvalidModulusException, UndefinedInverseException {
+		return ((byte) MathUtil.crt((long) n1, (long) m1, (long) n2, (long) m2));
 	}
 }
