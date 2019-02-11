@@ -14,7 +14,7 @@ public class MathUtil {
 	/**
 	 * Dependencies: <code>
 	 * 		1. util.InvalidModulusException
-	 * 		1. util.UndefinedInverseException
+	 * 		2. util.UndefinedInverseException
 	 * </code>
 	 */
 
@@ -309,6 +309,7 @@ public class MathUtil {
 		if ((a < 0L) || (b < 0L)) {
 			throw new ArithmeticException();
 		}
+		// (a >= 0) && (b >= 0)
 
 		// Handle the special cases where at least one of the two numbers is 0.
 		if (a == 0L) {
@@ -325,6 +326,7 @@ public class MathUtil {
 			return new long[] { 1L, 0L, a };
 		}
 		// (a != 0) && (b != 0)
+		// i.e., (a > 0) && (b > 0)
 
 		// Algorithm is from Introduction to Mathematical Cryptography 2nd Edition Exercise 1.12.
 		long gcd = a, x = 1L;
@@ -333,7 +335,7 @@ public class MathUtil {
 			do {
 				// Compute the quotient and the remainder.
 				remainder = gcd - (quotient /= v) * v;
-				// (remainder == gcd % v) && (gcd == quotient * v + remainder)
+				// (quotient == gcd / v) && (remainder == gcd % v)
 
 				// Update all of the variables.
 				tmp = x - quotient * u;
@@ -2581,7 +2583,10 @@ public class MathUtil {
 		m1 = MathUtil.modMinFixedInput(m1, m);
 		m2 = MathUtil.modMinFixedInput(m2, m);
 
-		// Compute the result but maintain all variables being in [-m / 2, m / 2] \cap \doubleZ.
+		/*
+		 * Apply the C.R.T. formula for two congruences but maintain all variables being in [-m / 2, m / 2]
+		 * \cap \doubleZ.
+		 */
 		long lhs = MathUtil.modMultFixedInput(MathUtil.modMultFixedInput(n1, m2, m), m2_inverse, m);
 		final long rhs = MathUtil.modMultFixedInput(MathUtil.modMultFixedInput(n2, m1, m), m1_inverse, m);
 		return (((lhs = (lhs += rhs) % m) < 0L) ? (lhs += m) : lhs);
