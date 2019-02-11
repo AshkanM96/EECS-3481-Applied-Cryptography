@@ -3,6 +3,10 @@ package tests.test4;
 import java.util.HashMap;
 
 public class T4Q2 {
+	/**
+	 * No dependencies.
+	 */
+
 	private static long choose(int n, int k) {
 		return ((k == 0) ? 1 : (n * choose(n - 1, k - 1) / k));
 	}

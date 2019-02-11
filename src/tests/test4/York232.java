@@ -3,16 +3,18 @@ package tests.test4;
 import java.security.MessageDigest;
 
 public class York232 {
-	private byte[] msg;
-	private byte[] sha;
+	private final byte[] msg;
+	private final byte[] sha;
 
 	public York232(byte[] msg) throws Exception {
-		this.msg = msg;
+		if ((this.msg = msg) == null) {
+			throw new NullPointerException();
+		}
 		this.sha = MessageDigest.getInstance("Sha-224").digest(this.msg);
 	}
 
 	public byte[] getHash() {
-		byte[] result = new byte[29];
+		final byte[] result = new byte[29];
 		if (this.msg.length == 28) {
 			// Map 28 byte messages to 0 || msg.
 			result[0] = 0;
