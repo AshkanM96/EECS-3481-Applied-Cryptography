@@ -255,18 +255,9 @@ public class BigIntegerUtil {
 	 * 
 	 * @throws NullPointerException
 	 *             If <code>(a == null) || (b == null)</code>
-	 * 
-	 * @throws ArithmeticException
-	 *             If <code>(a < 0) || (b < 0)</code>
 	 */
-	public static BigInteger[] gcdExtended(BigInteger a, BigInteger b)
-			throws NullPointerException, ArithmeticException {
+	public static BigInteger[] gcdExtended(BigInteger a, BigInteger b) throws NullPointerException {
 		final int sign_a = a.signum(), sign_b = b.signum();
-		if ((sign_a == -1) || (sign_b == -1)) {
-			throw new ArithmeticException();
-		}
-		// (a >= 0) && (b >= 0)
-
 		// Handle the special cases where at least one of the two numbers is 0.
 		if (sign_a == 0) {
 			if (sign_b == 0) {
@@ -282,12 +273,20 @@ public class BigIntegerUtil {
 			return new BigInteger[] { BigInteger.ONE, BigInteger.ZERO, a };
 		}
 		// (a != 0) && (b != 0)
-		// i.e., (a > 0) && (b > 0)
+
+		// The algorithm only works for a > 0 and b > 0 so compute and save absolute values and signs.
+		BigInteger abs_a = a, abs_b = b;
+		if (sign_a == -1) {
+			abs_a = a.negate();
+		}
+		if (sign_b == -1) {
+			abs_b = b.negate();
+		}
 
 		// Algorithm is from Introduction to Mathematical Cryptography 2nd Edition Exercise 1.12.
-		BigInteger gcd = a, x = BigInteger.ONE;
+		BigInteger gcd = abs_a, x = BigInteger.ONE;
 		{
-			BigInteger u = BigInteger.ZERO, v = b, tmp = null;
+			BigInteger u = BigInteger.ZERO, v = abs_b, tmp = null;
 			BigInteger[] qr = null;
 			do {
 				// Compute the quotient and the remainder.
@@ -302,8 +301,15 @@ public class BigIntegerUtil {
 				v = qr[1];
 			} while (v.signum() != 0);
 		}
-		// x * a + y * b == gcd where y == (gcd - x * a) / b
-		return new BigInteger[] { x, gcd.subtract(x.multiply(a)).divide(b), gcd };
+		/**
+		 * <code>x * abs_a + y * abs_b == gcd where y == (gcd - x * abs_a) / abs_b</code> <br>
+		 * So, <code>(x * sign_a) * a + (y * sign_b) * b == gcd where y == (gcd - x * abs_a) / abs_b</code>
+		 * <br>
+		 * So, <code>x' * a + y' * b == gcd where x' == a * sign_a and y' == y * sign_b</code> <br>
+		 * But since <code>b == sign_b * abs_b</code>, we can conclude that
+		 * <code>y' == (gcd - x * abs_a) / b</code>
+		 */
+		return new BigInteger[] { (sign_a == -1) ? x.negate() : x, gcd.subtract(x.multiply(abs_a)).divide(b), gcd };
 	}
 
 	/**

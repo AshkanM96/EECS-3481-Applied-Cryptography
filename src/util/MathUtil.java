@@ -289,6 +289,7 @@ public class MathUtil {
 	}
 
 	/**
+	 * Precondition: <code>(a != Long.MIN_VALUE) && (b != Long.MIN_VALUE)</code> <br>
 	 * Postcondition: <code>Result != null</code> <br>
 	 * Postcondition: <code>Result.length == 3</code> <br>
 	 * Postcondition: <code>Result[2] == gcd(a, b)</code> <br>
@@ -301,16 +302,8 @@ public class MathUtil {
 	 *            the second given number
 	 * 
 	 * @return The resulting long array.
-	 * 
-	 * @throws ArithmeticException
-	 *             If <code>(a < 0) || (b < 0)</code>
 	 */
-	public static long[] gcdExtended(long a, long b) throws ArithmeticException {
-		if ((a < 0L) || (b < 0L)) {
-			throw new ArithmeticException();
-		}
-		// (a >= 0) && (b >= 0)
-
+	protected static long[] gcdExtendedFixedInput(long a, long b) {
 		// Handle the special cases where at least one of the two numbers is 0.
 		if (a == 0L) {
 			if (b == 0L) {
@@ -326,12 +319,21 @@ public class MathUtil {
 			return new long[] { 1L, 0L, a };
 		}
 		// (a != 0) && (b != 0)
-		// i.e., (a > 0) && (b > 0)
+
+		// The algorithm only works for a > 0 and b > 0 so compute and save absolute values and signs.
+		long abs_a = a, abs_b = b;
+		int sign_a = 1;
+		if (a < 0L) {
+			abs_a *= (sign_a = -1);
+		}
+		if (b < 0L) {
+			abs_b *= -1;
+		}
 
 		// Algorithm is from Introduction to Mathematical Cryptography 2nd Edition Exercise 1.12.
-		long gcd = a, x = 1L;
+		long gcd = abs_a, x = 1L;
 		{
-			long u = 0L, v = b, remainder = 0L, quotient = gcd, tmp = 0L;
+			long u = 0L, v = abs_b, remainder = 0L, quotient = gcd, tmp = 0L;
 			do {
 				// Compute the quotient and the remainder.
 				remainder = gcd - (quotient /= v) * v;
@@ -345,8 +347,43 @@ public class MathUtil {
 				v = remainder;
 			} while (v != 0L);
 		}
-		// x * a + y * b == gcd where y == (gcd - x * a) / b
-		return new long[] { x, (gcd - x * a) / b, gcd };
+		/**
+		 * <code>x * abs_a + y * abs_b == gcd where y == (gcd - x * abs_a) / abs_b</code> <br>
+		 * So, <code>(x * sign_a) * a + (y * sign_b) * b == gcd where y == (gcd - x * abs_a) / abs_b</code>
+		 * <br>
+		 * So, <code>x' * a + y' * b == gcd where x' == a * sign_a and y' == y * sign_b</code> <br>
+		 * But since <code>b == sign_b * abs_b</code>, we can conclude that
+		 * <code>y' == (gcd - x * abs_a) / b</code>
+		 */
+		return new long[] { x * sign_a, (gcd - x * abs_a) / b, gcd };
+	}
+
+	/**
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>Result.length == 3</code> <br>
+	 * Postcondition: <code>Result[2] == gcd(a, b)</code> <br>
+	 * Postcondition: <code>Result[0] * a + Result[1] * b == gcd(a, b)</code>
+	 * 
+	 * @param a
+	 *            the first given number
+	 * 
+	 * @param b
+	 *            the second given number
+	 * 
+	 * @return The resulting long array.
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>(a == Long.MIN_VALUE) || (b == Long.MIN_VALUE)</code>
+	 */
+	public static long[] gcdExtended(long a, long b) throws ArithmeticException {
+		/*
+		 * Handle the degenerate cases where a's or b's absolute value is not representable as a
+		 * non-negative long.
+		 */
+		if ((a == Long.MIN_VALUE) || (b == Long.MIN_VALUE)) {
+			throw new ArithmeticException();
+		}
+		return MathUtil.gcdExtendedFixedInput(a, b);
 	}
 
 	/**
@@ -364,10 +401,17 @@ public class MathUtil {
 	 * @return The resulting integer array.
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>(a < 0) || (b < 0)</code>
+	 *             If <code>(a == Integer.MIN_VALUE) || (b == Integer.MIN_VALUE)</code>
 	 */
 	public static int[] gcdExtended(int a, int b) throws ArithmeticException {
-		final long[] result = MathUtil.gcdExtended((long) a, (long) b);
+		/*
+		 * Handle the degenerate cases where a's or b's absolute value is not representable as a
+		 * non-negative int.
+		 */
+		if ((a == Integer.MIN_VALUE) || (b == Integer.MIN_VALUE)) {
+			throw new ArithmeticException();
+		}
+		final long[] result = MathUtil.gcdExtendedFixedInput(a, b);
 		return new int[] { (int) result[0], (int) result[1], (int) result[2] };
 	}
 
@@ -386,10 +430,17 @@ public class MathUtil {
 	 * @return The resulting short array.
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>(a < 0) || (b < 0)</code>
+	 *             If <code>(a == Short.MIN_VALUE) || (b == Short.MIN_VALUE)</code>
 	 */
 	public static short[] gcdExtended(short a, short b) throws ArithmeticException {
-		final long[] result = MathUtil.gcdExtended((long) a, (long) b);
+		/*
+		 * Handle the degenerate cases where a's or b's absolute value is not representable as a
+		 * non-negative short.
+		 */
+		if ((a == Short.MIN_VALUE) || (b == Short.MIN_VALUE)) {
+			throw new ArithmeticException();
+		}
+		final long[] result = MathUtil.gcdExtendedFixedInput(a, b);
 		return new short[] { (short) result[0], (short) result[1], (short) result[2] };
 	}
 
@@ -408,10 +459,17 @@ public class MathUtil {
 	 * @return The resulting byte array.
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>(a < 0) || (b < 0)</code>
+	 *             If <code>(a == Byte.MIN_VALUE) || (b == Byte.MIN_VALUE)</code>
 	 */
 	public static byte[] gcdExtended(byte a, byte b) throws ArithmeticException {
-		final long[] result = MathUtil.gcdExtended((long) a, (long) b);
+		/*
+		 * Handle the degenerate cases where a's or b's absolute value is not representable as a
+		 * non-negative byte.
+		 */
+		if ((a == Byte.MIN_VALUE) || (b == Byte.MIN_VALUE)) {
+			throw new ArithmeticException();
+		}
+		final long[] result = MathUtil.gcdExtendedFixedInput(a, b);
 		return new byte[] { (byte) result[0], (byte) result[1], (byte) result[2] };
 	}
 
