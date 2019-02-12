@@ -1,5 +1,6 @@
 package util;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -340,7 +341,7 @@ public class MathUtil {
 				// (quotient == gcd / v) && (remainder == gcd % v)
 
 				// Update all of the variables.
-				tmp = x - quotient * u;
+				tmp = (x -= (quotient *= u));
 				quotient = gcd = v;
 				x = u;
 				u = tmp;
@@ -355,7 +356,13 @@ public class MathUtil {
 		 * But since <code>b == sign_b * abs_b</code>, we can conclude that
 		 * <code>y' == (gcd - x * abs_a) / b</code>
 		 */
-		return new long[] { x * sign_a, (gcd - x * abs_a) / b, gcd };
+		/*
+		 * Have to use BigInteger to compute y' since every intermediate result in the formula for y' may
+		 * overflow a long.
+		 */
+		final long y = BigInteger.valueOf(gcd).subtract(BigInteger.valueOf(x).multiply(BigInteger.valueOf(abs_a)))
+				.divide(BigInteger.valueOf(b)).longValue();
+		return new long[] { x * sign_a, y, gcd };
 	}
 
 	/**

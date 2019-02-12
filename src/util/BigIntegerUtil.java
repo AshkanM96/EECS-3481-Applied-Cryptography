@@ -274,7 +274,7 @@ public class BigIntegerUtil {
 		}
 		// (a != 0) && (b != 0)
 
-		// The algorithm only works for a > 0 and b > 0 so compute and save absolute values and signs.
+		// The algorithm only works for a > 0 and b > 0 so compute and save absolute values.
 		BigInteger abs_a = a, abs_b = b;
 		if (sign_a == -1) {
 			abs_a = a.negate();
