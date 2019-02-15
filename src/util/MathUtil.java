@@ -1605,7 +1605,7 @@ public class MathUtil {
 					 * it may wrap back to <code>n</code>.
 					 */
 					if (order_n == null) {
-						order_n = index - 1L;
+						order_n = index;
 					}
 				}
 				if ((giant = MathUtil.modMultFixedInput(giant, giant_factor, m)) == target) {
@@ -1614,7 +1614,7 @@ public class MathUtil {
 					 * <code>giant</code> has wrapped back to <code>target</code>.
 					 */
 					if (order_giant_factor == null) {
-						order_giant_factor = index;
+						order_giant_factor = index + 1L;
 					}
 				}
 				if ((order_n != null) && (order_giant_factor != null)) {
