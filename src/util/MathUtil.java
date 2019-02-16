@@ -362,7 +362,7 @@ public class MathUtil {
 		 */
 		final long y = BigInteger.valueOf(gcd).subtract(BigInteger.valueOf(x).multiply(BigInteger.valueOf(abs_a)))
 				.divide(BigInteger.valueOf(b)).longValue();
-		return new long[] { x * sign_a, y, gcd };
+		return new long[] { x *= sign_a, y, gcd };
 	}
 
 	/**
