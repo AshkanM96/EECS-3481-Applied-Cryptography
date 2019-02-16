@@ -2666,7 +2666,7 @@ public class MathUtil {
 	 * @param end
 	 *            the given end power
 	 * 
-	 * @return The resulting int array.
+	 * @return The resulting integer array.
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>begin > end</code>
@@ -2749,7 +2749,7 @@ public class MathUtil {
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @return The resulting int array.
+	 * @return The resulting integer array.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m <= 0</code>
@@ -2979,7 +2979,13 @@ public class MathUtil {
 	}
 
 	/**
-	 * Chinese Remainder Theorem.
+	 * Chinese Remainder Theorem. <br>
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>Result.length == 2</code> <br>
+	 * Postcondition:
+	 * <code>Result[0] == n1 * m2 * (m2<sup>-1</sup> (mod m1)) + n2 * m1 * (m1<sup>-1</sup> (mod m2)) (mod m1 * m2)</code>
+	 * <br>
+	 * Postcondition: <code>Result[1] == m1 * m2</code>
 	 * 
 	 * @param n1
 	 *            the first given number
@@ -2993,7 +2999,7 @@ public class MathUtil {
 	 * @param m2
 	 *            the second given modulus
 	 * 
-	 * @return <code>n1 * m2 * (m2<sup>-1</sup> (mod m1)) + n2 * m1 * (m1<sup>-1</sup> (mod m2)) (mod m1 * m2)</code>.
+	 * @return The resulting long array.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>(m1 <= 0) || (m2 <= 0)</code>
@@ -3004,7 +3010,7 @@ public class MathUtil {
 	 * @throws UndefinedInverseException
 	 *             If <code>gcd(m1, m2) != 1</code>
 	 */
-	public static long crt(long n1, long m1, long n2, long m2)
+	public static long[] crt(long n1, long m1, long n2, long m2)
 			throws InvalidModulusException, ArithmeticException, UndefinedInverseException {
 		if ((m1 <= 0L) || (m2 <= 0L)) {
 			throw new InvalidModulusException();
@@ -3034,11 +3040,20 @@ public class MathUtil {
 		 */
 		long lhs = MathUtil.modMultFixedInput(MathUtil.modMultFixedInput(n1, m2, m), m2_inverse, m);
 		final long rhs = MathUtil.modMultFixedInput(MathUtil.modMultFixedInput(n2, m1, m), m1_inverse, m);
-		return (((lhs = (lhs += rhs) % m) < 0L) ? (lhs += m) : lhs);
+		if ((lhs = (lhs += rhs) % m) < 0L) {
+			lhs += m;
+		}
+		return new long[] { lhs, m };
 	}
 
 	/**
-	 * Chinese Remainder Theorem.
+	 * Chinese Remainder Theorem. <br>
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>Result.length == 2</code> <br>
+	 * Postcondition:
+	 * <code>Result[0] == n1 * m2 * (m2<sup>-1</sup> (mod m1)) + n2 * m1 * (m1<sup>-1</sup> (mod m2)) (mod m1 * m2)</code>
+	 * <br>
+	 * Postcondition: <code>Result[1] == m1 * m2</code>
 	 * 
 	 * @param n1
 	 *            the first given number
@@ -3052,7 +3067,7 @@ public class MathUtil {
 	 * @param m2
 	 *            the second given modulus
 	 * 
-	 * @return <code>n1 * m2 * (m2<sup>-1</sup> (mod m1)) + n2 * m1 * (m1<sup>-1</sup> (mod m2)) (mod m1 * m2)</code>.
+	 * @return The resulting integer array.
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>((long) m1) * ((long) m2) > Integer.MAX_VALUE</code>
@@ -3063,16 +3078,23 @@ public class MathUtil {
 	 * @throws UndefinedInverseException
 	 *             If <code>gcd(m1, m2) != 1</code>
 	 */
-	public static int crt(int n1, int m1, int n2, int m2)
+	public static int[] crt(int n1, int m1, int n2, int m2)
 			throws ArithmeticException, InvalidModulusException, UndefinedInverseException {
 		if (((long) m1) * ((long) m2) > Integer.MAX_VALUE) {
 			throw new ArithmeticException();
 		}
-		return ((int) MathUtil.crt((long) n1, (long) m1, (long) n2, (long) m2));
+		final long[] result = MathUtil.crt((long) n1, (long) m1, (long) n2, (long) m2);
+		return new int[] { (int) result[0], (int) result[1] };
 	}
 
 	/**
-	 * Chinese Remainder Theorem.
+	 * Chinese Remainder Theorem. <br>
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>Result.length == 2</code> <br>
+	 * Postcondition:
+	 * <code>Result[0] == n1 * m2 * (m2<sup>-1</sup> (mod m1)) + n2 * m1 * (m1<sup>-1</sup> (mod m2)) (mod m1 * m2)</code>
+	 * <br>
+	 * Postcondition: <code>Result[1] == m1 * m2</code>
 	 * 
 	 * @param n1
 	 *            the first given number
@@ -3086,7 +3108,7 @@ public class MathUtil {
 	 * @param m2
 	 *            the second given modulus
 	 * 
-	 * @return <code>n1 * m2 * (m2<sup>-1</sup> (mod m1)) + n2 * m1 * (m1<sup>-1</sup> (mod m2)) (mod m1 * m2)</code>.
+	 * @return The resulting short array.
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>((long) m1) * ((long) m2) > Short.MAX_VALUE</code>
@@ -3097,16 +3119,23 @@ public class MathUtil {
 	 * @throws UndefinedInverseException
 	 *             If <code>gcd(m1, m2) != 1</code>
 	 */
-	public static short crt(short n1, short m1, short n2, short m2)
+	public static short[] crt(short n1, short m1, short n2, short m2)
 			throws ArithmeticException, InvalidModulusException, UndefinedInverseException {
 		if (((long) m1) * ((long) m2) > Short.MAX_VALUE) {
 			throw new ArithmeticException();
 		}
-		return ((short) MathUtil.crt((long) n1, (long) m1, (long) n2, (long) m2));
+		final long[] result = MathUtil.crt((long) n1, (long) m1, (long) n2, (long) m2);
+		return new short[] { (short) result[0], (short) result[1] };
 	}
 
 	/**
-	 * Chinese Remainder Theorem.
+	 * Chinese Remainder Theorem. <br>
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>Result.length == 2</code> <br>
+	 * Postcondition:
+	 * <code>Result[0] == n1 * m2 * (m2<sup>-1</sup> (mod m1)) + n2 * m1 * (m1<sup>-1</sup> (mod m2)) (mod m1 * m2)</code>
+	 * <br>
+	 * Postcondition: <code>Result[1] == m1 * m2</code>
 	 * 
 	 * @param n1
 	 *            the first given number
@@ -3120,7 +3149,7 @@ public class MathUtil {
 	 * @param m2
 	 *            the second given modulus
 	 * 
-	 * @return <code>n1 * m2 * (m2<sup>-1</sup> (mod m1)) + n2 * m1 * (m1<sup>-1</sup> (mod m2)) (mod m1 * m2)</code>.
+	 * @return The resulting byte array.
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>((long) m1) * ((long) m2) > Byte.MAX_VALUE</code>
@@ -3131,11 +3160,12 @@ public class MathUtil {
 	 * @throws UndefinedInverseException
 	 *             If <code>gcd(m1, m2) != 1</code>
 	 */
-	public static byte crt(byte n1, byte m1, byte n2, byte m2)
+	public static byte[] crt(byte n1, byte m1, byte n2, byte m2)
 			throws ArithmeticException, InvalidModulusException, UndefinedInverseException {
 		if (((long) m1) * ((long) m2) > Byte.MAX_VALUE) {
 			throw new ArithmeticException();
 		}
-		return ((byte) MathUtil.crt((long) n1, (long) m1, (long) n2, (long) m2));
+		final long[] result = MathUtil.crt((long) n1, (long) m1, (long) n2, (long) m2);
+		return new byte[] { (byte) result[0], (byte) result[1] };
 	}
 }
