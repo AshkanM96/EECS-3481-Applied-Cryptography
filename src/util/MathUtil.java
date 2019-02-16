@@ -1608,7 +1608,7 @@ public class MathUtil {
 						order_n = index;
 					}
 				}
-				if ((giant = MathUtil.modMultFixedInput(giant, giant_factor, m)) == target) {
+				if (((giant = MathUtil.modMultFixedInput(giant, giant_factor, m)) == target) && (index != 0L)) {
 					/**
 					 * This will only happen when <code>giant_factor</code>'s multiplicative order has been reached and
 					 * <code>giant</code> has wrapped back to <code>target</code>.
