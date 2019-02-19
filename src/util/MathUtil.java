@@ -481,8 +481,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * Note that the final result of this function may have overflowed and wrapped around which is why
-	 * it returns the absolute value of the final result.
+	 * Note that this function does not check for overflows which may have occurred during the
+	 * calculations.
 	 * 
 	 * @param a
 	 *            the first given number
@@ -493,8 +493,7 @@ public class MathUtil {
 	 * @return The least common multiple of the two numbers.
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>((a == Long.MIN_VALUE) && (b == Long.MIN_VALUE))
-	 *             || (((a / MathUtil.gcd(a, b)) * b) == Long.MIN_VALUE)</code>
+	 *             If <code>(a == Long.MIN_VALUE) && (b == Long.MIN_VALUE)</code>
 	 */
 	public static long lcm(long a, long b) throws ArithmeticException {
 		// lcm(0, b) == 0 == lcm(a, 0)
@@ -508,17 +507,12 @@ public class MathUtil {
 		b = Math.abs(b);
 
 		// lcm(a, b) == (a * b) / gcd(a, b)
-		final long result = Math.abs((a / MathUtil.gcd(a, b)) * b);
-		// Math.abs(Long.MIN_VALUE) == Long.MIN_VALUE
-		if (result == Long.MIN_VALUE) {
-			throw new ArithmeticException();
-		}
-		return result;
+		return ((a /= MathUtil.gcd(a, b)) * b);
 	}
 
 	/**
-	 * Note that the final result of this function may have overflowed and wrapped around which is why
-	 * it returns the absolute value of the final result.
+	 * Note that this function does not check for overflows which may have occurred during the
+	 * calculations.
 	 * 
 	 * @param a
 	 *            the first given number
@@ -529,20 +523,19 @@ public class MathUtil {
 	 * @return The least common multiple of the two numbers.
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>((a / MathUtil.gcd(a, b)) * b) == Integer.MIN_VALUE</code>
+	 *             If <code>lcm(a, b) != ((int) lcm(a, b))</code>
 	 */
 	public static int lcm(int a, int b) {
-		final int result = Math.abs((int) MathUtil.lcm((long) a, (long) b));
-		// Math.abs(Integer.MIN_VALUE) == Integer.MIN_VALUE
-		if (result == Integer.MIN_VALUE) {
+		final long result = MathUtil.lcm((long) a, (long) b);
+		if (result != ((int) result)) {
 			throw new ArithmeticException();
 		}
-		return result;
+		return ((int) result);
 	}
 
 	/**
-	 * Note that the final result of this function may have overflowed and wrapped around which is why
-	 * it returns the absolute value of the final result.
+	 * Note that this function does not check for overflows which may have occurred during the
+	 * calculations.
 	 * 
 	 * @param a
 	 *            the first given number
@@ -553,20 +546,19 @@ public class MathUtil {
 	 * @return The least common multiple of the two numbers.
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>((a / MathUtil.gcd(a, b)) * b) == Short.MIN_VALUE</code>
+	 *             If <code>lcm(a, b) != ((short) lcm(a, b))</code>
 	 */
 	public static short lcm(short a, short b) {
-		final short result = (short) Math.abs((short) MathUtil.lcm((long) a, (long) b));
-		// ((short) Math.abs(Short.MIN_VALUE)) == Short.MIN_VALUE
-		if (result == Short.MIN_VALUE) {
+		final long result = MathUtil.lcm((long) a, (long) b);
+		if (result != ((short) result)) {
 			throw new ArithmeticException();
 		}
-		return result;
+		return ((short) result);
 	}
 
 	/**
-	 * Note that the final result of this function may have overflowed and wrapped around which is why
-	 * it returns the absolute value of the final result.
+	 * Note that this function does not check for overflows which may have occurred during the
+	 * calculations.
 	 * 
 	 * @param a
 	 *            the first given number
@@ -577,15 +569,14 @@ public class MathUtil {
 	 * @return The least common multiple of the two numbers.
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>((a / MathUtil.gcd(a, b)) * b) == Byte.MIN_VALUE</code>
+	 *             If <code>lcm(a, b) != ((byte) lcm(a, b))</code>
 	 */
 	public static byte lcm(byte a, byte b) {
-		final byte result = (byte) Math.abs((byte) MathUtil.lcm((long) a, (long) b));
-		// ((byte) Math.abs(Byte.MIN_VALUE)) == Byte.MIN_VALUE
-		if (result == Byte.MIN_VALUE) {
+		final long result = MathUtil.lcm((long) a, (long) b);
+		if (result != ((byte) result)) {
 			throw new ArithmeticException();
 		}
-		return result;
+		return ((byte) result);
 	}
 
 	/**
@@ -2981,11 +2972,13 @@ public class MathUtil {
 	/**
 	 * Chinese Remainder Theorem. <br>
 	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>Result.length == 2</code> <br>
+	 * Postcondition: <code>Result.length == 3</code> <br>
 	 * Postcondition:
-	 * <code>Result[0] == n1 * m2 * (m2<sup>-1</sup> (mod m1)) + n2 * m1 * (m1<sup>-1</sup> (mod m2)) (mod m1 * m2)</code>
+	 * <code>Result[0] == n1 * (<sup>m2</sup>&frasl;<sub>gcd(m1, m2)</sub>) * (m2<sup>-1</sup> (mod m1))
+	 * + n2 * (<sup>m1</sup>&frasl;<sub>gcd(m1, m2)</sub>) * (m1<sup>-1</sup> (mod m2)) (mod lcm(m1, m2))</code>
 	 * <br>
-	 * Postcondition: <code>Result[1] == m1 * m2</code>
+	 * Postcondition: <code>Result[1] == lcm(m1, m2)</code> <br>
+	 * Postcondition: <code>Result[2] == gcd(m1, m2)</code>
 	 * 
 	 * @param n1
 	 *            the first given number
@@ -3005,25 +2998,32 @@ public class MathUtil {
 	 *             If <code>(m1 <= 0) || (m2 <= 0)</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             Thrown by <code>Math.multiplyExact(m1, m2)</code>
+	 *             If <code>lcm(m1, m2) > Long.MAX_VALUE</code>
 	 * 
-	 * @throws UndefinedInverseException
-	 *             If <code>gcd(m1, m2) != 1</code>
+	 * @throws IllegalArgumentException
+	 *             If <code>n1 != n2 (mod gcd(m1, m2))</code>
 	 */
 	public static long[] crt(long n1, long m1, long n2, long m2)
-			throws InvalidModulusException, ArithmeticException, UndefinedInverseException {
+			throws InvalidModulusException, ArithmeticException, IllegalArgumentException {
 		if ((m1 <= 0L) || (m2 <= 0L)) {
 			throw new InvalidModulusException();
 		}
 		// (m1 > 0) && (m2 > 0)
 
-		// Compute the new modulus.
-		final long m = Math.multiplyExact(m1, m2);
-
 		// Find integers x and y such that x * m1 + y * m2 == gcd(m1, m2).
-		final long[] result = MathUtil.gcdExtended(m1, m2);
-		if (result[2] != 1L) {
-			throw new UndefinedInverseException();
+		final long[] result = MathUtil.gcdExtendedFixedInput(m1, m2);
+		final long gcd = result[2];
+
+		// Compute the new modulus which is the least common multiple of m1 and m2.
+		final long m = Math.multiplyExact(m1 / gcd, m2);
+
+		// Handle the invalid case and update the factor if needed.
+		long factor = 1L;
+		if (gcd != 1L) {
+			if (MathUtil.mod(n1, gcd) != MathUtil.mod(n2, gcd)) {
+				throw new IllegalArgumentException();
+			}
+			factor = gcd;
 		}
 
 		// Fix all variables to be in [-m / 2, m / 2] \cap \doubleZ.
@@ -3031,29 +3031,31 @@ public class MathUtil {
 				m2_inverse = MathUtil.modMinFixedInput(result[1] %= m1, m);
 		n1 = MathUtil.modMinFixedInput(n1 %= m, m);
 		n2 = MathUtil.modMinFixedInput(n2 %= m, m);
-		m1 = MathUtil.modMinFixedInput(m1, m);
-		m2 = MathUtil.modMinFixedInput(m2, m);
+		m1 = MathUtil.modMinFixedInput(m1 /= factor, m);
+		m2 = MathUtil.modMinFixedInput(m2 /= factor, m);
 
 		/*
 		 * Apply the C.R.T. formula for two congruences but maintain all variables being in [-m / 2, m / 2]
-		 * \cap \doubleZ.
+		 * \cap \doubleZ during calculations.
 		 */
 		long lhs = MathUtil.modMultFixedInput(MathUtil.modMultFixedInput(n1, m2, m), m2_inverse, m);
 		final long rhs = MathUtil.modMultFixedInput(MathUtil.modMultFixedInput(n2, m1, m), m1_inverse, m);
 		if ((lhs = (lhs += rhs) % m) < 0L) {
 			lhs += m;
 		}
-		return new long[] { lhs, m };
+		return new long[] { lhs, m, gcd };
 	}
 
 	/**
 	 * Chinese Remainder Theorem. <br>
 	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>Result.length == 2</code> <br>
+	 * Postcondition: <code>Result.length == 3</code> <br>
 	 * Postcondition:
-	 * <code>Result[0] == n1 * m2 * (m2<sup>-1</sup> (mod m1)) + n2 * m1 * (m1<sup>-1</sup> (mod m2)) (mod m1 * m2)</code>
+	 * <code>Result[0] == n1 * (<sup>m2</sup>&frasl;<sub>gcd(m1, m2)</sub>) * (m2<sup>-1</sup> (mod m1))
+	 * + n2 * (<sup>m1</sup>&frasl;<sub>gcd(m1, m2)</sub>) * (m1<sup>-1</sup> (mod m2)) (mod lcm(m1, m2))</code>
 	 * <br>
-	 * Postcondition: <code>Result[1] == m1 * m2</code>
+	 * Postcondition: <code>Result[1] == lcm(m1, m2)</code> <br>
+	 * Postcondition: <code>Result[2] == gcd(m1, m2)</code>
 	 * 
 	 * @param n1
 	 *            the first given number
@@ -3069,32 +3071,35 @@ public class MathUtil {
 	 * 
 	 * @return The resulting integer array.
 	 * 
-	 * @throws ArithmeticException
-	 *             If <code>((long) m1) * ((long) m2) > Integer.MAX_VALUE</code>
-	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>(m1 <= 0) || (m2 <= 0)</code>
 	 * 
-	 * @throws UndefinedInverseException
-	 *             If <code>gcd(m1, m2) != 1</code>
+	 * @throws IllegalArgumentException
+	 *             If <code>n1 != n2 (mod gcd(m1, m2))</code>
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>lcm(m1, m2) > Integer.MAX_VALUE</code>
 	 */
 	public static int[] crt(int n1, int m1, int n2, int m2)
-			throws ArithmeticException, InvalidModulusException, UndefinedInverseException {
-		if (((long) m1) * ((long) m2) > Integer.MAX_VALUE) {
+			throws InvalidModulusException, IllegalArgumentException, ArithmeticException {
+		final long[] result = MathUtil.crt((long) n1, (long) m1, (long) n2, (long) m2);
+		final long m = result[1];
+		if (m > Integer.MAX_VALUE) {
 			throw new ArithmeticException();
 		}
-		final long[] result = MathUtil.crt((long) n1, (long) m1, (long) n2, (long) m2);
-		return new int[] { (int) result[0], (int) result[1] };
+		return new int[] { (int) result[0], (int) m, (int) result[2] };
 	}
 
 	/**
 	 * Chinese Remainder Theorem. <br>
 	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>Result.length == 2</code> <br>
+	 * Postcondition: <code>Result.length == 3</code> <br>
 	 * Postcondition:
-	 * <code>Result[0] == n1 * m2 * (m2<sup>-1</sup> (mod m1)) + n2 * m1 * (m1<sup>-1</sup> (mod m2)) (mod m1 * m2)</code>
+	 * <code>Result[0] == n1 * (<sup>m2</sup>&frasl;<sub>gcd(m1, m2)</sub>) * (m2<sup>-1</sup> (mod m1))
+	 * + n2 * (<sup>m1</sup>&frasl;<sub>gcd(m1, m2)</sub>) * (m1<sup>-1</sup> (mod m2)) (mod lcm(m1, m2))</code>
 	 * <br>
-	 * Postcondition: <code>Result[1] == m1 * m2</code>
+	 * Postcondition: <code>Result[1] == lcm(m1, m2)</code> <br>
+	 * Postcondition: <code>Result[2] == gcd(m1, m2)</code>
 	 * 
 	 * @param n1
 	 *            the first given number
@@ -3110,32 +3115,35 @@ public class MathUtil {
 	 * 
 	 * @return The resulting short array.
 	 * 
-	 * @throws ArithmeticException
-	 *             If <code>((long) m1) * ((long) m2) > Short.MAX_VALUE</code>
-	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>(m1 <= 0) || (m2 <= 0)</code>
 	 * 
-	 * @throws UndefinedInverseException
-	 *             If <code>gcd(m1, m2) != 1</code>
+	 * @throws IllegalArgumentException
+	 *             If <code>n1 != n2 (mod gcd(m1, m2))</code>
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>lcm(m1, m2) > Short.MAX_VALUE</code>
 	 */
 	public static short[] crt(short n1, short m1, short n2, short m2)
-			throws ArithmeticException, InvalidModulusException, UndefinedInverseException {
-		if (((long) m1) * ((long) m2) > Short.MAX_VALUE) {
+			throws InvalidModulusException, IllegalArgumentException, ArithmeticException {
+		final long[] result = MathUtil.crt((long) n1, (long) m1, (long) n2, (long) m2);
+		final long m = result[1];
+		if (m > Short.MAX_VALUE) {
 			throw new ArithmeticException();
 		}
-		final long[] result = MathUtil.crt((long) n1, (long) m1, (long) n2, (long) m2);
-		return new short[] { (short) result[0], (short) result[1] };
+		return new short[] { (short) result[0], (short) m, (short) result[2] };
 	}
 
 	/**
 	 * Chinese Remainder Theorem. <br>
 	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>Result.length == 2</code> <br>
+	 * Postcondition: <code>Result.length == 3</code> <br>
 	 * Postcondition:
-	 * <code>Result[0] == n1 * m2 * (m2<sup>-1</sup> (mod m1)) + n2 * m1 * (m1<sup>-1</sup> (mod m2)) (mod m1 * m2)</code>
+	 * <code>Result[0] == n1 * (<sup>m2</sup>&frasl;<sub>gcd(m1, m2)</sub>) * (m2<sup>-1</sup> (mod m1))
+	 * + n2 * (<sup>m1</sup>&frasl;<sub>gcd(m1, m2)</sub>) * (m1<sup>-1</sup> (mod m2)) (mod lcm(m1, m2))</code>
 	 * <br>
-	 * Postcondition: <code>Result[1] == m1 * m2</code>
+	 * Postcondition: <code>Result[1] == lcm(m1, m2)</code> <br>
+	 * Postcondition: <code>Result[2] == gcd(m1, m2)</code>
 	 * 
 	 * @param n1
 	 *            the first given number
@@ -3151,21 +3159,22 @@ public class MathUtil {
 	 * 
 	 * @return The resulting byte array.
 	 * 
-	 * @throws ArithmeticException
-	 *             If <code>((long) m1) * ((long) m2) > Byte.MAX_VALUE</code>
-	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>(m1 <= 0) || (m2 <= 0)</code>
 	 * 
-	 * @throws UndefinedInverseException
-	 *             If <code>gcd(m1, m2) != 1</code>
+	 * @throws IllegalArgumentException
+	 *             If <code>n1 != n2 (mod gcd(m1, m2))</code>
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>lcm(m1, m2) > Byte.MAX_VALUE</code>
 	 */
 	public static byte[] crt(byte n1, byte m1, byte n2, byte m2)
-			throws ArithmeticException, InvalidModulusException, UndefinedInverseException {
-		if (((long) m1) * ((long) m2) > Byte.MAX_VALUE) {
+			throws InvalidModulusException, IllegalArgumentException, ArithmeticException {
+		final long[] result = MathUtil.crt((long) n1, (long) m1, (long) n2, (long) m2);
+		final long m = result[1];
+		if (m > Byte.MAX_VALUE) {
 			throw new ArithmeticException();
 		}
-		final long[] result = MathUtil.crt((long) n1, (long) m1, (long) n2, (long) m2);
-		return new byte[] { (byte) result[0], (byte) result[1] };
+		return new byte[] { (byte) result[0], (byte) m, (byte) result[2] };
 	}
 }

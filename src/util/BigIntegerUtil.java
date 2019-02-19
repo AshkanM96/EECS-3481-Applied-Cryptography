@@ -11,7 +11,6 @@ public class BigIntegerUtil {
 	/**
 	 * Dependencies: <code>
 	 * 		1. util.InvalidModulusException
-	 * 		2. util.UndefinedInverseException
 	 * </code>
 	 */
 
@@ -342,11 +341,13 @@ public class BigIntegerUtil {
 	/**
 	 * Chinese Remainder Theorem. <br>
 	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>Result.length == 2</code> <br>
+	 * Postcondition: <code>Result.length == 3</code> <br>
 	 * Postcondition:
-	 * <code>Result[0] == n1 * m2 * (m2<sup>-1</sup> (mod m1)) + n2 * m1 * (m1<sup>-1</sup> (mod m2)) (mod m1 * m2)</code>
+	 * <code>Result[0] == n1 * (<sup>m2</sup>&frasl;<sub>gcd(m1, m2)</sub>) * (m2<sup>-1</sup> (mod m1))
+	 * + n2 * (<sup>m1</sup>&frasl;<sub>gcd(m1, m2)</sub>) * (m1<sup>-1</sup> (mod m2)) (mod lcm(m1, m2))</code>
 	 * <br>
-	 * Postcondition: <code>Result[1] == m1 * m2</code>
+	 * Postcondition: <code>Result[1] == lcm(m1, m2)</code> <br>
+	 * Postcondition: <code>Result[2] == gcd(m1, m2)</code>
 	 * 
 	 * @param n1
 	 *            the first given number
@@ -376,11 +377,11 @@ public class BigIntegerUtil {
 	 * @throws InvalidModulusException
 	 *             If <code>(m1 <= 0) || (m2 <= 0)</code>
 	 * 
-	 * @throws UndefinedInverseException
-	 *             If <code>gcd(m1, m2) != 1</code>
+	 * @throws IllegalArgumentException
+	 *             If <code>n1 != n2 (mod gcd(m1, m2))</code>
 	 */
 	public static BigInteger[] crt(BigInteger n1, BigInteger m1, BigInteger n2, BigInteger m2, boolean modBefore,
-			boolean modAfterEveryStep) throws NullPointerException, InvalidModulusException, UndefinedInverseException {
+			boolean modAfterEveryStep) throws NullPointerException, InvalidModulusException, IllegalArgumentException {
 		if ((n1 == null) || (n2 == null)) {
 			throw new NullPointerException();
 		} else if ((m1.signum() != 1) || (m2.signum() != 1)) {
@@ -388,13 +389,20 @@ public class BigIntegerUtil {
 		}
 		// (m1 > 0) && (m2 > 0)
 
-		// Compute the new modulus.
-		final BigInteger m = m1.multiply(m2);
-
 		// Find integers x and y such that x * m1 + y * m2 == gcd(m1, m2).
 		final BigInteger[] result = BigIntegerUtil.gcdExtended(m1, m2);
-		if (!result[2].equals(BigInteger.ONE)) {
-			throw new UndefinedInverseException();
+		final BigInteger gcd = result[2];
+
+		// Compute the new modulus which is the least common multiple of m1 and m2.
+		final BigInteger m = m1.divide(gcd).multiply(m2);
+
+		// Handle the invalid case and update the factor if needed.
+		BigInteger factor = BigInteger.ONE;
+		if (!gcd.equals(BigInteger.ONE)) {
+			if (!n1.mod(gcd).equals(n2.mod(gcd))) {
+				throw new IllegalArgumentException();
+			}
+			factor = gcd;
 		}
 
 		// Mod n1 and n2 before the computation if requested.
@@ -405,29 +413,31 @@ public class BigIntegerUtil {
 
 		// Apply the C.R.T. formula for two congruences.
 		final BigInteger m1_inverse = result[0].mod(m2), m2_inverse = result[1].mod(m1);
-		BigInteger lhs = n1.multiply(m2);
+		BigInteger lhs = n1.multiply(m2.divide(factor));
 		if (modAfterEveryStep) {
 			lhs = lhs.mod(m).multiply(m2_inverse).mod(m);
 		} else {
 			lhs = lhs.multiply(m2_inverse);
 		}
-		BigInteger rhs = n2.multiply(m1);
+		BigInteger rhs = n2.multiply(m1.divide(factor));
 		if (modAfterEveryStep) {
 			rhs = rhs.mod(m).multiply(m1_inverse).mod(m);
 		} else {
 			rhs = rhs.multiply(m1_inverse);
 		}
-		return new BigInteger[] { lhs.add(rhs).mod(m), m };
+		return new BigInteger[] { lhs.add(rhs).mod(m), m, gcd };
 	}
 
 	/**
 	 * Chinese Remainder Theorem. <br>
 	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>Result.length == 2</code> <br>
+	 * Postcondition: <code>Result.length == 3</code> <br>
 	 * Postcondition:
-	 * <code>Result[0] == n1 * m2 * (m2<sup>-1</sup> (mod m1)) + n2 * m1 * (m1<sup>-1</sup> (mod m2)) (mod m1 * m2)</code>
+	 * <code>Result[0] == n1 * (<sup>m2</sup>&frasl;<sub>gcd(m1, m2)</sub>) * (m2<sup>-1</sup> (mod m1))
+	 * + n2 * (<sup>m1</sup>&frasl;<sub>gcd(m1, m2)</sub>) * (m1<sup>-1</sup> (mod m2)) (mod lcm(m1, m2))</code>
 	 * <br>
-	 * Postcondition: <code>Result[1] == m1 * m2</code>
+	 * Postcondition: <code>Result[1] == lcm(m1, m2)</code> <br>
+	 * Postcondition: <code>Result[2] == gcd(m1, m2)</code>
 	 * 
 	 * @param n1
 	 *            the first given number
@@ -453,22 +463,24 @@ public class BigIntegerUtil {
 	 * @throws InvalidModulusException
 	 *             If <code>(m1 <= 0) || (m2 <= 0)</code>
 	 * 
-	 * @throws UndefinedInverseException
-	 *             If <code>gcd(m1, m2) != 1</code>
+	 * @throws IllegalArgumentException
+	 *             If <code>n1 != n2 (mod gcd(m1, m2))</code>
 	 */
 	public static BigInteger[] crt(BigInteger n1, BigInteger m1, BigInteger n2, BigInteger m2, boolean modBefore)
-			throws NullPointerException, InvalidModulusException, UndefinedInverseException {
+			throws NullPointerException, InvalidModulusException, IllegalArgumentException {
 		return BigIntegerUtil.crt(n1, m1, n2, m2, modBefore, true);
 	}
 
 	/**
 	 * Chinese Remainder Theorem. <br>
 	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>Result.length == 2</code> <br>
+	 * Postcondition: <code>Result.length == 3</code> <br>
 	 * Postcondition:
-	 * <code>Result[0] == n1 * m2 * (m2<sup>-1</sup> (mod m1)) + n2 * m1 * (m1<sup>-1</sup> (mod m2)) (mod m1 * m2)</code>
+	 * <code>Result[0] == n1 * (<sup>m2</sup>&frasl;<sub>gcd(m1, m2)</sub>) * (m2<sup>-1</sup> (mod m1))
+	 * + n2 * (<sup>m1</sup>&frasl;<sub>gcd(m1, m2)</sub>) * (m1<sup>-1</sup> (mod m2)) (mod lcm(m1, m2))</code>
 	 * <br>
-	 * Postcondition: <code>Result[1] == m1 * m2</code>
+	 * Postcondition: <code>Result[1] == lcm(m1, m2)</code> <br>
+	 * Postcondition: <code>Result[2] == gcd(m1, m2)</code>
 	 * 
 	 * @param n1
 	 *            the first given number
@@ -490,11 +502,11 @@ public class BigIntegerUtil {
 	 * @throws InvalidModulusException
 	 *             If <code>(m1 <= 0) || (m2 <= 0)</code>
 	 * 
-	 * @throws UndefinedInverseException
-	 *             If <code>gcd(m1, m2) != 1</code>
+	 * @throws IllegalArgumentException
+	 *             If <code>n1 != n2 (mod gcd(m1, m2))</code>
 	 */
 	public static BigInteger[] crt(BigInteger n1, BigInteger m1, BigInteger n2, BigInteger m2)
-			throws NullPointerException, InvalidModulusException, UndefinedInverseException {
+			throws NullPointerException, InvalidModulusException, IllegalArgumentException {
 		return BigIntegerUtil.crt(n1, m1, n2, m2, true);
 	}
 }
