@@ -390,6 +390,7 @@ public class MathUtil {
 		if ((a == Long.MIN_VALUE) || (b == Long.MIN_VALUE)) {
 			throw new ArithmeticException();
 		}
+		// (a != Long.MIN_VALUE) && (b != Long.MIN_VALUE)
 		return MathUtil.gcdExtendedFixedInput(a, b);
 	}
 
@@ -418,6 +419,7 @@ public class MathUtil {
 		if ((a == Integer.MIN_VALUE) || (b == Integer.MIN_VALUE)) {
 			throw new ArithmeticException();
 		}
+		// (a != Integer.MIN_VALUE) && (b != Integer.MIN_VALUE)
 		final long[] result = MathUtil.gcdExtendedFixedInput(a, b);
 		return new int[] { (int) result[0], (int) result[1], (int) result[2] };
 	}
@@ -447,6 +449,7 @@ public class MathUtil {
 		if ((a == Short.MIN_VALUE) || (b == Short.MIN_VALUE)) {
 			throw new ArithmeticException();
 		}
+		// (a != Short.MIN_VALUE) && (b != Short.MIN_VALUE)
 		final long[] result = MathUtil.gcdExtendedFixedInput(a, b);
 		return new short[] { (short) result[0], (short) result[1], (short) result[2] };
 	}
@@ -476,8 +479,37 @@ public class MathUtil {
 		if ((a == Byte.MIN_VALUE) || (b == Byte.MIN_VALUE)) {
 			throw new ArithmeticException();
 		}
+		// (a != Byte.MIN_VALUE) && (b != Byte.MIN_VALUE)
 		final long[] result = MathUtil.gcdExtendedFixedInput(a, b);
 		return new byte[] { (byte) result[0], (byte) result[1], (byte) result[2] };
+	}
+
+	/**
+	 * Note that this function does not check for overflows which may have occurred during the
+	 * calculations. <br>
+	 * Precondition: <code>!((a == Long.MIN_VALUE) && (b == Long.MIN_VALUE))</code>
+	 * 
+	 * @param a
+	 *            the first given number
+	 * 
+	 * @param b
+	 *            the second given number
+	 * 
+	 * @return The least common multiple of the two numbers.
+	 */
+	protected static long lcmFixedInput(long a, long b) {
+		// lcm(0, b) == 0 == lcm(a, 0)
+		if ((a == 0L) || (b == 0L)) {
+			return 0L;
+		}
+		// (a != 0) && (b != 0)
+
+		// lcm is non-negative so make a and b non-negative.
+		a = Math.abs(a);
+		b = Math.abs(b);
+
+		// lcm(a, b) == (a * b) / gcd(a, b)
+		return Math.abs((a /= MathUtil.gcdFixedInput(a, b)) * b);
 	}
 
 	/**
@@ -496,6 +528,109 @@ public class MathUtil {
 	 *             If <code>(a == Long.MIN_VALUE) && (b == Long.MIN_VALUE)</code>
 	 */
 	public static long lcm(long a, long b) throws ArithmeticException {
+		/**
+		 * Check for the precondition of <code>MathUtil::gcd(long, long)</code> assuming non-zero a and b.
+		 */
+		if ((a == Long.MIN_VALUE) && (b == Long.MIN_VALUE)) {
+			throw new ArithmeticException();
+		}
+		// !((a == Long.MIN_VALUE) && (b == Long.MIN_VALUE))
+		return MathUtil.lcmFixedInput(a, b);
+	}
+
+	/**
+	 * Note that this function does not check for overflows which may have occurred during the
+	 * calculations.
+	 * 
+	 * @param a
+	 *            the first given number
+	 * 
+	 * @param b
+	 *            the second given number
+	 * 
+	 * @return The least common multiple of the two numbers.
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>(a == Integer.MIN_VALUE) && (b == Integer.MIN_VALUE)</code>
+	 */
+	public static int lcm(int a, int b) throws ArithmeticException {
+		/**
+		 * Check for the precondition of <code>MathUtil::gcd(int, int)</code> assuming non-zero a and b.
+		 */
+		if ((a == Integer.MIN_VALUE) && (b == Integer.MIN_VALUE)) {
+			throw new ArithmeticException();
+		}
+		// !((a == Integer.MIN_VALUE) && (b == Integer.MIN_VALUE))
+		return ((int) MathUtil.lcmFixedInput(a, b));
+	}
+
+	/**
+	 * Note that this function does not check for overflows which may have occurred during the
+	 * calculations.
+	 * 
+	 * @param a
+	 *            the first given number
+	 * 
+	 * @param b
+	 *            the second given number
+	 * 
+	 * @return The least common multiple of the two numbers.
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>(a == Short.MIN_VALUE) && (b == Short.MIN_VALUE)</code>
+	 */
+	public static short lcm(short a, short b) throws ArithmeticException {
+		/**
+		 * Check for the precondition of <code>MathUtil::gcd(short, short)</code> assuming non-zero a and b.
+		 */
+		if ((a == Short.MIN_VALUE) && (b == Short.MIN_VALUE)) {
+			throw new ArithmeticException();
+		}
+		// !((a == Short.MIN_VALUE) && (b == Short.MIN_VALUE))
+		return ((short) MathUtil.lcmFixedInput(a, b));
+	}
+
+	/**
+	 * Note that this function does not check for overflows which may have occurred during the
+	 * calculations.
+	 * 
+	 * @param a
+	 *            the first given number
+	 * 
+	 * @param b
+	 *            the second given number
+	 * 
+	 * @return The least common multiple of the two numbers.
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>(a == Byte.MIN_VALUE) && (b == Byte.MIN_VALUE)</code>
+	 */
+	public static byte lcm(byte a, byte b) throws ArithmeticException {
+		/**
+		 * Check for the precondition of <code>MathUtil::gcd(byte, byte)</code> assuming non-zero a and b.
+		 */
+		if ((a == Byte.MIN_VALUE) && (b == Byte.MIN_VALUE)) {
+			throw new ArithmeticException();
+		}
+		// !((a == Byte.MIN_VALUE) && (b == Byte.MIN_VALUE))
+		return ((byte) MathUtil.lcmFixedInput(a, b));
+	}
+
+	/**
+	 * Precondition: <code>(a != Long.MIN_VALUE) && (b != Long.MIN_VALUE)</code>
+	 * 
+	 * @param a
+	 *            the first given number
+	 * 
+	 * @param b
+	 *            the second given number
+	 * 
+	 * @return The least common multiple of the two numbers.
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>lcm(a, b) > Long.MAX_VALUE</code>
+	 */
+	protected static long lcmExactFixedInput(long a, long b) throws ArithmeticException {
 		// lcm(0, b) == 0 == lcm(a, 0)
 		if ((a == 0L) || (b == 0L)) {
 			return 0L;
@@ -507,13 +642,10 @@ public class MathUtil {
 		b = Math.abs(b);
 
 		// lcm(a, b) == (a * b) / gcd(a, b)
-		return ((a /= MathUtil.gcd(a, b)) * b);
+		return Math.multiplyExact(a /= MathUtil.gcdFixedInput(a, b), b);
 	}
 
 	/**
-	 * Note that this function does not check for overflows which may have occurred during the
-	 * calculations.
-	 * 
 	 * @param a
 	 *            the first given number
 	 * 
@@ -523,20 +655,51 @@ public class MathUtil {
 	 * @return The least common multiple of the two numbers.
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>lcm(a, b) != ((int) lcm(a, b))</code>
+	 *             If <code>(a == Long.MIN_VALUE) || (b == Long.MIN_VALUE)
+	 *             || (lcm(a, b) > Long.MAX_VALUE)</code>
 	 */
-	public static int lcm(int a, int b) {
-		final long result = MathUtil.lcm((long) a, (long) b);
-		if (result != ((int) result)) {
+	public static long lcmExact(long a, long b) throws ArithmeticException {
+		/*
+		 * Handle the degenerate cases where a's or b's absolute value is not representable as a
+		 * non-negative long.
+		 */
+		if ((a == Long.MIN_VALUE) || (b == Long.MIN_VALUE)) {
+			throw new ArithmeticException();
+		}
+		// (a != Long.MIN_VALUE) && (b != Long.MIN_VALUE)
+		return MathUtil.lcmExactFixedInput(a, b);
+	}
+
+	/**
+	 * @param a
+	 *            the first given number
+	 * 
+	 * @param b
+	 *            the second given number
+	 * 
+	 * @return The least common multiple of the two numbers.
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>(a == Integer.MIN_VALUE) || (b == Integer.MIN_VALUE)
+	 *             || (lcm(a, b) > Integer.MAX_VALUE)</code>
+	 */
+	public static int lcmExact(int a, int b) throws ArithmeticException {
+		/*
+		 * Handle the degenerate cases where a's or b's absolute value is not representable as a
+		 * non-negative int.
+		 */
+		if ((a == Integer.MIN_VALUE) || (b == Integer.MIN_VALUE)) {
+			throw new ArithmeticException();
+		}
+		// (a != Integer.MIN_VALUE) && (b != Integer.MIN_VALUE)
+		final long result = MathUtil.lcmExactFixedInput(a, b);
+		if (result > Integer.MAX_VALUE) {
 			throw new ArithmeticException();
 		}
 		return ((int) result);
 	}
 
 	/**
-	 * Note that this function does not check for overflows which may have occurred during the
-	 * calculations.
-	 * 
 	 * @param a
 	 *            the first given number
 	 * 
@@ -546,20 +709,26 @@ public class MathUtil {
 	 * @return The least common multiple of the two numbers.
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>lcm(a, b) != ((short) lcm(a, b))</code>
+	 *             If <code>(a == Short.MIN_VALUE) || (b == Short.MIN_VALUE)
+	 *             || (lcm(a, b) > Short.MAX_VALUE)</code>
 	 */
-	public static short lcm(short a, short b) {
-		final long result = MathUtil.lcm((long) a, (long) b);
-		if (result != ((short) result)) {
+	public static short lcmExact(short a, short b) throws ArithmeticException {
+		/*
+		 * Handle the degenerate cases where a's or b's absolute value is not representable as a
+		 * non-negative short.
+		 */
+		if ((a == Short.MIN_VALUE) || (b == Short.MIN_VALUE)) {
+			throw new ArithmeticException();
+		}
+		// (a != Short.MIN_VALUE) && (b != Short.MIN_VALUE)
+		final long result = MathUtil.lcmExactFixedInput(a, b);
+		if (result > Short.MAX_VALUE) {
 			throw new ArithmeticException();
 		}
 		return ((short) result);
 	}
 
 	/**
-	 * Note that this function does not check for overflows which may have occurred during the
-	 * calculations.
-	 * 
 	 * @param a
 	 *            the first given number
 	 * 
@@ -569,11 +738,20 @@ public class MathUtil {
 	 * @return The least common multiple of the two numbers.
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>lcm(a, b) != ((byte) lcm(a, b))</code>
+	 *             If <code>(a == Byte.MIN_VALUE) || (b == Byte.MIN_VALUE)
+	 *             || (lcm(a, b) > Byte.MAX_VALUE)</code>
 	 */
-	public static byte lcm(byte a, byte b) {
-		final long result = MathUtil.lcm((long) a, (long) b);
-		if (result != ((byte) result)) {
+	public static byte lcmExact(byte a, byte b) throws ArithmeticException {
+		/*
+		 * Handle the degenerate cases where a's or b's absolute value is not representable as a
+		 * non-negative byte.
+		 */
+		if ((a == Byte.MIN_VALUE) || (b == Byte.MIN_VALUE)) {
+			throw new ArithmeticException();
+		}
+		// (a != Byte.MIN_VALUE) && (b != Byte.MIN_VALUE)
+		final long result = MathUtil.lcmExactFixedInput(a, b);
+		if (result > Byte.MAX_VALUE) {
 			throw new ArithmeticException();
 		}
 		return ((byte) result);
@@ -678,7 +856,8 @@ public class MathUtil {
 			 */
 			throw new UndefinedInverseException();
 		}
-		// (1 <= n) && (n <= m - 1)
+		// n != 0
+		// i.e., (1 <= n) && (n <= m - 1)
 
 		/**
 		 * No need to check <code>gcd(n, m) != 1</code> since if that is the case, then in the body of the
@@ -1363,7 +1542,8 @@ public class MathUtil {
 			 */
 			return (MathUtil.isEven(p) ? 1L : n);
 		}
-		// (1 < n) && (n < m - 1)
+		// (n != 0) && (n != 1) && (n != m - 1)
+		// i.e., (1 < n) && (n < m - 1)
 
 		/**
 		 * <code>n<sup>p</sup> (mod m)</code> is: <br>
@@ -1528,8 +1708,8 @@ public class MathUtil {
 			// n to the power of 0 is 1 except when n is 0 which we know isn't the case.
 			return 0L;
 		}
-		// (n != 0) && (target != 1) && (m != 1)
-		// i.e., (n != 0) && (target != 1) && (m > 1)
+		// (n != 0) && (m != 1) && (target != 1)
+		// i.e., (n != 0) && (m > 1) && (target != 1)
 
 		if (n == 1L) {
 			// 1 to any power is 1 (but target != 1).
@@ -1538,7 +1718,8 @@ public class MathUtil {
 			// -1 to any even power is 1 (but target != 1) and otherwise is -1.
 			return ((target == n) ? 1L : null);
 		}
-		// (1 < n) && (n < m - 1)
+		// (n != 1) && (n != m - 1)
+		// i.e., (1 < n) && (n < m - 1)
 
 		if (upperOrder == 0L) {
 			return null;
@@ -2211,8 +2392,8 @@ public class MathUtil {
 			// n to the power of 0 is 1 except when n is 0 which we know isn't the case.
 			return 0L;
 		}
-		// (n != 0) && (target != 1) && (m != 1)
-		// i.e., (n != 0) && (target != 1) && (m > 1)
+		// (n != 0) && (m != 1) && (target != 1)
+		// i.e., (n != 0) && (m > 1) && (target != 1)
 
 		if (n == 1L) {
 			// 1 to any power is 1 (but target != 1).
@@ -2221,7 +2402,8 @@ public class MathUtil {
 			// -1 to any even power is 1 (but target != 1) and otherwise is -1.
 			return ((target == n) ? 1L : null);
 		}
-		// (1 < n) && (n < m - 1)
+		// (n != 1) && (n != m - 1)
+		// i.e., (1 < n) && (n < m - 1)
 
 		if (begin == end) {
 			return null;
@@ -2530,7 +2712,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * This function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in math. <br>
+	 * Note that this function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in
+	 * math. <br>
 	 * Postcondition: <code>Result != null</code> <br>
 	 * Postcondition: <code>Result.length == end - begin</code> <br>
 	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>(i + begin)</sup> (mod m))</code>
@@ -2561,17 +2744,22 @@ public class MathUtil {
 	 * @throws UndefinedInverseException
 	 *             If <code>(begin < 0) && (gcd(n, m) != 1)</code>
 	 */
-	public static long[] powers(long n, int m, long begin, long end)
+	public static long[] modPowers(long n, long m, long begin, long end)
 			throws IllegalArgumentException, ArithmeticException, InvalidModulusException, UndefinedInverseException {
+		// Compute the resulting array length.
 		final int length = MathUtil.powersLength(begin, end);
+		// (begin <= end) && ((end - begin) <= Integer.MAX_VALUE)
 
 		// Fix n to be in [0, m - 1] \cap \doubleZ.
 		n = MathUtil.mod(n, m);
 		// m > 0
 
-		// Create resulting long array and handle the simple special cases.
+		// Create the resulting long array and handle the simple special cases.
 		final long[] result = new long[length];
-		if (n == 0L) {
+		if (length == 0) {
+			// Nothing to do here.
+			return result;
+		} else if (n == 0L) {
 			/**
 			 * This case is needed since 0 to any non-zero power is 0 and so any non-zero assignment of
 			 * <code>result[i]</code> will be wrong in this case. Furthermore, note that we are defining
@@ -2579,8 +2767,8 @@ public class MathUtil {
 			 */
 			return result;
 		}
-		// (n != 0) && (m != 1)
-		// i.e., (n != 0) && (m > 1)
+		// (length != 0) && (n != 0) && (m != 1)
+		// i.e., (length > 0) && (n != 0) && (m > 1)
 
 		if (n == 1L) {
 			/*
@@ -2589,22 +2777,24 @@ public class MathUtil {
 			 */
 			Arrays.fill(result, 1L);
 			return result;
-		} else if (n == m - 1L) {
+		} else if (n == m - 1L) { // i.e., n == -1 (mod m)
 			/*
 			 * This case is only an optimization since -1 to any even power is 1 and otherwise is -1. So the
 			 * loop will do extra unnecessary work to arrive at the same result.
 			 */
-			for (int i = MathUtil.isEven(begin) ? 1 : 0; i < length; i += 2) {
-				result[i] = n;
+			boolean evenPow = MathUtil.isEven(begin);
+			for (int i = 0; i != length; ++i, evenPow = !evenPow) {
+				result[i] = evenPow ? 1L : n;
 			}
 			return result;
 		}
-		// (1 < n) && (n < m - 1)
+		// (n != 1) && (n != m - 1)
+		// i.e., (1 < n) && (n < m - 1)
 
 		// Fix n to be in [-m / 2, m / 2] \cap \doubleZ.
 		n = MathUtil.modMinFixedInput(n, m);
 
-		// Fill and return resulting long array.
+		// Fill and return the resulting long array.
 		long n_to_i = MathUtil.modPow(n, begin, m);
 		for (int i = 0; i != length; ++i, n_to_i = MathUtil.modMultFixedInput(n_to_i, n, m)) {
 			/**
@@ -2619,7 +2809,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * This function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in math. <br>
+	 * Note that this function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in
+	 * math. <br>
 	 * Postcondition: <code>Result != null</code> <br>
 	 * Postcondition: <code>Result.length == m</code> <br>
 	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>i</sup> (mod m))</code>
@@ -2634,13 +2825,17 @@ public class MathUtil {
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>m > Integer.MAX_VALUE</code>
 	 */
-	public static long[] powers(long n, int m) throws InvalidModulusException {
-		return MathUtil.powers(n, m, 0L, m);
+	public static long[] modPowers(long n, long m) throws InvalidModulusException, ArithmeticException {
+		return MathUtil.modPowers(n, m, 0L, m);
 	}
 
 	/**
-	 * This function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in math. <br>
+	 * Note that this function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in
+	 * math. <br>
 	 * Postcondition: <code>Result != null</code> <br>
 	 * Postcondition: <code>Result.length == end - begin</code> <br>
 	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>(i + begin)</sup> (mod m))</code>
@@ -2671,17 +2866,22 @@ public class MathUtil {
 	 * @throws UndefinedInverseException
 	 *             If <code>(begin < 0) && (gcd(n, m) != 1)</code>
 	 */
-	public static int[] powers(int n, int m, long begin, long end)
+	public static int[] modPowers(int n, int m, int begin, int end)
 			throws IllegalArgumentException, ArithmeticException, InvalidModulusException, UndefinedInverseException {
+		// Compute the resulting array length.
 		final int length = MathUtil.powersLength(begin, end);
+		// (begin <= end) && ((end - begin) <= Integer.MAX_VALUE)
 
 		// Fix n to be in [0, m - 1] \cap \doubleZ.
 		n = MathUtil.mod(n, m);
 		// m > 0
 
-		// Create resulting int array and handle the simple special cases.
+		// Create the resulting int array and handle the simple special cases.
 		final int[] result = new int[length];
-		if (n == 0) {
+		if (length == 0) {
+			// Nothing to do here.
+			return result;
+		} else if (n == 0) {
 			/**
 			 * This case is needed since 0 to any non-zero power is 0 and so any non-zero assignment of
 			 * <code>result[i]</code> will be wrong in this case. Furthermore, note that we are defining
@@ -2689,8 +2889,8 @@ public class MathUtil {
 			 */
 			return result;
 		}
-		// (n != 0) && (m != 1)
-		// i.e., (n != 0) && (m > 1)
+		// (length != 0) && (n != 0) && (m != 1)
+		// i.e., (length > 0) && (n != 0) && (m > 1)
 
 		if (n == 1) {
 			/*
@@ -2699,23 +2899,25 @@ public class MathUtil {
 			 */
 			Arrays.fill(result, 1);
 			return result;
-		} else if (n == m - 1) {
+		} else if (n == m - 1) { // i.e., n == -1 (mod m)
 			/*
 			 * This case is only an optimization since -1 to any even power is 1 and otherwise is -1. So the
 			 * loop will do extra unnecessary work to arrive at the same result.
 			 */
-			for (int i = MathUtil.isEven(begin) ? 1 : 0; i < length; i += 2) {
-				result[i] = n;
+			boolean evenPow = MathUtil.isEven(begin);
+			for (int i = 0; i != length; ++i, evenPow = !evenPow) {
+				result[i] = evenPow ? 1 : n;
 			}
 			return result;
 		}
-		// (1 < n) && (n < m - 1)
+		// (n != 1) && (n != m - 1)
+		// i.e., (1 < n) && (n < m - 1)
 
 		// Fix n to be in [-m / 2, m / 2] \cap \doubleZ.
 		n = (int) MathUtil.modMinFixedInput(n, m);
 
-		// Fill and return resulting int array.
-		int n_to_i = (int) MathUtil.modPow(n, begin, m);
+		// Fill and return the resulting int array.
+		int n_to_i = MathUtil.modPow(n, begin, m);
 		for (int i = 0; i != length; ++i, n_to_i = (int) MathUtil.modMultFixedInput(n_to_i, n, m)) {
 			/**
 			 * Don't do <code>(n_to_i < 0) ? (n_to_i += m) : n_to_i</code> since we want to maintain the
@@ -2729,7 +2931,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * This function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in math. <br>
+	 * Note that this function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in
+	 * math. <br>
 	 * Postcondition: <code>Result != null</code> <br>
 	 * Postcondition: <code>Result.length == m</code> <br>
 	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>i</sup> (mod m))</code>
@@ -2745,12 +2948,13 @@ public class MathUtil {
 	 * @throws InvalidModulusException
 	 *             If <code>m <= 0</code>
 	 */
-	public static int[] powers(int n, int m) throws InvalidModulusException {
-		return MathUtil.powers(n, m, 0L, m);
+	public static int[] modPowers(int n, int m) throws InvalidModulusException {
+		return MathUtil.modPowers(n, m, 0, m);
 	}
 
 	/**
-	 * This function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in math. <br>
+	 * Note that this function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in
+	 * math. <br>
 	 * Postcondition: <code>Result != null</code> <br>
 	 * Postcondition: <code>Result.length == end - begin</code> <br>
 	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>(i + begin)</sup> (mod m))</code>
@@ -2772,26 +2976,28 @@ public class MathUtil {
 	 * @throws IllegalArgumentException
 	 *             If <code>begin > end</code>
 	 * 
-	 * @throws ArithmeticException
-	 *             If <code>(end - begin) > Integer.MAX_VALUE</code>
-	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(begin < 0) && (gcd(n, m) != 1)</code>
 	 */
-	public static short[] powers(short n, short m, long begin, long end)
-			throws IllegalArgumentException, ArithmeticException, InvalidModulusException, UndefinedInverseException {
+	public static short[] modPowers(short n, short m, short begin, short end)
+			throws IllegalArgumentException, InvalidModulusException, UndefinedInverseException {
+		// Compute the resulting array length.
 		final int length = MathUtil.powersLength(begin, end);
+		// (begin <= end) && ((end - begin) <= Integer.MAX_VALUE)
 
 		// Fix n to be in [0, m - 1] \cap \doubleZ.
 		n = MathUtil.mod(n, m);
 		// m > 0
 
-		// Create resulting short array and handle the simple special cases.
+		// Create the resulting short array and handle the simple special cases.
 		final short[] result = new short[length];
-		if (n == 0) {
+		if (length == 0) {
+			// Nothing to do here.
+			return result;
+		} else if (n == 0) {
 			/**
 			 * This case is needed since 0 to any non-zero power is 0 and so any non-zero assignment of
 			 * <code>result[i]</code> will be wrong in this case. Furthermore, note that we are defining
@@ -2799,8 +3005,8 @@ public class MathUtil {
 			 */
 			return result;
 		}
-		// (n != 0) && (m != 1)
-		// i.e., (n != 0) && (m > 1)
+		// (length != 0) && (n != 0) && (m != 1)
+		// i.e., (length > 0) && (n != 0) && (m > 1)
 
 		if (n == 1) {
 			/*
@@ -2809,23 +3015,25 @@ public class MathUtil {
 			 */
 			Arrays.fill(result, (short) 1);
 			return result;
-		} else if (n == m - 1) {
+		} else if (n == m - 1) { // i.e., n == -1 (mod m)
 			/*
 			 * This case is only an optimization since -1 to any even power is 1 and otherwise is -1. So the
 			 * loop will do extra unnecessary work to arrive at the same result.
 			 */
-			for (int i = MathUtil.isEven(begin) ? 1 : 0; i < length; i += 2) {
-				result[i] = n;
+			boolean evenPow = MathUtil.isEven(begin);
+			for (int i = 0; i != length; ++i, evenPow = !evenPow) {
+				result[i] = evenPow ? 1 : n;
 			}
 			return result;
 		}
-		// (1 < n) && (n < m - 1)
+		// (n != 1) && (n != m - 1)
+		// i.e., (1 < n) && (n < m - 1)
 
 		// Fix n to be in [-m / 2, m / 2] \cap \doubleZ.
 		n = (short) MathUtil.modMinFixedInput(n, m);
 
-		// Fill and return resulting short array.
-		short n_to_i = (short) MathUtil.modPow(n, begin, m);
+		// Fill and return the resulting short array.
+		short n_to_i = MathUtil.modPow(n, begin, m);
 		for (int i = 0; i != length; ++i, n_to_i = (short) MathUtil.modMultFixedInput(n_to_i, n, m)) {
 			/**
 			 * Don't do <code>(n_to_i < 0) ? (n_to_i += m) : n_to_i</code> since we want to maintain the
@@ -2839,7 +3047,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * This function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in math. <br>
+	 * Note that this function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in
+	 * math. <br>
 	 * Postcondition: <code>Result != null</code> <br>
 	 * Postcondition: <code>Result.length == m</code> <br>
 	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>i</sup> (mod m))</code>
@@ -2855,12 +3064,13 @@ public class MathUtil {
 	 * @throws InvalidModulusException
 	 *             If <code>m <= 0</code>
 	 */
-	public static short[] powers(short n, short m) throws InvalidModulusException {
-		return MathUtil.powers(n, m, 0L, m);
+	public static short[] modPowers(short n, short m) throws InvalidModulusException {
+		return MathUtil.modPowers(n, m, (short) 0, m);
 	}
 
 	/**
-	 * This function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in math. <br>
+	 * Note that this function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in
+	 * math. <br>
 	 * Postcondition: <code>Result != null</code> <br>
 	 * Postcondition: <code>Result.length == end - begin</code> <br>
 	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>(i + begin)</sup> (mod m))</code>
@@ -2882,26 +3092,28 @@ public class MathUtil {
 	 * @throws IllegalArgumentException
 	 *             If <code>begin > end</code>
 	 * 
-	 * @throws ArithmeticException
-	 *             If <code>(end - begin) > Integer.MAX_VALUE</code>
-	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(begin < 0) && (gcd(n, m) != 1)</code>
 	 */
-	public static byte[] powers(byte n, byte m, long begin, long end)
-			throws IllegalArgumentException, ArithmeticException, InvalidModulusException, UndefinedInverseException {
+	public static byte[] modPowers(byte n, byte m, byte begin, byte end)
+			throws IllegalArgumentException, InvalidModulusException, UndefinedInverseException {
+		// Compute the resulting array length.
 		final int length = MathUtil.powersLength(begin, end);
+		// (begin <= end) && ((end - begin) <= Integer.MAX_VALUE)
 
 		// Fix n to be in [0, m - 1] \cap \doubleZ.
 		n = MathUtil.mod(n, m);
 		// m > 0
 
-		// Create resulting byte array and handle the simple special cases.
+		// Create the resulting byte array and handle the simple special cases.
 		final byte[] result = new byte[length];
-		if (n == 0) {
+		if (length == 0) {
+			// Nothing to do here.
+			return result;
+		} else if (n == 0) {
 			/**
 			 * This case is needed since 0 to any non-zero power is 0 and so any non-zero assignment of
 			 * <code>result[i]</code> will be wrong in this case. Furthermore, note that we are defining
@@ -2909,8 +3121,8 @@ public class MathUtil {
 			 */
 			return result;
 		}
-		// (n != 0) && (m != 1)
-		// i.e., (n != 0) && (m > 1)
+		// (length != 0) && (n != 0) && (m != 1)
+		// i.e., (length > 0) && (n != 0) && (m > 1)
 
 		if (n == 1) {
 			/*
@@ -2919,23 +3131,25 @@ public class MathUtil {
 			 */
 			Arrays.fill(result, (byte) 1);
 			return result;
-		} else if (n == m - 1) {
+		} else if (n == m - 1) { // i.e., n == -1 (mod m)
 			/*
 			 * This case is only an optimization since -1 to any even power is 1 and otherwise is -1. So the
 			 * loop will do extra unnecessary work to arrive at the same result.
 			 */
-			for (int i = MathUtil.isEven(begin) ? 1 : 0; i < length; i += 2) {
-				result[i] = n;
+			boolean evenPow = MathUtil.isEven(begin);
+			for (int i = 0; i != length; ++i, evenPow = !evenPow) {
+				result[i] = evenPow ? 1 : n;
 			}
 			return result;
 		}
-		// (1 < n) && (n < m - 1)
+		// (n != 1) && (n != m - 1)
+		// i.e., (1 < n) && (n < m - 1)
 
 		// Fix n to be in [-m / 2, m / 2] \cap \doubleZ.
 		n = (byte) MathUtil.modMinFixedInput(n, m);
 
-		// Fill and return resulting byte array.
-		byte n_to_i = (byte) MathUtil.modPow(n, begin, m);
+		// Fill and return the resulting byte array.
+		byte n_to_i = MathUtil.modPow(n, begin, m);
 		for (int i = 0; i != length; ++i, n_to_i = (byte) MathUtil.modMultFixedInput(n_to_i, n, m)) {
 			/**
 			 * Don't do <code>(n_to_i < 0) ? (n_to_i += m) : n_to_i</code> since we want to maintain the
@@ -2949,7 +3163,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * This function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in math. <br>
+	 * Note that this function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in
+	 * math. <br>
 	 * Postcondition: <code>Result != null</code> <br>
 	 * Postcondition: <code>Result.length == m</code> <br>
 	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>i</sup> (mod m))</code>
@@ -2965,8 +3180,8 @@ public class MathUtil {
 	 * @throws InvalidModulusException
 	 *             If <code>m <= 0</code>
 	 */
-	public static byte[] powers(byte n, byte m) throws InvalidModulusException {
-		return MathUtil.powers(n, m, 0L, m);
+	public static byte[] modPowers(byte n, byte m) throws InvalidModulusException {
+		return MathUtil.modPowers(n, m, (byte) 0, m);
 	}
 
 	/**
