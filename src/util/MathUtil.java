@@ -3017,13 +3017,12 @@ public class MathUtil {
 		// Compute the new modulus which is the least common multiple of m1 and m2.
 		final long m = Math.multiplyExact(m1 / gcd, m2);
 
-		// Handle the invalid case and update the factor if needed.
-		long factor = 1L;
-		if (gcd != 1L) {
+		// Handle the invalid case and update the coprime flag if needed.
+		final boolean coprime = (gcd == 1L);
+		if (!coprime) { // i.e., gcd != 1
 			if (MathUtil.mod(n1, gcd) != MathUtil.mod(n2, gcd)) {
 				throw new IllegalArgumentException();
 			}
-			factor = gcd;
 		}
 
 		// Fix all variables to be in [-m / 2, m / 2] \cap \doubleZ.
@@ -3031,8 +3030,13 @@ public class MathUtil {
 				m2_inverse = MathUtil.modMinFixedInput(result[1] %= m1, m);
 		n1 = MathUtil.modMinFixedInput(n1 %= m, m);
 		n2 = MathUtil.modMinFixedInput(n2 %= m, m);
-		m1 = MathUtil.modMinFixedInput(m1 /= factor, m);
-		m2 = MathUtil.modMinFixedInput(m2 /= factor, m);
+		if (coprime) { // i.e., gcd == 1
+			m1 = MathUtil.modMinFixedInput(m1, m);
+			m2 = MathUtil.modMinFixedInput(m2, m);
+		} else { // i.e., gcd != 1
+			m1 = MathUtil.modMinFixedInput(m1 /= gcd, m);
+			m2 = MathUtil.modMinFixedInput(m2 /= gcd, m);
+		}
 
 		/*
 		 * Apply the C.R.T. formula for two congruences but maintain all variables being in [-m / 2, m / 2]

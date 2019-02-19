@@ -366,8 +366,8 @@ public class BigIntegerUtil {
 	 *            <code>m1</code> and <code>m2</code> respectively before applying the formula
 	 * 
 	 * @param modAfterEveryStep
-	 *            specifies whether every intermediate result in the formula should be modded by
-	 *            <code>m1 * m2</code>
+	 *            specifies whether every intermediate result in the formula should be modded by the new
+	 *            modulus (i.e., <code>lcm(m1, m2)</code>)
 	 * 
 	 * @return The resulting BigInteger array.
 	 * 
@@ -396,13 +396,12 @@ public class BigIntegerUtil {
 		// Compute the new modulus which is the least common multiple of m1 and m2.
 		final BigInteger m = m1.divide(gcd).multiply(m2);
 
-		// Handle the invalid case and update the factor if needed.
-		BigInteger factor = BigInteger.ONE;
-		if (!gcd.equals(BigInteger.ONE)) {
+		// Handle the invalid case and update the coprime flag if needed.
+		final boolean coprime = gcd.equals(BigInteger.ONE);
+		if (!coprime) { // i.e., gcd != 1
 			if (!n1.mod(gcd).equals(n2.mod(gcd))) {
 				throw new IllegalArgumentException();
 			}
-			factor = gcd;
 		}
 
 		// Mod n1 and n2 before the computation if requested.
@@ -413,16 +412,19 @@ public class BigIntegerUtil {
 
 		// Apply the C.R.T. formula for two congruences.
 		final BigInteger m1_inverse = result[0].mod(m2), m2_inverse = result[1].mod(m1);
-		BigInteger lhs = n1.multiply(m2.divide(factor));
+		BigInteger lhs = null, rhs = null;
+		if (coprime) { // i.e., gcd == 1
+			lhs = n1.multiply(m2);
+			rhs = n2.multiply(m1);
+		} else { // i.e., gcd != 1
+			lhs = n1.multiply(m2.divide(gcd));
+			rhs = n2.multiply(m1.divide(gcd));
+		}
 		if (modAfterEveryStep) {
 			lhs = lhs.mod(m).multiply(m2_inverse).mod(m);
-		} else {
-			lhs = lhs.multiply(m2_inverse);
-		}
-		BigInteger rhs = n2.multiply(m1.divide(factor));
-		if (modAfterEveryStep) {
 			rhs = rhs.mod(m).multiply(m1_inverse).mod(m);
 		} else {
+			lhs = lhs.multiply(m2_inverse);
 			rhs = rhs.multiply(m1_inverse);
 		}
 		return new BigInteger[] { lhs.add(rhs).mod(m), m, gcd };
