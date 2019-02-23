@@ -528,7 +528,8 @@ public class BigIntegerUtil {
 		final BigInteger gcd = result[2];
 
 		// Compute the new modulus which is the least common multiple of m1 and m2.
-		final BigInteger m = m1.divide(gcd).multiply(m2);
+		final BigInteger og_m1 = m1, og_m2 = m2;
+		final BigInteger m = (m1 = m1.divide(gcd)).multiply(m2);
 
 		// Handle the invalid case and update the coprime flag if needed.
 		final boolean coprime = gcd.equals(BigInteger.ONE);
@@ -536,24 +537,18 @@ public class BigIntegerUtil {
 			if (!n1.mod(gcd).equals(n2.mod(gcd))) {
 				throw new IllegalArgumentException();
 			}
+			m2 = m2.divide(gcd);
 		}
 
 		// Mod n1 and n2 before the computation if requested.
 		if (modBefore) {
-			n1 = n1.mod(m1);
-			n2 = n2.mod(m2);
+			n1 = n1.mod(og_m1);
+			n2 = n2.mod(og_m2);
 		}
 
 		// Apply the C.R.T. formula for two congruences.
-		final BigInteger m1_inverse = result[0].mod(m2), m2_inverse = result[1].mod(m1);
-		BigInteger lhs = null, rhs = null;
-		if (coprime) { // i.e., gcd == 1
-			lhs = n1.multiply(m2);
-			rhs = n2.multiply(m1);
-		} else { // i.e., gcd != 1
-			lhs = n1.multiply(m2.divide(gcd));
-			rhs = n2.multiply(m1.divide(gcd));
-		}
+		final BigInteger m1_inverse = result[0].mod(og_m2), m2_inverse = result[1].mod(og_m1);
+		BigInteger lhs = n1.multiply(m2), rhs = n2.multiply(m1);
 		if (modAfterEveryStep) {
 			lhs = lhs.mod(m).multiply(m2_inverse).mod(m);
 			rhs = rhs.mod(m).multiply(m1_inverse).mod(m);
