@@ -359,6 +359,7 @@ public class MathUtil {
 		if (b < 0L) {
 			abs_b *= -1;
 		}
+		// (abs_a == Math.abs(a)) && (abs_b == Math.abs(b)) && (sign_a == MathUtil.signum(a))
 
 		// Algorithm is from Introduction to Mathematical Cryptography 2nd Edition Exercise 1.12.
 		long gcd = abs_a, x = 1L;
@@ -1401,6 +1402,12 @@ public class MathUtil {
 		// The algorithm only works for min >= 0.
 
 		// Assume a (mod m) is smaller than b (mod m).
+		/**
+		 * Don't do <code>(a < 0L) ? (a += m) : a</code> or <code>(b < 0L) ? (b += m) : b</code> since we
+		 * still need to set <code>max</code> to either <code>b</code> or <code>a</code>. Note that the
+		 * difference is the <code>+=</code> instead of the <code>+</code> which will mutate <code>a</code>
+		 * and <code>b</code>.
+		 */
 		long min = (a < 0L) ? (a + m) : a, tmp = (b < 0L) ? (b + m) : b, max = b;
 		// Fix min and max if needed.
 		if (tmp < min) {
@@ -1411,7 +1418,12 @@ public class MathUtil {
 
 		long result = 0L;
 		for (; min != 0L; min /= 2L) {
-			if (!MathUtil.isEven(min)) {
+			/**
+			 * Don't do <code>(min &= 1L) != 0L</code> since we need the value of <code>min</code> to remain
+			 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
+			 * will mutate <code>min</code>.
+			 */
+			if ((min & 1L) != 0L) { // i.e., !MathUtil.isEven(min)
 				result = MathUtil.modMinFixedInput((result += max) % m, m);
 			}
 			max = MathUtil.modMinFixedInput((max += max) % m, m); // Double max (mod m).
@@ -1549,7 +1561,12 @@ public class MathUtil {
 	protected static long modPowFixedInput(long n, long p, long m) {
 		long result = 1L;
 		for (long n_to_2_to_i = MathUtil.modMinFixedInput(n, m); p != 0L; p /= 2L) {
-			if (!MathUtil.isEven(p)) {
+			/**
+			 * Don't do <code>(p &= 1L) != 0L</code> since we need the value of <code>p</code> to remain
+			 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
+			 * will mutate <code>p</code>.
+			 */
+			if ((p & 1L) != 0L) { // i.e., !MathUtil.isEven(p)
 				result = MathUtil.modMultFixedInput(result, n_to_2_to_i, m);
 			}
 			n_to_2_to_i = MathUtil.modMultFixedInput(n_to_2_to_i, n_to_2_to_i, m); // Square n_to_2_to_i (mod m).
@@ -1585,7 +1602,7 @@ public class MathUtil {
 		}
 		// m > 0
 
-		// Handle the simple special case.
+		// Handle the simple special cases.
 		if (m == 1L) {
 			return 0L;
 		}
@@ -1614,10 +1631,15 @@ public class MathUtil {
 		} else if (n == m - 1L) { // i.e., n == -1 (mod m)
 			/**
 			 * <code>-1<sup>p</sup> (mod m)</code> is: <br>
-			 * <code>-1 (mod m)</code> if <code>p</code> is odd <br>
-			 * <code>1 (mod m)</code> if <code>p</code> is even
+			 * <code>1 (mod m)</code> if <code>p</code> is even <br>
+			 * <code>-1 (mod m)</code> if <code>p</code> is odd
 			 */
-			return (MathUtil.isEven(p) ? 1L : n);
+			/**
+			 * It's fine to do <code>(p &= 1L) == 0L</code> instead of <code>(p & 1L) == 0L</code> since we
+			 * don't need the value of <code>p</code> to remain unchanged. Note that the difference is the
+			 * <code>&=</code> instead of the <code>&</code> which will mutate <code>p</code>.
+			 */
+			return (((p &= 1L) == 0L) ? 1L : n);
 		}
 		// (n != 0) && (n != 1) && (n != m - 1)
 		// i.e., (1 < n) && (n < m - 1)
@@ -1760,7 +1782,7 @@ public class MathUtil {
 	 *             If <code>gcd(n, m) != 1</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>((long) Math.floor(Math.sqrt(upperOrder)) + 1) > Integer.MAX_VALUE</code>
+	 *             If <code>(((long) Math.sqrt(upperOrder)) + 1) > Integer.MAX_VALUE</code>
 	 */
 	public static Long discreteLogBabyGiant(long n, long target, long m, long upperOrder, boolean generateBoth,
 			boolean hash)
@@ -1816,7 +1838,8 @@ public class MathUtil {
 		final long n_inverse = MathUtil.modInverse(n, m);
 
 		// Shanks' Babystep Giantstep Algorithm.
-		final long bound = ((long) Math.floor(Math.sqrt(upperOrder))) + 1L; // bound >= 2
+		// Applying Math.floor before casting to long is unnecessary and it causes a large slow down.
+		final long bound = ((long) Math.sqrt(upperOrder)) + 1L; // bound >= 2
 		if (bound > Integer.MAX_VALUE) {
 			throw new ArithmeticException();
 		}
@@ -1960,7 +1983,7 @@ public class MathUtil {
 	 *             If <code>gcd(n, m) != 1</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>((long) Math.floor(Math.sqrt(upperOrder)) + 1) > Integer.MAX_VALUE</code>
+	 *             If <code>(((long) Math.sqrt(upperOrder)) + 1) > Integer.MAX_VALUE</code>
 	 */
 	public static Long discreteLogBabyGiant(long n, long target, long m, long upperOrder, boolean generateBoth)
 			throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException, ArithmeticException {
@@ -1993,7 +2016,7 @@ public class MathUtil {
 	 *             If <code>gcd(n, m) != 1</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>((long) Math.floor(Math.sqrt(upperOrder)) + 1) > Integer.MAX_VALUE</code>
+	 *             If <code>(((long) Math.sqrt(upperOrder)) + 1) > Integer.MAX_VALUE</code>
 	 */
 	public static Long discreteLogBabyGiant(long n, long target, long m, long upperOrder)
 			throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException, ArithmeticException {
@@ -2020,7 +2043,7 @@ public class MathUtil {
 	 *             If <code>gcd(n, m) != 1</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>((long) Math.floor(Math.sqrt(m)) + 1) > Integer.MAX_VALUE</code>
+	 *             If <code>(((long) Math.sqrt(m)) + 1) > Integer.MAX_VALUE</code>
 	 */
 	public static Long discreteLogBabyGiant(long n, long target, long m)
 			throws InvalidModulusException, UndefinedInverseException, ArithmeticException {
@@ -2871,7 +2894,12 @@ public class MathUtil {
 			 * This case is only an optimization since -1 to any even power is 1 and otherwise is -1. So the
 			 * loop will do extra unnecessary work to arrive at the same result.
 			 */
-			boolean evenPow = MathUtil.isEven(begin);
+			/**
+			 * It's fine to do <code>(begin &= 1L) == 0L</code> instead of <code>(begin & 1L) == 0L</code> since
+			 * we don't need the value of <code>begin</code> to remain unchanged. Note that the difference is
+			 * the <code>&=</code> instead of the <code>&</code> which will mutate <code>begin</code>.
+			 */
+			boolean evenPow = ((begin &= 1L) == 0L); // i.e., MathUtil.isEven(begin)
 			for (int i = 0; i != length; ++i, evenPow = !evenPow) {
 				result[i] = evenPow ? 1L : n;
 			}
@@ -2997,7 +3025,12 @@ public class MathUtil {
 			 * This case is only an optimization since -1 to any even power is 1 and otherwise is -1. So the
 			 * loop will do extra unnecessary work to arrive at the same result.
 			 */
-			boolean evenPow = MathUtil.isEven(begin);
+			/**
+			 * It's fine to do <code>(begin &= 1) == 0</code> instead of <code>(begin & 1) == 0</code> since we
+			 * don't need the value of <code>begin</code> to remain unchanged. Note that the difference is the
+			 * <code>&=</code> instead of the <code>&</code> which will mutate <code>begin</code>.
+			 */
+			boolean evenPow = ((begin &= 1) == 0); // i.e., MathUtil.isEven(begin)
 			for (int i = 0; i != length; ++i, evenPow = !evenPow) {
 				result[i] = evenPow ? 1 : n;
 			}
@@ -3117,7 +3150,12 @@ public class MathUtil {
 			 * This case is only an optimization since -1 to any even power is 1 and otherwise is -1. So the
 			 * loop will do extra unnecessary work to arrive at the same result.
 			 */
-			boolean evenPow = MathUtil.isEven(begin);
+			/**
+			 * It's fine to do <code>(begin &= 1) == 0</code> instead of <code>(begin & 1) == 0</code> since we
+			 * don't need the value of <code>begin</code> to remain unchanged. Note that the difference is the
+			 * <code>&=</code> instead of the <code>&</code> which will mutate <code>begin</code>.
+			 */
+			boolean evenPow = ((begin &= 1) == 0); // i.e., MathUtil.isEven(begin)
 			for (int i = 0; i != length; ++i, evenPow = !evenPow) {
 				result[i] = evenPow ? 1 : n;
 			}
@@ -3237,7 +3275,12 @@ public class MathUtil {
 			 * This case is only an optimization since -1 to any even power is 1 and otherwise is -1. So the
 			 * loop will do extra unnecessary work to arrive at the same result.
 			 */
-			boolean evenPow = MathUtil.isEven(begin);
+			/**
+			 * It's fine to do <code>(begin &= 1) == 0</code> instead of <code>(begin & 1) == 0</code> since we
+			 * don't need the value of <code>begin</code> to remain unchanged. Note that the difference is the
+			 * <code>&=</code> instead of the <code>&</code> which will mutate <code>begin</code>.
+			 */
+			boolean evenPow = ((begin &= 1) == 0); // i.e., MathUtil.isEven(begin)
 			for (int i = 0; i != length; ++i, evenPow = !evenPow) {
 				result[i] = evenPow ? 1 : n;
 			}

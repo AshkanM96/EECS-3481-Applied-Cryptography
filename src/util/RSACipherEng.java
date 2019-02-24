@@ -143,11 +143,12 @@ public class RSACipherEng {
 			CipherEngUtil.PADDING padding, Object dummy1, Object dummy2)
 			throws NullPointerException, IllegalArgumentException, NoSuchAlgorithmException, NoSuchPaddingException,
 			ArithmeticException, InvalidKeySpecException {
-		// Ensure all parameters are positive.
-		if (e.signum() != 1) {
+		if (e.signum() != 1) { // i.e., e <= 0
 			throw new IllegalArgumentException();
 		}
+		// e > 0
 		final BigInteger phi = RSAUtil.phi(p, q);
+		// (p > 1) && (q > 1)
 
 		// The following is meant to be an assignment of this.engine, this.opmode, and this.padding.
 		this.engine = CipherEngUtil.getEngine(RSAUtil.ALGORITHM, this.opmode = opmode, this.padding = padding);
@@ -208,10 +209,10 @@ public class RSACipherEng {
 	protected RSACipherEng(BigInteger phi, BigInteger n, BigInteger e, CipherEngUtil.OPMODE opmode,
 			CipherEngUtil.PADDING padding, Object dummy) throws NullPointerException, IllegalArgumentException,
 			NoSuchAlgorithmException, NoSuchPaddingException, ArithmeticException, InvalidKeySpecException {
-		// Ensure all parameters are positive.
-		if ((phi.signum() != 1) || (n.signum() != 1) || (e.signum() != 1)) {
+		if ((phi.signum() != 1) || (n.signum() != 1) || (e.signum() != 1)) { // i.e., (phi <= 0) || (n <= 0) || (e <= 0)
 			throw new IllegalArgumentException();
 		}
+		// (phi > 0) && (n > 0) && (e > 0)
 
 		// The following is meant to be an assignment of this.engine, this.opmode, and this.padding.
 		this.engine = CipherEngUtil.getEngine(RSAUtil.ALGORITHM, this.opmode = opmode, this.padding = padding);
@@ -266,10 +267,10 @@ public class RSACipherEng {
 	protected RSACipherEng(BigInteger n, BigInteger e, BigInteger d, CipherEngUtil.OPMODE opmode,
 			CipherEngUtil.PADDING padding) throws NullPointerException, IllegalArgumentException,
 			NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeySpecException {
-		// Ensure all parameters are positive.
-		if ((n.signum() != 1) || (e.signum() != 1) || (d.signum() != 1)) {
+		if ((n.signum() != 1) || (e.signum() != 1) || (d.signum() != 1)) { // i.e., (n <= 0) || (e <= 0) || (d <= 0)
 			throw new IllegalArgumentException();
 		}
+		// (n > 0) && (e > 0) && (d > 0)
 
 		// The following is meant to be an assignment of this.engine, this.opmode, and this.padding.
 		this.engine = CipherEngUtil.getEngine(RSAUtil.ALGORITHM, this.opmode = opmode, this.padding = padding);

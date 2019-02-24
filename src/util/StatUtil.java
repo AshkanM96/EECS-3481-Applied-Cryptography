@@ -14,9 +14,9 @@ public class StatUtil {
 	 */
 
 	/**
-	 * <code>BigDecimal.valueOf(100, 0)</code>.
+	 * <code>BigDecimal.valueOf(100)</code>.
 	 */
-	public static final BigDecimal HUNDRED_ZERO_SCALE = BigDecimal.valueOf(100L, 0);
+	public static final BigDecimal HUNDRED_ZERO_SCALE = BigDecimal.valueOf(100L);
 
 	/**
 	 * Default scale to be used for BigDecimal operations.
@@ -99,9 +99,13 @@ public class StatUtil {
 		for (long i = 1L; i != n; /* Update inside. */) {
 			// i! = i * (i - 1)!
 			/**
-			 * Note that <code>BigInteger.valueOf</code> calls are much cheaper than performing arithmetic
+			 * Note that <code>BigInteger.valueOf(long)</code> calls are much cheaper than performing arithmetic
 			 * operations on a <code>BigInteger</code> since those are fully general operations for potentially
-			 * big integers.
+			 * big integers. Furthermore, due to <code>BigInteger</code> being immutable, its arithmetic
+			 * operations always create a new object and so using <code>BigInteger.valueOf(long)</code> is
+			 * neither adding nor removing an object creation but it is cheaper because of the faster primitive
+			 * arithmetic operations and the simplicity of the implementation of
+			 * <code>BigInteger.valueOf(long)</code>.
 			 */
 			result = result.multiply(BigInteger.valueOf(++i));
 		}
@@ -196,11 +200,20 @@ public class StatUtil {
 		for (long i = 1L; i != n; /* Update inside. */) {
 			// !i = i * !(i - 1) + (-1)^i
 			/**
-			 * Note that <code>BigInteger.valueOf</code> calls are much cheaper than performing arithmetic
+			 * Note that <code>BigInteger.valueOf(long)</code> calls are much cheaper than performing arithmetic
 			 * operations on a <code>BigInteger</code> since those are fully general operations for potentially
-			 * big integers.
+			 * big integers. Furthermore, due to <code>BigInteger</code> being immutable, its arithmetic
+			 * operations always create a new object and so using <code>BigInteger.valueOf(long)</code> is
+			 * neither adding nor removing an object creation but it is cheaper because of the faster primitive
+			 * arithmetic operations and the simplicity of the implementation of
+			 * <code>BigInteger.valueOf(long)</code>.
 			 */
 			result = result.multiply(BigInteger.valueOf(++i));
+			/**
+			 * Don't do <code>(i &= 1L) != 0L</code> since we need the value of <code>i</code> to remain
+			 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
+			 * will mutate <code>i</code>.
+			 */
 			result = ((i & 1L) != 0L) ? result.subtract(BigInteger.ONE) : result.add(BigInteger.ONE);
 		}
 		return result;
@@ -228,7 +241,7 @@ public class StatUtil {
 	/**
 	 * Linearly compute <code>nPr</code>. <br>
 	 * Precondition: <code>(n != null) && (n >= 0)</code> <br>
-	 * Precondition: <code>(r != null) && (1 <= r) && (r <= n - 2)</code>
+	 * Precondition: <code>(r != null) && (0 <= r) && (r <= n)</code>
 	 * 
 	 * @param n
 	 *            the given number of objects
@@ -239,10 +252,10 @@ public class StatUtil {
 	 * @return <code>nPr</code>.
 	 */
 	protected static BigInteger nPrLinearFixedInput(BigInteger n, BigInteger r) {
-		BigInteger result = n;
-		for (BigInteger i = BigInteger.ONE, n_i = n.subtract(BigInteger.ONE); !i.equals(r); i = i
-				.add(BigInteger.ONE), n_i = n_i.subtract(BigInteger.ONE)) {
-			result = result.multiply(n_i);
+		BigInteger result = BigInteger.ONE;
+		final BigInteger endI = n.subtract(r);
+		for (BigInteger i = n; !i.equals(endI); i = i.subtract(BigInteger.ONE)) {
+			result = result.multiply(i);
 		}
 		return result;
 	}
@@ -274,18 +287,15 @@ public class StatUtil {
 		final int n_cmp_r = n.compareTo(r);
 		if (n_cmp_r < 0) { // i.e., n < r
 			throw new IllegalArgumentException();
-		} else if ((n_cmp_r == 0) || (n.equals(r.add(BigInteger.ONE)))) { // i.e., (n == r) || (n == r + 1)
-			// nPn == nP(n - 1) == n!
-			return StatUtil.factorialLinearFixedInput(n);
 		}
-		// (n_cmp_r > 0) && (n != r + 1)
-		// i.e., (n > r) && (r != n - 1)
-		// i.e., (n - 1 >= r) && (r != n - 1)
-		// i.e., n - 1 > r
-		// i.e., n - 2 >= r
+		// n_cmp_r >= 0
+		// i.e., n >= r
 
 		if (r.signum() == 0) { // i.e., r == 0
-			// nP0 == 1
+			/*
+			 * This case is only an optimization since nP0 == 1 and so the loop will never execute but extra
+			 * unnecessary work will be done to arrive at the same result.
+			 */
 			return BigInteger.ONE;
 		}
 		// r != 0
@@ -296,7 +306,7 @@ public class StatUtil {
 	/**
 	 * Linearly compute <code>nPr</code>. <br>
 	 * Precondition: <code>n >= 0</code> <br>
-	 * Precondition: <code>(1 <= r) && (r <= n - 2)</code>
+	 * Precondition: <code>(0 <= r) && (r <= n)</code>
 	 * 
 	 * @param n
 	 *            the given number of objects
@@ -313,14 +323,19 @@ public class StatUtil {
 		 * arithmetic operations on a <code>BigInteger</code>.
 		 */
 
-		BigInteger result = BigInteger.valueOf(n);
-		for (long i = 1L; i != r; ++i) {
+		BigInteger result = BigInteger.ONE;
+		final long endI = n - r;
+		for (long i = n; i != endI; --i) {
 			/**
-			 * Note that <code>BigInteger.valueOf</code> calls are much cheaper than performing arithmetic
+			 * Note that <code>BigInteger.valueOf(long)</code> calls are much cheaper than performing arithmetic
 			 * operations on a <code>BigInteger</code> since those are fully general operations for potentially
-			 * big integers.
+			 * big integers. Furthermore, due to <code>BigInteger</code> being immutable, its arithmetic
+			 * operations always create a new object and so using <code>BigInteger.valueOf(long)</code> is
+			 * neither adding nor removing an object creation but it is cheaper because of the faster primitive
+			 * arithmetic operations and the simplicity of the implementation of
+			 * <code>BigInteger.valueOf(long)</code>.
 			 */
-			result = result.multiply(BigInteger.valueOf(n - i));
+			result = result.multiply(BigInteger.valueOf(i));
 		}
 		return result;
 	}
@@ -347,17 +362,14 @@ public class StatUtil {
 
 		if (n < r) {
 			throw new IllegalArgumentException();
-		} else if ((n == r) || (n == r + 1L)) {
-			// nPn == nP(n - 1) == n!
-			return StatUtil.factorialLinear(n);
 		}
-		// (n > r) && (n != r + 1)
-		// i.e., (n - 1 >= r) && (r != n - 1)
-		// i.e., n - 1 > r
-		// i.e., n - 2 >= r
+		// n >= r
 
 		if (r == 0L) {
-			// nP0 == 1
+			/*
+			 * This case is only an optimization since nP0 == 1 and so the loop will never execute but extra
+			 * unnecessary work will be done to arrive at the same result.
+			 */
 			return BigInteger.ONE;
 		}
 		// r != 0
@@ -368,7 +380,7 @@ public class StatUtil {
 	/**
 	 * Linearly compute <code>nCr</code>. <br>
 	 * Precondition: <code>(n != null) && (n >= 0)</code> <br>
-	 * Precondition: <code>(r != null) && (2 <= r) && (r <= n / 2)</code>
+	 * Precondition: <code>(r != null) && (1 <= r) && (r <= n / 2)</code>
 	 * 
 	 * @param n
 	 *            the given number of objects
@@ -416,7 +428,11 @@ public class StatUtil {
 		if (n_cmp_r < 0) { // i.e., n < r
 			throw new IllegalArgumentException();
 		} else if (n_cmp_r == 0) { // i.e., n == r
-			// nCn == 1
+			/**
+			 * This case is only an optimization since nCn == 1. The following code will handle it after setting
+			 * <code>r == n_r == n - n == 0</code> but we might as well handle it earlier and save some
+			 * computations.
+			 */
 			return BigInteger.ONE;
 		}
 		// n_cmp_r > 0
@@ -431,10 +447,13 @@ public class StatUtil {
 		// i.e., r <= n / 2
 
 		if (r.signum() == 0) { // i.e., r == 0
-			// nC0 == 1
+			// This case is needed since the loop will run forever for r == 0 even though nC0 == 1.
 			return BigInteger.ONE;
 		} else if (r.equals(BigInteger.ONE)) { // i.e., r == 1
-			// nC1 == n
+			/*
+			 * This case is only an optimization since nC1 == n and so the loop will never execute but extra
+			 * unnecessary work will be done to arrive at the same result.
+			 */
 			return n;
 		}
 		// (r != 0) && (r != 1)
@@ -445,7 +464,7 @@ public class StatUtil {
 	/**
 	 * Linearly compute <code>nCr</code>. <br>
 	 * Precondition: <code>n >= 0</code> <br>
-	 * Precondition: <code>(2 <= r) && (r <= n / 2)</code>
+	 * Precondition: <code>(1 <= r) && (r <= n / 2)</code>
 	 * 
 	 * @param n
 	 *            the given number of objects
@@ -465,9 +484,13 @@ public class StatUtil {
 		BigInteger numerator = BigInteger.valueOf(n), denominator = BigInteger.valueOf(r);
 		for (long i = 1L; i != r; ++i) {
 			/**
-			 * Note that <code>BigInteger.valueOf</code> calls are much cheaper than performing arithmetic
+			 * Note that <code>BigInteger.valueOf(long)</code> calls are much cheaper than performing arithmetic
 			 * operations on a <code>BigInteger</code> since those are fully general operations for potentially
-			 * big integers.
+			 * big integers. Furthermore, due to <code>BigInteger</code> being immutable, its arithmetic
+			 * operations always create a new object and so using <code>BigInteger.valueOf(long)</code> is
+			 * neither adding nor removing an object creation but it is cheaper because of the faster primitive
+			 * arithmetic operations and the simplicity of the implementation of
+			 * <code>BigInteger.valueOf(long)</code>.
 			 */
 			numerator = numerator.multiply(BigInteger.valueOf(n - i));
 			denominator = denominator.multiply(BigInteger.valueOf(i));
@@ -498,7 +521,11 @@ public class StatUtil {
 		if (n < r) {
 			throw new IllegalArgumentException();
 		} else if (n == r) {
-			// nCn == 1
+			/**
+			 * This case is only an optimization since nCn == 1. The following code will handle it after setting
+			 * <code>r == n_r == n - n == 0</code> but we might as well handle it earlier and save some
+			 * computations.
+			 */
 			return BigInteger.ONE;
 		}
 		// n > r
@@ -512,10 +539,13 @@ public class StatUtil {
 		// i.e., r <= n / 2
 
 		if (r == 0L) {
-			// nC0 == 1
+			// This case is needed since the loop will run forever for r == 0 even though nC0 == 1.
 			return BigInteger.ONE;
 		} else if (r == 1L) {
-			// nC1 == n
+			/*
+			 * This case is only an optimization since nC1 == n and so the loop will never execute but extra
+			 * unnecessary work will be done to arrive at the same result.
+			 */
 			return BigInteger.valueOf(n);
 		}
 		// (r != 0) && (r != 1)
@@ -542,15 +572,21 @@ public class StatUtil {
 		BigInteger tmp = null;
 		for (int i = 0; i <= r; ++i) {
 			/**
-			 * Note that <code>BigInteger.valueOf</code> calls are much cheaper than performing arithmetic
+			 * Note that <code>BigInteger.valueOf(long)</code> calls are much cheaper than performing arithmetic
 			 * operations on a <code>BigInteger</code> since those are fully general operations for potentially
-			 * big integers.
+			 * big integers. Furthermore, due to <code>BigInteger</code> being immutable, its arithmetic
+			 * operations always create a new object and so using <code>BigInteger.valueOf(long)</code> is
+			 * neither adding nor removing an object creation but it is cheaper because of the faster primitive
+			 * arithmetic operations and the simplicity of the implementation of
+			 * <code>BigInteger.valueOf(long)</code>.
 			 */
 			tmp = StatUtil.nCrLinear(r, i).multiply(BigInteger.valueOf(r - i).pow(n));
-			if ((i & 1) != 0) { // i.e., !MathUtil.isEven(i)
-				tmp = tmp.negate();
-			}
-			numerator = numerator.add(tmp);
+			/**
+			 * Don't do <code>(i &= 1) != 0</code> since we need the value of <code>i</code> to remain
+			 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
+			 * will mutate <code>i</code>.
+			 */
+			numerator = ((i & 1) != 0) ? numerator.subtract(tmp) : numerator.add(tmp);
 			if (i != 0) {
 				denominator = denominator.multiply(BigInteger.valueOf(i));
 			}
@@ -590,8 +626,8 @@ public class StatUtil {
 	}
 
 	/**
-	 * Precondition: <code>d >= 1</code> <br>
-	 * Precondition: <code>(1 < n) && (n < d)</code> <br>
+	 * Precondition: <code>d >= 2</code> <br>
+	 * Precondition: <code>(0 <= n) && (n <= d - 1)</code> <br>
 	 * Precondition: <code>scale >= 0</code>
 	 * 
 	 * @param d
@@ -610,8 +646,8 @@ public class StatUtil {
 	 */
 	protected static BigDecimal birthday1LinearFixedInput(int d, int n, int scale, boolean outOf100) {
 		// Probability of no collision is: <code>dPn / (d^n)</code>
-		final BigInteger numerator = StatUtil.nPrLinear(d, n);
-		final BigDecimal denominator = BigDecimal.valueOf(d, 0).pow(n);
+		final BigInteger numerator = StatUtil.nPrLinearFixedInput(d, n);
+		final BigDecimal denominator = BigDecimal.valueOf(d).pow(n);
 		// Probability of >= 1 collision is: <code>1 - probability of no collision</code>
 		final BigDecimal result = BigDecimal.ONE
 				.subtract(new BigDecimal(numerator).divide(denominator, scale, BigDecimal.ROUND_HALF_UP));
@@ -652,6 +688,7 @@ public class StatUtil {
 			return (outOf100 ? StatUtil.HUNDRED_ZERO_SCALE : BigDecimal.ONE);
 		}
 		// (1 < n) && (n < d)
+		// i.e., (1 < n) && (n < d) && (d >= 2)
 		return StatUtil.birthday1LinearFixedInput(d, n, scale, outOf100);
 	}
 
@@ -685,7 +722,7 @@ public class StatUtil {
 	}
 
 	/**
-	 * Precondition: <code>d >= 1</code> <br>
+	 * Precondition: <code>d >= 2</code> <br>
 	 * Precondition: <code>(n >= 1) && (m >= 1)</code> <br>
 	 * Precondition: <code>m + n <= d</code> <br>
 	 * Precondition: <code>scale >= 0</code>
@@ -728,6 +765,15 @@ public class StatUtil {
 			for (int j = 1; j <= n; ++j) {
 				tmp = StatUtil.stirling2Linear(m, i).multiply(StatUtil.stirling2Linear(n, j));
 				for (long k = 0L, maxK = ((long) i) + j; k != maxK; ++k) {
+					/**
+					 * Note that <code>BigInteger.valueOf(long)</code> calls are much cheaper than performing arithmetic
+					 * operations on a <code>BigInteger</code> since those are fully general operations for potentially
+					 * big integers. Furthermore, due to <code>BigInteger</code> being immutable, its arithmetic
+					 * operations always create a new object and so using <code>BigInteger.valueOf(long)</code> is
+					 * neither adding nor removing an object creation but it is cheaper because of the faster primitive
+					 * arithmetic operations and the simplicity of the implementation of
+					 * <code>BigInteger.valueOf(long)</code>.
+					 */
 					tmp = tmp.multiply(BigInteger.valueOf(d - k));
 				}
 				numerator = numerator.add(tmp);
@@ -759,30 +805,35 @@ public class StatUtil {
 	 *         people. Note that shared birthdays between the same type of people doesn't count.
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(d < 1) || (m < 1) || (n < 1) || (scale < 0)
+	 *             If <code>(d < 1) || (m < 0) || (n < 0) || (scale < 0)
 	 *             || ((m < d) && (n < d) && (m + n > d))</code>
 	 */
 	public static BigDecimal birthday2Linear(int d, int m, int n, int scale, boolean outOf100)
 			throws IllegalArgumentException {
-		if ((d < 1) || (m < 1) || (n < 1) || (scale < 0)) {
+		if ((d < 1) || (m < 0) || (n < 0) || (scale < 0)) {
 			throw new IllegalArgumentException();
 		}
-		// (d >= 1) && (m >= 1) && (n >= 1) && (scale >= 0)
+		// (d >= 1) && (m >= 0) && (n >= 0) && (scale >= 0)
 
-		// Handle the simple special case.
-		if ((m >= d) && (n >= d)) {
+		// Handle the simple special cases.
+		if ((m == 0) || (n == 0)) {
+			// Probability of >= 1 collision with 0 people of at least one of the types is: <code>0</code>
+			return BigDecimal.ZERO;
+		} else if ((m >= d) && (n >= d)) {
 			/**
 			 * Probability of >= 1 collision with d or more people in each type, is:
 			 * <code>1 by the Pigeon Hole Principle</code>
 			 */
 			return (outOf100 ? StatUtil.HUNDRED_ZERO_SCALE : BigDecimal.ONE);
 		}
-		// (m < d) && (n < d)
+		// (m != 0) && (n != 0) && (m < d) && (n < d)
+		// i.e., (1 <= m) && (1 <= n) && (m < d) && (n < d)
 
 		if (((long) m) + n > d) {
 			throw new IllegalArgumentException();
 		}
 		// m + n <= d
+		// i.e., (m + n <= d) && (d >= 2)
 		return StatUtil.birthday2LinearFixedInput(d, m, n, scale, outOf100);
 	}
 
@@ -803,7 +854,7 @@ public class StatUtil {
 	 *         people. Note that shared birthdays between the same type of people doesn't count.
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(d < 1) || (m < 1) || (n < 1) || (scale < 0)
+	 *             If <code>(d < 1) || (m < 0) || (n < 0) || (scale < 0)
 	 *             || ((m < d) && (n < d) && (m + n > d))</code>
 	 */
 	public static BigDecimal birthday2Linear(int d, int m, int n, int scale) throws IllegalArgumentException {
@@ -824,7 +875,7 @@ public class StatUtil {
 	 *         people. Note that shared birthdays between the same type of people doesn't count.
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(d < 1) || (m < 1) || (n < 1)
+	 *             If <code>(d < 1) || (m < 0) || (n < 0)
 	 *             || ((m < d) && (n < d) && (m + n > d))</code>
 	 */
 	public static BigDecimal birthday2Linear(int d, int m, int n) throws IllegalArgumentException {

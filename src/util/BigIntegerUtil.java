@@ -98,7 +98,7 @@ public class BigIntegerUtil {
 	 *             If <code>n == null</code>
 	 */
 	public static boolean isNegative(BigInteger n) throws NullPointerException {
-		return (n.signum() == -1);
+		return (n.signum() == -1); // i.e., n < 0
 	}
 
 	/**
@@ -118,11 +118,11 @@ public class BigIntegerUtil {
 	 */
 	public static void ensureNegative(BigInteger n, BigInteger... args)
 			throws NullPointerException, IllegalArgumentException {
-		if (n.signum() != -1) {
+		if (n.signum() != -1) { // i.e., n >= 0
 			throw new IllegalArgumentException();
 		}
 		for (int i = 0; i != args.length; ++i) {
-			if (args[i].signum() != -1) {
+			if (args[i].signum() != -1) { // i.e., args[i] >= 0
 				throw new IllegalArgumentException();
 			}
 		}
@@ -145,11 +145,11 @@ public class BigIntegerUtil {
 	 */
 	public static void ensureNonNegative(BigInteger n, BigInteger... args)
 			throws NullPointerException, IllegalArgumentException {
-		if (n.signum() == -1) {
+		if (n.signum() == -1) { // i.e., n < 0
 			throw new IllegalArgumentException();
 		}
 		for (int i = 0; i != args.length; ++i) {
-			if (args[i].signum() == -1) {
+			if (args[i].signum() == -1) { // i.e., args[i] < 0
 				throw new IllegalArgumentException();
 			}
 		}
@@ -165,7 +165,7 @@ public class BigIntegerUtil {
 	 *             If <code>n == null</code>
 	 */
 	public static boolean isZero(BigInteger n) throws NullPointerException {
-		return (n.signum() == 0);
+		return (n.signum() == 0); // i.e., n == 0
 	}
 
 	/**
@@ -185,11 +185,38 @@ public class BigIntegerUtil {
 	 */
 	public static void ensureZero(BigInteger n, BigInteger... args)
 			throws NullPointerException, IllegalArgumentException {
-		if (n.signum() != 0) {
+		if (n.signum() != 0) { // i.e., n != 0
 			throw new IllegalArgumentException();
 		}
 		for (int i = 0; i != args.length; ++i) {
-			if (args[i].signum() != 0) {
+			if (args[i].signum() != 0) { // i.e., args[i] != 0
+				throw new IllegalArgumentException();
+			}
+		}
+	}
+
+	/**
+	 * @param n
+	 *            the given BigInteger object
+	 * 
+	 * @param args
+	 *            any number of BigInteger objects
+	 * 
+	 * @throws NullPointerException
+	 *             If
+	 *             <code>(n == null) || (args == null) || ((valid i) implies (args[i] == null))</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If
+	 *             <code>(BigIntegerUtil.isZero(n)) || ((valid i) implies (BigIntegerUtil.isZero(args[i])))</code>
+	 */
+	public static void ensureNonZero(BigInteger n, BigInteger... args)
+			throws NullPointerException, IllegalArgumentException {
+		if (n.signum() == 0) { // i.e., n == 0
+			throw new IllegalArgumentException();
+		}
+		for (int i = 0; i != args.length; ++i) {
+			if (args[i].signum() == 0) { // i.e., args[i] == 0
 				throw new IllegalArgumentException();
 			}
 		}
@@ -205,7 +232,7 @@ public class BigIntegerUtil {
 	 *             If <code>n == null</code>
 	 */
 	public static boolean isPositive(BigInteger n) throws NullPointerException {
-		return (n.signum() == 1);
+		return (n.signum() == 1); // i.e., n > 0
 	}
 
 	/**
@@ -225,11 +252,11 @@ public class BigIntegerUtil {
 	 */
 	public static void ensurePositive(BigInteger n, BigInteger... args)
 			throws NullPointerException, IllegalArgumentException {
-		if (n.signum() != 1) {
+		if (n.signum() != 1) { // i.e., n <= 0
 			throw new IllegalArgumentException();
 		}
 		for (int i = 0; i != args.length; ++i) {
-			if (args[i].signum() != 1) {
+			if (args[i].signum() != 1) { // i.e., args[i] <= 0
 				throw new IllegalArgumentException();
 			}
 		}
@@ -252,11 +279,11 @@ public class BigIntegerUtil {
 	 */
 	public static void ensureNonPositive(BigInteger n, BigInteger... args)
 			throws NullPointerException, IllegalArgumentException {
-		if (n.signum() == 1) {
+		if (n.signum() == 1) { // i.e., n > 0
 			throw new IllegalArgumentException();
 		}
 		for (int i = 0; i != args.length; ++i) {
-			if (args[i].signum() == 1) {
+			if (args[i].signum() == 1) { // i.e., args[i] > 0
 				throw new IllegalArgumentException();
 			}
 		}
@@ -349,8 +376,8 @@ public class BigIntegerUtil {
 	public static BigInteger[] gcdExtended(BigInteger a, BigInteger b) throws NullPointerException {
 		final int sign_a = a.signum(), sign_b = b.signum();
 		// Handle the special cases where at least one of the two numbers is 0.
-		if (sign_a == 0) {
-			if (sign_b == 0) {
+		if (sign_a == 0) { // i.e., a == 0
+			if (sign_b == 0) { // i.e., b == 0
 				// 0 * 0 + 0 * 0 == 0
 				return new BigInteger[] { BigInteger.ZERO, BigInteger.ZERO, BigInteger.ZERO };
 			}
@@ -358,7 +385,7 @@ public class BigIntegerUtil {
 
 			// 0 * a + 1 * b == b == gcd(0, b)
 			return new BigInteger[] { BigInteger.ZERO, BigInteger.ONE, b };
-		} else if (sign_b == 0) { // a != 0
+		} else if (sign_b == 0) { // i.e., (b == 0) && (a != 0)
 			// 1 * a + 0 * b == a == gcd(a, 0)
 			return new BigInteger[] { BigInteger.ONE, BigInteger.ZERO, a };
 		}
@@ -366,12 +393,13 @@ public class BigIntegerUtil {
 
 		// The algorithm only works for a > 0 and b > 0 so compute and save absolute values.
 		BigInteger abs_a = a, abs_b = b;
-		if (sign_a == -1) {
+		if (sign_a == -1) { // i.e., a < 0
 			abs_a = a.negate();
 		}
-		if (sign_b == -1) {
+		if (sign_b == -1) { // i.e., b < 0
 			abs_b = b.negate();
 		}
+		// (abs_a == a.abs()) && (abs_b == b.abs())
 
 		// Algorithm is from Introduction to Mathematical Cryptography 2nd Edition Exercise 1.12.
 		BigInteger gcd = abs_a, x = BigInteger.ONE;
@@ -415,15 +443,21 @@ public class BigIntegerUtil {
 	 *             If <code>(a == null) || (b == null)</code>
 	 */
 	public static BigInteger lcm(BigInteger a, BigInteger b) throws NullPointerException {
+		final int sign_a = a.signum(), sign_b = b.signum();
 		// lcm(0, b) == 0 == lcm(a, 0)
-		if ((a.signum() == 0) || (b.signum() == 0)) {
+		if ((sign_a == 0) || (sign_b == 0)) { // i.e., (a == 0) || (b == 0)
 			return BigInteger.ZERO;
 		}
 		// (a != 0) && (b != 0)
 
 		// lcm is non-negative so make a and b non-negative.
-		a = a.abs();
-		b = a.abs();
+		if (sign_a == -1) { // i.e., a < 0
+			a = a.negate();
+		}
+		if (sign_b == -1) { // i.e., b < 0
+			b = b.negate();
+		}
+		// (a > 0) && (b > 0)
 
 		// lcm(a, b) == (a * b) / gcd(a, b)
 		return (a.divide(a.gcd(b))).multiply(b);
@@ -500,7 +534,7 @@ public class BigIntegerUtil {
 			UndefinedInverseException {
 		if (n == null) {
 			throw new NullPointerException();
-		} else if (m.signum() != 1) {
+		} else if (m.signum() != 1) { // i.e., m <= 0
 			throw new InvalidModulusException();
 		}
 		// m > 0
@@ -521,7 +555,7 @@ public class BigIntegerUtil {
 		// Fix n to be in [0, m - 1] \cap \doubleZ.
 		n = n.mod(m);
 
-		if (n.signum() == 0) {
+		if (n.signum() == 0) { // i.e., n == 0
 			/**
 			 * This case is needed since 0 to any non-zero power is 0 and so any non-zero assignment of
 			 * <code>result[i]</code> will be wrong in this case. Furthermore, note that we are defining
@@ -532,7 +566,7 @@ public class BigIntegerUtil {
 		// (n != 0) && (m != 1)
 		// i.e., (n != 0) && (m > 1)
 
-		if (n.equals(BigInteger.ONE)) {
+		if (n.equals(BigInteger.ONE)) { // i.e., n == 1 (mod m)
 			/*
 			 * This case is only an optimization since 1 to any power is 1 and so the loop will do extra
 			 * unnecessary work to arrive at the same result.
@@ -607,7 +641,7 @@ public class BigIntegerUtil {
 			boolean modAfterEveryStep) throws NullPointerException, InvalidModulusException, IllegalArgumentException {
 		if ((n1 == null) || (n2 == null)) {
 			throw new NullPointerException();
-		} else if ((m1.signum() != 1) || (m2.signum() != 1)) {
+		} else if ((m1.signum() != 1) || (m2.signum() != 1)) { // i.e., (m1 <= 0) || (m2 <= 0)
 			throw new InvalidModulusException();
 		}
 		// (m1 > 0) && (m2 > 0)

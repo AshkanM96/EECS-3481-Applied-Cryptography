@@ -9,15 +9,18 @@ import java.math.BigInteger;
  */
 public class Fermat {
 	/**
-	 * Dependencies: <code>
-	 * 		1. util.BigIntegerUtil
-	 * </code>
+	 * No dependencies.
 	 */
 
 	/**
-	 * BigInteger objects are immutable. Therefore, it is "safe" to make the following final class
-	 * attributes public.
+	 * BigInteger objects are immutable. Therefore, it is "safe" to make the following final attributes
+	 * public.
 	 */
+
+	/**
+	 * <code>BigInteger.valueOf(2)</code>.
+	 */
+	public static final BigInteger TWO = BigInteger.valueOf(2L);
 
 	/**
 	 * The number being tested.
@@ -39,14 +42,15 @@ public class Fermat {
 	 *             If <code>n == null</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(n.compareTo(BigIntegerUtil.TWO) <= 0) || (BigIntegerUtil.isEven(n))</code>
+	 *             If <code>(n <= 2) || (n % 2 == 0)</code>
 	 */
 	public Fermat(BigInteger n) throws NullPointerException, IllegalArgumentException {
-		if (n.compareTo(BigIntegerUtil.TWO) <= 0) { // i.e., n <= BigIntegerUtil.TWO
+		if (n.compareTo(Fermat.TWO) <= 0) { // i.e., n <= 2
 			throw new IllegalArgumentException();
-		} else if (BigIntegerUtil.isEven(n)) { // Enforce n being odd.
+		} else if (!n.testBit(0)) { // i.e., BigIntegerUtil.isEven(n)
 			throw new IllegalArgumentException();
 		}
+		// n is odd and >= 3
 
 		// The following is meant to be an assignment of this.n and this.n_minus_1.
 		this.n_minus_1 = (this.n = n).subtract(BigInteger.ONE);

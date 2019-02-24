@@ -10,15 +10,19 @@ import java.math.BigInteger;
 public class MillerRabin {
 	/**
 	 * Dependencies: <code>
-	 * 		1. util.BigIntegerUtil
-	 * 		2. util.SinglyLinkedList
+	 * 		1. util.SinglyLinkedList
 	 * </code>
 	 */
 
 	/**
-	 * BigInteger objects are immutable. Therefore, it is "safe" to make the following final class
-	 * attributes public.
+	 * BigInteger objects are immutable. Therefore, it is "safe" to make the following final attributes
+	 * public.
 	 */
+
+	/**
+	 * <code>BigInteger.valueOf(2)</code>.
+	 */
+	public static final BigInteger TWO = BigInteger.valueOf(2L);
 
 	/**
 	 * The number being tested.
@@ -45,14 +49,15 @@ public class MillerRabin {
 	 *             If <code>n == null</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(n.compareTo(BigIntegerUtil.TWO) <= 0) || (BigIntegerUtil.isEven(n))</code>
+	 *             If <code>(n <= 2) || (n % 2 == 0)</code>
 	 */
 	public MillerRabin(BigInteger n) throws NullPointerException, IllegalArgumentException {
-		if (n.compareTo(BigIntegerUtil.TWO) <= 0) { // i.e., n <= BigIntegerUtil.TWO
+		if (n.compareTo(MillerRabin.TWO) <= 0) { // i.e., n <= 2
 			throw new IllegalArgumentException();
-		} else if (BigIntegerUtil.isEven(n)) { // Enforce n being odd.
+		} else if (!n.testBit(0)) { // i.e., BigIntegerUtil.isEven(n)
 			throw new IllegalArgumentException();
 		}
+		// n is odd and >= 3
 
 		// The following is meant to be an assignment of this.n and this.n_minus_1.
 		this.n_minus_1 = (this.n = n).subtract(BigInteger.ONE);
@@ -72,7 +77,7 @@ public class MillerRabin {
 		 * this.n_minus_1 is guaranteed to be even since this.n is enforced to be odd which means that the
 		 * division by 2 will not have a remainder.
 		 */
-		final BigInteger exp = this.n_minus_1.divide(BigIntegerUtil.TWO);
+		final BigInteger exp = this.n_minus_1.shiftRight(1);
 		this.exponents_it.insert(exp);
 		this.exponents_it.next();
 	}
@@ -165,7 +170,7 @@ public class MillerRabin {
 				exp = this.exponents_it.next();
 			} else {
 				// Check to see if the exponent is even.
-				if (!BigIntegerUtil.isEven(exp)) {
+				if (exp.testBit(0)) { // i.e., !BigIntegerUtil.isEven(exp)
 					// Exponent is odd but r is still 1 therefore the test is inconclusive.
 
 					// Only print if requested.
@@ -179,7 +184,7 @@ public class MillerRabin {
 				}
 
 				// Compute the next exponent since we know that the current exponent is even.
-				exp = exp.divide(BigIntegerUtil.TWO);
+				exp = exp.shiftRight(1);
 				// Save the computed exponent so that it isn't recomputed and then move the iterator.
 				this.exponents_it.insert(exp);
 				this.exponents_it.next();

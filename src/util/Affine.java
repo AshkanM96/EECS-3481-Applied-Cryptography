@@ -140,7 +140,7 @@ public class Affine {
 	}
 
 	/**
-	 * The return value is effectively equivalent to the following: <br>
+	 * The return value is equivalent to the following: <br>
 	 * <code>(Affine.MIN_ALPHA_VALUE <= alpha) && (alpha <= Affine.MAX_CIPHER_KEY_VALUE)
 	 * && (MathUtil.gcd(alpha, CryptoTools.ENGLISH_ALPHABET_SIZE) == 1)</code>
 	 * 

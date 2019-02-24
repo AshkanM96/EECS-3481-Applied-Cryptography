@@ -99,10 +99,10 @@ public class RSA {
 	 */
 	protected RSA(BigInteger p, BigInteger q, BigInteger e, Object dummy1, Object dummy2)
 			throws NullPointerException, IllegalArgumentException, ArithmeticException {
-		// Ensure all parameters are positive.
-		if ((p.signum() != 1) || (q.signum() != 1) || (e.signum() != 1)) {
+		if ((p.signum() != 1) || (q.signum() != 1) || (e.signum() != 1)) { // i.e., (p <= 0) || (q <= 0) || (e <= 0)
 			throw new IllegalArgumentException();
 		}
+		// (p > 0) && (q > 0) && (e > 0)
 
 		// Set p, q, and e.
 		this.p = p;
@@ -111,12 +111,12 @@ public class RSA {
 
 		// Save p - 1 and ensure that it is positive.
 		final BigInteger p_minus_1 = this.p.subtract(BigInteger.ONE);
-		if (p_minus_1.signum() != 1) {
+		if (p_minus_1.signum() != 1) { // i.e., (p - 1 <= 0)
 			throw new IllegalArgumentException();
 		}
 		// Save q - 1 and ensure that it is positive.
 		final BigInteger q_minus_1 = this.q.subtract(BigInteger.ONE);
-		if (q_minus_1.signum() != 1) {
+		if (q_minus_1.signum() != 1) { // i.e., (q - 1 <= 0)
 			throw new IllegalArgumentException();
 		}
 		// Compute Euler's totient function for the cipher modulus.
@@ -158,10 +158,10 @@ public class RSA {
 	 */
 	protected RSA(BigInteger phi, BigInteger n, BigInteger e, Object dummy)
 			throws NullPointerException, IllegalArgumentException, ArithmeticException {
-		// Ensure all parameters are positive.
-		if ((phi.signum() != 1) || (n.signum() != 1) || (e.signum() != 1)) {
+		if ((phi.signum() != 1) || (n.signum() != 1) || (e.signum() != 1)) { // i.e., (phi <= 0) || (n <= 0) || (e <= 0)
 			throw new IllegalArgumentException();
 		}
+		// (phi > 0) && (n > 0) && (e > 0)
 
 		// Set p, q, dP, dQ, and qInv.
 		this.p = this.q = this.dP = this.dQ = this.qInv = null;
@@ -191,10 +191,10 @@ public class RSA {
 	 *             If <code>(n <= 0) || (e <= 0) || (d <= 0)</code>
 	 */
 	protected RSA(BigInteger n, BigInteger e, BigInteger d) throws NullPointerException, IllegalArgumentException {
-		// Ensure all parameters are positive.
-		if ((n.signum() != 1) || (e.signum() != 1) || (d.signum() != 1)) {
+		if ((n.signum() != 1) || (e.signum() != 1) || (d.signum() != 1)) { // i.e., (n <= 0) || (e <= 0) || (d <= 0)
 			throw new IllegalArgumentException();
 		}
+		// (n > 0) && (e > 0) && (d > 0)
 
 		// Set p, q, dP, dQ, and qInv.
 		this.p = this.q = this.dP = this.dQ = this.qInv = null;
@@ -355,10 +355,10 @@ public class RSA {
 	 */
 	public BigInteger apply(BigInteger m, boolean publicKey)
 			throws NullPointerException, IllegalArgumentException, ArithmeticException {
-		// Ensure all parameters are positive.
-		if (m.signum() != 1) {
+		if (m.signum() != 1) { // i.e, m <= 0
 			throw new IllegalArgumentException();
 		}
+		// m > 0
 
 		/*
 		 * Apply the public key since it should be small enough that will not merit using the Chinese

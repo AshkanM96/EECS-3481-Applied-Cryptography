@@ -189,10 +189,10 @@ public class RSAUtil {
 	 *             If <code>(p <= 1) || (q <= 1)</code>
 	 */
 	public static BigInteger phi(BigInteger p, BigInteger q) throws NullPointerException, IllegalArgumentException {
-		// Ensure all parameters are positive.
-		if ((p.signum() != 1) || (q.signum() != 1)) {
+		if ((p.signum() != 1) || (q.signum() != 1)) { // i.e., (p <= 0) || (q <= 0)
 			throw new IllegalArgumentException();
 		}
+		// (p > 0) && (q > 0)
 
 		// Save p - 1 and ensure that it is positive.
 		final BigInteger p_minus_1 = p.subtract(BigInteger.ONE);
@@ -213,29 +213,29 @@ public class RSAUtil {
 	 * @param phi
 	 *            the given Euler's totient function for the cipher modulus
 	 * 
-	 * @param e
-	 *            the given cipher public key
+	 * @param k
+	 *            the given known cipher key (i.e., either e or d)
 	 * 
-	 * @return The cipher private key.
+	 * @return The unknown cipher key.
 	 * 
 	 * @throws NullPointerException
-	 *             If <code>(phi == null) || (e == null)</code>
+	 *             If <code>(phi == null) || (k == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(phi <= 0) || (e <= 0)</code>
+	 *             If <code>(phi <= 0) || (k <= 0)</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>gcd(e, phi) != 1</code>
+	 *             If <code>gcd(k, phi) != 1</code>
 	 */
-	public static BigInteger key(BigInteger phi, BigInteger e)
+	public static BigInteger key(BigInteger phi, BigInteger k)
 			throws NullPointerException, IllegalArgumentException, ArithmeticException {
-		// Ensure all parameters are positive.
-		if ((phi.signum() != 1) || (e.signum() != 1)) {
+		if ((phi.signum() != 1) || (k.signum() != 1)) { // i.e., (phi <= 0) || (k <= 0)
 			throw new IllegalArgumentException();
 		}
+		// (phi > 0) && (k > 0)
 
-		// Return the private key.
-		return e.modInverse(phi);
+		// Return the unknown key which is the modular inverse of the known key.
+		return k.modInverse(phi);
 	}
 
 	/**
@@ -245,27 +245,28 @@ public class RSAUtil {
 	 * @param n
 	 *            the given cipher modulus
 	 * 
-	 * @param e
-	 *            the given cipher public key
+	 * @param k
+	 *            the given known cipher key (i.e., either e or d)
 	 * 
-	 * @return The cipher private key.
+	 * @return The unknown cipher key.
 	 * 
 	 * @throws NullPointerException
-	 *             If <code>(primeFactor == null) || (n == null) || (e == null)</code>
+	 *             If <code>(primeFactor == null) || (n == null) || (k == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If
-	 *             <code>(primeFactor <= 0) || (n <= 0) || (e <= 0) || ((n % primeFactor) != 0)</code>
+	 *             <code>(primeFactor <= 0) || (n <= 0) || (k <= 0) || ((n % primeFactor) != 0)</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>gcd(e, phi) != 1</code>
+	 *             If <code>gcd(k, phi) != 1</code>
 	 */
-	public static BigInteger key(BigInteger primeFactor, BigInteger n, BigInteger e)
+	public static BigInteger key(BigInteger primeFactor, BigInteger n, BigInteger k)
 			throws NullPointerException, IllegalArgumentException, ArithmeticException {
-		// Ensure all parameters are positive.
-		if ((primeFactor.signum() != 1) || (n.signum() != 1) || (e.signum() != 1)) {
+		if ((primeFactor.signum() != 1) || (n.signum() != 1) || (k.signum() != 1)) {
+			// i.e., (primeFactor <= 0) || (n <= 0) || (k <= 0)
 			throw new IllegalArgumentException();
 		}
+		// (primeFactor > 0) && (n > 0) && (k > 0)
 
 		// Compute the other prime factor of n through division.
 		final BigInteger[] result = n.divideAndRemainder(primeFactor);
@@ -286,10 +287,10 @@ public class RSAUtil {
 			throw new IllegalArgumentException();
 		}
 
-		// Compute the Euler's totient function for n.
+		// Compute Euler's totient function for n.
 		final BigInteger phi = primeFactor_minus_1.multiply(otherPrimeFactor_minus_1);
 
-		// Return the private key.
-		return e.modInverse(phi);
+		// Return the unknown key which is the modular inverse of the known key.
+		return k.modInverse(phi);
 	}
 }
