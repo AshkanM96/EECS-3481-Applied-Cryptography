@@ -211,7 +211,7 @@ public class RSAUtil {
 
 	/**
 	 * @param phi
-	 *            the given Euler's totient function for the cipher modulus
+	 *            the given value of Euler's totient function for the cipher modulus
 	 * 
 	 * @param k
 	 *            the given known cipher key (i.e., either e or d)
@@ -239,6 +239,12 @@ public class RSAUtil {
 	}
 
 	/**
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>Result.length == 3</code> <br>
+	 * Postcondition: <code>Result[0] == <sup>n</sup>&frasl;<sub>primeFactor</sub></code> <br>
+	 * Postcondition: <code>Result[1] == phi(n) == (primeFactor - 1) * (Result[0] - 1)</code> <br>
+	 * Postcondition: <code>Result[2] == k<sup>-1</sup> (mod phi(n))</code>
+	 * 
 	 * @param primeFactor
 	 *            one of the two prime factors of the cipher modulus
 	 * 
@@ -248,7 +254,7 @@ public class RSAUtil {
 	 * @param k
 	 *            the given known cipher key (i.e., either e or d)
 	 * 
-	 * @return The unknown cipher key.
+	 * @return The resulting BigInteger array.
 	 * 
 	 * @throws NullPointerException
 	 *             If <code>(primeFactor == null) || (n == null) || (k == null)</code>
@@ -260,7 +266,7 @@ public class RSAUtil {
 	 * @throws ArithmeticException
 	 *             If <code>gcd(k, phi) != 1</code>
 	 */
-	public static BigInteger key(BigInteger primeFactor, BigInteger n, BigInteger k)
+	public static BigInteger[] key(BigInteger primeFactor, BigInteger n, BigInteger k)
 			throws NullPointerException, IllegalArgumentException, ArithmeticException {
 		if ((primeFactor.signum() != 1) || (n.signum() != 1) || (k.signum() != 1)) {
 			// i.e., (primeFactor <= 0) || (n <= 0) || (k <= 0)
@@ -287,10 +293,10 @@ public class RSAUtil {
 			throw new IllegalArgumentException();
 		}
 
-		// Compute Euler's totient function for n.
+		// Compute the value of Euler's totient function for the cipher modulus.
 		final BigInteger phi = primeFactor_minus_1.multiply(otherPrimeFactor_minus_1);
-
-		// Return the unknown key which is the modular inverse of the known key.
-		return k.modInverse(phi);
+		// Compute the unknown key which is the modular inverse of the known key.
+		final BigInteger kPrime = k.modInverse(phi);
+		return new BigInteger[] { otherPrimeFactor, phi, kPrime };
 	}
 }

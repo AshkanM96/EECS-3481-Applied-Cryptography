@@ -168,7 +168,7 @@ public class RSACipherEng {
 	 * Construct an RSACipherEng object from the given attributes.
 	 * 
 	 * @param phi
-	 *            the given Euler's totient function for the cipher modulus
+	 *            the given value of Euler's totient function for the cipher modulus
 	 * 
 	 * @param n
 	 *            the given cipher modulus
@@ -424,7 +424,7 @@ public class RSACipherEng {
 	 * RSACipherEng static factory: construct an RSACipherEng object from the given attributes.
 	 * 
 	 * @param phi
-	 *            the given Euler's totient function for the cipher modulus
+	 *            the given value of Euler's totient function for the cipher modulus
 	 * 
 	 * @param n
 	 *            the given cipher modulus
@@ -469,7 +469,7 @@ public class RSACipherEng {
 	 * RSACipherEng static factory: construct an RSACipherEng object from the given attributes.
 	 * 
 	 * @param phi
-	 *            the given Euler's totient function for the cipher modulus
+	 *            the given value of Euler's totient function for the cipher modulus
 	 * 
 	 * @param n
 	 *            the given cipher modulus
@@ -505,7 +505,7 @@ public class RSACipherEng {
 	 * RSACipherEng static factory: construct an RSACipherEng object from the given attributes.
 	 * 
 	 * @param phi
-	 *            the given Euler's totient function for the cipher modulus
+	 *            the given value of Euler's totient function for the cipher modulus
 	 * 
 	 * @param n
 	 *            the given cipher modulus

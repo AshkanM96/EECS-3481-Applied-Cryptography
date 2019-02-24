@@ -119,7 +119,7 @@ public class RSA {
 		if (q_minus_1.signum() != 1) { // i.e., (q - 1 <= 0)
 			throw new IllegalArgumentException();
 		}
-		// Compute Euler's totient function for the cipher modulus.
+		// Compute the value of Euler's totient function for the cipher modulus.
 		final BigInteger phi = p_minus_1.multiply(q_minus_1);
 
 		// Set n and d.
@@ -136,7 +136,7 @@ public class RSA {
 	 * Construct an RSA object with the given phi, n, and e.
 	 * 
 	 * @param phi
-	 *            the given Euler's totient function for the cipher modulus
+	 *            the given value of Euler's totient function for the cipher modulus
 	 * 
 	 * @param n
 	 *            the given cipher modulus
@@ -241,7 +241,7 @@ public class RSA {
 	 * RSA static factory: construct an RSA object with the given phi, n, and e.
 	 * 
 	 * @param phi
-	 *            the given Euler's totient function for the cipher modulus
+	 *            the given value of Euler's totient function for the cipher modulus
 	 * 
 	 * @param n
 	 *            the given cipher modulus
