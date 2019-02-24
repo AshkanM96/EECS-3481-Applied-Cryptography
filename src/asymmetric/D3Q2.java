@@ -19,32 +19,32 @@ public class D3Q2 {
 	/**
 	 * Known public prime.
 	 */
-	private static final BigInteger P = BigInteger.valueOf(17);
+	private static final BigInteger P = BigInteger.valueOf(17L);
 
 	/**
 	 * Known public base.
 	 */
-	private static final BigInteger G = BigInteger.valueOf(3);
+	private static final BigInteger G = BigInteger.valueOf(3L);
 
 	/**
 	 * Known Bob's private key.
 	 */
-	private static final BigInteger b = BigInteger.valueOf(6);
+	private static final BigInteger b = BigInteger.valueOf(6L);
 
 	/**
 	 * Known Bob's public key.
 	 */
-	private static final BigInteger B = BigInteger.valueOf(15);
+	private static final BigInteger B = BigInteger.valueOf(15L);
 
 	/**
 	 * Known ciphertext pair first element.
 	 */
-	private static final BigInteger R = BigInteger.valueOf(7);
+	private static final BigInteger R = BigInteger.valueOf(7L);
 
 	/**
 	 * Known ciphertext pair second element.
 	 */
-	private static final BigInteger T = BigInteger.valueOf(6);
+	private static final BigInteger T = BigInteger.valueOf(6L);
 
 	/**
 	 * Prevent instantiation.

@@ -19,17 +19,17 @@ public class C2Q1 {
 	/**
 	 * Known prime factor.
 	 */
-	private static final BigInteger P = BigInteger.valueOf(5);
+	private static final BigInteger P = BigInteger.valueOf(5L);
 
 	/**
 	 * Known prime factor.
 	 */
-	private static final BigInteger Q = BigInteger.valueOf(11);
+	private static final BigInteger Q = BigInteger.valueOf(11L);
 
 	/**
 	 * Known public key.
 	 */
-	private static final BigInteger E = BigInteger.valueOf(3);
+	private static final BigInteger E = BigInteger.valueOf(3L);
 
 	/**
 	 * Prevent instantiation.
