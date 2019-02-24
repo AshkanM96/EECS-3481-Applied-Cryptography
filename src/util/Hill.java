@@ -174,7 +174,7 @@ public class Hill implements Iterable<Integer> {
 	 */
 	public MatrixInt key(int side, int n) throws IllegalArgumentException {
 		final MatrixInt oldKey = this.key;
-		this.key = new MatrixInt(side, side, MathUtil.mod(n, CryptoTools.ENGLISH_ALPHABET_SIZE));
+		this.key = new MatrixInt(side, side, (int) MathUtil.modFixedInput(n, CryptoTools.ENGLISH_ALPHABET_SIZE));
 		this.keyInverse = null;
 		return oldKey;
 	}
@@ -311,7 +311,7 @@ public class Hill implements Iterable<Integer> {
 	 *             <code>(row < 0) || (row >= this.numRows) || (col < 0) || (col >= this.numCols)</code>
 	 */
 	public void set(int row, int col, int entry) throws IndexOutOfBoundsException {
-		this.key.set(row, col, MathUtil.mod(entry, CryptoTools.ENGLISH_ALPHABET_SIZE));
+		this.key.set(row, col, (int) MathUtil.modFixedInput(entry, CryptoTools.ENGLISH_ALPHABET_SIZE));
 		this.keyInverse = null;
 	}
 
@@ -323,7 +323,7 @@ public class Hill implements Iterable<Integer> {
 	 *            the given integer
 	 */
 	public void fill(int n) {
-		this.key.fill(MathUtil.mod(n, CryptoTools.ENGLISH_ALPHABET_SIZE));
+		this.key.fill((int) MathUtil.modFixedInput(n, CryptoTools.ENGLISH_ALPHABET_SIZE));
 		this.keyInverse = null;
 	}
 
@@ -369,7 +369,7 @@ public class Hill implements Iterable<Integer> {
 	 * @return <code>MathUtil.gcd(this.key.determinant(), CryptoTools.ENGLISH_ALPHABET_SIZE) == 1</code>.
 	 */
 	public boolean checkValidKey() {
-		return (MathUtil.gcd(this.key.determinant(), CryptoTools.ENGLISH_ALPHABET_SIZE) == 1);
+		return (MathUtil.gcdFixedInput(this.key.determinant(), CryptoTools.ENGLISH_ALPHABET_SIZE) == 1L);
 	}
 
 	/**

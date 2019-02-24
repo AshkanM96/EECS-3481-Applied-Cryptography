@@ -18,9 +18,7 @@ import java.security.interfaces.RSAPublicKey;
  */
 public class RSAUtil {
 	/**
-	 * Dependencies: <code>
-	 * 		1. util.BigIntegerUtil
-	 * </code>
+	 * No dependencies.
 	 */
 
 	/**
@@ -188,18 +186,24 @@ public class RSAUtil {
 	 *             If <code>(p == null) || (q == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             Thrown by <code>BigIntegerUtil.ensurePositive(p, q, phi)</code>
+	 *             If <code>(p <= 1) || (q <= 1)</code>
 	 */
 	public static BigInteger phi(BigInteger p, BigInteger q) throws NullPointerException, IllegalArgumentException {
 		// Ensure all parameters are positive.
-		BigIntegerUtil.ensurePositive(p, q);
+		if ((p.signum() != 1) || (q.signum() != 1)) {
+			throw new IllegalArgumentException();
+		}
 
 		// Save p - 1 and ensure that it is positive.
 		final BigInteger p_minus_1 = p.subtract(BigInteger.ONE);
-		BigIntegerUtil.ensurePositive(p_minus_1);
+		if (p_minus_1.signum() != 1) {
+			throw new IllegalArgumentException();
+		}
 		// Save q - 1 and ensure that it is positive.
 		final BigInteger q_minus_1 = q.subtract(BigInteger.ONE);
-		BigIntegerUtil.ensurePositive(q_minus_1);
+		if (q_minus_1.signum() != 1) {
+			throw new IllegalArgumentException();
+		}
 
 		// phi = (p - 1) * (q - 1)
 		return p_minus_1.multiply(q_minus_1);
@@ -218,7 +222,7 @@ public class RSAUtil {
 	 *             If <code>(phi == null) || (e == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             Thrown by <code>BigIntegerUtil.ensurePositive(phi, e)</code>
+	 *             If <code>(phi <= 0) || (e <= 0)</code>
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>gcd(e, phi) != 1</code>
@@ -226,7 +230,9 @@ public class RSAUtil {
 	public static BigInteger key(BigInteger phi, BigInteger e)
 			throws NullPointerException, IllegalArgumentException, ArithmeticException {
 		// Ensure all parameters are positive.
-		BigIntegerUtil.ensurePositive(phi, e);
+		if ((phi.signum() != 1) || (e.signum() != 1)) {
+			throw new IllegalArgumentException();
+		}
 
 		// Return the private key.
 		return e.modInverse(phi);
@@ -248,8 +254,8 @@ public class RSAUtil {
 	 *             If <code>(primeFactor == null) || (n == null) || (e == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             Thrown by <code>BigIntegerUtil.ensurePositive(primeFactor, n, e, phi)</code> or
-	 *             <code>BigIntegerUtil.ensureZero(n.divideAndRemainder(primeFactor)[1])</code>
+	 *             If
+	 *             <code>(primeFactor <= 0) || (n <= 0) || (e <= 0) || ((n % primeFactor) != 0)</code>
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>gcd(e, phi) != 1</code>
@@ -257,21 +263,28 @@ public class RSAUtil {
 	public static BigInteger key(BigInteger primeFactor, BigInteger n, BigInteger e)
 			throws NullPointerException, IllegalArgumentException, ArithmeticException {
 		// Ensure all parameters are positive.
-		BigIntegerUtil.ensurePositive(primeFactor, n, e);
+		if ((primeFactor.signum() != 1) || (n.signum() != 1) || (e.signum() != 1)) {
+			throw new IllegalArgumentException();
+		}
 
 		// Compute the other prime factor of n through division.
 		final BigInteger[] result = n.divideAndRemainder(primeFactor);
 		final BigInteger otherPrimeFactor = result[0];
-		// result[1] == (n % primeFactor) != 0 means that
-		// primeFactor is not actually a factor of n.
-		BigIntegerUtil.ensureZero(result[1]);
+		// result[1] == (n % primeFactor) != 0 means that primeFactor is not actually a factor of n.
+		if (result[1].signum() != 0) {
+			throw new IllegalArgumentException();
+		}
 
 		// Save primeFactor - 1 and ensure that it is positive.
 		final BigInteger primeFactor_minus_1 = primeFactor.subtract(BigInteger.ONE);
-		BigIntegerUtil.ensurePositive(primeFactor_minus_1);
+		if (primeFactor_minus_1.signum() != 1) {
+			throw new IllegalArgumentException();
+		}
 		// Save otherPrimeFactor - 1 and ensure that it is positive.
 		final BigInteger otherPrimeFactor_minus_1 = otherPrimeFactor.subtract(BigInteger.ONE);
-		BigIntegerUtil.ensurePositive(otherPrimeFactor_minus_1);
+		if (otherPrimeFactor_minus_1.signum() != 1) {
+			throw new IllegalArgumentException();
+		}
 
 		// Compute the Euler's totient function for n.
 		final BigInteger phi = primeFactor_minus_1.multiply(otherPrimeFactor_minus_1);

@@ -669,7 +669,7 @@ public class Affine {
 		 * <code>Step 2: c - alpha * p (mod m) = beta</code>
 		 */
 
-		return MathUtil.mod(c - alpha * p, CryptoTools.ENGLISH_ALPHABET_SIZE);
+		return ((int) MathUtil.modFixedInput(c - alpha * p, CryptoTools.ENGLISH_ALPHABET_SIZE));
 	}
 
 	/**

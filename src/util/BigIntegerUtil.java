@@ -19,32 +19,67 @@ public class BigIntegerUtil {
 	/**
 	 * <code>BigInteger.valueOf(-10)</code>.
 	 */
-	public static final BigInteger NEGATIVE_TEN = BigInteger.valueOf(-10);
+	public static final BigInteger NEG_TEN = BigInteger.valueOf(-10L);
+
+	/**
+	 * <code>BigInteger.valueOf(-7)</code>.
+	 */
+	public static final BigInteger NEG_SEVEN = BigInteger.valueOf(-7L);
 
 	/**
 	 * <code>BigInteger.valueOf(-5)</code>.
 	 */
-	public static final BigInteger NEGATIVE_FIVE = BigInteger.valueOf(-5);
+	public static final BigInteger NEG_FIVE = BigInteger.valueOf(-5L);
+
+	/**
+	 * <code>BigInteger.valueOf(-3)</code>.
+	 */
+	public static final BigInteger NEG_THREE = BigInteger.valueOf(-3L);
 
 	/**
 	 * <code>BigInteger.valueOf(-2)</code>.
 	 */
-	public static final BigInteger NEGATIVE_TWO = BigInteger.valueOf(-2);
+	public static final BigInteger NEG_TWO = BigInteger.valueOf(-2L);
 
 	/**
 	 * <code>BigInteger.valueOf(-1)</code>.
 	 */
-	public static final BigInteger NEGATIVE_ONE = BigInteger.valueOf(-1);
+	public static final BigInteger NEG_ONE = BigInteger.valueOf(-1L);
+
+	/**
+	 * <code>BigInteger.ZERO</code>.
+	 */
+	public static final BigInteger ZERO = BigInteger.ZERO;
+
+	/**
+	 * <code>BigInteger.ONE</code>.
+	 */
+	public static final BigInteger ONE = BigInteger.ONE;
 
 	/**
 	 * <code>BigInteger.valueOf(2)</code>.
 	 */
-	public static final BigInteger TWO = BigInteger.valueOf(2);
+	public static final BigInteger TWO = BigInteger.valueOf(2L);
+
+	/**
+	 * <code>BigInteger.valueOf(3)</code>.
+	 */
+	public static final BigInteger THREE = BigInteger.valueOf(3L);
 
 	/**
 	 * <code>BigInteger.valueOf(5)</code>.
 	 */
-	public static final BigInteger FIVE = BigInteger.valueOf(5);
+	public static final BigInteger FIVE = BigInteger.valueOf(5L);
+
+	/**
+	 * <code>BigInteger.valueOf(7)</code>.
+	 */
+	public static final BigInteger SEVEN = BigInteger.valueOf(7L);
+
+	/**
+	 * <code>BigInteger.TEN</code>.
+	 */
+	public static final BigInteger TEN = BigInteger.TEN;
 
 	/**
 	 * Prevent instantiation.
@@ -71,7 +106,7 @@ public class BigIntegerUtil {
 	 *            the given BigInteger object
 	 * 
 	 * @param args
-	 *            any number of BigInteger object(s)
+	 *            any number of BigInteger objects
 	 * 
 	 * @throws NullPointerException
 	 *             If
@@ -83,11 +118,38 @@ public class BigIntegerUtil {
 	 */
 	public static void ensureNegative(BigInteger n, BigInteger... args)
 			throws NullPointerException, IllegalArgumentException {
-		if (!BigIntegerUtil.isNegative(n)) {
+		if (n.signum() != -1) {
 			throw new IllegalArgumentException();
 		}
 		for (int i = 0; i != args.length; ++i) {
-			if (!BigIntegerUtil.isNegative(args[i])) {
+			if (args[i].signum() != -1) {
+				throw new IllegalArgumentException();
+			}
+		}
+	}
+
+	/**
+	 * @param n
+	 *            the given BigInteger object
+	 * 
+	 * @param args
+	 *            any number of BigInteger objects
+	 * 
+	 * @throws NullPointerException
+	 *             If
+	 *             <code>(n == null) || (args == null) || ((valid i) implies (args[i] == null))</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If
+	 *             <code>(BigIntegerUtil.isNegative(n)) || ((valid i) implies (BigIntegerUtil.isNegative(args[i])))</code>
+	 */
+	public static void ensureNonNegative(BigInteger n, BigInteger... args)
+			throws NullPointerException, IllegalArgumentException {
+		if (n.signum() == -1) {
+			throw new IllegalArgumentException();
+		}
+		for (int i = 0; i != args.length; ++i) {
+			if (args[i].signum() == -1) {
 				throw new IllegalArgumentException();
 			}
 		}
@@ -111,7 +173,7 @@ public class BigIntegerUtil {
 	 *            the given BigInteger object
 	 * 
 	 * @param args
-	 *            any number of BigInteger object(s)
+	 *            any number of BigInteger objects
 	 * 
 	 * @throws NullPointerException
 	 *             If
@@ -123,11 +185,11 @@ public class BigIntegerUtil {
 	 */
 	public static void ensureZero(BigInteger n, BigInteger... args)
 			throws NullPointerException, IllegalArgumentException {
-		if (!BigIntegerUtil.isZero(n)) {
+		if (n.signum() != 0) {
 			throw new IllegalArgumentException();
 		}
 		for (int i = 0; i != args.length; ++i) {
-			if (!BigIntegerUtil.isZero(args[i])) {
+			if (args[i].signum() != 0) {
 				throw new IllegalArgumentException();
 			}
 		}
@@ -151,7 +213,7 @@ public class BigIntegerUtil {
 	 *            the given BigInteger object
 	 * 
 	 * @param args
-	 *            any number of BigInteger object(s)
+	 *            any number of BigInteger objects
 	 * 
 	 * @throws NullPointerException
 	 *             If
@@ -163,11 +225,38 @@ public class BigIntegerUtil {
 	 */
 	public static void ensurePositive(BigInteger n, BigInteger... args)
 			throws NullPointerException, IllegalArgumentException {
-		if (!BigIntegerUtil.isPositive(n)) {
+		if (n.signum() != 1) {
 			throw new IllegalArgumentException();
 		}
 		for (int i = 0; i != args.length; ++i) {
-			if (!BigIntegerUtil.isPositive(args[i])) {
+			if (args[i].signum() != 1) {
+				throw new IllegalArgumentException();
+			}
+		}
+	}
+
+	/**
+	 * @param n
+	 *            the given BigInteger object
+	 * 
+	 * @param args
+	 *            any number of BigInteger objects
+	 * 
+	 * @throws NullPointerException
+	 *             If
+	 *             <code>(n == null) || (args == null) || ((valid i) implies (args[i] == null))</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If
+	 *             <code>(BigIntegerUtil.isPositive(n)) || ((valid i) implies (BigIntegerUtil.isPositive(args[i])))</code>
+	 */
+	public static void ensureNonPositive(BigInteger n, BigInteger... args)
+			throws NullPointerException, IllegalArgumentException {
+		if (n.signum() == 1) {
+			throw new IllegalArgumentException();
+		}
+		for (int i = 0; i != args.length; ++i) {
+			if (args[i].signum() == 1) {
 				throw new IllegalArgumentException();
 			}
 		}
@@ -191,7 +280,7 @@ public class BigIntegerUtil {
 	 *            the given BigInteger object
 	 * 
 	 * @param args
-	 *            any number of BigInteger object(s)
+	 *            any number of BigInteger objects
 	 * 
 	 * @throws NullPointerException
 	 *             If
@@ -203,11 +292,11 @@ public class BigIntegerUtil {
 	 */
 	public static void ensureEven(BigInteger n, BigInteger... args)
 			throws NullPointerException, IllegalArgumentException {
-		if (!BigIntegerUtil.isEven(n)) {
+		if (n.testBit(0)) {
 			throw new IllegalArgumentException();
 		}
 		for (int i = 0; i != args.length; ++i) {
-			if (!BigIntegerUtil.isEven(args[i])) {
+			if (args[i].testBit(0)) {
 				throw new IllegalArgumentException();
 			}
 		}
@@ -218,7 +307,7 @@ public class BigIntegerUtil {
 	 *            the given BigInteger object
 	 * 
 	 * @param args
-	 *            any number of BigInteger object(s)
+	 *            any number of BigInteger objects
 	 * 
 	 * @throws NullPointerException
 	 *             If
@@ -230,11 +319,11 @@ public class BigIntegerUtil {
 	 */
 	public static void ensureOdd(BigInteger n, BigInteger... args)
 			throws NullPointerException, IllegalArgumentException {
-		if (BigIntegerUtil.isEven(n)) {
+		if (!n.testBit(0)) {
 			throw new IllegalArgumentException();
 		}
 		for (int i = 0; i != args.length; ++i) {
-			if (BigIntegerUtil.isEven(args[i])) {
+			if (!args[i].testBit(0)) {
 				throw new IllegalArgumentException();
 			}
 		}
@@ -455,7 +544,7 @@ public class BigIntegerUtil {
 			 * This case is only an optimization since -1 to any even power is 1 and otherwise is -1. So the
 			 * loop will do extra unnecessary work to arrive at the same result.
 			 */
-			boolean evenPow = BigIntegerUtil.isEven(begin);
+			boolean evenPow = !begin.testBit(0);
 			for (int i = 0; i != length; ++i, evenPow = !evenPow) {
 				result[i] = evenPow ? BigInteger.ONE : n;
 			}

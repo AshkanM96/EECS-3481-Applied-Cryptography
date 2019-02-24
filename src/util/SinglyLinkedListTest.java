@@ -31,7 +31,7 @@ public class SinglyLinkedListTest {
 	}
 
 	/**
-	 * Testing 1 SinglyLinkedList.addFirst(T).
+	 * Testing 1 SinglyLinkedList::addFirst(T).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -46,7 +46,7 @@ public class SinglyLinkedListTest {
 	}
 
 	/**
-	 * Testing 1 SinglyLinkedList.addFirst(T) and then 1 SinglyLinkedList.removeFirst(T).
+	 * Testing 1 SinglyLinkedList::addFirst(T) and then 1 SinglyLinkedList::removeFirst(T).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -61,7 +61,7 @@ public class SinglyLinkedListTest {
 	}
 
 	/**
-	 * Testing 2 SinglyLinkedList.addFirst(T).
+	 * Testing 2 SinglyLinkedList::addFirst(T).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -80,7 +80,7 @@ public class SinglyLinkedListTest {
 	}
 
 	/**
-	 * Testing 2 SinglyLinkedList.addFirst(T) and then 2 SinglyLinkedList.removeFirst(T).
+	 * Testing 2 SinglyLinkedList::addFirst(T) and then 2 SinglyLinkedList::removeFirst(T).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -111,7 +111,7 @@ public class SinglyLinkedListTest {
 	}
 
 	/**
-	 * Testing SinglyLinkedList.toArray(T[]).
+	 * Testing SinglyLinkedList::toArray(T[]).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -190,7 +190,7 @@ public class SinglyLinkedListTest {
 	}
 
 	/**
-	 * Testing SinglyLinkedList.toArray(T[], int).
+	 * Testing SinglyLinkedList::toArray(T[], int).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -227,7 +227,7 @@ public class SinglyLinkedListTest {
 	}
 
 	/**
-	 * Testing SinglyLinkedList.toArray(T[], int, int).
+	 * Testing SinglyLinkedList::toArray(T[], int, int).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -304,7 +304,7 @@ public class SinglyLinkedListTest {
 	}
 
 	/**
-	 * Testing iteration through SinglyLinkedList.iterator().
+	 * Testing iteration through SinglyLinkedList::iterator().
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -323,7 +323,7 @@ public class SinglyLinkedListTest {
 	}
 
 	/**
-	 * Testing iteration through SinglyLinkedList.iterator(false).
+	 * Testing iteration through SinglyLinkedList::iterator(false).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -344,7 +344,7 @@ public class SinglyLinkedListTest {
 	}
 
 	/**
-	 * Testing mutation through SinglyLinkedList.iterator(true).
+	 * Testing mutation through SinglyLinkedList::iterator(true).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -375,7 +375,7 @@ public class SinglyLinkedListTest {
 	}
 
 	/**
-	 * Testing insertion through SinglyLinkedList.iterator(true).
+	 * Testing insertion through SinglyLinkedList::iterator(true).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -409,7 +409,7 @@ public class SinglyLinkedListTest {
 	}
 
 	/**
-	 * Testing removal through SinglyLinkedList.iterator(true).
+	 * Testing removal through SinglyLinkedList::iterator(true).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -454,7 +454,7 @@ public class SinglyLinkedListTest {
 	}
 
 	/**
-	 * Testing removal and then insertion through SinglyLinkedList.iterator(true).
+	 * Testing removal and then insertion through SinglyLinkedList::iterator(true).
 	 */
 	@SuppressWarnings("static-method")
 	@Test

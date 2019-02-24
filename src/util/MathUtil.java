@@ -20,6 +20,11 @@ public class MathUtil {
 	 */
 
 	/**
+	 * <code>ln(2)</code>.
+	 */
+	public static final double LOG_2 = Math.log(2);
+
+	/**
 	 * Largest prime representable in a byte.
 	 */
 	public static final byte LARGEST_PRIME_BYTE = 127;
@@ -44,6 +49,30 @@ public class MathUtil {
 	 */
 	private MathUtil() {
 		// Empty by design.
+	}
+
+	/**
+	 * Returns the base <code>2</code> logarithm of a <code>double</code> value. Special cases:
+	 * <ul>
+	 * <li>If the argument is <code>NaN</code> or <code>less than zero</code>, then the result is
+	 * <code>NaN</code>.
+	 * <li>If the argument is <code>positive infinity</code>, then the result is
+	 * <code>positive infinity</code>.
+	 * <li>If the argument is <code>positive zero</code> or <code>negative zero</code>, then the result
+	 * is <code>negative infinity</code>.
+	 * <li>If the argument is equal to <code>2<sup>p</sup></code> for integer <code>p</code>, then the
+	 * result is <code>p</code>.
+	 * </ul>
+	 * The computed result must be within <code>1 ulp</code> of the exact result. Results must be
+	 * <code>semi-monotonic</code>.
+	 *
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return The base <code>2</code> logarithm of <code>n</code>.
+	 */
+	public static double log2(double n) {
+		return (Math.log(n) / MathUtil.LOG_2);
 	}
 
 	/**
@@ -529,7 +558,7 @@ public class MathUtil {
 	 */
 	public static long lcm(long a, long b) throws ArithmeticException {
 		/**
-		 * Check for the precondition of <code>MathUtil::gcd(long, long)</code> assuming non-zero a and b.
+		 * Check for the precondition of <code>MathUtil.gcd(long, long)</code> assuming non-zero a and b.
 		 */
 		if ((a == Long.MIN_VALUE) && (b == Long.MIN_VALUE)) {
 			throw new ArithmeticException();
@@ -555,7 +584,7 @@ public class MathUtil {
 	 */
 	public static int lcm(int a, int b) throws ArithmeticException {
 		/**
-		 * Check for the precondition of <code>MathUtil::gcd(int, int)</code> assuming non-zero a and b.
+		 * Check for the precondition of <code>MathUtil.gcd(int, int)</code> assuming non-zero a and b.
 		 */
 		if ((a == Integer.MIN_VALUE) && (b == Integer.MIN_VALUE)) {
 			throw new ArithmeticException();
@@ -581,7 +610,7 @@ public class MathUtil {
 	 */
 	public static short lcm(short a, short b) throws ArithmeticException {
 		/**
-		 * Check for the precondition of <code>MathUtil::gcd(short, short)</code> assuming non-zero a and b.
+		 * Check for the precondition of <code>MathUtil.gcd(short, short)</code> assuming non-zero a and b.
 		 */
 		if ((a == Short.MIN_VALUE) && (b == Short.MIN_VALUE)) {
 			throw new ArithmeticException();
@@ -607,7 +636,7 @@ public class MathUtil {
 	 */
 	public static byte lcm(byte a, byte b) throws ArithmeticException {
 		/**
-		 * Check for the precondition of <code>MathUtil::gcd(byte, byte)</code> assuming non-zero a and b.
+		 * Check for the precondition of <code>MathUtil.gcd(byte, byte)</code> assuming non-zero a and b.
 		 */
 		if ((a == Byte.MIN_VALUE) && (b == Byte.MIN_VALUE)) {
 			throw new ArithmeticException();

@@ -900,6 +900,7 @@ public class MatrixInt implements Iterable<Integer> {
 		if (n == 0) {
 			throw new ArithmeticException();
 		}
+		// n != 0
 
 		int[] row = null;
 		for (int rowNum = 0; rowNum != this.numRows; ++rowNum) {
@@ -927,6 +928,7 @@ public class MatrixInt implements Iterable<Integer> {
 		if (n == 0) {
 			throw new ArithmeticException();
 		}
+		// n != 0
 		return new MatrixInt(this).divideEquals(n);
 	}
 
@@ -945,12 +947,13 @@ public class MatrixInt implements Iterable<Integer> {
 		if (n <= 0) {
 			throw new ArithmeticException();
 		}
+		// n > 0
 
 		int[] row = null;
 		for (int rowNum = 0; rowNum != this.numRows; ++rowNum) {
 			row = this.data[rowNum];
 			for (int colNum = 0; colNum != this.numCols; ++colNum) {
-				row[colNum] = MathUtil.mod(row[colNum], n);
+				row[colNum] = (int) MathUtil.modFixedInput(row[colNum], n);
 			}
 		}
 		return this;
@@ -972,6 +975,7 @@ public class MatrixInt implements Iterable<Integer> {
 		if (n <= 0) {
 			throw new ArithmeticException();
 		}
+		// n > 0
 		return new MatrixInt(this).modEquals(n);
 	}
 
@@ -1230,7 +1234,7 @@ public class MatrixInt implements Iterable<Integer> {
 		for (int rowNum = 0; rowNum != this.numRows; ++rowNum) {
 			result_row = result.data[rowNum];
 			for (int colNum = 0; colNum != this.numCols; ++colNum) {
-				result_row[colNum] = (MathUtil.isEven(rowNum + colNum) ? 1 : -1)
+				result_row[colNum] = (MathUtil.isEven(((long) rowNum) + colNum) ? 1 : -1)
 						* this.submatrix(rowNum, colNum).determinant();
 			}
 		}
@@ -1255,7 +1259,7 @@ public class MatrixInt implements Iterable<Integer> {
 		for (int rowNum = 0; rowNum != this.numRows; ++rowNum) {
 			result_row = result.data[rowNum];
 			for (int colNum = 0; colNum != this.numCols; ++colNum) {
-				result_row[colNum] = (MathUtil.isEven(colNum + rowNum) ? 1 : -1)
+				result_row[colNum] = (MathUtil.isEven(((long) colNum) + rowNum) ? 1 : -1)
 						* this.submatrix(colNum, rowNum).determinant();
 			}
 		}
@@ -1316,7 +1320,8 @@ public class MatrixInt implements Iterable<Integer> {
 		if (m <= 0) {
 			throw new ArithmeticException();
 		}
-		return (this.isSquare() && (MathUtil.gcd(this.determinant(), m) == 1));
+		// m > 0
+		return (this.isSquare() && (MathUtil.gcdFixedInput(this.determinant(), m) == 1L));
 	}
 
 	/**
@@ -1342,6 +1347,7 @@ public class MatrixInt implements Iterable<Integer> {
 		if (m <= 0) {
 			throw new ArithmeticException();
 		}
+		// m > 0
 
 		final int determinant = this.determinant();
 		try {
@@ -1362,7 +1368,7 @@ public class MatrixInt implements Iterable<Integer> {
 			for (int rowNum = 0; rowNum != inverse.numRows; ++rowNum) {
 				inverse_row = inverse.data[rowNum];
 				for (int colNum = 0; colNum != inverse.numCols; ++colNum) {
-					inverse_row[colNum] = (int) (MathUtil.mod(inverse_row[colNum] * determinantInverse, m));
+					inverse_row[colNum] = (int) (MathUtil.modFixedInput(inverse_row[colNum] * determinantInverse, m));
 				}
 			}
 			return new InverseInfo(determinant, inverse);

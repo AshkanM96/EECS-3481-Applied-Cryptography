@@ -10,7 +10,6 @@ public class Hex {
 	/**
 	 * Dependencies: <code>
 	 * 		1. util.Binary
-	 * 		2. util.MathUtil
 	 * </code>
 	 */
 
@@ -43,7 +42,7 @@ public class Hex {
 	 */
 	public static byte[] toBytes(String s) throws NullPointerException, NumberFormatException {
 		final int l = s.length();
-		if (!MathUtil.isEven(l)) {
+		if ((l & 1) != 0) {
 			// When the string has an odd length, prepend a '0' to it.
 			s = "0" + s;
 		}

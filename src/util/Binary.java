@@ -213,7 +213,7 @@ public class Binary {
 	public static int countZeroes(byte b) {
 		/**
 		 * <code>Integer.toBinaryString(b & Binary.BYTE_CONVERTER)</code> may not include some zeroes on the
-		 * left end which is why the same algorithm used for <code>Binary::countOnes(byte)</code> may not
+		 * left end which is why the same algorithm used for <code>Binary.countOnes(byte)</code> may not
 		 * work here. Instead, we count all of the ones and then subtract them from the total number of
 		 * bits.
 		 */

@@ -11,7 +11,6 @@ public class RSA {
 	/**
 	 * Dependencies: <code>
 	 * 		1. util.RSAUtil
-	 * 		2. util.BigIntegerUtil
 	 * </code>
 	 */
 
@@ -93,7 +92,7 @@ public class RSA {
 	 *             If <code>(p == null) || (q == null) || (e == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             Thrown by <code>BigIntegerUtil.ensurePositive(p, q, e, phi)</code>
+	 *             If <code>(p <= 1) || (q <= 1) || (e <= 0)</code>
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>(gcd(e, phi) != 1) || (gcd(p, q) != 1)</code>
@@ -101,7 +100,9 @@ public class RSA {
 	protected RSA(BigInteger p, BigInteger q, BigInteger e, Object dummy1, Object dummy2)
 			throws NullPointerException, IllegalArgumentException, ArithmeticException {
 		// Ensure all parameters are positive.
-		BigIntegerUtil.ensurePositive(p, q, e);
+		if ((p.signum() != 1) || (q.signum() != 1) || (e.signum() != 1)) {
+			throw new IllegalArgumentException();
+		}
 
 		// Set p, q, and e.
 		this.p = p;
@@ -110,10 +111,14 @@ public class RSA {
 
 		// Save p - 1 and ensure that it is positive.
 		final BigInteger p_minus_1 = this.p.subtract(BigInteger.ONE);
-		BigIntegerUtil.ensurePositive(p_minus_1);
+		if (p_minus_1.signum() != 1) {
+			throw new IllegalArgumentException();
+		}
 		// Save q - 1 and ensure that it is positive.
 		final BigInteger q_minus_1 = this.q.subtract(BigInteger.ONE);
-		BigIntegerUtil.ensurePositive(q_minus_1);
+		if (q_minus_1.signum() != 1) {
+			throw new IllegalArgumentException();
+		}
 		// Compute Euler's totient function for the cipher modulus.
 		final BigInteger phi = p_minus_1.multiply(q_minus_1);
 
@@ -146,7 +151,7 @@ public class RSA {
 	 *             If <code>(phi == null) || (n == null) || (e == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             Thrown by <code>BigIntegerUtil.ensurePositive(phi, n, e)</code>
+	 *             If <code>(phi <= 0) || (n <= 0) || (e <= 0)</code>
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>gcd(e, phi) != 1</code>
@@ -154,7 +159,9 @@ public class RSA {
 	protected RSA(BigInteger phi, BigInteger n, BigInteger e, Object dummy)
 			throws NullPointerException, IllegalArgumentException, ArithmeticException {
 		// Ensure all parameters are positive.
-		BigIntegerUtil.ensurePositive(phi, n, e);
+		if ((phi.signum() != 1) || (n.signum() != 1) || (e.signum() != 1)) {
+			throw new IllegalArgumentException();
+		}
 
 		// Set p, q, dP, dQ, and qInv.
 		this.p = this.q = this.dP = this.dQ = this.qInv = null;
@@ -181,11 +188,13 @@ public class RSA {
 	 *             If <code>(n == null) || (e == null) || (d == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             Thrown by <code>BigIntegerUtil.ensurePositive(n, e, d)</code>
+	 *             If <code>(n <= 0) || (e <= 0) || (d <= 0)</code>
 	 */
 	protected RSA(BigInteger n, BigInteger e, BigInteger d) throws NullPointerException, IllegalArgumentException {
 		// Ensure all parameters are positive.
-		BigIntegerUtil.ensurePositive(n, e, d);
+		if ((n.signum() != 1) || (e.signum() != 1) || (d.signum() != 1)) {
+			throw new IllegalArgumentException();
+		}
 
 		// Set p, q, dP, dQ, and qInv.
 		this.p = this.q = this.dP = this.dQ = this.qInv = null;
@@ -218,7 +227,7 @@ public class RSA {
 	 *             If <code>(p == null) || (q == null) || (e == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             Thrown by <code>BigIntegerUtil.ensurePositive(p, q, e, phi)</code>
+	 *             If <code>(p <= 1) || (q <= 1) || (e <= 0)</code>
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>(gcd(e, phi) != 1) || (gcd(p, q) != 1)</code>
@@ -246,7 +255,7 @@ public class RSA {
 	 *             If <code>(phi == null) || (n == null) || (e == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             Thrown by <code>BigIntegerUtil.ensurePositive(phi, n, e)</code>
+	 *             If <code>(phi <= 0) || (n <= 0) || (e <= 0)</code>
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>gcd(e, phi) != 1</code>
@@ -274,7 +283,7 @@ public class RSA {
 	 *             If <code>(n == null) || (e == null) || (d == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             Thrown by <code>BigIntegerUtil.ensurePositive(n, e, d)</code>
+	 *             If <code>(n <= 0) || (e <= 0) || (d <= 0)</code>
 	 */
 	public static RSA knownKeys(BigInteger n, BigInteger e, BigInteger d)
 			throws NullPointerException, IllegalArgumentException {
@@ -339,7 +348,7 @@ public class RSA {
 	 *             If <code>m == null</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             Thrown by <code>BigIntegerUtil.ensurePositive(m)</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>gcd(m, this.n) != 1</code>
@@ -347,17 +356,22 @@ public class RSA {
 	public BigInteger apply(BigInteger m, boolean publicKey)
 			throws NullPointerException, IllegalArgumentException, ArithmeticException {
 		// Ensure all parameters are positive.
-		BigIntegerUtil.ensurePositive(m);
+		if (m.signum() != 1) {
+			throw new IllegalArgumentException();
+		}
 
 		/*
 		 * Apply the public key since it should be small enough that will not merit using the Chinese
-		 * Remainder Theorem (C.R.T.).
+		 * Remainder Theorem (i.e., C.R.T.).
 		 */
 		if (publicKey) {
 			return m.modPow(this.e, this.n);
 		}
 
-		// Check to see if we can use C.R.T. instead of using the private key directly.
+		/*
+		 * Check to see if we can use the Chinese Remainder Theorem (i.e., C.R.T.) instead of using the
+		 * private key directly.
+		 */
 		if (this.p != null) {
 			/**
 			 * Due to class invariants, we know that: <br>
@@ -367,7 +381,7 @@ public class RSA {
 			 * 4. <code>this.qInv != null</code>. <br>
 			 * 
 			 * Therefore, we can do the following: <br>
-			 * 1. <code>m = [(mP - mQ) x this.q x this.qInv + mQ] (mod this.n)</code>.
+			 * 1. <code>m = [(mP - mQ) * this.q * this.qInv + mQ] (mod this.n)</code>.
 			 */
 
 			final BigInteger mP = m.modPow(this.dP, this.p);
@@ -379,8 +393,8 @@ public class RSA {
 		}
 
 		/*
-		 * At this point, we know that publicKey is false and that the C.R.T. cannot be used. Therefore,
-		 * just perform the standard calculation.
+		 * At this point, we know that publicKey is false and that the Chinese Remainder Theorem (i.e.,
+		 * C.R.T.) cannot be used. Therefore, just perform the standard calculation.
 		 */
 		return m.modPow(this.d, this.n);
 	}
@@ -395,7 +409,7 @@ public class RSA {
 	 *             If <code>m == null</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             Thrown by <code>BigIntegerUtil.ensurePositive(m)</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>gcd(m, this.n) != 1</code>
@@ -419,7 +433,7 @@ public class RSA {
 	 *             If <code>m == null</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             Thrown by <code>BigIntegerUtil.ensurePositive(new BigInteger(m))</code>
+	 *             If <code>new BigInteger(m) <= 0</code>
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>gcd(new BigInteger(m), this.n) != 1</code>
@@ -439,7 +453,7 @@ public class RSA {
 	 *             If <code>m == null</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             Thrown by <code>BigIntegerUtil.ensurePositive(new BigInteger(m))</code>
+	 *             If <code>new BigInteger(m) <= 0</code>
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>gcd(new BigInteger(m), this.n) != 1</code>

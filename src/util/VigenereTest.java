@@ -20,7 +20,7 @@ public class VigenereTest {
 	 */
 
 	/**
-	 * Testing Vigenere.encrypt(char[]), Vigenere.decrypt(char[]).
+	 * Testing Vigenere::encrypt(char[]), Vigenere::decrypt(char[]).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -39,7 +39,7 @@ public class VigenereTest {
 	}
 
 	/**
-	 * Testing Vigenere.encrypt(byte[]), Vigenere.decrypt(byte[]).
+	 * Testing Vigenere::encrypt(byte[]), Vigenere::decrypt(byte[]).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -58,7 +58,7 @@ public class VigenereTest {
 	}
 
 	/**
-	 * Testing Vigenere::decrypt(char[]), Vigenere.encrypt(char[]).
+	 * Testing Vigenere.decrypt(char[]), Vigenere::encrypt(char[]).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -77,7 +77,7 @@ public class VigenereTest {
 	}
 
 	/**
-	 * Testing Vigenere::decrypt(byte[]), Vigenere.encrypt(byte[]).
+	 * Testing Vigenere.decrypt(byte[]), Vigenere::encrypt(byte[]).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -96,8 +96,8 @@ public class VigenereTest {
 	}
 
 	/**
-	 * Testing the effects of order on Vigenere.encrypt(char[]), Vigenere.decrypt(char[]), and
-	 * Vigenere::decrypt(char[]).
+	 * Testing the effects of order on Vigenere::encrypt(char[]), Vigenere::decrypt(char[]), and
+	 * Vigenere.decrypt(char[]).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -128,7 +128,7 @@ public class VigenereTest {
 
 			final char[][] decryptedTexts = new char[numTexts][];
 			for (int i = numTexts - 1; i > -1; --i) {
-				// Decryption has to be performed in reverse order using Vigenere.decrypt(char[]).
+				// Decryption has to be performed in reverse order using Vigenere::decrypt(char[]).
 				decryptedTexts[i] = v.decrypt(ciphertexts[i]);
 				assertTrue("Correct decryptedTexts[" + i + "]", Arrays.equals(decryptedTexts[i], plaintexts[i]));
 			}
@@ -165,7 +165,7 @@ public class VigenereTest {
 
 			final char[][] decryptedTexts = new char[numTexts][];
 			for (final int index : indices) {
-				// Decryption can be performed in any order using Vigenere::decrypt(char[]).
+				// Decryption can be performed in any order using Vigenere.decrypt(char[]).
 				decryptedTexts[index] = Vigenere.decrypt(keyWord, ciphertexts[index]);
 				assertTrue("Correct decryptedTexts[" + index + "]",
 						Arrays.equals(decryptedTexts[index], plaintexts[index]));
@@ -175,8 +175,8 @@ public class VigenereTest {
 	}
 
 	/**
-	 * Testing the effects of order on Vigenere.encrypt(byte[]), Vigenere.decrypt(byte[]), and
-	 * Vigenere::decrypt(byte[]).
+	 * Testing the effects of order on Vigenere::encrypt(byte[]), Vigenere::decrypt(byte[]), and
+	 * Vigenere.decrypt(byte[]).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -207,7 +207,7 @@ public class VigenereTest {
 
 			final byte[][] decryptedTexts = new byte[numTexts][];
 			for (int i = numTexts - 1; i > -1; --i) {
-				// Decryption has to be performed in reverse order using Vigenere.decrypt(byte[]).
+				// Decryption has to be performed in reverse order using Vigenere::decrypt(byte[]).
 				decryptedTexts[i] = v.decrypt(ciphertexts[i]);
 				assertTrue("Correct decryptedTexts[" + i + "]", Arrays.equals(decryptedTexts[i], plaintexts[i]));
 			}
@@ -244,7 +244,7 @@ public class VigenereTest {
 
 			final byte[][] decryptedTexts = new byte[numTexts][];
 			for (final int index : indices) {
-				// Decryption can be performed in any order using Vigenere::decrypt(byte[]).
+				// Decryption can be performed in any order using Vigenere.decrypt(byte[]).
 				decryptedTexts[index] = Vigenere.decrypt(keyWord, ciphertexts[index]);
 				assertTrue("Correct decryptedTexts[" + index + "]",
 						Arrays.equals(decryptedTexts[index], plaintexts[index]));

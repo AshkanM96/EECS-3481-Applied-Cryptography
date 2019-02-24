@@ -1,7 +1,7 @@
 package util;
 
 /**
- * OTP cipher. This class is just a simple wrapper for <code>^</code> and <code>Binary::xor</code>.
+ * OTP cipher. This class is just a simple wrapper for <code>^</code> and <code>Binary.xor</code>.
  * 
  * @author Ashkan Moatamed
  */

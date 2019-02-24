@@ -74,7 +74,7 @@ public class MatrixIntTest {
 	}
 
 	/**
-	 * Testing MatrixInt::row(int[]).
+	 * Testing MatrixInt.row(int[]).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -88,7 +88,7 @@ public class MatrixIntTest {
 	}
 
 	/**
-	 * Testing MatrixInt::column(int[]).
+	 * Testing MatrixInt.column(int[]).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -104,7 +104,7 @@ public class MatrixIntTest {
 	}
 
 	/**
-	 * Testing MatrixInt::square(int[]) with 3-by-3 square.
+	 * Testing MatrixInt.square(int[]) with 3-by-3 square.
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -122,7 +122,7 @@ public class MatrixIntTest {
 	}
 
 	/**
-	 * Testing MatrixInt::square(int[]) with between 2-by-2 and 3-by-3 square.
+	 * Testing MatrixInt.square(int[]) with between 2-by-2 and 3-by-3 square.
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -140,7 +140,7 @@ public class MatrixIntTest {
 	}
 
 	/**
-	 * Testing MatrixInt::square(int[]) with between 3-by-3 and 4-by-4 square.
+	 * Testing MatrixInt.square(int[]) with between 3-by-3 and 4-by-4 square.
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -158,7 +158,7 @@ public class MatrixIntTest {
 	}
 
 	/**
-	 * Testing MatrixInt::identity(int).
+	 * Testing MatrixInt.identity(int).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -178,7 +178,7 @@ public class MatrixIntTest {
 	}
 
 	/**
-	 * Testing MatrixInt.plusEquals(MatrixInt).
+	 * Testing MatrixInt::plusEquals(MatrixInt).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -201,7 +201,7 @@ public class MatrixIntTest {
 	}
 
 	/**
-	 * Testing MatrixInt.plus(MatrixInt).
+	 * Testing MatrixInt::plus(MatrixInt).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -220,7 +220,7 @@ public class MatrixIntTest {
 	}
 
 	/**
-	 * Testing forward iteration through MatrixInt.iterator().
+	 * Testing forward iteration through MatrixInt::iterator().
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -271,7 +271,7 @@ public class MatrixIntTest {
 	}
 
 	/**
-	 * Testing backward iteration through MatrixInt.iterator().
+	 * Testing backward iteration through MatrixInt::iterator().
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -326,7 +326,7 @@ public class MatrixIntTest {
 	}
 
 	/**
-	 * Testing MatrixInt.determinant(), MatrixInt.isInvertible().
+	 * Testing MatrixInt::determinant(), MatrixInt::isInvertible().
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -369,7 +369,7 @@ public class MatrixIntTest {
 	}
 
 	/**
-	 * Testing forward mutation through MatrixInt.iterator(true).
+	 * Testing forward mutation through MatrixInt::iterator(true).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -418,7 +418,7 @@ public class MatrixIntTest {
 	}
 
 	/**
-	 * Testing backward mutation through MatrixInt.iterator(true).
+	 * Testing backward mutation through MatrixInt::iterator(true).
 	 */
 	@SuppressWarnings("static-method")
 	@Test

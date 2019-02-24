@@ -119,20 +119,16 @@ public class SymCipherEng {
 	 * @throws NullPointerException
 	 *             If
 	 *             <code>(algo == null) || (key == null) || (opmode == null) || (padding == null) || (iv == null)</code>
-	 * 
-	 * @throws IllegalArgumentException
-	 *             If <code>CipherEngUtil.getEngine(algo.name(), opmode, padding)</code> throws
-	 *             NoSuchAlgorithmException or NoSuchPaddingException
 	 */
 	public SymCipherEng(ALGO_SYM algo, byte[] key, CipherEngUtil.OPMODE opmode, CipherEngUtil.PADDING padding,
-			byte[] iv) throws NullPointerException, IllegalArgumentException {
+			byte[] iv) throws NullPointerException {
 		try {
 			// The following is meant to be an assignment of
 			// this.engine, this.algo, this.opmode, and this.padding.
 			this.engine = CipherEngUtil.getEngine((this.algo = algo).name(), this.opmode = opmode,
 					this.padding = padding);
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
-			throw new IllegalArgumentException();
+			throw new ExceptionInInitializerError();
 		}
 		this.key(key);
 		this.iv(iv);
@@ -156,20 +152,16 @@ public class SymCipherEng {
 	 * @throws NullPointerException
 	 *             If
 	 *             <code>(algo == null) || (key == null) || (opmode == null) || (padding == null)</code>
-	 * 
-	 * @throws IllegalArgumentException
-	 *             If <code>CipherEngUtil.getEngine(algo.name(), opmode, padding)</code> throws
-	 *             NoSuchAlgorithmException or NoSuchPaddingException
 	 */
 	public SymCipherEng(ALGO_SYM algo, byte[] key, CipherEngUtil.OPMODE opmode, CipherEngUtil.PADDING padding)
-			throws NullPointerException, IllegalArgumentException {
+			throws NullPointerException {
 		try {
 			// The following is meant to be an assignment of
 			// this.engine, this.algo, this.opmode, and this.padding.
 			this.engine = CipherEngUtil.getEngine((this.algo = algo).name(), this.opmode = opmode,
 					this.padding = padding);
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
-			throw new IllegalArgumentException();
+			throw new ExceptionInInitializerError();
 		}
 		this.key(key);
 		this.iv = null;
@@ -189,14 +181,8 @@ public class SymCipherEng {
 	 * 
 	 * @throws NullPointerException
 	 *             If <code>(algo == null) || (key == null) || (opmode == null)</code>
-	 * 
-	 * @throws IllegalArgumentException
-	 *             If
-	 *             <code>CipherEngUtil.getEngine(algo.name(), opmode, CipherEngUtil.DEFAULT_PADDING)</code>
-	 *             throws NoSuchAlgorithmException or NoSuchPaddingException
 	 */
-	public SymCipherEng(ALGO_SYM algo, byte[] key, CipherEngUtil.OPMODE opmode)
-			throws NullPointerException, IllegalArgumentException {
+	public SymCipherEng(ALGO_SYM algo, byte[] key, CipherEngUtil.OPMODE opmode) throws NullPointerException {
 		this(algo, key, opmode, CipherEngUtil.DEFAULT_PADDING);
 	}
 
@@ -211,13 +197,8 @@ public class SymCipherEng {
 	 * 
 	 * @throws NullPointerException
 	 *             If <code>(algo == null) || (key == null)</code>
-	 * 
-	 * @throws IllegalArgumentException
-	 *             If
-	 *             <code>CipherEngUtil.getEngine(algo.name(), CipherEngUtil.DEFAULT_MODE, CipherEngUtil.DEFAULT_PADDING)</code>
-	 *             throws NoSuchAlgorithmException or NoSuchPaddingException
 	 */
-	public SymCipherEng(ALGO_SYM algo, byte[] key) throws NullPointerException, IllegalArgumentException {
+	public SymCipherEng(ALGO_SYM algo, byte[] key) throws NullPointerException {
 		this(algo, key, CipherEngUtil.DEFAULT_MODE);
 	}
 
@@ -379,17 +360,13 @@ public class SymCipherEng {
 	 * 
 	 * @throws NullPointerException
 	 *             If <code>algo == null</code>
-	 * 
-	 * @throws IllegalArgumentException
-	 *             Thrown by
-	 *             <code>CipherEngUtil.getEngine(algo.name(), this.opmode, this.padding)</code>
 	 */
-	public void algo(ALGO_SYM algo) throws NullPointerException, IllegalArgumentException {
+	public void algo(ALGO_SYM algo) throws NullPointerException {
 		// The following is meant to be an assignment of this.engine, and this.algo.
 		try {
 			this.engine = CipherEngUtil.getEngine(algo.name(), this.opmode, this.padding);
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
-			throw new IllegalArgumentException();
+			throw new ExceptionInInitializerError();
 		}
 		this.key = SymCipherEng.key(this.key.getEncoded(), this.algo = algo);
 	}
@@ -453,17 +430,13 @@ public class SymCipherEng {
 	 * 
 	 * @throws NullPointerException
 	 *             If <code>opmode == null</code>
-	 * 
-	 * @throws IllegalArgumentException
-	 *             Thrown by
-	 *             <code>CipherEngUtil.getEngine(this.algo.name(), opmode, this.padding)</code>
 	 */
-	public void opmode(CipherEngUtil.OPMODE opmode) throws NullPointerException, IllegalArgumentException {
+	public void opmode(CipherEngUtil.OPMODE opmode) throws NullPointerException {
 		// The following is meant to be an assignment of this.engine, and this.opmode.
 		try {
 			this.engine = CipherEngUtil.getEngine(this.algo.name(), opmode, this.padding);
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
-			throw new IllegalArgumentException();
+			throw new ExceptionInInitializerError();
 		}
 		this.opmode = opmode;
 	}
@@ -483,17 +456,13 @@ public class SymCipherEng {
 	 * 
 	 * @throws NullPointerException
 	 *             If <code>padding == null</code>
-	 * 
-	 * @throws IllegalArgumentException
-	 *             Thrown by
-	 *             <code>CipherEngUtil.getEngine(this.algo.name(), this.opmode, padding)</code>
 	 */
-	public void padding(CipherEngUtil.PADDING padding) throws NullPointerException, IllegalArgumentException {
+	public void padding(CipherEngUtil.PADDING padding) throws NullPointerException {
 		// The following is meant to be an assignment of this.engine, and this.padding.
 		try {
 			this.engine = CipherEngUtil.getEngine(this.algo.name(), this.opmode, padding);
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
-			throw new IllegalArgumentException();
+			throw new ExceptionInInitializerError();
 		}
 		this.padding = padding;
 	}

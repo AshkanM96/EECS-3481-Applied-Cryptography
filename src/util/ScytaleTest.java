@@ -23,7 +23,7 @@ public class ScytaleTest {
 	private static final boolean PRINT = false;
 
 	/**
-	 * Testing Scytale.apply(char[]).
+	 * Testing Scytale::apply(char[]).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -50,7 +50,7 @@ public class ScytaleTest {
 	}
 
 	/**
-	 * Testing Scytale.apply(byte[]).
+	 * Testing Scytale::apply(byte[]).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -77,7 +77,7 @@ public class ScytaleTest {
 	}
 
 	/**
-	 * Testing the effects of order on Scytale.apply(char[]).
+	 * Testing the effects of order on Scytale::apply(char[]).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -129,7 +129,7 @@ public class ScytaleTest {
 	}
 
 	/**
-	 * Testing the effects of order on Scytale.apply(byte[]).
+	 * Testing the effects of order on Scytale::apply(byte[]).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -181,7 +181,7 @@ public class ScytaleTest {
 	}
 
 	/**
-	 * Testing Scytale::place(char[], int).
+	 * Testing Scytale.place(char[], int).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -204,7 +204,7 @@ public class ScytaleTest {
 	}
 
 	/**
-	 * Testing Scytale::place(byte[], int).
+	 * Testing Scytale.place(byte[], int).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -227,7 +227,7 @@ public class ScytaleTest {
 	}
 
 	/**
-	 * Testing the effects of order on Scytale::place(char[], int).
+	 * Testing the effects of order on Scytale.place(char[], int).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -275,7 +275,7 @@ public class ScytaleTest {
 	}
 
 	/**
-	 * Testing the effects of order on Scytale::place(byte[], int).
+	 * Testing the effects of order on Scytale.place(byte[], int).
 	 */
 	@SuppressWarnings("static-method")
 	@Test

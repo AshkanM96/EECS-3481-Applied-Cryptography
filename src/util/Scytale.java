@@ -28,7 +28,7 @@ public class Scytale implements Iterable<Integer> {
 	protected MatrixInt key;
 
 	/**
-	 * Save <code>this.key.isTranspositionRow()</code>.
+	 * Saves <code>this.key.isTranspositionRow()</code>.
 	 */
 	protected boolean isValidKey;
 
@@ -174,7 +174,7 @@ public class Scytale implements Iterable<Integer> {
 	 */
 	public MatrixInt key(int side, int n) throws IllegalArgumentException {
 		final MatrixInt oldKey = this.key;
-		this.key = new MatrixInt(side, side, MathUtil.mod(n, Scytale.MODULUS));
+		this.key = new MatrixInt(side, side, (int) MathUtil.modFixedInput(n, Scytale.MODULUS));
 		this.isValidKey = false;
 		return oldKey;
 	}
@@ -311,7 +311,7 @@ public class Scytale implements Iterable<Integer> {
 	 *             <code>(row < 0) || (row >= this.numRows) || (col < 0) || (col >= this.numCols)</code>
 	 */
 	public void set(int row, int col, int entry) throws IndexOutOfBoundsException {
-		this.key.set(row, col, MathUtil.mod(entry, Scytale.MODULUS));
+		this.key.set(row, col, (int) MathUtil.modFixedInput(entry, Scytale.MODULUS));
 		this.isValidKey = false;
 	}
 
@@ -322,7 +322,7 @@ public class Scytale implements Iterable<Integer> {
 	 *            the given integer
 	 */
 	public void fill(int n) {
-		this.key.fill(MathUtil.mod(n, Scytale.MODULUS));
+		this.key.fill((int) MathUtil.modFixedInput(n, Scytale.MODULUS));
 		this.isValidKey = false;
 	}
 

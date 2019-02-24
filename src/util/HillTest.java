@@ -23,7 +23,7 @@ public class HillTest {
 	private static final boolean PRINT = false;
 
 	/**
-	 * Testing Hill.encrypt(char[]), Hill.decrypt(char[]).
+	 * Testing Hill::encrypt(char[]), Hill::decrypt(char[]).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -50,7 +50,7 @@ public class HillTest {
 	}
 
 	/**
-	 * Testing Hill.encrypt(char[]), Hill.decrypt(char[]).
+	 * Testing Hill::encrypt(char[]), Hill::decrypt(char[]).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -77,7 +77,7 @@ public class HillTest {
 	}
 
 	/**
-	 * Testing Hill.encrypt(byte[]), Hill.decrypt(byte[]).
+	 * Testing Hill::encrypt(byte[]), Hill::decrypt(byte[]).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -104,7 +104,7 @@ public class HillTest {
 	}
 
 	/**
-	 * Testing Hill.encrypt(byte[]), Hill.decrypt(byte[]).
+	 * Testing Hill::encrypt(byte[]), Hill::decrypt(byte[]).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -131,7 +131,7 @@ public class HillTest {
 	}
 
 	/**
-	 * Testing Hill.decrypt(char[]), Hill.encrypt(char[]).
+	 * Testing Hill::decrypt(char[]), Hill::encrypt(char[]).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -158,7 +158,7 @@ public class HillTest {
 	}
 
 	/**
-	 * Testing Hill.decrypt(char[]), Hill.encrypt(char[]).
+	 * Testing Hill::decrypt(char[]), Hill::encrypt(char[]).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -185,7 +185,7 @@ public class HillTest {
 	}
 
 	/**
-	 * Testing Hill.decrypt(byte[]), Hill.encrypt(byte[]).
+	 * Testing Hill::decrypt(byte[]), Hill::encrypt(byte[]).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -212,7 +212,7 @@ public class HillTest {
 	}
 
 	/**
-	 * Testing Hill.decrypt(byte[]), Hill.encrypt(byte[]).
+	 * Testing Hill::decrypt(byte[]), Hill::encrypt(byte[]).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -239,7 +239,7 @@ public class HillTest {
 	}
 
 	/**
-	 * Testing the effects of order on Hill.encrypt(char[]), Hill.decrypt(char[]).
+	 * Testing the effects of order on Hill::encrypt(char[]), Hill::decrypt(char[]).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -291,7 +291,7 @@ public class HillTest {
 	}
 
 	/**
-	 * Testing the effects of order on Hill.encrypt(byte[]), Hill.decrypt(byte[]).
+	 * Testing the effects of order on Hill::encrypt(byte[]), Hill::decrypt(byte[]).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -343,7 +343,7 @@ public class HillTest {
 	}
 
 	/**
-	 * Testing the effects of order on Hill.decrypt(char[]), Hill.encrypt(char[]).
+	 * Testing the effects of order on Hill::decrypt(char[]), Hill::encrypt(char[]).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
@@ -395,7 +395,7 @@ public class HillTest {
 	}
 
 	/**
-	 * Testing the effects of order on Hill.decrypt(byte[]), Hill.encrypt(byte[]).
+	 * Testing the effects of order on Hill::decrypt(byte[]), Hill::encrypt(byte[]).
 	 */
 	@SuppressWarnings("static-method")
 	@Test
