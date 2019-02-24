@@ -4,7 +4,6 @@ import java.math.BigInteger;
 
 import util.CryptoTools;
 import util.RSA;
-import util.RSAUtil;
 
 /**
  * RSA decryption use case with manual BigInteger manipulations.
@@ -15,8 +14,7 @@ public class C3Q5 {
 	/**
 	 * Dependencies: <code>
 	 * 		1. util.RSA
-	 * 		2. util.RSAUtil
-	 * 		3. util.CryptoTools
+	 * 		2. util.CryptoTools
 	 * </code>
 	 */
 
@@ -52,7 +50,7 @@ public class C3Q5 {
 
 	public static void main(String[] args) {
 		// Create the cipher engine with the appropriate attributes.
-		final RSA r = RSA.knownKeys(C3Q5.N, C3Q5.E, RSAUtil.key(C3Q5.P, C3Q5.N, C3Q5.E));
+		final RSA r = RSA.knownFactors(C3Q5.P, C3Q5.N.divide(C3Q5.P), C3Q5.E);
 
 		// Decrypt the ciphertext using the engine to get the plaintext.
 		final BigInteger plaintext = r.apply(C3Q5.CIPHERTEXT, false);
