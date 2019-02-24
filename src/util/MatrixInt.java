@@ -863,11 +863,13 @@ public class MatrixInt implements Iterable<Integer> {
 	 * @return <code>this</code>.
 	 */
 	public MatrixInt timesEquals(int n) {
-		int[] row = null;
-		for (int rowNum = 0; rowNum != this.numRows; ++rowNum) {
-			row = this.data[rowNum];
-			for (int colNum = 0; colNum != this.numCols; ++colNum) {
-				row[colNum] *= n;
+		if (n != 1) {
+			int[] row = null;
+			for (int rowNum = 0; rowNum != this.numRows; ++rowNum) {
+				row = this.data[rowNum];
+				for (int colNum = 0; colNum != this.numCols; ++colNum) {
+					row[colNum] *= n;
+				}
 			}
 		}
 		return this;
@@ -902,11 +904,13 @@ public class MatrixInt implements Iterable<Integer> {
 		}
 		// n != 0
 
-		int[] row = null;
-		for (int rowNum = 0; rowNum != this.numRows; ++rowNum) {
-			row = this.data[rowNum];
-			for (int colNum = 0; colNum != this.numCols; ++colNum) {
-				row[colNum] /= n;
+		if (n != 1) {
+			int[] row = null;
+			for (int rowNum = 0; rowNum != this.numRows; ++rowNum) {
+				row = this.data[rowNum];
+				for (int colNum = 0; colNum != this.numCols; ++colNum) {
+					row[colNum] /= n;
+				}
 			}
 		}
 		return this;

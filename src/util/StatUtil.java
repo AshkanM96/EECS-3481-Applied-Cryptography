@@ -79,6 +79,36 @@ public class StatUtil {
 	}
 
 	/**
+	 * Linearly compute <code>n factorial</code> (i.e., <code>n!</code>). <br>
+	 * Precondition: <code>n >= 0</code>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return <code>n factorial</code> (i.e., <code>n!</code>).
+	 */
+	protected static BigInteger factorialLinearFixedInput(long n) {
+		if (n == 0L) {
+			return BigInteger.ONE;
+		}
+		// n != 0
+		// i.e., n >= 1
+
+		// Compute n! in the loop and then return it.
+		BigInteger result = BigInteger.ONE;
+		for (long i = 1L; i != n; /* Update inside. */) {
+			// i! = i * (i - 1)!
+			/**
+			 * Note that <code>BigInteger.valueOf</code> calls are much cheaper than performing arithmetic
+			 * operations on a <code>BigInteger</code> since those are fully general operations for potentially
+			 * big integers.
+			 */
+			result = result.multiply(BigInteger.valueOf(++i));
+		}
+		return result;
+	}
+
+	/**
 	 * Linearly compute <code>n factorial</code> (i.e., <code>n!</code>).
 	 * 
 	 * @param n
@@ -94,13 +124,7 @@ public class StatUtil {
 			throw new IllegalArgumentException();
 		}
 		// n >= 0
-
-		/**
-		 * Note that <code>StatUtil.factorialLinearFixedInput(BigInteger)</code> works for all
-		 * <code>n >= 0</code> but since the answer is trivial when <code>n <= 1</code>, we perform the
-		 * check here to avoid the extra function calls.
-		 */
-		return ((n <= 1L) ? BigInteger.ONE : StatUtil.factorialLinearFixedInput(BigInteger.valueOf(n)));
+		return StatUtil.factorialLinearFixedInput(n);
 	}
 
 	/**
@@ -123,8 +147,7 @@ public class StatUtil {
 		BigInteger result = BigInteger.ZERO;
 		for (BigInteger i = BigInteger.ONE; !i.equals(n); /* Update inside. */) {
 			// !i = i * !(i - 1) + (-1)^i
-			i = i.add(BigInteger.ONE);
-			result = i.multiply(result);
+			result = result.multiply(i = i.add(BigInteger.ONE));
 			result = i.testBit(0) ? result.subtract(BigInteger.ONE) : result.add(BigInteger.ONE);
 		}
 		return result;
@@ -153,6 +176,37 @@ public class StatUtil {
 	}
 
 	/**
+	 * Linearly compute <code>n subfactorial</code> (i.e., <code>!n</code>). <br>
+	 * Precondition: <code>n >= 0</code>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return <code>n subfactorial</code> (i.e., <code>!n</code>).
+	 */
+	protected static BigInteger subfactorialLinearFixedInput(long n) {
+		if (n == 0L) {
+			return BigInteger.ONE;
+		}
+		// n != 0
+		// i.e., n >= 1
+
+		// Compute !n in the loop and then return it.
+		BigInteger result = BigInteger.ZERO;
+		for (long i = 1L; i != n; /* Update inside. */) {
+			// !i = i * !(i - 1) + (-1)^i
+			/**
+			 * Note that <code>BigInteger.valueOf</code> calls are much cheaper than performing arithmetic
+			 * operations on a <code>BigInteger</code> since those are fully general operations for potentially
+			 * big integers.
+			 */
+			result = result.multiply(BigInteger.valueOf(++i));
+			result = ((i & 1L) != 0L) ? result.subtract(BigInteger.ONE) : result.add(BigInteger.ONE);
+		}
+		return result;
+	}
+
+	/**
 	 * Linearly compute <code>n subfactorial</code> (i.e., <code>!n</code>).
 	 * 
 	 * @param n
@@ -168,20 +222,7 @@ public class StatUtil {
 			throw new IllegalArgumentException();
 		}
 		// n >= 0
-
-		/**
-		 * Note that <code>StatUtil.subfactorialLinearFixedInput(BigInteger)</code> works for all
-		 * <code>n >= 0</code> but since the answer is trivial when <code>n <= 1</code>, we perform the
-		 * check here to avoid the extra function calls.
-		 */
-		if (n == 0L) {
-			return BigInteger.ONE;
-		} else if (n == 1L) {
-			return BigInteger.ZERO;
-		}
-		// (n != 0) && (n != 1)
-		// i.e., n >= 2
-		return StatUtil.subfactorialLinearFixedInput(BigInteger.valueOf(n));
+		return StatUtil.subfactorialLinearFixedInput(n);
 	}
 
 	/**
@@ -244,6 +285,78 @@ public class StatUtil {
 		// i.e., n - 2 >= r
 
 		if (r.signum() == 0) { // i.e., r == 0
+			// nP0 == 1
+			return BigInteger.ONE;
+		}
+		// r != 0
+		// i.e., r >= 1
+		return StatUtil.nPrLinearFixedInput(n, r);
+	}
+
+	/**
+	 * Linearly compute <code>nPr</code>. <br>
+	 * Precondition: <code>n >= 0</code> <br>
+	 * Precondition: <code>(1 <= r) && (r <= n - 2)</code>
+	 * 
+	 * @param n
+	 *            the given number of objects
+	 * 
+	 * @param r
+	 *            the given sample size
+	 * 
+	 * @return <code>nPr</code>.
+	 */
+	protected static BigInteger nPrLinearFixedInput(long n, long r) {
+		/**
+		 * Don't delegate to <code>StatUtil.nPrLinearFixedInput(BigInteger, BigInteger)</code> since
+		 * arithmetic operations on a <code>primitive type (i.e., long)</code>, are much faster than
+		 * arithmetic operations on a <code>BigInteger</code>.
+		 */
+
+		BigInteger result = BigInteger.valueOf(n);
+		for (long i = 1L; i != r; ++i) {
+			/**
+			 * Note that <code>BigInteger.valueOf</code> calls are much cheaper than performing arithmetic
+			 * operations on a <code>BigInteger</code> since those are fully general operations for potentially
+			 * big integers.
+			 */
+			result = result.multiply(BigInteger.valueOf(n - i));
+		}
+		return result;
+	}
+
+	/**
+	 * Linearly compute <code>nPr</code>.
+	 * 
+	 * @param n
+	 *            the given number of objects
+	 * 
+	 * @param r
+	 *            the given sample size
+	 * 
+	 * @return <code>nPr</code>.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(n < 0) || (r < 0) || (n < r)</code>
+	 */
+	public static BigInteger nPrLinear(long n, long r) throws IllegalArgumentException {
+		if ((n < 0L) || (r < 0L)) {
+			throw new IllegalArgumentException();
+		}
+		// (n >= 0) && (r >= 0)
+
+		if (n < r) {
+			throw new IllegalArgumentException();
+		} else if ((n == r) || (n == r + 1L)) {
+			// nPn == nP(n - 1) == n!
+			return StatUtil.factorialLinear(n);
+		}
+		// (n > r) && (n != r + 1)
+		// i.e., (n - 1 >= r) && (r != n - 1)
+		// i.e., n - 1 > r
+		// i.e., n - 2 >= r
+
+		if (r == 0L) {
 			// nP0 == 1
 			return BigInteger.ONE;
 		}
@@ -327,78 +440,6 @@ public class StatUtil {
 		// (r != 0) && (r != 1)
 		// i.e., r >= 2
 		return StatUtil.nCrLinearFixedInput(n, r);
-	}
-
-	/**
-	 * Linearly compute <code>nPr</code>. <br>
-	 * Precondition: <code>n >= 0</code> <br>
-	 * Precondition: <code>(1 <= r) && (r <= n - 2)</code>
-	 * 
-	 * @param n
-	 *            the given number of objects
-	 * 
-	 * @param r
-	 *            the given sample size
-	 * 
-	 * @return <code>nPr</code>.
-	 */
-	protected static BigInteger nPrLinearFixedInput(long n, long r) {
-		/**
-		 * Don't delegate to <code>StatUtil.nPrLinearFixedInput(BigInteger, BigInteger)</code> since
-		 * arithmetic operations on a <code>primitive type (i.e., long)</code>, are much faster than
-		 * arithmetic operations on a <code>BigInteger</code>.
-		 */
-
-		BigInteger result = BigInteger.valueOf(n);
-		for (long i = 1L; i != r; ++i) {
-			/**
-			 * Note that <code>BigInteger.valueOf</code> calls are much cheaper than performing arithmetic
-			 * operations on a <code>BigInteger</code> since those are fully general operations for potentially
-			 * big integers.
-			 */
-			result = result.multiply(BigInteger.valueOf(n - i));
-		}
-		return result;
-	}
-
-	/**
-	 * Linearly compute <code>nPr</code>.
-	 * 
-	 * @param n
-	 *            the given number of objects
-	 * 
-	 * @param r
-	 *            the given sample size
-	 * 
-	 * @return <code>nPr</code>.
-	 * 
-	 * @throws IllegalArgumentException
-	 *             If <code>(n < 0) || (r < 0) || (n < r)</code>
-	 */
-	public static BigInteger nPrLinear(long n, long r) throws IllegalArgumentException {
-		if ((n < 0L) || (r < 0L)) {
-			throw new IllegalArgumentException();
-		}
-		// (n >= 0) && (r >= 0)
-
-		if (n < r) {
-			throw new IllegalArgumentException();
-		} else if ((n == r) || (n == r + 1L)) {
-			// nPn == nP(n - 1) == n!
-			return StatUtil.factorialLinear(n);
-		}
-		// (n > r) && (n != r + 1)
-		// i.e., (n - 1 >= r) && (r != n - 1)
-		// i.e., n - 1 > r
-		// i.e., n - 2 >= r
-
-		if (r == 0L) {
-			// nP0 == 1
-			return BigInteger.ONE;
-		}
-		// r != 0
-		// i.e., r >= 1
-		return StatUtil.nPrLinearFixedInput(n, r);
 	}
 
 	/**
