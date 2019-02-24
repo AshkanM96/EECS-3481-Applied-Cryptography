@@ -10,7 +10,7 @@ public class T4Q4 {
 	public static void main(String[] args) {
 		final BigInteger p = new BigInteger("565209496520876299");
 		final BigInteger p_minus_1 = p.subtract(BigInteger.ONE);
-		final BigInteger f = BigInteger.valueOf(13);
+		final BigInteger f = BigInteger.valueOf(13L);
 		final BigInteger[] qr = p_minus_1.divideAndRemainder(f);
 		assert (qr[1].signum() == 0);
 
