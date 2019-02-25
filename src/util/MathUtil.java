@@ -842,11 +842,10 @@ public class MathUtil {
 		 */
 		if (n < 4L) {
 			/**
-			 * It's fine to do <code>n -= 1</code> instead of <code>n - 1</code> since we don't need the value
-			 * of <code>n</code> to remain unchanged at that point. Note that the difference is the
-			 * <code>-=</code> instead of the <code>-</code> which will mutate <code>n</code>.
+			 * It's fine to do <code>--n</code> instead of <code>n - 1</code> since we don't need the value of
+			 * <code>n</code> to remain unchanged at that point.
 			 */
-			return ((n < 1L) ? 0L : ((n == 1L) ? 1L : (n -= 1L)));
+			return ((n < 1L) ? 0L : ((n == 1L) ? 1L : --n));
 		}
 		// n >= 4
 
@@ -931,11 +930,10 @@ public class MathUtil {
 		 */
 		if (n < 4L) {
 			/**
-			 * It's fine to do <code>n -= 1</code> instead of <code>n - 1</code> since we don't need the value
-			 * of <code>n</code> to remain unchanged at that point. Note that the difference is the
-			 * <code>-=</code> instead of the <code>-</code> which will mutate <code>n</code>.
+			 * It's fine to do <code>--n</code> instead of <code>n - 1</code> since we don't need the value of
+			 * <code>n</code> to remain unchanged at that point.
 			 */
-			return ((n < 1L) ? 0L : ((n == 1L) ? 1L : (n -= 1L)));
+			return ((n < 1L) ? 0L : ((n == 1L) ? 1L : --n));
 		}
 		// n >= 4
 
@@ -994,6 +992,14 @@ public class MathUtil {
 		 * <code>e<sub>i</sub></code> and natural number <code>t</code>. After a little bit of
 		 * simplification, we can find that
 		 * <code>phi(n) = n * product((1 - <sup>1</sup>&frasl;<sub>p<sub>i</sub></sub>) from i = 1 to i = t)</code>.
+		 * <br>
+		 * <br>
+		 * 
+		 * Note that we are taking the square root of <code>n</code> after potentially having "pulled out"
+		 * all of the <code>2</code> and the <code>3</code> factors. This means that the square root may not
+		 * be applied to the original value of <code>n</code> but this is fine since all remaining prime
+		 * divisors of the original value of <code>n</code> which are less than the square root, are still
+		 * being considered.
 		 */
 		final long bound = ((long) Math.sqrt(n)) + 1L; // bound >= 3
 		final long maxI = bound + 1L; // maxI >= 4
