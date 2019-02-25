@@ -177,8 +177,12 @@ public class MathUtil {
 	 */
 	protected static long gcdFixedInput(long a, long b) {
 		// gcd is non-negative so make a and b non-negative.
-		a = Math.abs(a);
-		b = Math.abs(b);
+		if (a < 0L) {
+			a *= -1L;
+		}
+		if (b < 0L) {
+			b *= -1L;
+		}
 
 		// Assume a is smaller than b.
 		long min = a, max = b;
@@ -199,7 +203,7 @@ public class MathUtil {
 			max = min;
 			min = remainder;
 		}
-		return Math.abs(max);
+		return ((max < 0L) ? (max *= -1L) : max);
 	}
 
 	/**
@@ -535,11 +539,18 @@ public class MathUtil {
 		// (a != 0) && (b != 0)
 
 		// lcm is non-negative so make a and b non-negative.
-		a = Math.abs(a);
-		b = Math.abs(b);
+		if (a < 0L) {
+			a *= -1L;
+		}
+		// (a > 0) || (a == Long.MIN_VALUE)
+		if (b < 0L) {
+			b *= -1L;
+		}
+		// (b > 0) || (b == Long.MIN_VALUE)
 
 		// lcm(a, b) == (a * b) / gcd(a, b)
-		return Math.abs((a /= MathUtil.gcdFixedInput(a, b)) * b);
+		long result = (a /= MathUtil.gcdFixedInput(a, b)) * b;
+		return ((result < 0L) ? (result *= -1L) : result);
 	}
 
 	/**
@@ -668,8 +679,13 @@ public class MathUtil {
 		// (a != 0) && (b != 0)
 
 		// lcm is non-negative so make a and b non-negative.
-		a = Math.abs(a);
-		b = Math.abs(b);
+		if (a < 0L) {
+			a *= -1L;
+		}
+		if (b < 0L) {
+			b *= -1L;
+		}
+		// (a > 0) && (b > 0)
 
 		// lcm(a, b) == (a * b) / gcd(a, b)
 		return Math.multiplyExact(a /= MathUtil.gcdFixedInput(a, b), b);
@@ -3536,5 +3552,212 @@ public class MathUtil {
 			throw new ArithmeticException();
 		}
 		return new byte[] { (byte) result[0], (byte) m, (byte) result[2] };
+	}
+
+	/**
+	 * Compute <code>phi(n)</code> in <code>O(n * lg(n)) time</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return The value of Euler's totient function for the given number (i.e., <code>phi(n)</code>).
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>n < 1</code>
+	 */
+	public static long eulerTotientLinear(long n) throws IllegalArgumentException {
+		if (n < 1L) {
+			throw new IllegalArgumentException();
+		} else if (n < 4L) { // i.e., (n == 1) || (n == 2) || (n == 3)
+			// (phi(1) == 0) && (phi(2) == 1) && (phi(3) == 2)
+			return (n -= 1L);
+		}
+		// n >= 4
+
+		/**
+		 * <code>gcd(n, 1) == 1</code> and <code>gcd(n, n - 1) == 1</code> for all <code>n >= 1</code> so
+		 * initialize result to <code>2</code> and check all of the integers in <code>[3, n - 2]</code> in
+		 * the loop for coprimeness.
+		 */
+		final long maxI = n - 1L; // maxI >= 3
+		/**
+		 * Check <code>i == 2</code> separately since it can be done more efficiently than the general case.
+		 * We know that <code>gcd(n, 2) == 1</code> if and only if <code>n</code> is odd. <br>
+		 * <br>
+		 * 
+		 * Don't do <code>(n &= 1L) != 0L</code> since we need the value of <code>n</code> to remain
+		 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
+		 * will mutate <code>n</code>.
+		 */
+		long result = ((n & 1L) != 0L) ? 3L : 2L;
+		for (long i = 3L; i != maxI; ++i) {
+			if (MathUtil.gcdFixedInput(n, i) == 1L) {
+				++result;
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Compute <code>phi(n)</code> in <code>O(n * lg(n)) time</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return The value of Euler's totient function for the given number (i.e., <code>phi(n)</code>).
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>n < 1</code>
+	 */
+	public static int eulerTotientLinear(int n) throws IllegalArgumentException {
+		return ((int) MathUtil.eulerTotientLinear((long) n));
+	}
+
+	/**
+	 * Compute <code>phi(n)</code> in <code>O(n * lg(n)) time</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return The value of Euler's totient function for the given number (i.e., <code>phi(n)</code>).
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>n < 1</code>
+	 */
+	public static short eulerTotientLinear(short n) throws IllegalArgumentException {
+		return ((short) MathUtil.eulerTotientLinear((long) n));
+	}
+
+	/**
+	 * Compute <code>phi(n)</code> in <code>O(n * lg(n)) time</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return The value of Euler's totient function for the given number (i.e., <code>phi(n)</code>).
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>n < 1</code>
+	 */
+	public static byte eulerTotientLinear(byte n) throws IllegalArgumentException {
+		return ((byte) MathUtil.eulerTotientLinear((long) n));
+	}
+
+	/**
+	 * Compute <code>phi(n)</code> in <code>O(sqrt(n)) time</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return The value of Euler's totient function for the given number (i.e., <code>phi(n)</code>).
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>n < 1</code>
+	 */
+	public static long eulerTotientSqrt(long n) throws IllegalArgumentException {
+		if (n < 1L) {
+			throw new IllegalArgumentException();
+		} else if (n < 4L) { // i.e., (n == 1) || (n == 2) || (n == 3)
+			// (phi(1) == 0) && (phi(2) == 1) && (phi(3) == 2)
+			return (n -= 1L);
+		}
+		// n >= 4
+
+		/**
+		 * Check <code>i == 2</code> separately since it can be done more efficiently than the general case
+		 * but also it will allow us to only check odd values of <code>i</code> in the loop thus cutting the
+		 * runtime in half. <br>
+		 * <br>
+		 * 
+		 * Don't do <code>(n &= 1L) == 0L</code> since we need the value of <code>n</code> to remain
+		 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
+		 * will mutate <code>n</code>.
+		 */
+		long result = n;
+		// Check if 2 is a factor of n.
+		if ((n & 1L) == 0L) { // i.e., n % 2 == 0
+			// Update n and result.
+			do {
+				n /= 2L;
+			} while ((n & 1L) == 0L); // i.e., n % 2 == 0
+			result -= (result / 2L);
+
+			// Check if n has no more factors.
+			if (n == 1L) {
+				return result;
+			}
+		}
+		/**
+		 * We know that
+		 * <code>phi(n) = product(phi(p<sub>i</sub><sup>e<sub>i</sub></sup>) from i = 1 to i = t)</code>
+		 * where <code>p<sub>i</sub></code>'s are prime factors of <code>n</code> with natural powers
+		 * <code>e<sub>i</sub></code> and natural number <code>t</code>. After a little bit of
+		 * simplification, we can find that
+		 * <code>phi(n) = n * product((1 - <sup>1</sup>&frasl;<sub>p<sub>i</sub></sub>) from i = 1 to i = t)</code>.
+		 */
+		final long bound = ((long) Math.sqrt(n)) + 1L; // bound >= 3
+		final long maxI = bound + 1L; // maxI >= 4
+		for (long i = 3L; i < maxI; i += 2L) {
+			// Check if i is a factor of n.
+			if (n % i == 0L) {
+				// Update n and result.
+				do {
+					n /= i;
+				} while (n % i == 0L);
+				result -= (result / i);
+
+				// Check if n has no more factors.
+				if (n == 1L) {
+					return result;
+				}
+			}
+		}
+		// For all n, n can have at most one factor greater than sqrt(n) so check if it has such a factor.
+		return ((n != 1L) ? (result -= (result / n)) : result);
+	}
+
+	/**
+	 * Compute <code>phi(n)</code> in <code>O(sqrt(n)) time</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return The value of Euler's totient function for the given number (i.e., <code>phi(n)</code>).
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>n < 1</code>
+	 */
+	public static int eulerTotientSqrt(int n) throws IllegalArgumentException {
+		return ((int) MathUtil.eulerTotientSqrt((long) n));
+	}
+
+	/**
+	 * Compute <code>phi(n)</code> in <code>O(sqrt(n)) time</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return The value of Euler's totient function for the given number (i.e., <code>phi(n)</code>).
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>n < 1</code>
+	 */
+	public static short eulerTotientSqrt(short n) throws IllegalArgumentException {
+		return ((short) MathUtil.eulerTotientSqrt((long) n));
+	}
+
+	/**
+	 * Compute <code>phi(n)</code> in <code>O(sqrt(n)) time</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return The value of Euler's totient function for the given number (i.e., <code>phi(n)</code>).
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>n < 1</code>
+	 */
+	public static byte eulerTotientSqrt(byte n) throws IllegalArgumentException {
+		return ((byte) MathUtil.eulerTotientSqrt((long) n));
 	}
 }
