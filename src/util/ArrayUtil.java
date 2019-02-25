@@ -614,7 +614,7 @@ public class ArrayUtil {
 	 */
 	public static void shuffle(boolean[] a) throws NullPointerException {
 		// Nothing to shuffle.
-		if (a.length <= 1) {
+		if (a.length < 2) {
 			return;
 		}
 
@@ -638,7 +638,7 @@ public class ArrayUtil {
 	 */
 	public static void shuffle(byte[] a) throws NullPointerException {
 		// Nothing to shuffle.
-		if (a.length <= 1) {
+		if (a.length < 2) {
 			return;
 		}
 
@@ -662,7 +662,7 @@ public class ArrayUtil {
 	 */
 	public static void shuffle(char[] a) throws NullPointerException {
 		// Nothing to shuffle.
-		if (a.length <= 1) {
+		if (a.length < 2) {
 			return;
 		}
 
@@ -686,7 +686,7 @@ public class ArrayUtil {
 	 */
 	public static void shuffle(short[] a) throws NullPointerException {
 		// Nothing to shuffle.
-		if (a.length <= 1) {
+		if (a.length < 2) {
 			return;
 		}
 
@@ -710,7 +710,7 @@ public class ArrayUtil {
 	 */
 	public static void shuffle(int[] a) throws NullPointerException {
 		// Nothing to shuffle.
-		if (a.length <= 1) {
+		if (a.length < 2) {
 			return;
 		}
 
@@ -734,7 +734,7 @@ public class ArrayUtil {
 	 */
 	public static void shuffle(long[] a) throws NullPointerException {
 		// Nothing to shuffle.
-		if (a.length <= 1) {
+		if (a.length < 2) {
 			return;
 		}
 
@@ -758,7 +758,7 @@ public class ArrayUtil {
 	 */
 	public static void shuffle(float[] a) throws NullPointerException {
 		// Nothing to shuffle.
-		if (a.length <= 1) {
+		if (a.length < 2) {
 			return;
 		}
 
@@ -782,7 +782,7 @@ public class ArrayUtil {
 	 */
 	public static void shuffle(double[] a) throws NullPointerException {
 		// Nothing to shuffle.
-		if (a.length <= 1) {
+		if (a.length < 2) {
 			return;
 		}
 
@@ -806,7 +806,7 @@ public class ArrayUtil {
 	 */
 	public static void shuffle(Object[] a) throws NullPointerException {
 		// Nothing to shuffle.
-		if (a.length <= 1) {
+		if (a.length < 2) {
 			return;
 		}
 

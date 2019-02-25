@@ -464,138 +464,6 @@ public class BigIntegerUtil {
 	}
 
 	/**
-	 * @param begin
-	 *            the given begin power
-	 * 
-	 * @param end
-	 *            the given end power
-	 * 
-	 * @return <code>end - begin</code>.
-	 * 
-	 * @throws NullPointerException
-	 *             If <code>(begin == null) || (end == null)</code>
-	 * 
-	 * @throws IllegalArgumentException
-	 *             If <code>begin > end</code>
-	 * 
-	 * @throws ArithmeticException
-	 *             If <code>(end - begin) > Integer.MAX_VALUE</code>
-	 */
-	protected static int powersLength(BigInteger begin, BigInteger end)
-			throws NullPointerException, IllegalArgumentException, ArithmeticException {
-		// Validate begin and end.
-		final int cmp = begin.compareTo(end);
-		if (cmp > 0) { // i.e., begin > end
-			throw new IllegalArgumentException();
-		}
-		// cmp <= 0
-		// i.e., begin <= end
-		return ((cmp == 0) ? 0 : end.subtract(begin).intValueExact());
-	}
-
-	/**
-	 * Note that this function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in
-	 * math. <br>
-	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>Result.length == end - begin</code> <br>
-	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>(i + begin)</sup> (mod m))</code>
-	 * 
-	 * @param n
-	 *            the given number
-	 * 
-	 * @param m
-	 *            the given modulus
-	 * 
-	 * @param begin
-	 *            the given begin power
-	 * 
-	 * @param end
-	 *            the given end power
-	 * 
-	 * @return The resulting BigInteger array.
-	 * 
-	 * @throws NullPointerException
-	 *             If <code>(n == null) || (m == null) || (begin == null) || (end == null)</code>
-	 * 
-	 * @throws InvalidModulusException
-	 *             If <code>m <= 0</code>
-	 * 
-	 * @throws IllegalArgumentException
-	 *             If <code>begin > end</code>
-	 * 
-	 * @throws ArithmeticException
-	 *             If <code>(end - begin) > Integer.MAX_VALUE</code>
-	 * 
-	 * @throws UndefinedInverseException
-	 *             If <code>(begin < 0) && (gcd(n, m) != 1)</code>
-	 */
-	public static BigInteger[] modPowers(BigInteger n, BigInteger m, BigInteger begin, BigInteger end)
-			throws NullPointerException, InvalidModulusException, IllegalArgumentException, ArithmeticException,
-			UndefinedInverseException {
-		if (n == null) {
-			throw new NullPointerException();
-		} else if (m.signum() != 1) { // i.e., m <= 0
-			throw new InvalidModulusException();
-		}
-		// m > 0
-
-		// Compute the resulting array length.
-		final int length = BigIntegerUtil.powersLength(begin, end);
-		// (begin <= end) && ((end - begin) <= Integer.MAX_VALUE)
-
-		// Create the resulting BigInteger array and handle the simple special cases.
-		final BigInteger[] result = new BigInteger[length];
-		if (length == 0) {
-			// Nothing to do here.
-			return result;
-		}
-		// length != 0
-		// i.e., length > 0
-
-		// Fix n to be in [0, m - 1] \cap \doubleZ.
-		n = n.mod(m);
-
-		if (n.signum() == 0) { // i.e., n == 0
-			/**
-			 * This case is needed since 0 to any non-zero power is 0 and so any non-zero assignment of
-			 * <code>result[i]</code> will be wrong in this case. Furthermore, note that we are defining
-			 * <code>0<sup>0</sup> == 0</code> here even though it is undefined in math.
-			 */
-			return result;
-		}
-		// (n != 0) && (m != 1)
-		// i.e., (n != 0) && (m > 1)
-
-		if (n.equals(BigInteger.ONE)) { // i.e., n == 1 (mod m)
-			/*
-			 * This case is only an optimization since 1 to any power is 1 and so the loop will do extra
-			 * unnecessary work to arrive at the same result.
-			 */
-			Arrays.fill(result, BigInteger.ONE);
-			return result;
-		} else if (n.add(BigInteger.ONE).equals(m)) { // i.e., n == -1 (mod m)
-			/*
-			 * This case is only an optimization since -1 to any even power is 1 and otherwise is -1. So the
-			 * loop will do extra unnecessary work to arrive at the same result.
-			 */
-			boolean evenPow = !begin.testBit(0);
-			for (int i = 0; i != length; ++i, evenPow = !evenPow) {
-				result[i] = evenPow ? BigInteger.ONE : n;
-			}
-			return result;
-		}
-		// (n != 1) && (n != m - 1)
-		// i.e., (1 < n) && (n < m - 1)
-
-		// Fill and return the resulting BigInteger array.
-		BigInteger n_to_i = n.modPow(begin, m);
-		for (int i = 0; i != length; ++i, n_to_i = n_to_i.multiply(n).mod(m)) {
-			result[i] = n_to_i;
-		}
-		return result;
-	}
-
-	/**
 	 * Chinese Remainder Theorem. <br>
 	 * Postcondition: <code>Result != null</code> <br>
 	 * Postcondition: <code>Result.length == 3</code> <br>
@@ -632,7 +500,7 @@ public class BigIntegerUtil {
 	 *             If <code>(n1 == null) || (m1 == null) || (n2 == null) || (m2 == null)</code>
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>(m1 <= 0) || (m2 <= 0)</code>
+	 *             If <code>(m1 < 1) || (m2 < 1)</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>n1 != n2 (mod gcd(m1, m2))</code>
@@ -715,7 +583,7 @@ public class BigIntegerUtil {
 	 *             If <code>(n1 == null) || (m1 == null) || (n2 == null) || (m2 == null)</code>
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>(m1 <= 0) || (m2 <= 0)</code>
+	 *             If <code>(m1 < 1) || (m2 < 1)</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>n1 != n2 (mod gcd(m1, m2))</code>
@@ -754,7 +622,7 @@ public class BigIntegerUtil {
 	 *             If <code>(n1 == null) || (m1 == null) || (n2 == null) || (m2 == null)</code>
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>(m1 <= 0) || (m2 <= 0)</code>
+	 *             If <code>(m1 < 1) || (m2 < 1)</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>n1 != n2 (mod gcd(m1, m2))</code>
@@ -762,5 +630,137 @@ public class BigIntegerUtil {
 	public static BigInteger[] crt(BigInteger n1, BigInteger m1, BigInteger n2, BigInteger m2)
 			throws NullPointerException, InvalidModulusException, IllegalArgumentException {
 		return BigIntegerUtil.crt(n1, m1, n2, m2, true);
+	}
+
+	/**
+	 * @param begin
+	 *            the given begin power
+	 * 
+	 * @param end
+	 *            the given end power
+	 * 
+	 * @return <code>end - begin</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>(begin == null) || (end == null)</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>begin > end</code>
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>(end - begin) > Integer.MAX_VALUE</code>
+	 */
+	protected static int powersLength(BigInteger begin, BigInteger end)
+			throws NullPointerException, IllegalArgumentException, ArithmeticException {
+		// Validate begin and end.
+		final int cmp = begin.compareTo(end);
+		if (cmp > 0) { // i.e., begin > end
+			throw new IllegalArgumentException();
+		}
+		// cmp <= 0
+		// i.e., begin <= end
+		return ((cmp == 0) ? 0 : end.subtract(begin).intValueExact());
+	}
+
+	/**
+	 * Note that this function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in
+	 * math. <br>
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>Result.length == end - begin</code> <br>
+	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>(i + begin)</sup> (mod m))</code>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param begin
+	 *            the given begin power
+	 * 
+	 * @param end
+	 *            the given end power
+	 * 
+	 * @return The resulting BigInteger array.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>(n == null) || (m == null) || (begin == null) || (end == null)</code>
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>begin > end</code>
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>(end - begin) > Integer.MAX_VALUE</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>(begin < 0) && (gcd(n, m) != 1)</code>
+	 */
+	public static BigInteger[] modPowers(BigInteger n, BigInteger m, BigInteger begin, BigInteger end)
+			throws NullPointerException, InvalidModulusException, IllegalArgumentException, ArithmeticException,
+			UndefinedInverseException {
+		if (n == null) {
+			throw new NullPointerException();
+		} else if (m.signum() != 1) { // i.e., m <= 0
+			throw new InvalidModulusException();
+		}
+		// m > 0
+
+		// Compute the resulting array length.
+		final int length = BigIntegerUtil.powersLength(begin, end);
+		// (begin <= end) && ((end - begin) <= Integer.MAX_VALUE)
+
+		// Create the resulting BigInteger array and handle the simple special cases.
+		final BigInteger[] result = new BigInteger[length];
+		if (length == 0) {
+			// Nothing to do here.
+			return result;
+		}
+		// length != 0
+		// i.e., length > 0
+
+		// Fix n to be in [0, m - 1] \cap \doubleZ.
+		n = n.mod(m);
+
+		if (n.signum() == 0) { // i.e., n == 0
+			/**
+			 * This case is needed since 0 to any non-zero power is 0 and so any non-zero assignment of
+			 * <code>result[i]</code> will be wrong in this case. Furthermore, note that we are defining
+			 * <code>0<sup>0</sup> == 0</code> here even though it is undefined in math.
+			 */
+			return result;
+		}
+		// (n != 0) && (m != 1)
+		// i.e., (n != 0) && (m > 1)
+
+		if (n.equals(BigInteger.ONE)) { // i.e., n == 1 (mod m)
+			/*
+			 * This case is only an optimization since 1 to any power is 1 and so the loop will do extra
+			 * unnecessary work to arrive at the same result.
+			 */
+			Arrays.fill(result, BigInteger.ONE);
+			return result;
+		} else if (n.add(BigInteger.ONE).equals(m)) { // i.e., n == -1 (mod m)
+			/*
+			 * This case is only an optimization since -1 to any even power is 1 and otherwise is -1. So the
+			 * loop will do extra unnecessary work to arrive at the same result.
+			 */
+			boolean evenPow = !begin.testBit(0);
+			for (int i = 0; i != length; ++i, evenPow = !evenPow) {
+				result[i] = evenPow ? BigInteger.ONE : n;
+			}
+			return result;
+		}
+		// (n != 1) && (n != m - 1)
+		// i.e., (1 < n) && (n < m - 1)
+
+		// Fill and return the resulting BigInteger array.
+		BigInteger n_to_i = n.modPow(begin, m);
+		for (int i = 0; i != length; ++i, n_to_i = n_to_i.multiply(n).mod(m)) {
+			result[i] = n_to_i;
+		}
+		return result;
 	}
 }

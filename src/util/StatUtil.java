@@ -677,7 +677,7 @@ public class StatUtil {
 		// (d >= 1) && (n >= 0) && (scale >= 0)
 
 		// Handle the simple special cases.
-		if (n <= 1) {
+		if (n < 2) {
 			// Probability of >= 1 collision with <= 1 people is: <code>0</code>
 			return BigDecimal.ZERO;
 		} else if (n >= d) {

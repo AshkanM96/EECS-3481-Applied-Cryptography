@@ -53,9 +53,10 @@ public class MatrixInt implements Iterable<Integer> {
 	 *             If <code>(numRows <= 0) || (numCols <= 0)</code>
 	 */
 	public MatrixInt(int numRows, int numCols, int n) throws IllegalArgumentException {
-		if ((numRows <= 0) || (numCols <= 0)) {
+		if ((numRows < 1) || (numCols < 1)) {
 			throw new IllegalArgumentException();
 		}
+		// (numRows >= 1) && (numCols >= 1)
 
 		// Set this.
 		this.data = new int[this.numRows = numRows][this.numCols = numCols];
@@ -374,11 +375,12 @@ public class MatrixInt implements Iterable<Integer> {
 	 *             If <code>((long) Math.ceil(((double) size) / dim)) > Integer.MAX_VALUE</code>
 	 */
 	public static int otherDim(long size, int dim) throws IllegalArgumentException, ArithmeticException {
-		if (size <= 0) {
+		if (size < 1) {
 			throw new IllegalArgumentException();
-		} else if ((dim <= 0) || (dim > size)) {
+		} else if ((dim < 1) || (size < dim)) {
 			throw new IllegalArgumentException();
 		}
+		// (size >= 1) && (1 <= dim) && (dim <= size)
 
 		final long result = (long) Math.ceil(((double) size) / dim);
 		if (result > Integer.MAX_VALUE) {
@@ -948,10 +950,11 @@ public class MatrixInt implements Iterable<Integer> {
 	 *             If <code>n <= 0</code>
 	 */
 	public MatrixInt modEquals(int n) throws ArithmeticException {
-		if (n <= 0) {
+		if (n < 1) {
 			throw new ArithmeticException();
 		}
-		// n > 0
+		// n >= 1
+		// i.e., n > 0
 
 		int[] row = null;
 		for (int rowNum = 0; rowNum != this.numRows; ++rowNum) {
@@ -976,10 +979,11 @@ public class MatrixInt implements Iterable<Integer> {
 	 */
 	public MatrixInt mod(int n) throws ArithmeticException {
 		// Even though the following is a repeated check, it'll save a copy construction.
-		if (n <= 0) {
+		if (n < 1) {
 			throw new ArithmeticException();
 		}
-		// n > 0
+		// n >= 1
+		// i.e., n > 0
 		return new MatrixInt(this).modEquals(n);
 	}
 
@@ -1321,10 +1325,11 @@ public class MatrixInt implements Iterable<Integer> {
 	 *             If <code>m <= 0</code>
 	 */
 	public boolean isInvertibleMod(int m) throws ArithmeticException {
-		if (m <= 0) {
+		if (m < 1) {
 			throw new ArithmeticException();
 		}
-		// m > 0
+		// m >= 1
+		// i.e., m > 0
 		return (this.isSquare() && (MathUtil.gcdFixedInput(this.determinant(), m) == 1L));
 	}
 
@@ -1341,22 +1346,23 @@ public class MatrixInt implements Iterable<Integer> {
 	 * @return The resulting InverseInfo object.
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>m <= 0</code>
+	 *             If <code>m <= 1</code>
 	 * 
 	 * @throws IllegalStateException
 	 *             If <code>!this.isSquare()</code>
 	 */
 	public InverseInfo detInvMod(int m) throws ArithmeticException, IllegalStateException {
 		// Even though the following is a repeated check, it'll save a determinant calculation.
-		if (m <= 0) {
+		if (m < 2) {
 			throw new ArithmeticException();
 		}
-		// m > 0
+		// m >= 2
+		// i.e., m > 1
 
 		final int determinant = this.determinant();
 		try {
 			/**
-			 * Save the inverse of the determinant in (mod m) as a long instead of an int to ensure that the
+			 * Save the inverse of the determinant in mod m as a long instead of an int to ensure that the
 			 * multiplications do NOT overflow. This is guaranteed by the fact that the absolute maximum value
 			 * representable by an int, is <code>2<sup>31</sup> (i.e., abs(Integer.MIN_VALUE))</code> which when
 			 * squared results in <code>2<sup>62</sup></code>. However, this value is not representable by an
@@ -1391,7 +1397,7 @@ public class MatrixInt implements Iterable<Integer> {
 	 * @return The inverse of <code>this</code> using <code>(mod m)</code> arithmetic.
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>m <= 0</code>
+	 *             If <code>m <= 1</code>
 	 * 
 	 * @throws IllegalStateException
 	 *             If <code>!this.isInvertibleMod(m)</code>
