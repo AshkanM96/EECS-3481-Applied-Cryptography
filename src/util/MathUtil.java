@@ -3,6 +3,7 @@ package util;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -416,7 +417,7 @@ public class MathUtil {
 		 * overflow a long.
 		 */
 		final long y = BigInteger.valueOf(gcd).subtract(BigInteger.valueOf(x).multiply(BigInteger.valueOf(abs_a)))
-				.divide(BigInteger.valueOf(b)).longValue();
+				.divide(BigInteger.valueOf(b)).longValueExact();
 		return new long[] { x *= sign_a, y, gcd };
 	}
 
@@ -826,91 +827,1593 @@ public class MathUtil {
 	}
 
 	/**
-	 * Compute <code>phi(n)</code> in <code>O(n * lg(n)) time</code>.
+	 * Runtime is in <code>O(sqrt(n))</code>.
 	 * 
 	 * @param n
 	 *            the given number
 	 * 
-	 * @return The value of Euler's totient function for the given number (i.e., <code>phi(n)</code>).
+	 * @return <code>true</code> if and only if the given number is prime.
 	 */
-	public static long eulerTotientLinear(long n) {
-		/**
-		 * <code>phi(n) == 0</code> if <code>n < 1</code> (since no integers in range <code>[1, n]</code>)
-		 * <br>
-		 * <code>phi(n) == 1</code> if <code>n == 1</code> (since <code>gcd(1, 1) == 1</code>) <br>
-		 * <code>phi(n) == n - 1</code> if <code>(n == 2) || (n == 3)</code> (since <code>n</code> is prime)
-		 */
-		if (n < 4L) {
+	public static boolean isPrimeSqrt(long n) {
+		if (n < 2L) {
+			// The first prime is 2.
+			return false;
+		} else if (n < 4L) { // i.e., (n == 2) || (n == 3)
+			// The only primes that are not 1 or 5 (mod 6), are 2 and 3.
+			return true;
+		} else if (((n & 1L) == 0L) || (n % 3L == 0L)) {
 			/**
-			 * It's fine to do <code>--n</code> instead of <code>n - 1</code> since we don't need the value of
-			 * <code>n</code> to remain unchanged at that point.
+			 * Don't do <code>(n &= 1L) == 0L</code> since we need the value of <code>n</code> to remain
+			 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
+			 * will mutate <code>n</code>.
 			 */
-			return ((n < 1L) ? 0L : ((n == 1L) ? 1L : --n));
+			// n > 3 and is divisible by 2 or 3 (or both).
+			return false;
 		}
-		// n >= 4
+		// n is an odd integer greater than 3 and not divisible by 3.
 
 		/**
-		 * <code>gcd(n, 1) == 1</code> and <code>gcd(n, n - 1) == 1</code> for all <code>n >= 1</code> so
-		 * initialize result to <code>2</code> and check all of the integers in <code>[2, n - 2]</code> in
-		 * the loop for coprimeness.
+		 * <pre>
+		 * <code>
+		 * Any integer i, is one of 0, 1, 2, 3, 4, or 5 (mod 6).
+		 * However, if i is greater than 3, then it can only be prime if it is 1 or 5 (mod 6) since otherwise
+		 * it would be divisible by 2 or 3 (or both in the case of 0 (mod 6)).
+		 * </code>
+		 * </pre>
+		 * 
+		 * Therefore, we only have to check numbers that are either <code>1 (mod 6)</code> or
+		 * <code>-1 (mod 6)</code> (i.e., <code>5 (mod 6)</code>) if we check <code>i == 2</code> and
+		 * <code>i == 3</code> separately. As a result, we will only check two-thirds of all odd values of
+		 * <code>i</code> in the loop which are also only one-third of all values of <code>i</code>. Thus,
+		 * by doing this, we can cut the total runtime by a third (i.e., runtime is in
+		 * <code>O(sqrt(n) / 3)</code> instead of <code>O(sqrt(n))</code>).
 		 */
-		final long maxI = n - 1L; // maxI >= 3
+		// Applying Math.floor before casting to long is unnecessary and it causes a large slow down.
+		final long bound = ((long) Math.sqrt(n)) + 1L; // bound >= 3
+		final long maxI = bound + 1L; // maxI >= 4
+		for (long i = 5L; i < maxI; i += 4L) {
+			/**
+			 * It's fine to do <code>i += 2</code> instead of <code>i + 2</code> since we don't need the value
+			 * of <code>i</code> to remain unchanged but quite the opposite. We have actually separated the
+			 * incrementation of <code>i</code> by <code>6</code>, into an incrementation by <code>2</code> and
+			 * an incrementation by <code>4</code> due to the need to add <code>2</code> to <code>i</code> at
+			 * this point and the fact that <code>+=</code> is faster than <code>+</code> due to it not creating
+			 * a temporary. Note that the difference is the <code>+=</code> instead of the <code>+</code> which
+			 * will mutate <code>i</code>.
+			 */
+			// Check if i (i.e., -1 (mod 6)) or i + 2 (i.e., 1 (mod 6)) is a factor of n.
+			if ((n % i == 0L) || (n % (i += 2L) == 0L)) {
+				return false;
+			}
+		}
 		/**
-		 * Check <code>i == 2</code> separately since it can be done more efficiently than the general case.
-		 * We know that <code>gcd(n, 2) == 1</code> if and only if <code>n</code> is odd. So if
-		 * <code>n</code> is odd, initialize result to <code>3</code> and otherwise to <code>2</code> as
-		 * before. Afterwards, proceed to check all of the integers in <code>[3, n - 2]</code>. Therefore,
-		 * the runtime is in <code>O(sum(lg(i) from i = 3 to i = n - 2))</code> which can be upperbounded by
-		 * <code>O(lg(n!))</code> which is in <code>O(n * lg(n))</code>. <br>
+		 * For all <code>n</code>, <code>n</code> can have at most one factor greater than
+		 * <code>sqrt(n)</code>. <br>
 		 * <br>
 		 * 
-		 * Don't do <code>(n &= 1L) != 0L</code> since we need the value of <code>n</code> to remain
-		 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
-		 * will mutate <code>n</code>.
+		 * Furthermore, due to the above loop, we know that <code>n</code> is prime at this point.
 		 */
-		long result = ((n & 1L) != 0L) ? 3L : 2L;
-		for (long i = 3L; i != maxI; ++i) {
-			if (MathUtil.gcdFixedInput(n, i) == 1L) {
-				++result;
+		return true;
+	}
+
+	/**
+	 * Runtime is in <code>O(sqrt(n))</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return <code>true</code> if and only if the given number is prime.
+	 */
+	public static boolean isPrimeSqrt(int n) {
+		return MathUtil.isPrimeSqrt((long) n);
+	}
+
+	/**
+	 * Runtime is in <code>O(sqrt(n))</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return <code>true</code> if and only if the given number is prime.
+	 */
+	public static boolean isPrimeSqrt(short n) {
+		return MathUtil.isPrimeSqrt((long) n);
+	}
+
+	/**
+	 * Runtime is in <code>O(sqrt(n))</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return <code>true</code> if and only if the given number is prime.
+	 */
+	public static boolean isPrimeSqrt(byte n) {
+		return MathUtil.isPrimeSqrt((long) n);
+	}
+
+	/**
+	 * Precondition: <code>(result != null) && (result.size() != 0)</code>
+	 * 
+	 * @param result
+	 *            the map produced by <code>MathUtil.factor(long, boolean, boolean)</code> to be printed
+	 *            in the general case (i.e., absolute value of n was greater than 1)
+	 * 
+	 * @param hash
+	 *            specifies whether the data structure used to store the factors, is a
+	 *            <code>HashMap</code> instead of a <code>TreeMap</code>
+	 * 
+	 * @return <code>result</code>.
+	 */
+	protected static Map<Long, Byte> printFactorsLong(Map<Long, Byte> result, boolean hash) {
+		/*
+		 * First remove the -1 factor if it's there, so that it's not printed twice but print a
+		 * multiplication symbol.
+		 */
+		boolean negative = false;
+		if (result.remove(-1L) != null) {
+			negative = true;
+			System.out.print(" * ");
+		}
+
+		/*
+		 * There is no ordering in a HashMap so just iterate through it and print all of the factors.
+		 * However, only print a multiplication symbol if there's at least one more factor in each iteration
+		 * of the loop.
+		 */
+		if (hash) { // i.e., result instanceof HashMap
+			final Iterator<Map.Entry<Long, Byte>> it = result.entrySet().iterator();
+			Map.Entry<Long, Byte> e = null;
+			boolean notExit = true;
+			do {
+				e = it.next();
+				System.out.print("(" + e.getKey() + ")^" + e.getValue());
+				// The following is meant to be an assignment of notExit.
+				if (notExit = it.hasNext()) {
+					System.out.print(" * ");
+				}
+			} while (notExit);
+			System.out.println(); // Print a newline at the end.
+			// Put all of then removed factors back into result before returning.
+			if (negative) {
+				result.put(-1L, (byte) 1);
 			}
+			return result;
+		}
+		// !hash
+		// i.e., result instanceof TreeMap
+
+		/*
+		 * TreeMap is ordered by increasing keys and so we can print the factors in a nicer way. First
+		 * remove the smallest prime factor and print it if there is more than one factor. Then print all of
+		 * the other factors with a multiplication symbol before them.
+		 */
+		if (result.size() == 1) {
+			final Map.Entry<Long, Byte> first = ((TreeMap<Long, Byte>) result).firstEntry();
+			System.out.print("(" + first.getKey() + ")^" + first.getValue());
+		} else {
+			final Map.Entry<Long, Byte> first = ((TreeMap<Long, Byte>) result).pollFirstEntry();
+			System.out.print("(" + first.getKey() + ")^" + first.getValue());
+			if (result.size() != 0) {
+				final Iterator<Map.Entry<Long, Byte>> it = result.entrySet().iterator();
+				for (Map.Entry<Long, Byte> e = null; it.hasNext(); /* Update inside. */) {
+					e = it.next();
+					System.out.print(" * (" + e.getKey() + ")^" + e.getValue());
+				}
+			}
+			// Put all of then removed factors back into result before returning.
+			result.put(first.getKey(), first.getValue());
+		}
+		System.out.println(); // Print a newline at the end.
+		// Put all of then removed factors back into result before returning.
+		if (negative) {
+			result.put(-1L, (byte) 1);
 		}
 		return result;
 	}
 
 	/**
-	 * Compute <code>phi(n)</code> in <code>O(n * lg(n)) time</code>.
+	 * Runtime is in <code>O(sqrt(n) + time for Result.size() many put operations)</code>. <br>
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if (Result.isEmpty())</code> <br>
+	 * Postcondition: <code>(n == -1) if and only if (Result.size() == 1)</code> <br>
+	 * Postcondition: <code>(n < 0) if and only if (Result.get(-1L) == 1)</code> <br>
+	 * Postcondition:
+	 * 
+	 * <pre>
+	 * <code>
+	 * for (final Map.Entry&lt;Long, Byte&gt; e : Result.entrySet()) {
+	 * 	assert ((e.getKey() == -1L) || (MathUtil.isPrimeSqrt(e.getKey())));
+	 * }
+	 * </code>
+	 * </pre>
+	 * 
+	 * Postcondition:
+	 * 
+	 * <pre>
+	 * <code>
+	 * if (n == Long.MIN_VALUE) {
+	 * 	assert ((Result.size() == 2) && (Result.get(2L) == 63));
+	 * } else if (!Result.isEmpty()) {
+	 * 	BigInteger N = BigInteger.ONE;
+	 * 	for (final Map.Entry&lt;Long, Byte&gt; e : Result.entrySet()) {
+	 * 		N = N.multiply(BigInteger.valueOf(e.getKey()).pow(e.getValue()));
+	 * 	}
+	 * 	assert (n == N.longValueExact());
+	 * }
+	 * </code>
+	 * </pre>
 	 * 
 	 * @param n
 	 *            the given number
 	 * 
-	 * @return The value of Euler's totient function for the given number (i.e., <code>phi(n)</code>).
+	 * @param hash
+	 *            specifies whether the data structure used to store the factors, should be a
+	 *            <code>HashMap</code> instead of a <code>TreeMap</code>
+	 * 
+	 * @param print
+	 *            specifies whether the result should be printed to the standard output stream
+	 * 
+	 * @return The resulting Map object.
 	 */
-	public static int eulerTotientLinear(int n) {
-		return ((int) MathUtil.eulerTotientLinear((long) n));
+	public static Map<Long, Byte> factor(long n, boolean hash, boolean print) {
+		final Map<Long, Byte> result = hash ? new HashMap<Long, Byte>() : new TreeMap<Long, Byte>();
+
+		// Factor a -1 out of n if it's negative.
+		if (n < 0L) {
+			result.put(-1L, (byte) 1);
+			// Only print if requested.
+			if (print) {
+				System.out.print(n + " = (-1)^1");
+			}
+
+			// Handle the degenerate case where n's absolute value is not representable as a non-negative long.
+			if ((n *= -1L) == Long.MIN_VALUE) { // i.e., -n == n < 0
+				result.put(2L, (byte) 63);
+				// Only print if requested.
+				if (print) {
+					System.out.println(" * (2)^63");
+				}
+				return result;
+			}
+			// n != Long.MIN_VALUE
+			// i.e., n > 0
+		} else {
+			// Only print if requested.
+			if (print) {
+				System.out.print(n + " = ");
+			}
+		}
+		// n >= 0
+
+		// Handle the simple special case.
+		if (n < 2L) { // i.e., (n == 0) || (n == 1)
+			// Only print if requested.
+			if (print) {
+				System.out.println(n);
+			}
+			return result;
+		}
+		// n >= 2
+
+		/**
+		 * <pre>
+		 * <code>
+		 * Any integer i, is one of 0, 1, 2, 3, 4, or 5 (mod 6).
+		 * However, if i is greater than 3, then it can only be prime if it is 1 or 5 (mod 6) since otherwise
+		 * it would be divisible by 2 or 3 (or both in the case of 0 (mod 6)).
+		 * </code>
+		 * </pre>
+		 * 
+		 * Therefore, we only have to check numbers that are either <code>1 (mod 6)</code> or
+		 * <code>-1 (mod 6)</code> (i.e., <code>5 (mod 6)</code>) if we check <code>i == 2</code> and
+		 * <code>i == 3</code> separately. As a result, we will only check two-thirds of all odd values of
+		 * <code>i</code> in the loop which are also only one-third of all values of <code>i</code>. Thus,
+		 * by doing this, we can cut the total runtime by a third (i.e., runtime is in
+		 * <code>O(sqrt(n) / 3)</code> instead of <code>O(sqrt(n))</code>).
+		 */
+		// Count the power of each prime which will fit in a byte since the largest power is at most 63.
+		byte power = 0;
+		/**
+		 * Don't do <code>(n &= 1L) == 0L</code> since we need the value of <code>n</code> to remain
+		 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
+		 * will mutate <code>n</code>.
+		 */
+		// Check if 2 is a factor of n.
+		if ((n & 1L) == 0L) { // i.e., n % 2 == 0
+			// Update n and result.
+			power = 0;
+			do {
+				n /= 2L;
+				++power;
+			} while ((n & 1L) == 0L); // i.e., n % 2 == 0
+			result.put(2L, power);
+
+			// Check if n has no more factors.
+			if (n == 1L) {
+				// Only print if requested.
+				return (print ? MathUtil.printFactorsLong(result, hash) : result);
+			}
+		}
+		// Check if 3 is a factor of n.
+		if (n % 3L == 0L) {
+			// Update n and result.
+			power = 0;
+			do {
+				n /= 3L;
+				++power;
+			} while (n % 3L == 0L);
+			result.put(3L, power);
+
+			// Check if n has no more factors.
+			if (n == 1L) {
+				// Only print if requested.
+				return (print ? MathUtil.printFactorsLong(result, hash) : result);
+			}
+		}
+		/**
+		 * Note that we are taking the square root of <code>n</code> after potentially having "pulled out"
+		 * all of the <code>2</code> and the <code>3</code> factors. This means that the square root may not
+		 * be applied to the original value of <code>n</code> but this is fine since all of the remaining
+		 * prime divisors of the original value of <code>n</code> which are less than the square root, are
+		 * still being considered.
+		 */
+		// Applying Math.floor before casting to long is unnecessary and it causes a large slow down.
+		final long bound = ((long) Math.sqrt(n)) + 1L; // bound >= 2
+		final long maxI = bound + 1L; // maxI >= 3
+		for (long i = 5L; i < maxI; i += 4L) {
+			// Check if i (i.e., -1 (mod 6)) is a factor of n.
+			if (n % i == 0L) {
+				// Update n and result.
+				power = 0;
+				do {
+					n /= i;
+					++power;
+				} while (n % i == 0L);
+				result.put(i, power);
+
+				// Check if n has no more factors.
+				if (n == 1L) {
+					// Only print if requested.
+					return (print ? MathUtil.printFactorsLong(result, hash) : result);
+				}
+			}
+
+			/**
+			 * It's fine to do <code>i += 2</code> instead of <code>i + 2</code> since we don't need the value
+			 * of <code>i</code> to remain unchanged but quite the opposite. We have actually separated the
+			 * incrementation of <code>i</code> by <code>6</code>, into an incrementation by <code>2</code> and
+			 * an incrementation by <code>4</code> due to the need to add <code>2</code> to <code>i</code> at
+			 * this point and the fact that <code>+=</code> is faster than <code>+</code> due to it not creating
+			 * a temporary. Note that the difference is the <code>+=</code> instead of the <code>+</code> which
+			 * will mutate <code>i</code>.
+			 */
+			// Check if i + 2 (i.e., 1 (mod 6)) is a factor of n.
+			if (n % (i += 2L) == 0L) {
+				// Update n and result.
+				power = 0;
+				do {
+					n /= i;
+					++power;
+				} while (n % i == 0L);
+				result.put(i, power);
+
+				// Check if n has no more factors.
+				if (n == 1L) {
+					// Only print if requested.
+					return (print ? MathUtil.printFactorsLong(result, hash) : result);
+				}
+			}
+		}
+		/**
+		 * For all <code>n</code>, <code>n</code> can have at most one factor greater than
+		 * <code>sqrt(n)</code>. <br>
+		 * <br>
+		 * 
+		 * Furthermore, due to the above loop, we know that <code>n</code> is prime at this point.
+		 */
+		result.put(n, (byte) 1);
+		// Only print if requested.
+		return (print ? MathUtil.printFactorsLong(result, hash) : result);
 	}
 
 	/**
-	 * Compute <code>phi(n)</code> in <code>O(n * lg(n)) time</code>.
+	 * Runtime is in <code>O(sqrt(n) + time for Result.size() many put operations)</code>. <br>
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if (Result.isEmpty())</code> <br>
+	 * Postcondition: <code>(n == -1) if and only if (Result.size() == 1)</code> <br>
+	 * Postcondition: <code>(n < 0) if and only if (Result.get(-1L) == 1)</code> <br>
+	 * Postcondition:
+	 * 
+	 * <pre>
+	 * <code>
+	 * for (final Map.Entry&lt;Long, Byte&gt; e : Result.entrySet()) {
+	 * 	assert ((e.getKey() == -1L) || (MathUtil.isPrimeSqrt(e.getKey())));
+	 * }
+	 * </code>
+	 * </pre>
+	 * 
+	 * Postcondition:
+	 * 
+	 * <pre>
+	 * <code>
+	 * if (n == Long.MIN_VALUE) {
+	 * 	assert ((Result.size() == 2) && (Result.get(2L) == 63));
+	 * } else if (!Result.isEmpty()) {
+	 * 	BigInteger N = BigInteger.ONE;
+	 * 	for (final Map.Entry&lt;Long, Byte&gt; e : Result.entrySet()) {
+	 * 		N = N.multiply(BigInteger.valueOf(e.getKey()).pow(e.getValue()));
+	 * 	}
+	 * 	assert (n == N.longValueExact());
+	 * }
+	 * </code>
+	 * </pre>
 	 * 
 	 * @param n
 	 *            the given number
 	 * 
-	 * @return The value of Euler's totient function for the given number (i.e., <code>phi(n)</code>).
+	 * @param hash
+	 *            specifies whether the data structure used to store the factors, should be a
+	 *            <code>HashMap</code> instead of a <code>TreeMap</code>
+	 * 
+	 * @return <code>MathUtil.factor(n, hash, false)</code>.
 	 */
-	public static short eulerTotientLinear(short n) {
-		return ((short) MathUtil.eulerTotientLinear((long) n));
+	public static Map<Long, Byte> factor(long n, boolean hash) {
+		return MathUtil.factor(n, hash, false);
 	}
 
 	/**
-	 * Compute <code>phi(n)</code> in <code>O(n * lg(n)) time</code>.
+	 * Runtime is in <code>O(sqrt(n) + time for Result.size() many put operations)</code>. <br>
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if (Result.isEmpty())</code> <br>
+	 * Postcondition: <code>(n == -1) if and only if (Result.size() == 1)</code> <br>
+	 * Postcondition: <code>(n < 0) if and only if (Result.get(-1L) == 1)</code> <br>
+	 * Postcondition:
+	 * 
+	 * <pre>
+	 * <code>
+	 * for (final Map.Entry&lt;Long, Byte&gt; e : Result.entrySet()) {
+	 * 	assert ((e.getKey() == -1L) || (MathUtil.isPrimeSqrt(e.getKey())));
+	 * }
+	 * </code>
+	 * </pre>
+	 * 
+	 * Postcondition:
+	 * 
+	 * <pre>
+	 * <code>
+	 * if (n == Long.MIN_VALUE) {
+	 * 	assert ((Result.size() == 2) && (Result.get(2L) == 63));
+	 * } else if (!Result.isEmpty()) {
+	 * 	BigInteger N = BigInteger.ONE;
+	 * 	for (final Map.Entry&lt;Long, Byte&gt; e : Result.entrySet()) {
+	 * 		N = N.multiply(BigInteger.valueOf(e.getKey()).pow(e.getValue()));
+	 * 	}
+	 * 	assert (n == N.longValueExact());
+	 * }
+	 * </code>
+	 * </pre>
 	 * 
 	 * @param n
 	 *            the given number
 	 * 
-	 * @return The value of Euler's totient function for the given number (i.e., <code>phi(n)</code>).
+	 * @return <code>MathUtil.factor(n, false)</code>.
 	 */
-	public static byte eulerTotientLinear(byte n) {
-		return ((byte) MathUtil.eulerTotientLinear((long) n));
+	public static Map<Long, Byte> factor(long n) {
+		return MathUtil.factor(n, false);
+	}
+
+	/**
+	 * Precondition: <code>(result != null) && (result.size() != 0)</code>
+	 * 
+	 * @param result
+	 *            the map produced by <code>MathUtil.factor(int, boolean, boolean)</code> to be printed
+	 *            in the general case (i.e., absolute value of n was greater than 1)
+	 * 
+	 * @param hash
+	 *            specifies whether the data structure used to store the factors, is a
+	 *            <code>HashMap</code> instead of a <code>TreeMap</code>
+	 * 
+	 * @return <code>result</code>.
+	 */
+	protected static Map<Integer, Byte> printFactorsInteger(Map<Integer, Byte> result, boolean hash) {
+		/*
+		 * First remove the -1 factor if it's there, so that it's not printed twice but print a
+		 * multiplication symbol.
+		 */
+		boolean negative = false;
+		if (result.remove(-1) != null) {
+			negative = true;
+			System.out.print(" * ");
+		}
+
+		/*
+		 * There is no ordering in a HashMap so just iterate through it and print all of the factors.
+		 * However, only print a multiplication symbol if there's at least one more factor in each iteration
+		 * of the loop.
+		 */
+		if (hash) { // i.e., result instanceof HashMap
+			final Iterator<Map.Entry<Integer, Byte>> it = result.entrySet().iterator();
+			Map.Entry<Integer, Byte> e = null;
+			boolean notExit = true;
+			do {
+				e = it.next();
+				System.out.print("(" + e.getKey() + ")^" + e.getValue());
+				// The following is meant to be an assignment of notExit.
+				if (notExit = it.hasNext()) {
+					System.out.print(" * ");
+				}
+			} while (notExit);
+			System.out.println(); // Print a newline at the end.
+			// Put all of then removed factors back into result before returning.
+			if (negative) {
+				result.put(-1, (byte) 1);
+			}
+			return result;
+		}
+		// !hash
+		// i.e., result instanceof TreeMap
+
+		/*
+		 * TreeMap is ordered by increasing keys and so we can print the factors in a nicer way. First
+		 * remove the smallest prime factor and print it if there is more than one factor. Then print all of
+		 * the other factors with a multiplication symbol before them.
+		 */
+		if (result.size() == 1) {
+			final Map.Entry<Integer, Byte> first = ((TreeMap<Integer, Byte>) result).firstEntry();
+			System.out.print("(" + first.getKey() + ")^" + first.getValue());
+		} else {
+			final Map.Entry<Integer, Byte> first = ((TreeMap<Integer, Byte>) result).pollFirstEntry();
+			System.out.print("(" + first.getKey() + ")^" + first.getValue());
+			if (result.size() != 0) {
+				final Iterator<Map.Entry<Integer, Byte>> it = result.entrySet().iterator();
+				for (Map.Entry<Integer, Byte> e = null; it.hasNext(); /* Update inside. */) {
+					e = it.next();
+					System.out.print(" * (" + e.getKey() + ")^" + e.getValue());
+				}
+			}
+			// Put all of then removed factors back into result before returning.
+			result.put(first.getKey(), first.getValue());
+		}
+		System.out.println(); // Print a newline at the end.
+		// Put all of then removed factors back into result before returning.
+		if (negative) {
+			result.put(-1, (byte) 1);
+		}
+		return result;
+	}
+
+	/**
+	 * Runtime is in <code>O(sqrt(n) + time for Result.size() many put operations)</code>. <br>
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if (Result.isEmpty())</code> <br>
+	 * Postcondition: <code>(n == -1) if and only if (Result.size() == 1)</code> <br>
+	 * Postcondition: <code>(n < 0) if and only if (Result.get(-1) == 1)</code> <br>
+	 * Postcondition:
+	 * 
+	 * <pre>
+	 * <code>
+	 * for (final Map.Entry&lt;Integer, Byte&gt; e : Result.entrySet()) {
+	 * 	assert ((e.getKey() == -1) || (MathUtil.isPrimeSqrt(e.getKey())));
+	 * }
+	 * </code>
+	 * </pre>
+	 * 
+	 * Postcondition:
+	 * 
+	 * <pre>
+	 * <code>
+	 * if (n == Integer.MIN_VALUE) {
+	 * 	assert ((Result.size() == 2) && (Result.get(2) == 31));
+	 * } else if (!Result.isEmpty()) {
+	 * 	long N = 1L;
+	 * 	for (final Map.Entry&lt;Integer, Byte&gt; e : Result.entrySet()) {
+	 * 		N = Math.multiplyExact(N, (int) Math.pow(e.getKey(), e.getValue()));
+	 * 	}
+	 * 	assert (n == N);
+	 * }
+	 * </code>
+	 * </pre>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param hash
+	 *            specifies whether the data structure used to store the factors, should be a
+	 *            <code>HashMap</code> instead of a <code>TreeMap</code>
+	 * 
+	 * @param print
+	 *            specifies whether the result should be printed to the standard output stream
+	 * 
+	 * @return The resulting Map object.
+	 */
+	public static Map<Integer, Byte> factor(int n, boolean hash, boolean print) {
+		final Map<Integer, Byte> result = hash ? new HashMap<Integer, Byte>() : new TreeMap<Integer, Byte>();
+
+		// Factor a -1 out of n if it's negative.
+		if (n < 0) {
+			result.put(-1, (byte) 1);
+			// Only print if requested.
+			if (print) {
+				System.out.print(n + " = (-1)^1");
+			}
+
+			// Handle the degenerate case where n's absolute value is not representable as a non-negative int.
+			if ((n *= -1) == Integer.MIN_VALUE) { // i.e., -n == n < 0
+				result.put(2, (byte) 31);
+				// Only print if requested.
+				if (print) {
+					System.out.println(" * (2)^31");
+				}
+				return result;
+			}
+			// n != Integer.MIN_VALUE
+			// i.e., n > 0
+		} else {
+			// Only print if requested.
+			if (print) {
+				System.out.print(n + " = ");
+			}
+		}
+		// n >= 0
+
+		// Handle the simple special case.
+		if (n < 2) { // i.e., (n == 0) || (n == 1)
+			// Only print if requested.
+			if (print) {
+				System.out.println(n);
+			}
+			return result;
+		}
+		// n >= 2
+
+		/**
+		 * <pre>
+		 * <code>
+		 * Any integer i, is one of 0, 1, 2, 3, 4, or 5 (mod 6).
+		 * However, if i is greater than 3, then it can only be prime if it is 1 or 5 (mod 6) since otherwise
+		 * it would be divisible by 2 or 3 (or both in the case of 0 (mod 6)).
+		 * </code>
+		 * </pre>
+		 * 
+		 * Therefore, we only have to check numbers that are either <code>1 (mod 6)</code> or
+		 * <code>-1 (mod 6)</code> (i.e., <code>5 (mod 6)</code>) if we check <code>i == 2</code> and
+		 * <code>i == 3</code> separately. As a result, we will only check two-thirds of all odd values of
+		 * <code>i</code> in the loop which are also only one-third of all values of <code>i</code>. Thus,
+		 * by doing this, we can cut the total runtime by a third (i.e., runtime is in
+		 * <code>O(sqrt(n) / 3)</code> instead of <code>O(sqrt(n))</code>).
+		 */
+		// Count the power of each prime which will fit in a byte since the largest power is at most 31.
+		byte power = 0;
+		/**
+		 * Don't do <code>(n &= 1) == 0</code> since we need the value of <code>n</code> to remain
+		 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
+		 * will mutate <code>n</code>.
+		 */
+		// Check if 2 is a factor of n.
+		if ((n & 1) == 0) { // i.e., n % 2 == 0
+			// Update n and result.
+			power = 0;
+			do {
+				n /= 2;
+				++power;
+			} while ((n & 1) == 0); // i.e., n % 2 == 0
+			result.put(2, power);
+
+			// Check if n has no more factors.
+			if (n == 1) {
+				// Only print if requested.
+				return (print ? MathUtil.printFactorsInteger(result, hash) : result);
+			}
+		}
+		// Check if 3 is a factor of n.
+		if (n % 3 == 0) {
+			// Update n and result.
+			power = 0;
+			do {
+				n /= 3;
+				++power;
+			} while (n % 3 == 0);
+			result.put(3, power);
+
+			// Check if n has no more factors.
+			if (n == 1) {
+				// Only print if requested.
+				return (print ? MathUtil.printFactorsInteger(result, hash) : result);
+			}
+		}
+		/**
+		 * Note that we are taking the square root of <code>n</code> after potentially having "pulled out"
+		 * all of the <code>2</code> and the <code>3</code> factors. This means that the square root may not
+		 * be applied to the original value of <code>n</code> but this is fine since all of the remaining
+		 * prime divisors of the original value of <code>n</code> which are less than the square root, are
+		 * still being considered.
+		 */
+		// Applying Math.floor before casting to int is unnecessary and it causes a large slow down.
+		final int bound = ((int) Math.sqrt(n)) + 1; // bound >= 2
+		final int maxI = bound + 1; // maxI >= 3
+		for (int i = 5; i < maxI; i += 4) {
+			// Check if i (i.e., -1 (mod 6)) is a factor of n.
+			if (n % i == 0) {
+				// Update n and result.
+				power = 0;
+				do {
+					n /= i;
+					++power;
+				} while (n % i == 0);
+				result.put(i, power);
+
+				// Check if n has no more factors.
+				if (n == 1) {
+					// Only print if requested.
+					return (print ? MathUtil.printFactorsInteger(result, hash) : result);
+				}
+			}
+
+			/**
+			 * It's fine to do <code>i += 2</code> instead of <code>i + 2</code> since we don't need the value
+			 * of <code>i</code> to remain unchanged but quite the opposite. We have actually separated the
+			 * incrementation of <code>i</code> by <code>6</code>, into an incrementation by <code>2</code> and
+			 * an incrementation by <code>4</code> due to the need to add <code>2</code> to <code>i</code> at
+			 * this point and the fact that <code>+=</code> is faster than <code>+</code> due to it not creating
+			 * a temporary. Note that the difference is the <code>+=</code> instead of the <code>+</code> which
+			 * will mutate <code>i</code>.
+			 */
+			// Check if i + 2 (i.e., 1 (mod 6)) is a factor of n.
+			if (n % (i += 2) == 0) {
+				// Update n and result.
+				power = 0;
+				do {
+					n /= i;
+					++power;
+				} while (n % i == 0);
+				result.put(i, power);
+
+				// Check if n has no more factors.
+				if (n == 1) {
+					// Only print if requested.
+					return (print ? MathUtil.printFactorsInteger(result, hash) : result);
+				}
+			}
+		}
+		/**
+		 * For all <code>n</code>, <code>n</code> can have at most one factor greater than
+		 * <code>sqrt(n)</code>. <br>
+		 * <br>
+		 * 
+		 * Furthermore, due to the above loop, we know that <code>n</code> is prime at this point.
+		 */
+		result.put(n, (byte) 1);
+		// Only print if requested.
+		return (print ? MathUtil.printFactorsInteger(result, hash) : result);
+	}
+
+	/**
+	 * Runtime is in <code>O(sqrt(n) + time for Result.size() many put operations)</code>. <br>
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if (Result.isEmpty())</code> <br>
+	 * Postcondition: <code>(n == -1) if and only if (Result.size() == 1)</code> <br>
+	 * Postcondition: <code>(n < 0) if and only if (Result.get(-1) == 1)</code> <br>
+	 * Postcondition:
+	 * 
+	 * <pre>
+	 * <code>
+	 * for (final Map.Entry&lt;Integer, Byte&gt; e : Result.entrySet()) {
+	 * 	assert ((e.getKey() == -1) || (MathUtil.isPrimeSqrt(e.getKey())));
+	 * }
+	 * </code>
+	 * </pre>
+	 * 
+	 * Postcondition:
+	 * 
+	 * <pre>
+	 * <code>
+	 * if (n == Integer.MIN_VALUE) {
+	 * 	assert ((Result.size() == 2) && (Result.get(2) == 31));
+	 * } else if (!Result.isEmpty()) {
+	 * 	long N = 1L;
+	 * 	for (final Map.Entry&lt;Integer, Byte&gt; e : Result.entrySet()) {
+	 * 		N = Math.multiplyExact(N, (int) Math.pow(e.getKey(), e.getValue()));
+	 * 	}
+	 * 	assert (n == N);
+	 * }
+	 * </code>
+	 * </pre>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param hash
+	 *            specifies whether the data structure used to store the factors, should be a
+	 *            <code>HashMap</code> instead of a <code>TreeMap</code>
+	 * 
+	 * @return <code>MathUtil.factor(n, hash, false)</code>.
+	 */
+	public static Map<Integer, Byte> factor(int n, boolean hash) {
+		return MathUtil.factor(n, hash, false);
+	}
+
+	/**
+	 * Runtime is in <code>O(sqrt(n) + time for Result.size() many put operations)</code>. <br>
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if (Result.isEmpty())</code> <br>
+	 * Postcondition: <code>(n == -1) if and only if (Result.size() == 1)</code> <br>
+	 * Postcondition: <code>(n < 0) if and only if (Result.get(-1) == 1)</code> <br>
+	 * Postcondition:
+	 * 
+	 * <pre>
+	 * <code>
+	 * for (final Map.Entry&lt;Integer, Byte&gt; e : Result.entrySet()) {
+	 * 	assert ((e.getKey() == -1) || (MathUtil.isPrimeSqrt(e.getKey())));
+	 * }
+	 * </code>
+	 * </pre>
+	 * 
+	 * Postcondition:
+	 * 
+	 * <pre>
+	 * <code>
+	 * if (n == Integer.MIN_VALUE) {
+	 * 	assert ((Result.size() == 2) && (Result.get(2) == 31));
+	 * } else if (!Result.isEmpty()) {
+	 * 	long N = 1L;
+	 * 	for (final Map.Entry&lt;Integer, Byte&gt; e : Result.entrySet()) {
+	 * 		N = Math.multiplyExact(N, (int) Math.pow(e.getKey(), e.getValue()));
+	 * 	}
+	 * 	assert (n == N);
+	 * }
+	 * </code>
+	 * </pre>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return <code>MathUtil.factor(n, false)</code>.
+	 */
+	public static Map<Integer, Byte> factor(int n) {
+		return MathUtil.factor(n, false);
+	}
+
+	/**
+	 * Precondition: <code>(result != null) && (result.size() != 0)</code>
+	 * 
+	 * @param result
+	 *            the map produced by <code>MathUtil.factor(short, boolean, boolean)</code> to be
+	 *            printed in the general case (i.e., absolute value of n was greater than 1)
+	 * 
+	 * @param hash
+	 *            specifies whether the data structure used to store the factors, is a
+	 *            <code>HashMap</code> instead of a <code>TreeMap</code>
+	 * 
+	 * @return <code>result</code>.
+	 */
+	protected static Map<Short, Byte> printFactorsShort(Map<Short, Byte> result, boolean hash) {
+		/*
+		 * First remove the -1 factor if it's there, so that it's not printed twice but print a
+		 * multiplication symbol.
+		 */
+		boolean negative = false;
+		if (result.remove((short) -1) != null) {
+			negative = true;
+			System.out.print(" * ");
+		}
+
+		/*
+		 * There is no ordering in a HashMap so just iterate through it and print all of the factors.
+		 * However, only print a multiplication symbol if there's at least one more factor in each iteration
+		 * of the loop.
+		 */
+		if (hash) { // i.e., result instanceof HashMap
+			final Iterator<Map.Entry<Short, Byte>> it = result.entrySet().iterator();
+			Map.Entry<Short, Byte> e = null;
+			boolean notExit = true;
+			do {
+				e = it.next();
+				System.out.print("(" + e.getKey() + ")^" + e.getValue());
+				// The following is meant to be an assignment of notExit.
+				if (notExit = it.hasNext()) {
+					System.out.print(" * ");
+				}
+			} while (notExit);
+			System.out.println(); // Print a newline at the end.
+			// Put all of then removed factors back into result before returning.
+			if (negative) {
+				result.put((short) -1, (byte) 1);
+			}
+			return result;
+		}
+		// !hash
+		// i.e., result instanceof TreeMap
+
+		/*
+		 * TreeMap is ordered by increasing keys and so we can print the factors in a nicer way. First
+		 * remove the smallest prime factor and print it if there is more than one factor. Then print all of
+		 * the other factors with a multiplication symbol before them.
+		 */
+		if (result.size() == 1) {
+			final Map.Entry<Short, Byte> first = ((TreeMap<Short, Byte>) result).firstEntry();
+			System.out.print("(" + first.getKey() + ")^" + first.getValue());
+		} else {
+			final Map.Entry<Short, Byte> first = ((TreeMap<Short, Byte>) result).pollFirstEntry();
+			System.out.print("(" + first.getKey() + ")^" + first.getValue());
+			if (result.size() != 0) {
+				final Iterator<Map.Entry<Short, Byte>> it = result.entrySet().iterator();
+				for (Map.Entry<Short, Byte> e = null; it.hasNext(); /* Update inside. */) {
+					e = it.next();
+					System.out.print(" * (" + e.getKey() + ")^" + e.getValue());
+				}
+			}
+			// Put all of then removed factors back into result before returning.
+			result.put(first.getKey(), first.getValue());
+		}
+		System.out.println(); // Print a newline at the end.
+		// Put all of then removed factors back into result before returning.
+		if (negative) {
+			result.put((short) -1, (byte) 1);
+		}
+		return result;
+	}
+
+	/**
+	 * Runtime is in <code>O(sqrt(n) + time for Result.size() many put operations)</code>. <br>
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if (Result.isEmpty())</code> <br>
+	 * Postcondition: <code>(n == -1) if and only if (Result.size() == 1)</code> <br>
+	 * Postcondition: <code>(n < 0) if and only if (Result.get((short) -1) == 1)</code> <br>
+	 * Postcondition:
+	 * 
+	 * <pre>
+	 * <code>
+	 * for (final Map.Entry&lt;Short, Byte&gt; e : Result.entrySet()) {
+	 * 	assert ((e.getKey() == -1) || (MathUtil.isPrimeSqrt(e.getKey())));
+	 * }
+	 * </code>
+	 * </pre>
+	 * 
+	 * Postcondition:
+	 * 
+	 * <pre>
+	 * <code>
+	 * if (n == Short.MIN_VALUE) {
+	 * 	assert ((Result.size() == 2) && (Result.get((short) 2) == 15));
+	 * } else if (!Result.isEmpty()) {
+	 * 	long N = 1L;
+	 * 	for (final Map.Entry&lt;Short, Byte&gt; e : Result.entrySet()) {
+	 * 		N = Math.multiplyExact(N, (short) Math.pow(e.getKey(), e.getValue()));
+	 * 	}
+	 * 	assert (n == N);
+	 * }
+	 * </code>
+	 * </pre>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param hash
+	 *            specifies whether the data structure used to store the factors, should be a
+	 *            <code>HashMap</code> instead of a <code>TreeMap</code>
+	 * 
+	 * @param print
+	 *            specifies whether the result should be printed to the standard output stream
+	 * 
+	 * @return The resulting Map object.
+	 */
+	public static Map<Short, Byte> factor(short n, boolean hash, boolean print) {
+		final Map<Short, Byte> result = hash ? new HashMap<Short, Byte>() : new TreeMap<Short, Byte>();
+
+		// Factor a -1 out of n if it's negative.
+		if (n < 0) {
+			result.put((short) -1, (byte) 1);
+			// Only print if requested.
+			if (print) {
+				System.out.print(n + " = (-1)^1");
+			}
+
+			// Handle the degenerate case where n's absolute value is not representable as a non-negative short.
+			if ((n *= -1) == Short.MIN_VALUE) { // i.e., -n == n < 0
+				result.put((short) 2, (byte) 15);
+				// Only print if requested.
+				if (print) {
+					System.out.println(" * (2)^15");
+				}
+				return result;
+			}
+			// n != Short.MIN_VALUE
+			// i.e., n > 0
+		} else {
+			// Only print if requested.
+			if (print) {
+				System.out.print(n + " = ");
+			}
+		}
+		// n >= 0
+
+		// Handle the simple special case.
+		if (n < 2) { // i.e., (n == 0) || (n == 1)
+			// Only print if requested.
+			if (print) {
+				System.out.println(n);
+			}
+			return result;
+		}
+		// n >= 2
+
+		/**
+		 * <pre>
+		 * <code>
+		 * Any integer i, is one of 0, 1, 2, 3, 4, or 5 (mod 6).
+		 * However, if i is greater than 3, then it can only be prime if it is 1 or 5 (mod 6) since otherwise
+		 * it would be divisible by 2 or 3 (or both in the case of 0 (mod 6)).
+		 * </code>
+		 * </pre>
+		 * 
+		 * Therefore, we only have to check numbers that are either <code>1 (mod 6)</code> or
+		 * <code>-1 (mod 6)</code> (i.e., <code>5 (mod 6)</code>) if we check <code>i == 2</code> and
+		 * <code>i == 3</code> separately. As a result, we will only check two-thirds of all odd values of
+		 * <code>i</code> in the loop which are also only one-third of all values of <code>i</code>. Thus,
+		 * by doing this, we can cut the total runtime by a third (i.e., runtime is in
+		 * <code>O(sqrt(n) / 3)</code> instead of <code>O(sqrt(n))</code>).
+		 */
+		// Count the power of each prime which will fit in a byte since the largest power is at most 15.
+		byte power = 0;
+		/**
+		 * Don't do <code>(n &= 1) == 0</code> since we need the value of <code>n</code> to remain
+		 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
+		 * will mutate <code>n</code>.
+		 */
+		// Check if 2 is a factor of n.
+		if ((n & 1) == 0) { // i.e., n % 2 == 0
+			// Update n and result.
+			power = 0;
+			do {
+				n /= 2;
+				++power;
+			} while ((n & 1) == 0); // i.e., n % 2 == 0
+			result.put((short) 2, power);
+
+			// Check if n has no more factors.
+			if (n == 1) {
+				// Only print if requested.
+				return (print ? MathUtil.printFactorsShort(result, hash) : result);
+			}
+		}
+		// Check if 3 is a factor of n.
+		if (n % 3 == 0) {
+			// Update n and result.
+			power = 0;
+			do {
+				n /= 3;
+				++power;
+			} while (n % 3 == 0);
+			result.put((short) 3, power);
+
+			// Check if n has no more factors.
+			if (n == 1) {
+				// Only print if requested.
+				return (print ? MathUtil.printFactorsShort(result, hash) : result);
+			}
+		}
+		/**
+		 * Note that we are taking the square root of <code>n</code> after potentially having "pulled out"
+		 * all of the <code>2</code> and the <code>3</code> factors. This means that the square root may not
+		 * be applied to the original value of <code>n</code> but this is fine since all of the remaining
+		 * prime divisors of the original value of <code>n</code> which are less than the square root, are
+		 * still being considered.
+		 */
+		// Applying Math.floor before casting to short is unnecessary and it causes a large slow down.
+		final short bound = (short) (((short) Math.sqrt(n)) + 1); // bound >= 2
+		final short maxI = (short) (bound + 1); // maxI >= 3
+		for (short i = 5; i < maxI; i += 4) {
+			// Check if i (i.e., -1 (mod 6)) is a factor of n.
+			if (n % i == 0) {
+				// Update n and result.
+				power = 0;
+				do {
+					n /= i;
+					++power;
+				} while (n % i == 0);
+				result.put(i, power);
+
+				// Check if n has no more factors.
+				if (n == 1) {
+					// Only print if requested.
+					return (print ? MathUtil.printFactorsShort(result, hash) : result);
+				}
+			}
+
+			/**
+			 * It's fine to do <code>i += 2</code> instead of <code>i + 2</code> since we don't need the value
+			 * of <code>i</code> to remain unchanged but quite the opposite. We have actually separated the
+			 * incrementation of <code>i</code> by <code>6</code>, into an incrementation by <code>2</code> and
+			 * an incrementation by <code>4</code> due to the need to add <code>2</code> to <code>i</code> at
+			 * this point and the fact that <code>+=</code> is faster than <code>+</code> due to it not creating
+			 * a temporary. Note that the difference is the <code>+=</code> instead of the <code>+</code> which
+			 * will mutate <code>i</code>.
+			 */
+			// Check if i + 2 (i.e., 1 (mod 6)) is a factor of n.
+			if (n % (i += 2) == 0) {
+				// Update n and result.
+				power = 0;
+				do {
+					n /= i;
+					++power;
+				} while (n % i == 0);
+				result.put(i, power);
+
+				// Check if n has no more factors.
+				if (n == 1) {
+					// Only print if requested.
+					return (print ? MathUtil.printFactorsShort(result, hash) : result);
+				}
+			}
+		}
+		/**
+		 * For all <code>n</code>, <code>n</code> can have at most one factor greater than
+		 * <code>sqrt(n)</code>. <br>
+		 * <br>
+		 * 
+		 * Furthermore, due to the above loop, we know that <code>n</code> is prime at this point.
+		 */
+		result.put(n, (byte) 1);
+		// Only print if requested.
+		return (print ? MathUtil.printFactorsShort(result, hash) : result);
+	}
+
+	/**
+	 * Runtime is in <code>O(sqrt(n) + time for Result.size() many put operations)</code>. <br>
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if (Result.isEmpty())</code> <br>
+	 * Postcondition: <code>(n == -1) if and only if (Result.size() == 1)</code> <br>
+	 * Postcondition: <code>(n < 0) if and only if (Result.get((short) -1) == 1)</code> <br>
+	 * Postcondition:
+	 * 
+	 * <pre>
+	 * <code>
+	 * for (final Map.Entry&lt;Short, Byte&gt; e : Result.entrySet()) {
+	 * 	assert ((e.getKey() == -1) || (MathUtil.isPrimeSqrt(e.getKey())));
+	 * }
+	 * </code>
+	 * </pre>
+	 * 
+	 * Postcondition:
+	 * 
+	 * <pre>
+	 * <code>
+	 * if (n == Short.MIN_VALUE) {
+	 * 	assert ((Result.size() == 2) && (Result.get((short) 2) == 15));
+	 * } else if (!Result.isEmpty()) {
+	 * 	long N = 1L;
+	 * 	for (final Map.Entry&lt;Short, Byte&gt; e : Result.entrySet()) {
+	 * 		N = Math.multiplyExact(N, (short) Math.pow(e.getKey(), e.getValue()));
+	 * 	}
+	 * 	assert (n == N);
+	 * }
+	 * </code>
+	 * </pre>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param hash
+	 *            specifies whether the data structure used to store the factors, should be a
+	 *            <code>HashMap</code> instead of a <code>TreeMap</code>
+	 * 
+	 * @return <code>MathUtil.factor(n, hash, false)</code>.
+	 */
+	public static Map<Short, Byte> factor(short n, boolean hash) {
+		return MathUtil.factor(n, hash, false);
+	}
+
+	/**
+	 * Runtime is in <code>O(sqrt(n) + time for Result.size() many put operations)</code>. <br>
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if (Result.isEmpty())</code> <br>
+	 * Postcondition: <code>(n == -1) if and only if (Result.size() == 1)</code> <br>
+	 * Postcondition: <code>(n < 0) if and only if (Result.get((short) -1) == 1)</code> <br>
+	 * Postcondition:
+	 * 
+	 * <pre>
+	 * <code>
+	 * for (final Map.Entry&lt;Short, Byte&gt; e : Result.entrySet()) {
+	 * 	assert ((e.getKey() == -1) || (MathUtil.isPrimeSqrt(e.getKey())));
+	 * }
+	 * </code>
+	 * </pre>
+	 * 
+	 * Postcondition:
+	 * 
+	 * <pre>
+	 * <code>
+	 * if (n == Short.MIN_VALUE) {
+	 * 	assert ((Result.size() == 2) && (Result.get((short) 2) == 15));
+	 * } else if (!Result.isEmpty()) {
+	 * 	long N = 1L;
+	 * 	for (final Map.Entry&lt;Short, Byte&gt; e : Result.entrySet()) {
+	 * 		N = Math.multiplyExact(N, (short) Math.pow(e.getKey(), e.getValue()));
+	 * 	}
+	 * 	assert (n == N);
+	 * }
+	 * </code>
+	 * </pre>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return <code>MathUtil.factor(n, false)</code>.
+	 */
+	public static Map<Short, Byte> factor(short n) {
+		return MathUtil.factor(n, false);
+	}
+
+	/**
+	 * Precondition: <code>(result != null) && (result.size() != 0)</code>
+	 * 
+	 * @param result
+	 *            the map produced by <code>MathUtil.factor(byte, boolean, boolean)</code> to be printed
+	 *            in the general case (i.e., absolute value of n was greater than 1)
+	 * 
+	 * @param hash
+	 *            specifies whether the data structure used to store the factors, is a
+	 *            <code>HashMap</code> instead of a <code>TreeMap</code>
+	 * 
+	 * @return <code>result</code>.
+	 */
+	protected static Map<Byte, Byte> printFactorsByte(Map<Byte, Byte> result, boolean hash) {
+		/*
+		 * First remove the -1 factor if it's there, so that it's not printed twice but print a
+		 * multiplication symbol.
+		 */
+		boolean negative = false;
+		if (result.remove((byte) -1) != null) {
+			negative = true;
+			System.out.print(" * ");
+		}
+
+		/*
+		 * There is no ordering in a HashMap so just iterate through it and print all of the factors.
+		 * However, only print a multiplication symbol if there's at least one more factor in each iteration
+		 * of the loop.
+		 */
+		if (hash) { // i.e., result instanceof HashMap
+			final Iterator<Map.Entry<Byte, Byte>> it = result.entrySet().iterator();
+			Map.Entry<Byte, Byte> e = null;
+			boolean notExit = true;
+			do {
+				e = it.next();
+				System.out.print("(" + e.getKey() + ")^" + e.getValue());
+				// The following is meant to be an assignment of notExit.
+				if (notExit = it.hasNext()) {
+					System.out.print(" * ");
+				}
+			} while (notExit);
+			System.out.println(); // Print a newline at the end.
+			// Put all of then removed factors back into result before returning.
+			if (negative) {
+				result.put((byte) -1, (byte) 1);
+			}
+			return result;
+		}
+		// !hash
+		// i.e., result instanceof TreeMap
+
+		/*
+		 * TreeMap is ordered by increasing keys and so we can print the factors in a nicer way. First
+		 * remove the smallest prime factor and print it if there is more than one factor. Then print all of
+		 * the other factors with a multiplication symbol before them.
+		 */
+		if (result.size() == 1) {
+			final Map.Entry<Byte, Byte> first = ((TreeMap<Byte, Byte>) result).firstEntry();
+			System.out.print("(" + first.getKey() + ")^" + first.getValue());
+		} else {
+			final Map.Entry<Byte, Byte> first = ((TreeMap<Byte, Byte>) result).pollFirstEntry();
+			System.out.print("(" + first.getKey() + ")^" + first.getValue());
+			if (result.size() != 0) {
+				final Iterator<Map.Entry<Byte, Byte>> it = result.entrySet().iterator();
+				for (Map.Entry<Byte, Byte> e = null; it.hasNext(); /* Update inside. */) {
+					e = it.next();
+					System.out.print(" * (" + e.getKey() + ")^" + e.getValue());
+				}
+			}
+			// Put all of then removed factors back into result before returning.
+			result.put(first.getKey(), first.getValue());
+		}
+		System.out.println(); // Print a newline at the end.
+		// Put all of then removed factors back into result before returning.
+		if (negative) {
+			result.put((byte) -1, (byte) 1);
+		}
+		return result;
+	}
+
+	/**
+	 * Runtime is in <code>O(sqrt(n) + time for Result.size() many put operations)</code>. <br>
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if (Result.isEmpty())</code> <br>
+	 * Postcondition: <code>(n == -1) if and only if (Result.size() == 1)</code> <br>
+	 * Postcondition: <code>(n < 0) if and only if (Result.get((byte) -1) == 1)</code> <br>
+	 * Postcondition:
+	 * 
+	 * <pre>
+	 * <code>
+	 * for (final Map.Entry&lt;Byte, Byte&gt; e : Result.entrySet()) {
+	 * 	assert ((e.getKey() == -1) || (MathUtil.isPrimeSqrt(e.getKey())));
+	 * }
+	 * </code>
+	 * </pre>
+	 * 
+	 * Postcondition:
+	 * 
+	 * <pre>
+	 * <code>
+	 * if (n == Byte.MIN_VALUE) {
+	 * 	assert ((Result.size() == 2) && (Result.get((byte) 2) == 7));
+	 * } else if (!Result.isEmpty()) {
+	 * 	long N = 1L;
+	 * 	for (final Map.Entry&lt;Byte, Byte&gt; e : Result.entrySet()) {
+	 * 		N = Math.multiplyExact(N, (byte) Math.pow(e.getKey(), e.getValue()));
+	 * 	}
+	 * 	assert (n == N);
+	 * }
+	 * </code>
+	 * </pre>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param hash
+	 *            specifies whether the data structure used to store the factors, should be a
+	 *            <code>HashMap</code> instead of a <code>TreeMap</code>
+	 * 
+	 * @param print
+	 *            specifies whether the result should be printed to the standard output stream
+	 * 
+	 * @return The resulting Map object.
+	 */
+	public static Map<Byte, Byte> factor(byte n, boolean hash, boolean print) {
+		final Map<Byte, Byte> result = hash ? new HashMap<Byte, Byte>() : new TreeMap<Byte, Byte>();
+
+		// Factor a -1 out of n if it's negative.
+		if (n < 0) {
+			result.put((byte) -1, (byte) 1);
+			// Only print if requested.
+			if (print) {
+				System.out.print(n + " = (-1)^1");
+			}
+
+			// Handle the degenerate case where n's absolute value is not representable as a non-negative short.
+			if ((n *= -1) == Byte.MIN_VALUE) { // i.e., -n == n < 0
+				result.put((byte) 2, (byte) 7);
+				// Only print if requested.
+				if (print) {
+					System.out.println(" * (2)^7");
+				}
+				return result;
+			}
+			// n != Byte.MIN_VALUE
+			// i.e., n > 0
+		} else {
+			// Only print if requested.
+			if (print) {
+				System.out.print(n + " = ");
+			}
+		}
+		// n >= 0
+
+		// Handle the simple special case.
+		if (n < 2) { // i.e., (n == 0) || (n == 1)
+			// Only print if requested.
+			if (print) {
+				System.out.println(n);
+			}
+			return result;
+		}
+		// n >= 2
+
+		/**
+		 * <pre>
+		 * <code>
+		 * Any integer i, is one of 0, 1, 2, 3, 4, or 5 (mod 6).
+		 * However, if i is greater than 3, then it can only be prime if it is 1 or 5 (mod 6) since otherwise
+		 * it would be divisible by 2 or 3 (or both in the case of 0 (mod 6)).
+		 * </code>
+		 * </pre>
+		 * 
+		 * Therefore, we only have to check numbers that are either <code>1 (mod 6)</code> or
+		 * <code>-1 (mod 6)</code> (i.e., <code>5 (mod 6)</code>) if we check <code>i == 2</code> and
+		 * <code>i == 3</code> separately. As a result, we will only check two-thirds of all odd values of
+		 * <code>i</code> in the loop which are also only one-third of all values of <code>i</code>. Thus,
+		 * by doing this, we can cut the total runtime by a third (i.e., runtime is in
+		 * <code>O(sqrt(n) / 3)</code> instead of <code>O(sqrt(n))</code>).
+		 */
+		// Count the power of each prime which will fit in a byte since the largest power is at most 7.
+		byte power = 0;
+		/**
+		 * Don't do <code>(n &= 1) == 0</code> since we need the value of <code>n</code> to remain
+		 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
+		 * will mutate <code>n</code>.
+		 */
+		// Check if 2 is a factor of n.
+		if ((n & 1) == 0) { // i.e., n % 2 == 0
+			// Update n and result.
+			power = 0;
+			do {
+				n /= 2;
+				++power;
+			} while ((n & 1) == 0); // i.e., n % 2 == 0
+			result.put((byte) 2, power);
+
+			// Check if n has no more factors.
+			if (n == 1) {
+				// Only print if requested.
+				return (print ? MathUtil.printFactorsByte(result, hash) : result);
+			}
+		}
+		// Check if 3 is a factor of n.
+		if (n % 3 == 0) {
+			// Update n and result.
+			power = 0;
+			do {
+				n /= 3;
+				++power;
+			} while (n % 3 == 0);
+			result.put((byte) 3, power);
+
+			// Check if n has no more factors.
+			if (n == 1) {
+				// Only print if requested.
+				return (print ? MathUtil.printFactorsByte(result, hash) : result);
+			}
+		}
+		/**
+		 * Note that we are taking the square root of <code>n</code> after potentially having "pulled out"
+		 * all of the <code>2</code> and the <code>3</code> factors. This means that the square root may not
+		 * be applied to the original value of <code>n</code> but this is fine since all of the remaining
+		 * prime divisors of the original value of <code>n</code> which are less than the square root, are
+		 * still being considered.
+		 */
+		// Applying Math.floor before casting to short is unnecessary and it causes a large slow down.
+		final byte bound = (byte) (((byte) Math.sqrt(n)) + 1); // bound >= 2
+		final byte maxI = (byte) (bound + 1); // maxI >= 3
+		for (byte i = 5; i < maxI; i += 4) {
+			// Check if i (i.e., -1 (mod 6)) is a factor of n.
+			if (n % i == 0) {
+				// Update n and result.
+				power = 0;
+				do {
+					n /= i;
+					++power;
+				} while (n % i == 0);
+				result.put(i, power);
+
+				// Check if n has no more factors.
+				if (n == 1) {
+					// Only print if requested.
+					return (print ? MathUtil.printFactorsByte(result, hash) : result);
+				}
+			}
+
+			/**
+			 * It's fine to do <code>i += 2</code> instead of <code>i + 2</code> since we don't need the value
+			 * of <code>i</code> to remain unchanged but quite the opposite. We have actually separated the
+			 * incrementation of <code>i</code> by <code>6</code>, into an incrementation by <code>2</code> and
+			 * an incrementation by <code>4</code> due to the need to add <code>2</code> to <code>i</code> at
+			 * this point and the fact that <code>+=</code> is faster than <code>+</code> due to it not creating
+			 * a temporary. Note that the difference is the <code>+=</code> instead of the <code>+</code> which
+			 * will mutate <code>i</code>.
+			 */
+			// Check if i + 2 (i.e., 1 (mod 6)) is a factor of n.
+			if (n % (i += 2) == 0) {
+				// Update n and result.
+				power = 0;
+				do {
+					n /= i;
+					++power;
+				} while (n % i == 0);
+				result.put(i, power);
+
+				// Check if n has no more factors.
+				if (n == 1) {
+					// Only print if requested.
+					return (print ? MathUtil.printFactorsByte(result, hash) : result);
+				}
+			}
+		}
+		/**
+		 * For all <code>n</code>, <code>n</code> can have at most one factor greater than
+		 * <code>sqrt(n)</code>. <br>
+		 * <br>
+		 * 
+		 * Furthermore, due to the above loop, we know that <code>n</code> is prime at this point.
+		 */
+		result.put(n, (byte) 1);
+		// Only print if requested.
+		return (print ? MathUtil.printFactorsByte(result, hash) : result);
+	}
+
+	/**
+	 * Runtime is in <code>O(sqrt(n) + time for Result.size() many put operations)</code>. <br>
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if (Result.isEmpty())</code> <br>
+	 * Postcondition: <code>(n == -1) if and only if (Result.size() == 1)</code> <br>
+	 * Postcondition: <code>(n < 0) if and only if (Result.get((byte) -1) == 1)</code> <br>
+	 * Postcondition:
+	 * 
+	 * <pre>
+	 * <code>
+	 * for (final Map.Entry&lt;Byte, Byte&gt; e : Result.entrySet()) {
+	 * 	assert ((e.getKey() == -1) || (MathUtil.isPrimeSqrt(e.getKey())));
+	 * }
+	 * </code>
+	 * </pre>
+	 * 
+	 * Postcondition:
+	 * 
+	 * <pre>
+	 * <code>
+	 * if (n == Byte.MIN_VALUE) {
+	 * 	assert ((Result.size() == 2) && (Result.get((byte) 2) == 7));
+	 * } else if (!Result.isEmpty()) {
+	 * 	long N = 1L;
+	 * 	for (final Map.Entry&lt;Byte, Byte&gt; e : Result.entrySet()) {
+	 * 		N = Math.multiplyExact(N, (byte) Math.pow(e.getKey(), e.getValue()));
+	 * 	}
+	 * 	assert (n == N);
+	 * }
+	 * </code>
+	 * </pre>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param hash
+	 *            specifies whether the data structure used to store the factors, should be a
+	 *            <code>HashMap</code> instead of a <code>TreeMap</code>
+	 * 
+	 * @return <code>MathUtil.factor(n, hash, false)</code>.
+	 */
+	public static Map<Byte, Byte> factor(byte n, boolean hash) {
+		return MathUtil.factor(n, hash, false);
+	}
+
+	/**
+	 * Runtime is in <code>O(sqrt(n) + time for Result.size() many put operations)</code>. <br>
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if (Result.isEmpty())</code> <br>
+	 * Postcondition: <code>(n == -1) if and only if (Result.size() == 1)</code> <br>
+	 * Postcondition: <code>(n < 0) if and only if (Result.get((byte) -1) == 1)</code> <br>
+	 * Postcondition:
+	 * 
+	 * <pre>
+	 * <code>
+	 * for (final Map.Entry&lt;Byte, Byte&gt; e : Result.entrySet()) {
+	 * 	assert ((e.getKey() == -1) || (MathUtil.isPrimeSqrt(e.getKey())));
+	 * }
+	 * </code>
+	 * </pre>
+	 * 
+	 * Postcondition:
+	 * 
+	 * <pre>
+	 * <code>
+	 * if (n == Byte.MIN_VALUE) {
+	 * 	assert ((Result.size() == 2) && (Result.get((byte) 2) == 7));
+	 * } else if (!Result.isEmpty()) {
+	 * 	long N = 1L;
+	 * 	for (final Map.Entry&lt;Byte, Byte&gt; e : Result.entrySet()) {
+	 * 		N = Math.multiplyExact(N, (byte) Math.pow(e.getKey(), e.getValue()));
+	 * 	}
+	 * 	assert (n == N);
+	 * }
+	 * </code>
+	 * </pre>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return <code>MathUtil.factor(n, false)</code>.
+	 */
+	public static Map<Byte, Byte> factor(byte n) {
+		return MathUtil.factor(n, false);
 	}
 
 	/**
@@ -923,9 +2426,9 @@ public class MathUtil {
 	 */
 	public static long eulerTotientSqrt(long n) {
 		/**
-		 * <code>phi(n) == 0</code> if <code>n < 1</code> (since no integers in range <code>[1, n]</code>)
-		 * <br>
-		 * <code>phi(n) == 1</code> if <code>n == 1</code> (since <code>gcd(1, 1) == 1</code>) <br>
+		 * <code>phi(n) == 0</code> if <code>n < 1</code> (since <code>[1, n] == emptyset</code>) <br>
+		 * <code>phi(n) == 1</code> if <code>n == 1</code> (since
+		 * <code>([1, n] == { 1 }) && (gcd(1, 1) == 1)</code>) <br>
 		 * <code>phi(n) == n - 1</code> if <code>(n == 2) || (n == 3)</code> (since <code>n</code> is prime)
 		 */
 		if (n < 4L) {
@@ -997,13 +2500,14 @@ public class MathUtil {
 		 * 
 		 * Note that we are taking the square root of <code>n</code> after potentially having "pulled out"
 		 * all of the <code>2</code> and the <code>3</code> factors. This means that the square root may not
-		 * be applied to the original value of <code>n</code> but this is fine since all remaining prime
-		 * divisors of the original value of <code>n</code> which are less than the square root, are still
-		 * being considered.
+		 * be applied to the original value of <code>n</code> but this is fine since all of the remaining
+		 * prime divisors of the original value of <code>n</code> which are less than the square root, are
+		 * still being considered.
 		 */
+		// Applying Math.floor before casting to long is unnecessary and it causes a large slow down.
 		final long bound = ((long) Math.sqrt(n)) + 1L; // bound >= 3
 		final long maxI = bound + 1L; // maxI >= 4
-		for (long i = 5L, i_plus_2 = 0L; i < maxI; i += 6L) {
+		for (long i = 5L; i < maxI; i += 4L) {
 			// Check if i (i.e., -1 (mod 6)) is a factor of n.
 			if (n % i == 0L) {
 				// Update n and result.
@@ -1019,18 +2523,21 @@ public class MathUtil {
 			}
 
 			/**
-			 * Don't do <code>i += 2</code> since we need the value of <code>i</code> to remain unchanged. Note
-			 * that the difference is the <code>+=</code> instead of the <code>+</code> which will mutate
-			 * <code>i</code>.
+			 * It's fine to do <code>i += 2</code> instead of <code>i + 2</code> since we don't need the value
+			 * of <code>i</code> to remain unchanged but quite the opposite. We have actually separated the
+			 * incrementation of <code>i</code> by <code>6</code>, into an incrementation by <code>2</code> and
+			 * an incrementation by <code>4</code> due to the need to add <code>2</code> to <code>i</code> at
+			 * this point and the fact that <code>+=</code> is faster than <code>+</code> due to it not creating
+			 * a temporary. Note that the difference is the <code>+=</code> instead of the <code>+</code> which
+			 * will mutate <code>i</code>.
 			 */
-			i_plus_2 = i + 2L;
-			// Check if i_plus_2 (i.e., 1 (mod 6)) is a factor of n.
-			if (n % i_plus_2 == 0L) {
+			// Check if i + 2 (i.e., 1 (mod 6)) is a factor of n.
+			if (n % (i += 2L) == 0L) {
 				// Update n and result.
 				do {
-					n /= i_plus_2;
-				} while (n % i_plus_2 == 0L);
-				result -= (result / i_plus_2);
+					n /= i;
+				} while (n % i == 0L);
+				result -= (result / i);
 
 				// Check if n has no more factors.
 				if (n == 1L) {
@@ -1038,7 +2545,13 @@ public class MathUtil {
 				}
 			}
 		}
-		// For all n, n can have at most one factor greater than sqrt(n) so check if it has such a factor.
+		/**
+		 * For all <code>n</code>, <code>n</code> can have at most one factor greater than
+		 * <code>sqrt(n)</code> so check if it has such a factor. <br>
+		 * <br>
+		 * 
+		 * Furthermore, due to the above loop, we know that <code>n</code> is prime at this point.
+		 */
 		return ((n != 1L) ? (result -= (result / n)) : result);
 	}
 
@@ -2111,14 +3624,13 @@ public class MathUtil {
 	/**
 	 * Compute <code>n<sup>p</sup> (mod m)</code> using the fast power (a.k.a., successive squaring)
 	 * algorithm. <br>
-	 * Note that this function does not check for the special cases <code>n == 1 (mod m)</code> or
-	 * <code>n == -1 (mod m)</code> and so it will still take <code>O(lg(p))</code> steps even though
-	 * the answer can be trivially determined in <code>O(1)</code> steps. Therefore, for the best
-	 * performance, it is recommended to check those cases before calling this function. The reason why
-	 * it does not check for the special cases, is that this function is specified as protected and is
-	 * only called by other public functions which do handle those special cases themselves (in their
-	 * own unique ways) and so checking for the special cases here, would only serve to slow down the
-	 * overall runtime. <br>
+	 * Note that this function does not check for the special cases <code>n == &plusmn;1 (mod m)</code>
+	 * and so it will still take <code>O(lg(p))</code> steps even though the answer can be trivially
+	 * determined in <code>O(1)</code> steps. Therefore, for the best performance, it is recommended to
+	 * check those cases before calling this function. The reason why it does not check for the special
+	 * cases, is that this function is specified as protected and is only called by other public
+	 * functions which do handle those special cases themselves (in their own unique ways) and so
+	 * checking for the special cases here, would only serve to decrease the overall runtime. <br>
 	 * Precondition: <code>m > 1</code> <br>
 	 * Precondition: <code>0 < |n| < m</code> <br>
 	 * Precondition: <code>p >= 0</code> <br>
@@ -2338,698 +3850,617 @@ public class MathUtil {
 	}
 
 	/**
+	 * @param begin
+	 *            the given begin power
+	 * 
+	 * @param end
+	 *            the given end power
+	 * 
+	 * @return <code>end - begin</code>.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>begin > end</code>
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>(end - begin) > Integer.MAX_VALUE</code>
+	 */
+	protected static int powersLength(long begin, long end) throws IllegalArgumentException, ArithmeticException {
+		// Validate begin and end.
+		if (begin > end) {
+			throw new IllegalArgumentException();
+		}
+		// begin <= end
+
+		if (begin == end) {
+			return 0;
+		}
+		// begin < end
+
+		if (begin >= 0L) {
+			// 0 <= begin < end so end - begin will not overflow a long.
+			end -= begin;
+			if (end > Integer.MAX_VALUE) {
+				throw new ArithmeticException();
+			}
+			return ((int) end);
+		}
+		// begin < 0
+
+		// Therefore, Integer.MAX_VALUE + begin will not overflow a long.
+		if (end > Integer.MAX_VALUE + begin) {
+			throw new ArithmeticException();
+		}
+		// end <= Integer.MAX_VALUE + begin
+
+		/*
+		 * Handle the degenerate case where begin's absolute value is not representable as a non-negative
+		 * long.
+		 */
+		if (begin == Long.MIN_VALUE) { // i.e., -begin == begin < 0
+			// -begin == Long.MAX_VALUE + 1 so length == end + (Long.MAX_VALUE + 1)
+			/**
+			 * Due to the above check, we know that <code>end <= Integer.MAX_VALUE + Long.MIN_VALUE</code> which
+			 * is much less than <code>0</code> and so <code>end + Long.MAX_VALUE + 1</code> will not overflow a
+			 * long.
+			 */
+			return ((int) ((end += Long.MAX_VALUE) + 1L));
+		}
+		// begin != Long.MIN_VALUE
+		// i.e., -begin > 0
+		return ((int) (end -= begin));
+	}
+
+	/**
+	 * Note that this function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in
+	 * math. <br>
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>Result.length == end - begin</code> <br>
+	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>(i + begin)</sup> (mod m))</code>
+	 * 
 	 * @param n
 	 *            the given number
-	 * 
-	 * @param target
-	 *            the given target
 	 * 
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @param upperOrder
-	 *            the given upperbound on the multiplicative order of the given number
+	 * @param begin
+	 *            the given begin power
 	 * 
-	 * @param generateBoth
-	 *            specifies whether both the babylist and the giantlist should be generated and stored
-	 *            simultaneously instead of fully generating the babylist first and then generating the
-	 *            giantlist in-place
+	 * @param end
+	 *            the given end power
 	 * 
-	 * @param hash
-	 *            specifies whether the data structure used to store the lists, should be a
-	 *            <code>HashMap</code> instead of a <code>TreeMap</code>
-	 * 
-	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
-	 *         <code>p</code> exists and <code>null</code> otherwise.
+	 * @return The resulting long array.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(upperOrder < 0) || (m < upperOrder)</code>
-	 * 
-	 * @throws UndefinedInverseException
-	 *             If <code>gcd(n, m) != 1</code>
+	 *             If <code>begin > end</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>(((long) Math.sqrt(upperOrder)) + 1) > Integer.MAX_VALUE</code>
+	 *             If <code>(end - begin) > Integer.MAX_VALUE</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>(begin < 0) && ((n (mod m) == 0) || (gcd(n, m) != 1))</code>
 	 */
-	public static Long discreteLogBabyGiant(long n, long target, long m, long upperOrder, boolean generateBoth,
-			boolean hash)
-			throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException, ArithmeticException {
+	public static long[] modPowers(long n, long m, long begin, long end)
+			throws InvalidModulusException, IllegalArgumentException, ArithmeticException, UndefinedInverseException {
 		if (m < 1L) {
 			throw new InvalidModulusException();
-		} else if ((upperOrder < 0L) || (m < upperOrder)) {
-			throw new IllegalArgumentException();
 		}
-		// (m >= 1) && (0 <= upperOrder) && (upperOrder <= m)
-		// i.e., (m > 0) && (0 <= upperOrder) && (upperOrder <= m)
+		// m >= 1
+		// i.e., m > 0
+
+		// Compute the resulting array length.
+		final int length = MathUtil.powersLength(begin, end);
+		// (begin <= end) && ((end - begin) <= Integer.MAX_VALUE)
 
 		// Fix n to be in [0, m - 1] \cap \doubleZ.
 		n = MathUtil.modFixedInput(n, m);
-		// Fix target to be in [0, m - 1] \cap \doubleZ.
-		target = MathUtil.modFixedInput(target, m);
 
-		// Handle the simple special cases.
+		// Create the resulting long array and handle the simple special cases.
+		final long[] result = new long[length];
+		if (length == 0) {
+			// Nothing to do here.
+			return result;
+		}
+		// length != 0
+		// i.e., length > 0
 		if (n < 2L) { // i.e., (n == 0) || (n == 1)
 			if (n == 0L) {
-				// 0 to any non-zero power is 0 and 0 to the power of 0 is undefined.
-				return ((target == 0L) ? 1L : null);
+				if (begin < 0L) {
+					throw new UndefinedInverseException();
+				}
+				// begin >= 0
+
+				/**
+				 * This case is needed since 0 to any positive power is 0 and so any non-zero assignment of
+				 * <code>result[i]</code> will be wrong in this case. Furthermore, note that we are defining
+				 * <code>0<sup>0</sup> == 0</code> here even though it is undefined in math.
+				 */
+				return result;
 			}
 			// n != 0
 			// i.e., n == 1
-
-			// 1 to any power is 1.
-			return ((target == 1L) ? 0L : null);
+			/*
+			 * This case is only an optimization since 1 to any power is 1 and so the loop will do extra
+			 * unnecessary work to arrive at the same result.
+			 */
+			Arrays.fill(result, 1L);
+			return result;
 		}
 		// n >= 2
 		// i.e., (1 < n) && (n <= m - 1) && (m > 2)
-		if (target == 1L) {
-			// n to the power of 0 is 1 except when n is 0 which we know isn't the case.
-			return 0L;
-		}
-		// target != 1
 		if (n == m - 1L) { // i.e., n == -1 (mod m)
-			// -1 to any even power is 1 (but target != 1) and otherwise is -1.
-			return ((target == n) ? 1L : null);
+			/*
+			 * This case is only an optimization since -1 to any even power is 1 and otherwise is -1. So the
+			 * loop will do extra unnecessary work to arrive at the same result.
+			 */
+			/**
+			 * It's fine to do <code>(begin &= 1L) == 0L</code> instead of <code>(begin & 1L) == 0L</code> since
+			 * we don't need the value of <code>begin</code> to remain unchanged. Note that the difference is
+			 * the <code>&=</code> instead of the <code>&</code> which will mutate <code>begin</code>.
+			 */
+			boolean evenPow = ((begin &= 1L) == 0L); // i.e., MathUtil.isEven(begin)
+			for (int i = 0; i != length; ++i, evenPow = !evenPow) {
+				result[i] = evenPow ? 1L : n;
+			}
+			return result;
 		}
 		// n != m - 1
 		// i.e., (1 < n) && (n < m - 1)
-		if (upperOrder == 0L) {
-			return null;
-		}
-		// upperOrder != 0
-		// i.e., (1 <= upperOrder) && (upperOrder <= m)
-
-		// Applying Math.floor before casting to long is unnecessary and it causes a large slow down.
-		final long bound = ((long) Math.sqrt(upperOrder)) + 1L; // bound >= 2
-		if (bound > Integer.MAX_VALUE) {
-			throw new ArithmeticException();
-		}
-		// bound <= Integer.MAX_VALUE
-
-		// Compute and save <code>n<sup>-1</sup> (mod m)</code> and <code>n<sup>-bound</sup> (mod m)</code>.
-		final long n_inverse = MathUtil.modInverseFixedInput(n, m);
-		final long giant_factor = MathUtil.modPowFixedInput(n_inverse, bound, m);
 
 		// Fix n to be in [-m / 2, m / 2] \cap \doubleZ.
 		n = MathUtil.modMinFixedInput(n, m);
-		// Fix target to be in [-m / 2, m / 2] \cap \doubleZ.
-		target = MathUtil.modMinFixedInput(target, m);
 
-		// Shanks' Babystep Giantstep Algorithm.
-		final Map<Long, Long> babylist = (hash ? new HashMap<Long, Long>((int) bound) : new TreeMap<Long, Long>());
-		if (generateBoth) {
-			final Map<Long, Long> giantlist = (hash ? new HashMap<Long, Long>((int) bound) : new TreeMap<Long, Long>());
-			Long baby_index = null, giant_index = null;
-			Long order_n = null, order_giant_factor = null;
-			for (long index = 0L, baby = 1L, giant = target; index != bound; ++index) {
-				// Update the two lists.
-				babylist.putIfAbsent(baby, index);
-				giantlist.putIfAbsent(giant, index);
-
-				// Search for match between the two lists.
-				/**
-				 * The following expressions will never overflow since the maximum value is
-				 * <code>(bound - 1) * bound + (bound - 1) == bound<sup>2</sup> - 1</code>. However, since we
-				 * enforce <code>bound <= Integer.MAX_VALUE == 2<sup>31</sup> - 1</code> then we can conclude that
-				 * <code>bound<sup>2</sup> - 1 <= (2<sup>62</sup> - 2<sup>32</sup> + 1) - 1 == 2<sup>62</sup> - 2<sup>32</sup></code>
-				 * which is much smaller than <code>2<sup>63</sup> - 1 == Long.MAX_VALUE</code>.
-				 */
-				if (baby == giant) {
-					return (index *= (bound + 1L));
-				} else if ((baby_index = babylist.get(giant)) != null) {
-					return ((index *= bound) + baby_index);
-				} else if ((giant_index = giantlist.get(baby)) != null) {
-					return ((giant_index *= bound) + index);
-				}
-
-				// Update baby and giant.
-				if (((baby = MathUtil.modMultFixedInput(baby, n, m)) == n) && (index != 0L)) {
-					/**
-					 * This will only happen when <code>n</code>'s multiplicative order has been reached and
-					 * <code>baby</code> has wrapped back to <code>n</code>. Note that for some choices of
-					 * <code>n</code> and <code>m</code>, <code>baby</code> will never wrap back to <code>1</code> but
-					 * it may wrap back to <code>n</code>.
-					 */
-					if (order_n == null) {
-						order_n = index;
-					}
-				}
-				if (((giant = MathUtil.modMultFixedInput(giant, giant_factor, m)) == target) && (index != 0L)) {
-					/**
-					 * This will only happen when <code>giant_factor</code>'s multiplicative order has been reached and
-					 * <code>giant</code> has wrapped back to <code>target</code>.
-					 */
-					if (order_giant_factor == null) {
-						order_giant_factor = index + 1L;
-					}
-				}
-				if ((order_n != null) && (order_giant_factor != null)) {
-					/**
-					 * This will only happen when the multiplicative order of both <code>n</code> and
-					 * <code>giant_factor</code> has been reached and both <code>baby</code> and <code>giant</code> have
-					 * wrapped back to their original values thus we can conclude that an answer cannot be found.
-					 */
-					break;
-				}
-			}
-			return null;
+		// Fill and return the resulting long array.
+		long n_to_i = MathUtil.modPow(n, begin, m);
+		for (int i = 0; i != length; ++i, n_to_i = MathUtil.modMultFixedInput(n_to_i, n, m)) {
+			/**
+			 * Don't do <code>(n_to_i < 0L) ? (n_to_i += m) : n_to_i</code> since we want to maintain the
+			 * following invariant <code>|n_to_i| <= (m / 2)</code>. Note that the difference is the
+			 * <code>+=</code> instead of the <code>+</code> which will set <code>n_to_i</code> to
+			 * <code>n_to_i (mod m)</code> which may violate the invariant.
+			 */
+			result[i] = (n_to_i < 0L) ? (n_to_i + m) : n_to_i;
 		}
-		// !generateBoth so fully generate the babylist and then generate the giantlist in-place.
-		babylist.put(1L, 0L);
-		for (long baby_index = 1L, baby = n; baby_index != bound; ++baby_index) {
-			// Check for match.
-			if (baby == target) {
-				return baby_index;
-			}
-
-			// Update babylist and baby.
-			babylist.put(baby, baby_index);
-			if ((baby = MathUtil.modMultFixedInput(baby, n, m)) == n) {
-				/**
-				 * This will only happen when <code>n</code>'s multiplicative order has been reached and
-				 * <code>baby</code> has wrapped back to <code>n</code>. Note that for some choices of
-				 * <code>n</code> and <code>m</code>, <code>baby</code> will never wrap back to <code>1</code> but
-				 * it may wrap back to <code>n</code>. <code>n</code>'s multiplicative order is
-				 * <code>baby_index</code>.
-				 */
-				break;
-			}
-		}
-		Long baby_index = null;
-		for (long giant_index = 0L, giant = target; giant_index != bound; ++giant_index) {
-			// Search for match between the two lists.
-			if ((baby_index = babylist.get(giant)) != null) {
-				/**
-				 * The following expression will never overflow since its maximum value is
-				 * <code>(bound - 1) * bound + (bound - 1) == bound<sup>2</sup> - 1</code>. However, since we
-				 * enforce <code>bound <= Integer.MAX_VALUE == 2<sup>31</sup> - 1</code> then we can conclude that
-				 * <code>bound<sup>2</sup> - 1 <= (2<sup>62</sup> - 2<sup>32</sup> + 1) - 1 == 2<sup>62</sup> - 2<sup>32</sup></code>
-				 * which is much smaller than <code>2<sup>63</sup> - 1 == Long.MAX_VALUE</code>.
-				 */
-				return ((giant_index *= bound) + baby_index);
-			}
-
-			// Update giant.
-			if ((giant = MathUtil.modMultFixedInput(giant, giant_factor, m)) == target) {
-				/**
-				 * This will only happen when <code>giant_factor</code>'s multiplicative order has been reached and
-				 * <code>giant</code> has wrapped back to <code>target</code>. <code>giant_factor</code>'s
-				 * multiplicative order is <code>giant_index</code>.
-				 */
-				break;
-			}
-		}
-		return null;
+		return result;
 	}
 
 	/**
+	 * Note that this function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in
+	 * math. <br>
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>Result.length == m</code> <br>
+	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>i</sup> (mod m))</code>
+	 * 
 	 * @param n
 	 *            the given number
-	 * 
-	 * @param target
-	 *            the given target
 	 * 
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @param upperOrder
-	 *            the given upperbound on the multiplicative order of the given number
-	 * 
-	 * @param generateBoth
-	 *            specifies whether both the babylist and the giantlist should be generated and stored
-	 *            simultaneously instead of fully generating the babylist first and then generating the
-	 *            giantlist in-place
-	 * 
-	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
-	 *         <code>p</code> exists and <code>null</code> otherwise.
+	 * @return The resulting long array.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
-	 * 
-	 * @throws IllegalArgumentException
-	 *             If <code>(upperOrder < 0) || (m < upperOrder)</code>
-	 * 
-	 * @throws UndefinedInverseException
-	 *             If <code>gcd(n, m) != 1</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>(((long) Math.sqrt(upperOrder)) + 1) > Integer.MAX_VALUE</code>
+	 *             If <code>m > Integer.MAX_VALUE</code>
 	 */
-	public static Long discreteLogBabyGiant(long n, long target, long m, long upperOrder, boolean generateBoth)
-			throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException, ArithmeticException {
-		return MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, generateBoth, true);
+	public static long[] modPowers(long n, long m) throws InvalidModulusException, ArithmeticException {
+		return MathUtil.modPowers(n, m, 0L, m);
 	}
 
 	/**
+	 * Note that this function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in
+	 * math. <br>
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>Result.length == end - begin</code> <br>
+	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>(i + begin)</sup> (mod m))</code>
+	 * 
 	 * @param n
 	 *            the given number
-	 * 
-	 * @param target
-	 *            the given target
 	 * 
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @param upperOrder
-	 *            the given upperbound on the multiplicative order of the given number
+	 * @param begin
+	 *            the given begin power
 	 * 
-	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
-	 *         <code>p</code> exists and <code>null</code> otherwise.
+	 * @param end
+	 *            the given end power
+	 * 
+	 * @return The resulting integer array.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(upperOrder < 0) || (m < upperOrder)</code>
-	 * 
-	 * @throws UndefinedInverseException
-	 *             If <code>gcd(n, m) != 1</code>
+	 *             If <code>begin > end</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>(((long) Math.sqrt(upperOrder)) + 1) > Integer.MAX_VALUE</code>
+	 *             If <code>(end - begin) > Integer.MAX_VALUE</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>(begin < 0) && ((n (mod m) == 0) || (gcd(n, m) != 1))</code>
 	 */
-	public static Long discreteLogBabyGiant(long n, long target, long m, long upperOrder)
-			throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException, ArithmeticException {
-		return MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, true);
+	public static int[] modPowers(int n, int m, int begin, int end)
+			throws InvalidModulusException, IllegalArgumentException, ArithmeticException, UndefinedInverseException {
+		if (m < 1) {
+			throw new InvalidModulusException();
+		}
+		// m >= 1
+		// i.e., m > 0
+
+		// Compute the resulting array length.
+		final int length = MathUtil.powersLength(begin, end);
+		// (begin <= end) && ((end - begin) <= Integer.MAX_VALUE)
+
+		// Fix n to be in [0, m - 1] \cap \doubleZ.
+		n = (int) MathUtil.modFixedInput(n, m);
+
+		// Create the resulting integer array and handle the simple special cases.
+		final int[] result = new int[length];
+		if (length == 0) {
+			// Nothing to do here.
+			return result;
+		}
+		// length != 0
+		// i.e., length > 0
+		if (n < 2) { // i.e., (n == 0) || (n == 1)
+			if (n == 0) {
+				if (begin < 0) {
+					throw new UndefinedInverseException();
+				}
+				// begin >= 0
+
+				/**
+				 * This case is needed since 0 to any positive power is 0 and so any non-zero assignment of
+				 * <code>result[i]</code> will be wrong in this case. Furthermore, note that we are defining
+				 * <code>0<sup>0</sup> == 0</code> here even though it is undefined in math.
+				 */
+				return result;
+			}
+			// n != 0
+			// i.e., n == 1
+			/*
+			 * This case is only an optimization since 1 to any power is 1 and so the loop will do extra
+			 * unnecessary work to arrive at the same result.
+			 */
+			Arrays.fill(result, 1);
+			return result;
+		}
+		// n >= 2
+		// i.e., (1 < n) && (n <= m - 1) && (m > 2)
+		if (n == m - 1) { // i.e., n == -1 (mod m)
+			/*
+			 * This case is only an optimization since -1 to any even power is 1 and otherwise is -1. So the
+			 * loop will do extra unnecessary work to arrive at the same result.
+			 */
+			/**
+			 * It's fine to do <code>(begin &= 1) == 0</code> instead of <code>(begin & 1) == 0</code> since we
+			 * don't need the value of <code>begin</code> to remain unchanged. Note that the difference is the
+			 * <code>&=</code> instead of the <code>&</code> which will mutate <code>begin</code>.
+			 */
+			boolean evenPow = ((begin &= 1) == 0); // i.e., MathUtil.isEven(begin)
+			for (int i = 0; i != length; ++i, evenPow = !evenPow) {
+				result[i] = evenPow ? 1 : n;
+			}
+			return result;
+		}
+		// n != m - 1
+		// i.e., (1 < n) && (n < m - 1)
+
+		// Fix n to be in [-m / 2, m / 2] \cap \doubleZ.
+		n = (int) MathUtil.modMinFixedInput(n, m);
+
+		// Fill and return the resulting int array.
+		int n_to_i = MathUtil.modPow(n, begin, m);
+		for (int i = 0; i != length; ++i, n_to_i = (int) MathUtil.modMultFixedInput(n_to_i, n, m)) {
+			/**
+			 * Don't do <code>(n_to_i < 0) ? (n_to_i += m) : n_to_i</code> since we want to maintain the
+			 * following invariant <code>|n_to_i| <= (m / 2)</code>. Note that the difference is the
+			 * <code>+=</code> instead of the <code>+</code> which will set <code>n_to_i</code> to
+			 * <code>n_to_i (mod m)</code> which may violate the invariant.
+			 */
+			result[i] = (n_to_i < 0) ? (n_to_i + m) : n_to_i;
+		}
+		return result;
 	}
 
 	/**
+	 * Note that this function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in
+	 * math. <br>
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>Result.length == m</code> <br>
+	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>i</sup> (mod m))</code>
+	 * 
 	 * @param n
 	 *            the given number
-	 * 
-	 * @param target
-	 *            the given target
 	 * 
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
-	 *         <code>p</code> exists and <code>null</code> otherwise.
+	 * @return The resulting integer array.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
-	 * 
-	 * @throws UndefinedInverseException
-	 *             If <code>gcd(n, m) != 1</code>
-	 * 
-	 * @throws ArithmeticException
-	 *             If <code>(((long) Math.sqrt(m)) + 1) > Integer.MAX_VALUE</code>
 	 */
-	public static Long discreteLogBabyGiant(long n, long target, long m)
-			throws InvalidModulusException, UndefinedInverseException, ArithmeticException {
-		return MathUtil.discreteLogBabyGiant(n, target, m, m);
+	public static int[] modPowers(int n, int m) throws InvalidModulusException {
+		return MathUtil.modPowers(n, m, 0, m);
 	}
 
 	/**
+	 * Note that this function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in
+	 * math. <br>
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>Result.length == end - begin</code> <br>
+	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>(i + begin)</sup> (mod m))</code>
+	 * 
 	 * @param n
 	 *            the given number
-	 * 
-	 * @param target
-	 *            the given target
 	 * 
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @param upperOrder
-	 *            the given upperbound on the multiplicative order of the given number
+	 * @param begin
+	 *            the given begin power
 	 * 
-	 * @param generateBoth
-	 *            specifies whether both the babylist and the giantlist should be generated and stored
-	 *            simultaneously instead of fully generating the babylist first and then generating the
-	 *            giantlist in-place
+	 * @param end
+	 *            the given end power
 	 * 
-	 * @param hash
-	 *            specifies whether the data structure used to store the lists, should be a
-	 *            <code>HashMap</code> instead of a <code>TreeMap</code>
-	 * 
-	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
-	 *         <code>p</code> exists and <code>null</code> otherwise.
+	 * @return The resulting short array.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(upperOrder < 0) || (m < upperOrder)</code>
+	 *             If <code>begin > end</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>gcd(n, m) != 1</code>
+	 *             If <code>(begin < 0) && ((n (mod m) == 0) || (gcd(n, m) != 1))</code>
 	 */
-	public static Integer discreteLogBabyGiant(int n, int target, int m, int upperOrder, boolean generateBoth,
-			boolean hash) throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException {
-		final Long result = MathUtil.discreteLogBabyGiant((long) n, (long) target, (long) m, (long) upperOrder,
-				generateBoth, hash);
-		return ((result == null) ? null : result.intValue());
-	}
-
-	/**
-	 * @param n
-	 *            the given number
-	 * 
-	 * @param target
-	 *            the given target
-	 * 
-	 * @param m
-	 *            the given modulus
-	 * 
-	 * @param upperOrder
-	 *            the given upperbound on the multiplicative order of the given number
-	 * 
-	 * @param generateBoth
-	 *            specifies whether both the babylist and the giantlist should be generated and stored
-	 *            simultaneously instead of fully generating the babylist first and then generating the
-	 *            giantlist in-place
-	 * 
-	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
-	 *         <code>p</code> exists and <code>null</code> otherwise.
-	 * 
-	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
-	 * 
-	 * @throws IllegalArgumentException
-	 *             If <code>(upperOrder < 0) || (m < upperOrder)</code>
-	 * 
-	 * @throws UndefinedInverseException
-	 *             If <code>gcd(n, m) != 1</code>
-	 */
-	public static Integer discreteLogBabyGiant(int n, int target, int m, int upperOrder, boolean generateBoth)
+	public static short[] modPowers(short n, short m, short begin, short end)
 			throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException {
-		return MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, generateBoth, true);
+		if (m < 1) {
+			throw new InvalidModulusException();
+		}
+		// m >= 1
+		// i.e., m > 0
+
+		// Compute the resulting array length.
+		final int length = MathUtil.powersLength(begin, end);
+		// (begin <= end) && ((end - begin) <= Integer.MAX_VALUE)
+
+		// Fix n to be in [0, m - 1] \cap \doubleZ.
+		n = (short) MathUtil.modFixedInput(n, m);
+
+		// Create the resulting short array and handle the simple special cases.
+		final short[] result = new short[length];
+		if (length == 0) {
+			// Nothing to do here.
+			return result;
+		}
+		// length != 0
+		// i.e., length > 0
+		if (n < 2) { // i.e., (n == 0) || (n == 1)
+			if (n == 0) {
+				if (begin < 0) {
+					throw new UndefinedInverseException();
+				}
+				// begin >= 0
+
+				/**
+				 * This case is needed since 0 to any positive power is 0 and so any non-zero assignment of
+				 * <code>result[i]</code> will be wrong in this case. Furthermore, note that we are defining
+				 * <code>0<sup>0</sup> == 0</code> here even though it is undefined in math.
+				 */
+				return result;
+			}
+			// n != 0
+			// i.e., n == 1
+			/*
+			 * This case is only an optimization since 1 to any power is 1 and so the loop will do extra
+			 * unnecessary work to arrive at the same result.
+			 */
+			Arrays.fill(result, (short) 1);
+			return result;
+		}
+		// n >= 2
+		// i.e., (1 < n) && (n <= m - 1) && (m > 2)
+		if (n == m - 1) { // i.e., n == -1 (mod m)
+			/*
+			 * This case is only an optimization since -1 to any even power is 1 and otherwise is -1. So the
+			 * loop will do extra unnecessary work to arrive at the same result.
+			 */
+			/**
+			 * It's fine to do <code>(begin &= 1) == 0</code> instead of <code>(begin & 1) == 0</code> since we
+			 * don't need the value of <code>begin</code> to remain unchanged. Note that the difference is the
+			 * <code>&=</code> instead of the <code>&</code> which will mutate <code>begin</code>.
+			 */
+			boolean evenPow = ((begin &= 1) == 0); // i.e., MathUtil.isEven(begin)
+			for (int i = 0; i != length; ++i, evenPow = !evenPow) {
+				result[i] = evenPow ? 1 : n;
+			}
+			return result;
+		}
+		// n != m - 1
+		// i.e., (1 < n) && (n < m - 1)
+
+		// Fix n to be in [-m / 2, m / 2] \cap \doubleZ.
+		n = (short) MathUtil.modMinFixedInput(n, m);
+
+		// Fill and return the resulting short array.
+		short n_to_i = MathUtil.modPow(n, begin, m);
+		for (int i = 0; i != length; ++i, n_to_i = (short) MathUtil.modMultFixedInput(n_to_i, n, m)) {
+			/**
+			 * Don't do <code>(n_to_i < 0) ? (n_to_i += m) : n_to_i</code> since we want to maintain the
+			 * following invariant <code>|n_to_i| <= (m / 2)</code>. Note that the difference is the
+			 * <code>+=</code> instead of the <code>+</code> which will set <code>n_to_i</code> to
+			 * <code>n_to_i (mod m)</code> which may violate the invariant.
+			 */
+			result[i] = (short) ((n_to_i < 0) ? (n_to_i + m) : n_to_i);
+		}
+		return result;
 	}
 
 	/**
+	 * Note that this function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in
+	 * math. <br>
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>Result.length == m</code> <br>
+	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>i</sup> (mod m))</code>
+	 * 
 	 * @param n
 	 *            the given number
-	 * 
-	 * @param target
-	 *            the given target
 	 * 
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @param upperOrder
-	 *            the given upperbound on the multiplicative order of the given number
+	 * @return The resulting short array.
 	 * 
-	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
-	 *         <code>p</code> exists and <code>null</code> otherwise.
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 */
+	public static short[] modPowers(short n, short m) throws InvalidModulusException {
+		return MathUtil.modPowers(n, m, (short) 0, m);
+	}
+
+	/**
+	 * Note that this function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in
+	 * math. <br>
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>Result.length == end - begin</code> <br>
+	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>(i + begin)</sup> (mod m))</code>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param begin
+	 *            the given begin power
+	 * 
+	 * @param end
+	 *            the given end power
+	 * 
+	 * @return The resulting byte array.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(upperOrder < 0) || (m < upperOrder)</code>
+	 *             If <code>begin > end</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>gcd(n, m) != 1</code>
+	 *             If <code>(begin < 0) && ((n (mod m) == 0) || (gcd(n, m) != 1))</code>
 	 */
-	public static Integer discreteLogBabyGiant(int n, int target, int m, int upperOrder)
+	public static byte[] modPowers(byte n, byte m, byte begin, byte end)
 			throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException {
-		return MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, true);
+		if (m < 1) {
+			throw new InvalidModulusException();
+		}
+		// m >= 1
+		// i.e., m > 0
+
+		// Compute the resulting array length.
+		final int length = MathUtil.powersLength(begin, end);
+		// (begin <= end) && ((end - begin) <= Integer.MAX_VALUE)
+
+		// Fix n to be in [0, m - 1] \cap \doubleZ.
+		n = (byte) MathUtil.modFixedInput(n, m);
+
+		// Create the resulting byte array and handle the simple special cases.
+		final byte[] result = new byte[length];
+		if (length == 0) {
+			// Nothing to do here.
+			return result;
+		}
+		// length != 0
+		// i.e., length > 0
+		if (n < 2) { // i.e., (n == 0) || (n == 1)
+			if (n == 0) {
+				if (begin < 0) {
+					throw new UndefinedInverseException();
+				}
+				// begin >= 0
+
+				/**
+				 * This case is needed since 0 to any positive power is 0 and so any non-zero assignment of
+				 * <code>result[i]</code> will be wrong in this case. Furthermore, note that we are defining
+				 * <code>0<sup>0</sup> == 0</code> here even though it is undefined in math.
+				 */
+				return result;
+			}
+			// n != 0
+			// i.e., n == 1
+			/*
+			 * This case is only an optimization since 1 to any power is 1 and so the loop will do extra
+			 * unnecessary work to arrive at the same result.
+			 */
+			Arrays.fill(result, (byte) 1);
+			return result;
+		}
+		// n >= 2
+		// i.e., (1 < n) && (n <= m - 1) && (m > 2)
+		if (n == m - 1) { // i.e., n == -1 (mod m)
+			/*
+			 * This case is only an optimization since -1 to any even power is 1 and otherwise is -1. So the
+			 * loop will do extra unnecessary work to arrive at the same result.
+			 */
+			/**
+			 * It's fine to do <code>(begin &= 1) == 0</code> instead of <code>(begin & 1) == 0</code> since we
+			 * don't need the value of <code>begin</code> to remain unchanged. Note that the difference is the
+			 * <code>&=</code> instead of the <code>&</code> which will mutate <code>begin</code>.
+			 */
+			boolean evenPow = ((begin &= 1) == 0); // i.e., MathUtil.isEven(begin)
+			for (int i = 0; i != length; ++i, evenPow = !evenPow) {
+				result[i] = evenPow ? 1 : n;
+			}
+			return result;
+		}
+		// n != m - 1
+		// i.e., (1 < n) && (n < m - 1)
+
+		// Fix n to be in [-m / 2, m / 2] \cap \doubleZ.
+		n = (byte) MathUtil.modMinFixedInput(n, m);
+
+		// Fill and return the resulting byte array.
+		byte n_to_i = MathUtil.modPow(n, begin, m);
+		for (int i = 0; i != length; ++i, n_to_i = (byte) MathUtil.modMultFixedInput(n_to_i, n, m)) {
+			/**
+			 * Don't do <code>(n_to_i < 0) ? (n_to_i += m) : n_to_i</code> since we want to maintain the
+			 * following invariant <code>|n_to_i| <= (m / 2)</code>. Note that the difference is the
+			 * <code>+=</code> instead of the <code>+</code> which will set <code>n_to_i</code> to
+			 * <code>n_to_i (mod m)</code> which may violate the invariant.
+			 */
+			result[i] = (byte) ((n_to_i < 0) ? (n_to_i + m) : n_to_i);
+		}
+		return result;
 	}
 
 	/**
+	 * Note that this function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in
+	 * math. <br>
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>Result.length == m</code> <br>
+	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>i</sup> (mod m))</code>
+	 * 
 	 * @param n
 	 *            the given number
-	 * 
-	 * @param target
-	 *            the given target
 	 * 
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
-	 *         <code>p</code> exists and <code>null</code> otherwise.
+	 * @return The resulting byte array.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
-	 * 
-	 * @throws UndefinedInverseException
-	 *             If <code>gcd(n, m) != 1</code>
 	 */
-	public static Integer discreteLogBabyGiant(int n, int target, int m)
-			throws InvalidModulusException, UndefinedInverseException {
-		return MathUtil.discreteLogBabyGiant(n, target, m, m);
-	}
-
-	/**
-	 * @param n
-	 *            the given number
-	 * 
-	 * @param target
-	 *            the given target
-	 * 
-	 * @param m
-	 *            the given modulus
-	 * 
-	 * @param upperOrder
-	 *            the given upperbound on the multiplicative order of the given number
-	 * 
-	 * @param generateBoth
-	 *            specifies whether both the babylist and the giantlist should be generated and stored
-	 *            simultaneously instead of fully generating the babylist first and then generating the
-	 *            giantlist in-place
-	 * 
-	 * @param hash
-	 *            specifies whether the data structure used to store the lists, should be a
-	 *            <code>HashMap</code> instead of a <code>TreeMap</code>
-	 * 
-	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
-	 *         <code>p</code> exists and <code>null</code> otherwise.
-	 * 
-	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
-	 * 
-	 * @throws IllegalArgumentException
-	 *             If <code>(upperOrder < 0) || (m < upperOrder)</code>
-	 * 
-	 * @throws UndefinedInverseException
-	 *             If <code>gcd(n, m) != 1</code>
-	 */
-	public static Short discreteLogBabyGiant(short n, short target, short m, short upperOrder, boolean generateBoth,
-			boolean hash) throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException {
-		final Long result = MathUtil.discreteLogBabyGiant((long) n, (long) target, (long) m, (long) upperOrder,
-				generateBoth, hash);
-		return ((result == null) ? null : result.shortValue());
-	}
-
-	/**
-	 * @param n
-	 *            the given number
-	 * 
-	 * @param target
-	 *            the given target
-	 * 
-	 * @param m
-	 *            the given modulus
-	 * 
-	 * @param upperOrder
-	 *            the given upperbound on the multiplicative order of the given number
-	 * 
-	 * @param generateBoth
-	 *            specifies whether both the babylist and the giantlist should be generated and stored
-	 *            simultaneously instead of fully generating the babylist first and then generating the
-	 *            giantlist in-place
-	 * 
-	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
-	 *         <code>p</code> exists and <code>null</code> otherwise.
-	 * 
-	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
-	 * 
-	 * @throws IllegalArgumentException
-	 *             If <code>(upperOrder < 0) || (m < upperOrder)</code>
-	 * 
-	 * @throws UndefinedInverseException
-	 *             If <code>gcd(n, m) != 1</code>
-	 */
-	public static Short discreteLogBabyGiant(short n, short target, short m, short upperOrder, boolean generateBoth)
-			throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException {
-		return MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, generateBoth, true);
-	}
-
-	/**
-	 * @param n
-	 *            the given number
-	 * 
-	 * @param target
-	 *            the given target
-	 * 
-	 * @param m
-	 *            the given modulus
-	 * 
-	 * @param upperOrder
-	 *            the given upperbound on the multiplicative order of the given number
-	 * 
-	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
-	 *         <code>p</code> exists and <code>null</code> otherwise.
-	 * 
-	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
-	 * 
-	 * @throws IllegalArgumentException
-	 *             If <code>(upperOrder < 0) || (m < upperOrder)</code>
-	 * 
-	 * @throws UndefinedInverseException
-	 *             If <code>gcd(n, m) != 1</code>
-	 */
-	public static Short discreteLogBabyGiant(short n, short target, short m, short upperOrder)
-			throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException {
-		return MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, true);
-	}
-
-	/**
-	 * @param n
-	 *            the given number
-	 * 
-	 * @param target
-	 *            the given target
-	 * 
-	 * @param m
-	 *            the given modulus
-	 * 
-	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
-	 *         <code>p</code> exists and <code>null</code> otherwise.
-	 * 
-	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
-	 * 
-	 * @throws UndefinedInverseException
-	 *             If <code>gcd(n, m) != 1</code>
-	 */
-	public static Short discreteLogBabyGiant(short n, short target, short m)
-			throws InvalidModulusException, UndefinedInverseException {
-		return MathUtil.discreteLogBabyGiant(n, target, m, m);
-	}
-
-	/**
-	 * @param n
-	 *            the given number
-	 * 
-	 * @param target
-	 *            the given target
-	 * 
-	 * @param m
-	 *            the given modulus
-	 * 
-	 * @param upperOrder
-	 *            the given upperbound on the multiplicative order of the given number
-	 * 
-	 * @param generateBoth
-	 *            specifies whether both the babylist and the giantlist should be generated and stored
-	 *            simultaneously instead of fully generating the babylist first and then generating the
-	 *            giantlist in-place
-	 * 
-	 * @param hash
-	 *            specifies whether the data structure used to store the lists, should be a
-	 *            <code>HashMap</code> instead of a <code>TreeMap</code>
-	 * 
-	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
-	 *         <code>p</code> exists and <code>null</code> otherwise.
-	 * 
-	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
-	 * 
-	 * @throws IllegalArgumentException
-	 *             If <code>(upperOrder < 0) || (m < upperOrder)</code>
-	 * 
-	 * @throws UndefinedInverseException
-	 *             If <code>gcd(n, m) != 1</code>
-	 */
-	public static Byte discreteLogBabyGiant(byte n, byte target, byte m, byte upperOrder, boolean generateBoth,
-			boolean hash) throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException {
-		final Long result = MathUtil.discreteLogBabyGiant((long) n, (long) target, (long) m, (long) upperOrder,
-				generateBoth, hash);
-		return ((result == null) ? null : result.byteValue());
-	}
-
-	/**
-	 * @param n
-	 *            the given number
-	 * 
-	 * @param target
-	 *            the given target
-	 * 
-	 * @param m
-	 *            the given modulus
-	 * 
-	 * @param upperOrder
-	 *            the given upperbound on the multiplicative order of the given number
-	 * 
-	 * @param generateBoth
-	 *            specifies whether both the babylist and the giantlist should be generated and stored
-	 *            simultaneously instead of fully generating the babylist first and then generating the
-	 *            giantlist in-place
-	 * 
-	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
-	 *         <code>p</code> exists and <code>null</code> otherwise.
-	 * 
-	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
-	 * 
-	 * @throws IllegalArgumentException
-	 *             If <code>(upperOrder < 0) || (m < upperOrder)</code>
-	 * 
-	 * @throws UndefinedInverseException
-	 *             If <code>gcd(n, m) != 1</code>
-	 */
-	public static Byte discreteLogBabyGiant(byte n, byte target, byte m, byte upperOrder, boolean generateBoth)
-			throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException {
-		return MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, generateBoth, true);
-	}
-
-	/**
-	 * @param n
-	 *            the given number
-	 * 
-	 * @param target
-	 *            the given target
-	 * 
-	 * @param m
-	 *            the given modulus
-	 * 
-	 * @param upperOrder
-	 *            the given upperbound on the multiplicative order of the given number
-	 * 
-	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
-	 *         <code>p</code> exists and <code>null</code> otherwise.
-	 * 
-	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
-	 * 
-	 * @throws IllegalArgumentException
-	 *             If <code>(upperOrder < 0) || (m < upperOrder)</code>
-	 * 
-	 * @throws UndefinedInverseException
-	 *             If <code>gcd(n, m) != 1</code>
-	 */
-	public static Byte discreteLogBabyGiant(byte n, byte target, byte m, byte upperOrder)
-			throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException {
-		return MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, true);
-	}
-
-	/**
-	 * @param n
-	 *            the given number
-	 * 
-	 * @param target
-	 *            the given target
-	 * 
-	 * @param m
-	 *            the given modulus
-	 * 
-	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
-	 *         <code>p</code> exists and <code>null</code> otherwise.
-	 * 
-	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
-	 * 
-	 * @throws UndefinedInverseException
-	 *             If <code>gcd(n, m) != 1</code>
-	 */
-	public static Byte discreteLogBabyGiant(byte n, byte target, byte m)
-			throws InvalidModulusException, UndefinedInverseException {
-		return MathUtil.discreteLogBabyGiant(n, target, m, m);
+	public static byte[] modPowers(byte n, byte m) throws InvalidModulusException {
+		return MathUtil.modPowers(n, m, (byte) 0, m);
 	}
 
 	/**
@@ -3353,596 +4784,784 @@ public class MathUtil {
 	}
 
 	/**
-	 * @param begin
-	 *            the given begin power
-	 * 
-	 * @param end
-	 *            the given end power
-	 * 
-	 * @return <code>end - begin</code>.
-	 * 
-	 * @throws IllegalArgumentException
-	 *             If <code>begin > end</code>
-	 * 
-	 * @throws ArithmeticException
-	 *             If <code>(end - begin) > Integer.MAX_VALUE</code>
-	 */
-	protected static int powersLength(long begin, long end) throws IllegalArgumentException, ArithmeticException {
-		// Validate begin and end.
-		if (begin > end) {
-			throw new IllegalArgumentException();
-		}
-		// begin <= end
-
-		if (begin == end) {
-			return 0;
-		}
-		// begin < end
-
-		if (begin >= 0L) {
-			// 0 <= begin < end so end - begin will not overflow a long.
-			end -= begin;
-			if (end > Integer.MAX_VALUE) {
-				throw new ArithmeticException();
-			}
-			return ((int) end);
-		}
-		// begin < 0
-
-		// Therefore, Integer.MAX_VALUE + begin will not overflow a long.
-		if (end > Integer.MAX_VALUE + begin) {
-			throw new ArithmeticException();
-		}
-		// end <= Integer.MAX_VALUE + begin
-
-		/*
-		 * Handle the degenerate case where begin's absolute value is not representable as a non-negative
-		 * long.
-		 */
-		if (begin == Long.MIN_VALUE) { // i.e., -begin == begin < 0
-			// -begin == Long.MAX_VALUE + 1 so length == end + (Long.MAX_VALUE + 1)
-			/**
-			 * Due to the above check, we know that <code>end <= Integer.MAX_VALUE + Long.MIN_VALUE</code> which
-			 * is much less than <code>0</code> and so <code>end + Long.MAX_VALUE + 1</code> will not overflow a
-			 * long.
-			 */
-			return ((int) ((end += Long.MAX_VALUE) + 1L));
-		}
-		// begin != Long.MIN_VALUE
-		// i.e., -begin > 0
-		return ((int) (end -= begin));
-	}
-
-	/**
-	 * Note that this function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in
-	 * math. <br>
-	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>Result.length == end - begin</code> <br>
-	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>(i + begin)</sup> (mod m))</code>
+	 * Compute <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
+	 * <code>p</code> exists and <code>null</code> otherwise using Shanks' Babystep-Giantstep algorithm.
+	 * <br>
+	 * Note that this function does not check for the special cases
+	 * <code>n == 0, &plusmn;1 (mod m)</code>, or <code>target == 1 (mod m)</code> and so it will still
+	 * take <code>O(bound)</code> steps even though the answer can be trivially determined in
+	 * <code>O(1)</code> steps. Therefore, for the best performance, it is recommended to check those
+	 * cases before calling this function. The reason why it does not check for the special cases, is
+	 * that this function is specified as protected and is only called by other public functions which
+	 * do handle those special cases themselves (in their own unique ways) and so checking for the
+	 * special cases here, would only serve to decrease the overall runtime. <br>
+	 * Precondition: <code>m > 2</code> <br>
+	 * Precondition: <code>(1 < n) && (n < m - 1)</code> <br>
+	 * Precondition: <code>(0 <= target) && (target <= m - 1)</code> <br>
+	 * Precondition: <code>(1 <= upperOrder) && (upperOrder <= m)</code> <br>
+	 * Precondition: <code>bound <= Integer.MAX_VALUE</code>
 	 * 
 	 * @param n
 	 *            the given number
 	 * 
+	 * @param target
+	 *            the given target
+	 * 
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @param begin
-	 *            the given begin power
+	 * @param upperOrder
+	 *            the given upperbound on the multiplicative order of the given number
 	 * 
-	 * @param end
-	 *            the given end power
+	 * @param generateBoth
+	 *            specifies whether both the babylist and the giantlist should be generated and stored
+	 *            simultaneously instead of fully generating the babylist first and then generating the
+	 *            giantlist in-place
 	 * 
-	 * @return The resulting long array.
+	 * @param hash
+	 *            specifies whether the data structure used to store the lists, should be a
+	 *            <code>HashMap</code> instead of a <code>TreeMap</code>
 	 * 
-	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 * @param bound
+	 *            <code>((long) Math.sqrt(upperOrder)) + 1</code>
 	 * 
-	 * @throws IllegalArgumentException
-	 *             If <code>begin > end</code>
+	 * @param n_inverse
+	 *            <code>n<sup>-1</sup> (mod m)</code>
 	 * 
-	 * @throws ArithmeticException
-	 *             If <code>(end - begin) > Integer.MAX_VALUE</code>
-	 * 
-	 * @throws UndefinedInverseException
-	 *             If <code>(begin < 0) && (gcd(n, m) != 1)</code>
+	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
+	 *         <code>p</code> exists and <code>null</code> otherwise.
 	 */
-	public static long[] modPowers(long n, long m, long begin, long end)
-			throws InvalidModulusException, IllegalArgumentException, ArithmeticException, UndefinedInverseException {
-		if (m < 1L) {
-			throw new InvalidModulusException();
-		}
-		// m >= 1
-		// i.e., m > 0
-
-		// Compute the resulting array length.
-		final int length = MathUtil.powersLength(begin, end);
-		// (begin <= end) && ((end - begin) <= Integer.MAX_VALUE)
-
-		// Fix n to be in [0, m - 1] \cap \doubleZ.
-		n = MathUtil.modFixedInput(n, m);
-
-		// Create the resulting long array and handle the simple special cases.
-		final long[] result = new long[length];
-		if (length == 0) {
-			// Nothing to do here.
-			return result;
-		}
-		// length != 0
-		// i.e., length > 0
-		if (n < 2L) { // i.e., (n == 0) || (n == 1)
-			if (n == 0L) {
-				/**
-				 * This case is needed since 0 to any non-zero power is 0 and so any non-zero assignment of
-				 * <code>result[i]</code> will be wrong in this case. Furthermore, note that we are defining
-				 * <code>0<sup>0</sup> == 0</code> here even though it is undefined in math.
-				 */
-				return result;
-			}
-			// n != 0
-			// i.e., n == 1
-			/*
-			 * This case is only an optimization since 1 to any power is 1 and so the loop will do extra
-			 * unnecessary work to arrive at the same result.
-			 */
-			Arrays.fill(result, 1L);
-			return result;
-		}
-		// n >= 2
-		// i.e., (1 < n) && (n <= m - 1) && (m > 2)
-		if (n == m - 1L) { // i.e., n == -1 (mod m)
-			/*
-			 * This case is only an optimization since -1 to any even power is 1 and otherwise is -1. So the
-			 * loop will do extra unnecessary work to arrive at the same result.
-			 */
-			/**
-			 * It's fine to do <code>(begin &= 1L) == 0L</code> instead of <code>(begin & 1L) == 0L</code> since
-			 * we don't need the value of <code>begin</code> to remain unchanged. Note that the difference is
-			 * the <code>&=</code> instead of the <code>&</code> which will mutate <code>begin</code>.
-			 */
-			boolean evenPow = ((begin &= 1L) == 0L); // i.e., MathUtil.isEven(begin)
-			for (int i = 0; i != length; ++i, evenPow = !evenPow) {
-				result[i] = evenPow ? 1L : n;
-			}
-			return result;
-		}
-		// n != m - 1
-		// i.e., (1 < n) && (n < m - 1)
+	protected static Long discreteLogBabyGiantFixedInput(long n, long target, long m, long upperOrder,
+			boolean generateBoth, boolean hash, long bound, long n_inverse) {
+		final long giant_factor = MathUtil.modPowFixedInput(n_inverse, bound, m);
 
 		// Fix n to be in [-m / 2, m / 2] \cap \doubleZ.
 		n = MathUtil.modMinFixedInput(n, m);
+		// Fix target to be in [-m / 2, m / 2] \cap \doubleZ.
+		target = MathUtil.modMinFixedInput(target, m);
 
-		// Fill and return the resulting long array.
-		long n_to_i = MathUtil.modPow(n, begin, m);
-		for (int i = 0; i != length; ++i, n_to_i = MathUtil.modMultFixedInput(n_to_i, n, m)) {
-			/**
-			 * Don't do <code>(n_to_i < 0L) ? (n_to_i += m) : n_to_i</code> since we want to maintain the
-			 * following invariant <code>|n_to_i| <= (m / 2)</code>. Note that the difference is the
-			 * <code>+=</code> instead of the <code>+</code> which will set <code>n_to_i</code> to
-			 * <code>n_to_i (mod m)</code> which may violate the invariant.
-			 */
-			result[i] = (n_to_i < 0L) ? (n_to_i + m) : n_to_i;
+		// Shanks' Babystep Giantstep Algorithm.
+		final Map<Long, Long> babylist = hash ? new HashMap<Long, Long>((int) bound) : new TreeMap<Long, Long>();
+		if (generateBoth) {
+			final Map<Long, Long> giantlist = hash ? new HashMap<Long, Long>((int) bound) : new TreeMap<Long, Long>();
+			Long baby_index = null, giant_index = null;
+			Long order_n = null, order_giant_factor = null;
+			for (long index = 0L, baby = 1L, giant = target; index != bound; ++index) {
+				// Update the two lists.
+				babylist.putIfAbsent(baby, index);
+				giantlist.putIfAbsent(giant, index);
+
+				// Search for match between the two lists.
+				/**
+				 * The following expressions will never overflow since the maximum value is
+				 * <code>(bound - 1) * bound + (bound - 1) == bound<sup>2</sup> - 1</code>. However, since we
+				 * enforce <code>bound <= Integer.MAX_VALUE == 2<sup>31</sup> - 1</code> then we can conclude that
+				 * <code>bound<sup>2</sup> - 1 <= (2<sup>62</sup> - 2<sup>32</sup> + 1) - 1 == 2<sup>62</sup> - 2<sup>32</sup></code>
+				 * which is much smaller than <code>2<sup>63</sup> - 1 == Long.MAX_VALUE</code>.
+				 */
+				if (baby == giant) {
+					return (index *= (bound + 1L));
+				} else if ((baby_index = babylist.get(giant)) != null) {
+					return ((index *= bound) + baby_index);
+				} else if ((giant_index = giantlist.get(baby)) != null) {
+					return ((giant_index *= bound) + index);
+				}
+
+				// Update baby and giant.
+				if (((baby = MathUtil.modMultFixedInput(baby, n, m)) == n) && (index != 0L)) {
+					/**
+					 * This will only happen when <code>n</code>'s multiplicative order has been reached and
+					 * <code>baby</code> has wrapped back to <code>n</code>. Note that for some choices of
+					 * <code>n</code> and <code>m</code>, <code>baby</code> will never wrap back to <code>1</code> but
+					 * it may wrap back to <code>n</code>.
+					 */
+					if (order_n == null) {
+						order_n = index;
+					}
+				}
+				if (((giant = MathUtil.modMultFixedInput(giant, giant_factor, m)) == target) && (index != 0L)) {
+					/**
+					 * This will only happen when <code>giant_factor</code>'s multiplicative order has been reached and
+					 * <code>giant</code> has wrapped back to <code>target</code>.
+					 */
+					if (order_giant_factor == null) {
+						order_giant_factor = index + 1L;
+					}
+				}
+				if ((order_n != null) && (order_giant_factor != null)) {
+					/**
+					 * This will only happen when the multiplicative order of both <code>n</code> and
+					 * <code>giant_factor</code> has been reached and both <code>baby</code> and <code>giant</code> have
+					 * wrapped back to their original values thus we can conclude that an answer cannot be found.
+					 */
+					break;
+				}
+			}
+			return null;
 		}
-		return result;
+		// !generateBoth so fully generate the babylist and then generate the giantlist in-place.
+		babylist.put(1L, 0L);
+		for (long baby_index = 1L, baby = n; baby_index != bound; ++baby_index) {
+			// Check for match.
+			if (baby == target) {
+				return baby_index;
+			}
+
+			// Update babylist and baby.
+			babylist.put(baby, baby_index);
+			if ((baby = MathUtil.modMultFixedInput(baby, n, m)) == n) {
+				/**
+				 * This will only happen when <code>n</code>'s multiplicative order has been reached and
+				 * <code>baby</code> has wrapped back to <code>n</code>. Note that for some choices of
+				 * <code>n</code> and <code>m</code>, <code>baby</code> will never wrap back to <code>1</code> but
+				 * it may wrap back to <code>n</code>. <code>n</code>'s multiplicative order is
+				 * <code>baby_index</code>.
+				 */
+				break;
+			}
+		}
+		Long baby_index = null;
+		for (long giant_index = 0L, giant = target; giant_index != bound; ++giant_index) {
+			// Search for match between the two lists.
+			if ((baby_index = babylist.get(giant)) != null) {
+				/**
+				 * The following expression will never overflow since its maximum value is
+				 * <code>(bound - 1) * bound + (bound - 1) == bound<sup>2</sup> - 1</code>. However, since we
+				 * enforce <code>bound <= Integer.MAX_VALUE == 2<sup>31</sup> - 1</code> then we can conclude that
+				 * <code>bound<sup>2</sup> - 1 <= (2<sup>62</sup> - 2<sup>32</sup> + 1) - 1 == 2<sup>62</sup> - 2<sup>32</sup></code>
+				 * which is much smaller than <code>2<sup>63</sup> - 1 == Long.MAX_VALUE</code>.
+				 */
+				return ((giant_index *= bound) + baby_index);
+			}
+
+			// Update giant.
+			if ((giant = MathUtil.modMultFixedInput(giant, giant_factor, m)) == target) {
+				/**
+				 * This will only happen when <code>giant_factor</code>'s multiplicative order has been reached and
+				 * <code>giant</code> has wrapped back to <code>target</code>. <code>giant_factor</code>'s
+				 * multiplicative order is <code>giant_index</code>.
+				 */
+				break;
+			}
+		}
+		return null;
 	}
 
 	/**
-	 * Note that this function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in
-	 * math. <br>
-	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>Result.length == m</code> <br>
-	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>i</sup> (mod m))</code>
+	 * Compute <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
+	 * <code>p</code> exists and <code>null</code> otherwise using Shanks' Babystep-Giantstep algorithm.
 	 * 
 	 * @param n
 	 *            the given number
 	 * 
+	 * @param target
+	 *            the given target
+	 * 
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @return The resulting long array.
+	 * @param upperOrder
+	 *            the given upperbound on the multiplicative order of the given number
+	 * 
+	 * @param generateBoth
+	 *            specifies whether both the babylist and the giantlist should be generated and stored
+	 *            simultaneously instead of fully generating the babylist first and then generating the
+	 *            giantlist in-place
+	 * 
+	 * @param hash
+	 *            specifies whether the data structure used to store the lists, should be a
+	 *            <code>HashMap</code> instead of a <code>TreeMap</code>
+	 * 
+	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
+	 *         <code>p</code> exists and <code>null</code> otherwise.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(upperOrder < 0) || (m < upperOrder)</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>gcd(n, m) != 1</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>m > Integer.MAX_VALUE</code>
+	 *             If <code>(((long) Math.sqrt(upperOrder)) + 1) > Integer.MAX_VALUE</code>
 	 */
-	public static long[] modPowers(long n, long m) throws InvalidModulusException, ArithmeticException {
-		return MathUtil.modPowers(n, m, 0L, m);
+	public static Long discreteLogBabyGiant(long n, long target, long m, long upperOrder, boolean generateBoth,
+			boolean hash)
+			throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException, ArithmeticException {
+		if (m < 1L) {
+			throw new InvalidModulusException();
+		} else if ((upperOrder < 0L) || (m < upperOrder)) {
+			throw new IllegalArgumentException();
+		}
+		// (m >= 1) && (0 <= upperOrder) && (upperOrder <= m)
+		// i.e., (m > 0) && (0 <= upperOrder) && (upperOrder <= m)
+
+		// Fix n to be in [0, m - 1] \cap \doubleZ.
+		n = MathUtil.modFixedInput(n, m);
+		// Fix target to be in [0, m - 1] \cap \doubleZ.
+		target = MathUtil.modFixedInput(target, m);
+
+		// Handle the simple special cases.
+		if (n < 2L) { // i.e., (n == 0) || (n == 1)
+			if (n == 0L) {
+				// 0 to any non-zero power is 0 and 0 to the power of 0 is undefined.
+				return ((target == 0L) ? 1L : null);
+			}
+			// n != 0
+			// i.e., n == 1
+
+			// 1 to any power is 1.
+			return ((target == 1L) ? 0L : null);
+		}
+		// n >= 2
+		// i.e., (1 < n) && (n <= m - 1) && (m > 2)
+		if (target == 1L) {
+			// n to the power of 0 is 1 except when n is 0 which we know isn't the case.
+			return 0L;
+		}
+		// target != 1
+		if (n == m - 1L) { // i.e., n == -1 (mod m)
+			// -1 to any even power is 1 (but target != 1) and otherwise is -1.
+			return ((target == n) ? 1L : null);
+		}
+		// n != m - 1
+		// i.e., (1 < n) && (n < m - 1)
+		if (upperOrder == 0L) {
+			return null;
+		}
+		// upperOrder != 0
+		// i.e., (1 <= upperOrder) && (upperOrder <= m)
+
+		// Applying Math.floor before casting to long is unnecessary and it causes a large slow down.
+		final long bound = ((long) Math.sqrt(upperOrder)) + 1L; // bound >= 2
+		if (bound > Integer.MAX_VALUE) {
+			throw new ArithmeticException();
+		}
+		// bound <= Integer.MAX_VALUE
+		return MathUtil.discreteLogBabyGiantFixedInput(n, target, m, upperOrder, generateBoth, hash, bound,
+				MathUtil.modInverseFixedInput(n, m));
 	}
 
 	/**
-	 * Note that this function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in
-	 * math. <br>
-	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>Result.length == end - begin</code> <br>
-	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>(i + begin)</sup> (mod m))</code>
+	 * <code>MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, generateBoth, true)</code>.
 	 * 
 	 * @param n
 	 *            the given number
 	 * 
+	 * @param target
+	 *            the given target
+	 * 
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @param begin
-	 *            the given begin power
+	 * @param upperOrder
+	 *            the given upperbound on the multiplicative order of the given number
 	 * 
-	 * @param end
-	 *            the given end power
+	 * @param generateBoth
+	 *            specifies whether both the babylist and the giantlist should be generated and stored
+	 *            simultaneously instead of fully generating the babylist first and then generating the
+	 *            giantlist in-place
 	 * 
-	 * @return The resulting integer array.
+	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
+	 *         <code>p</code> exists and <code>null</code> otherwise.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>begin > end</code>
+	 *             If <code>(upperOrder < 0) || (m < upperOrder)</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>gcd(n, m) != 1</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>(end - begin) > Integer.MAX_VALUE</code>
-	 * 
-	 * @throws UndefinedInverseException
-	 *             If <code>(begin < 0) && (gcd(n, m) != 1)</code>
+	 *             If <code>(((long) Math.sqrt(upperOrder)) + 1) > Integer.MAX_VALUE</code>
 	 */
-	public static int[] modPowers(int n, int m, int begin, int end)
-			throws InvalidModulusException, IllegalArgumentException, ArithmeticException, UndefinedInverseException {
-		if (m < 1) {
-			throw new InvalidModulusException();
-		}
-		// m >= 1
-		// i.e., m > 0
-
-		// Compute the resulting array length.
-		final int length = MathUtil.powersLength(begin, end);
-		// (begin <= end) && ((end - begin) <= Integer.MAX_VALUE)
-
-		// Fix n to be in [0, m - 1] \cap \doubleZ.
-		n = (int) MathUtil.modFixedInput(n, m);
-
-		// Create the resulting integer array and handle the simple special cases.
-		final int[] result = new int[length];
-		if (length == 0) {
-			// Nothing to do here.
-			return result;
-		}
-		// length != 0
-		// i.e., length > 0
-		if (n < 2) { // i.e., (n == 0) || (n == 1)
-			if (n == 0) {
-				/**
-				 * This case is needed since 0 to any non-zero power is 0 and so any non-zero assignment of
-				 * <code>result[i]</code> will be wrong in this case. Furthermore, note that we are defining
-				 * <code>0<sup>0</sup> == 0</code> here even though it is undefined in math.
-				 */
-				return result;
-			}
-			// n != 0
-			// i.e., n == 1
-			/*
-			 * This case is only an optimization since 1 to any power is 1 and so the loop will do extra
-			 * unnecessary work to arrive at the same result.
-			 */
-			Arrays.fill(result, 1);
-			return result;
-		}
-		// n >= 2
-		// i.e., (1 < n) && (n <= m - 1) && (m > 2)
-		if (n == m - 1) { // i.e., n == -1 (mod m)
-			/*
-			 * This case is only an optimization since -1 to any even power is 1 and otherwise is -1. So the
-			 * loop will do extra unnecessary work to arrive at the same result.
-			 */
-			/**
-			 * It's fine to do <code>(begin &= 1) == 0</code> instead of <code>(begin & 1) == 0</code> since we
-			 * don't need the value of <code>begin</code> to remain unchanged. Note that the difference is the
-			 * <code>&=</code> instead of the <code>&</code> which will mutate <code>begin</code>.
-			 */
-			boolean evenPow = ((begin &= 1) == 0); // i.e., MathUtil.isEven(begin)
-			for (int i = 0; i != length; ++i, evenPow = !evenPow) {
-				result[i] = evenPow ? 1 : n;
-			}
-			return result;
-		}
-		// n != m - 1
-		// i.e., (1 < n) && (n < m - 1)
-
-		// Fix n to be in [-m / 2, m / 2] \cap \doubleZ.
-		n = (int) MathUtil.modMinFixedInput(n, m);
-
-		// Fill and return the resulting int array.
-		int n_to_i = MathUtil.modPow(n, begin, m);
-		for (int i = 0; i != length; ++i, n_to_i = (int) MathUtil.modMultFixedInput(n_to_i, n, m)) {
-			/**
-			 * Don't do <code>(n_to_i < 0) ? (n_to_i += m) : n_to_i</code> since we want to maintain the
-			 * following invariant <code>|n_to_i| <= (m / 2)</code>. Note that the difference is the
-			 * <code>+=</code> instead of the <code>+</code> which will set <code>n_to_i</code> to
-			 * <code>n_to_i (mod m)</code> which may violate the invariant.
-			 */
-			result[i] = (n_to_i < 0) ? (n_to_i + m) : n_to_i;
-		}
-		return result;
+	public static Long discreteLogBabyGiant(long n, long target, long m, long upperOrder, boolean generateBoth)
+			throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException, ArithmeticException {
+		return MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, generateBoth, true);
 	}
 
 	/**
-	 * Note that this function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in
-	 * math. <br>
-	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>Result.length == m</code> <br>
-	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>i</sup> (mod m))</code>
+	 * <code>MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, true)</code>.
 	 * 
 	 * @param n
 	 *            the given number
 	 * 
-	 * @param m
-	 *            the given modulus
-	 * 
-	 * @return The resulting integer array.
-	 * 
-	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
-	 */
-	public static int[] modPowers(int n, int m) throws InvalidModulusException {
-		return MathUtil.modPowers(n, m, 0, m);
-	}
-
-	/**
-	 * Note that this function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in
-	 * math. <br>
-	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>Result.length == end - begin</code> <br>
-	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>(i + begin)</sup> (mod m))</code>
-	 * 
-	 * @param n
-	 *            the given number
+	 * @param target
+	 *            the given target
 	 * 
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @param begin
-	 *            the given begin power
+	 * @param upperOrder
+	 *            the given upperbound on the multiplicative order of the given number
 	 * 
-	 * @param end
-	 *            the given end power
-	 * 
-	 * @return The resulting short array.
+	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
+	 *         <code>p</code> exists and <code>null</code> otherwise.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>begin > end</code>
+	 *             If <code>(upperOrder < 0) || (m < upperOrder)</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>(begin < 0) && (gcd(n, m) != 1)</code>
+	 *             If <code>gcd(n, m) != 1</code>
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>(((long) Math.sqrt(upperOrder)) + 1) > Integer.MAX_VALUE</code>
 	 */
-	public static short[] modPowers(short n, short m, short begin, short end)
-			throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException {
-		if (m < 1) {
-			throw new InvalidModulusException();
-		}
-		// m >= 1
-		// i.e., m > 0
-
-		// Compute the resulting array length.
-		final int length = MathUtil.powersLength(begin, end);
-		// (begin <= end) && ((end - begin) <= Integer.MAX_VALUE)
-
-		// Fix n to be in [0, m - 1] \cap \doubleZ.
-		n = (short) MathUtil.modFixedInput(n, m);
-
-		// Create the resulting short array and handle the simple special cases.
-		final short[] result = new short[length];
-		if (length == 0) {
-			// Nothing to do here.
-			return result;
-		}
-		// length != 0
-		// i.e., length > 0
-		if (n < 2) { // i.e., (n == 0) || (n == 1)
-			if (n == 0) {
-				/**
-				 * This case is needed since 0 to any non-zero power is 0 and so any non-zero assignment of
-				 * <code>result[i]</code> will be wrong in this case. Furthermore, note that we are defining
-				 * <code>0<sup>0</sup> == 0</code> here even though it is undefined in math.
-				 */
-				return result;
-			}
-			// n != 0
-			// i.e., n == 1
-			/*
-			 * This case is only an optimization since 1 to any power is 1 and so the loop will do extra
-			 * unnecessary work to arrive at the same result.
-			 */
-			Arrays.fill(result, (short) 1);
-			return result;
-		}
-		// n >= 2
-		// i.e., (1 < n) && (n <= m - 1) && (m > 2)
-		if (n == m - 1) { // i.e., n == -1 (mod m)
-			/*
-			 * This case is only an optimization since -1 to any even power is 1 and otherwise is -1. So the
-			 * loop will do extra unnecessary work to arrive at the same result.
-			 */
-			/**
-			 * It's fine to do <code>(begin &= 1) == 0</code> instead of <code>(begin & 1) == 0</code> since we
-			 * don't need the value of <code>begin</code> to remain unchanged. Note that the difference is the
-			 * <code>&=</code> instead of the <code>&</code> which will mutate <code>begin</code>.
-			 */
-			boolean evenPow = ((begin &= 1) == 0); // i.e., MathUtil.isEven(begin)
-			for (int i = 0; i != length; ++i, evenPow = !evenPow) {
-				result[i] = evenPow ? 1 : n;
-			}
-			return result;
-		}
-		// n != m - 1
-		// i.e., (1 < n) && (n < m - 1)
-
-		// Fix n to be in [-m / 2, m / 2] \cap \doubleZ.
-		n = (short) MathUtil.modMinFixedInput(n, m);
-
-		// Fill and return the resulting short array.
-		short n_to_i = MathUtil.modPow(n, begin, m);
-		for (int i = 0; i != length; ++i, n_to_i = (short) MathUtil.modMultFixedInput(n_to_i, n, m)) {
-			/**
-			 * Don't do <code>(n_to_i < 0) ? (n_to_i += m) : n_to_i</code> since we want to maintain the
-			 * following invariant <code>|n_to_i| <= (m / 2)</code>. Note that the difference is the
-			 * <code>+=</code> instead of the <code>+</code> which will set <code>n_to_i</code> to
-			 * <code>n_to_i (mod m)</code> which may violate the invariant.
-			 */
-			result[i] = (short) ((n_to_i < 0) ? (n_to_i + m) : n_to_i);
-		}
-		return result;
+	public static Long discreteLogBabyGiant(long n, long target, long m, long upperOrder)
+			throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException, ArithmeticException {
+		return MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, true);
 	}
 
 	/**
-	 * Note that this function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in
-	 * math. <br>
-	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>Result.length == m</code> <br>
-	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>i</sup> (mod m))</code>
+	 * <code>MathUtil.discreteLogBabyGiant(n, target, m, m)</code>.
 	 * 
 	 * @param n
 	 *            the given number
 	 * 
+	 * @param target
+	 *            the given target
+	 * 
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @return The resulting short array.
+	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
+	 *         <code>p</code> exists and <code>null</code> otherwise.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>gcd(n, m) != 1</code>
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>(((long) Math.sqrt(m)) + 1) > Integer.MAX_VALUE</code>
 	 */
-	public static short[] modPowers(short n, short m) throws InvalidModulusException {
-		return MathUtil.modPowers(n, m, (short) 0, m);
+	public static Long discreteLogBabyGiant(long n, long target, long m)
+			throws InvalidModulusException, UndefinedInverseException, ArithmeticException {
+		return MathUtil.discreteLogBabyGiant(n, target, m, m);
 	}
 
 	/**
-	 * Note that this function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in
-	 * math. <br>
-	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>Result.length == end - begin</code> <br>
-	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>(i + begin)</sup> (mod m))</code>
+	 * Compute <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
+	 * <code>p</code> exists and <code>null</code> otherwise using Shanks' Babystep-Giantstep algorithm.
 	 * 
 	 * @param n
 	 *            the given number
 	 * 
+	 * @param target
+	 *            the given target
+	 * 
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @param begin
-	 *            the given begin power
+	 * @param upperOrder
+	 *            the given upperbound on the multiplicative order of the given number
 	 * 
-	 * @param end
-	 *            the given end power
+	 * @param generateBoth
+	 *            specifies whether both the babylist and the giantlist should be generated and stored
+	 *            simultaneously instead of fully generating the babylist first and then generating the
+	 *            giantlist in-place
 	 * 
-	 * @return The resulting byte array.
+	 * @param hash
+	 *            specifies whether the data structure used to store the lists, should be a
+	 *            <code>HashMap</code> instead of a <code>TreeMap</code>
+	 * 
+	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
+	 *         <code>p</code> exists and <code>null</code> otherwise.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>begin > end</code>
+	 *             If <code>(upperOrder < 0) || (m < upperOrder)</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>(begin < 0) && (gcd(n, m) != 1)</code>
+	 *             If <code>gcd(n, m) != 1</code>
 	 */
-	public static byte[] modPowers(byte n, byte m, byte begin, byte end)
-			throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException {
-		if (m < 1) {
-			throw new InvalidModulusException();
-		}
-		// m >= 1
-		// i.e., m > 0
-
-		// Compute the resulting array length.
-		final int length = MathUtil.powersLength(begin, end);
-		// (begin <= end) && ((end - begin) <= Integer.MAX_VALUE)
-
-		// Fix n to be in [0, m - 1] \cap \doubleZ.
-		n = (byte) MathUtil.modFixedInput(n, m);
-
-		// Create the resulting byte array and handle the simple special cases.
-		final byte[] result = new byte[length];
-		if (length == 0) {
-			// Nothing to do here.
-			return result;
-		}
-		// length != 0
-		// i.e., length > 0
-		if (n < 2) { // i.e., (n == 0) || (n == 1)
-			if (n == 0) {
-				/**
-				 * This case is needed since 0 to any non-zero power is 0 and so any non-zero assignment of
-				 * <code>result[i]</code> will be wrong in this case. Furthermore, note that we are defining
-				 * <code>0<sup>0</sup> == 0</code> here even though it is undefined in math.
-				 */
-				return result;
-			}
-			// n != 0
-			// i.e., n == 1
-			/*
-			 * This case is only an optimization since 1 to any power is 1 and so the loop will do extra
-			 * unnecessary work to arrive at the same result.
-			 */
-			Arrays.fill(result, (byte) 1);
-			return result;
-		}
-		// n >= 2
-		// i.e., (1 < n) && (n <= m - 1) && (m > 2)
-		if (n == m - 1) { // i.e., n == -1 (mod m)
-			/*
-			 * This case is only an optimization since -1 to any even power is 1 and otherwise is -1. So the
-			 * loop will do extra unnecessary work to arrive at the same result.
-			 */
-			/**
-			 * It's fine to do <code>(begin &= 1) == 0</code> instead of <code>(begin & 1) == 0</code> since we
-			 * don't need the value of <code>begin</code> to remain unchanged. Note that the difference is the
-			 * <code>&=</code> instead of the <code>&</code> which will mutate <code>begin</code>.
-			 */
-			boolean evenPow = ((begin &= 1) == 0); // i.e., MathUtil.isEven(begin)
-			for (int i = 0; i != length; ++i, evenPow = !evenPow) {
-				result[i] = evenPow ? 1 : n;
-			}
-			return result;
-		}
-		// n != m - 1
-		// i.e., (1 < n) && (n < m - 1)
-
-		// Fix n to be in [-m / 2, m / 2] \cap \doubleZ.
-		n = (byte) MathUtil.modMinFixedInput(n, m);
-
-		// Fill and return the resulting byte array.
-		byte n_to_i = MathUtil.modPow(n, begin, m);
-		for (int i = 0; i != length; ++i, n_to_i = (byte) MathUtil.modMultFixedInput(n_to_i, n, m)) {
-			/**
-			 * Don't do <code>(n_to_i < 0) ? (n_to_i += m) : n_to_i</code> since we want to maintain the
-			 * following invariant <code>|n_to_i| <= (m / 2)</code>. Note that the difference is the
-			 * <code>+=</code> instead of the <code>+</code> which will set <code>n_to_i</code> to
-			 * <code>n_to_i (mod m)</code> which may violate the invariant.
-			 */
-			result[i] = (byte) ((n_to_i < 0) ? (n_to_i + m) : n_to_i);
-		}
-		return result;
+	public static Integer discreteLogBabyGiant(int n, int target, int m, int upperOrder, boolean generateBoth,
+			boolean hash) throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException {
+		final Long result = MathUtil.discreteLogBabyGiant((long) n, (long) target, (long) m, (long) upperOrder,
+				generateBoth, hash);
+		return ((result == null) ? null : result.intValue());
 	}
 
 	/**
-	 * Note that this function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in
-	 * math. <br>
-	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>Result.length == m</code> <br>
-	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>i</sup> (mod m))</code>
+	 * <code>MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, generateBoth, true)</code>.
 	 * 
 	 * @param n
 	 *            the given number
 	 * 
+	 * @param target
+	 *            the given target
+	 * 
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @return The resulting byte array.
+	 * @param upperOrder
+	 *            the given upperbound on the multiplicative order of the given number
+	 * 
+	 * @param generateBoth
+	 *            specifies whether both the babylist and the giantlist should be generated and stored
+	 *            simultaneously instead of fully generating the babylist first and then generating the
+	 *            giantlist in-place
+	 * 
+	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
+	 *         <code>p</code> exists and <code>null</code> otherwise.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(upperOrder < 0) || (m < upperOrder)</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>gcd(n, m) != 1</code>
 	 */
-	public static byte[] modPowers(byte n, byte m) throws InvalidModulusException {
-		return MathUtil.modPowers(n, m, (byte) 0, m);
+	public static Integer discreteLogBabyGiant(int n, int target, int m, int upperOrder, boolean generateBoth)
+			throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException {
+		return MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, generateBoth, true);
+	}
+
+	/**
+	 * <code>MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, true)</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param target
+	 *            the given target
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param upperOrder
+	 *            the given upperbound on the multiplicative order of the given number
+	 * 
+	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
+	 *         <code>p</code> exists and <code>null</code> otherwise.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(upperOrder < 0) || (m < upperOrder)</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>gcd(n, m) != 1</code>
+	 */
+	public static Integer discreteLogBabyGiant(int n, int target, int m, int upperOrder)
+			throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException {
+		return MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, true);
+	}
+
+	/**
+	 * <code>MathUtil.discreteLogBabyGiant(n, target, m, m)</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param target
+	 *            the given target
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
+	 *         <code>p</code> exists and <code>null</code> otherwise.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>gcd(n, m) != 1</code>
+	 */
+	public static Integer discreteLogBabyGiant(int n, int target, int m)
+			throws InvalidModulusException, UndefinedInverseException {
+		return MathUtil.discreteLogBabyGiant(n, target, m, m);
+	}
+
+	/**
+	 * Compute <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
+	 * <code>p</code> exists and <code>null</code> otherwise using Shanks' Babystep-Giantstep algorithm.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param target
+	 *            the given target
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param upperOrder
+	 *            the given upperbound on the multiplicative order of the given number
+	 * 
+	 * @param generateBoth
+	 *            specifies whether both the babylist and the giantlist should be generated and stored
+	 *            simultaneously instead of fully generating the babylist first and then generating the
+	 *            giantlist in-place
+	 * 
+	 * @param hash
+	 *            specifies whether the data structure used to store the lists, should be a
+	 *            <code>HashMap</code> instead of a <code>TreeMap</code>
+	 * 
+	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
+	 *         <code>p</code> exists and <code>null</code> otherwise.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(upperOrder < 0) || (m < upperOrder)</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>gcd(n, m) != 1</code>
+	 */
+	public static Short discreteLogBabyGiant(short n, short target, short m, short upperOrder, boolean generateBoth,
+			boolean hash) throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException {
+		final Long result = MathUtil.discreteLogBabyGiant((long) n, (long) target, (long) m, (long) upperOrder,
+				generateBoth, hash);
+		return ((result == null) ? null : result.shortValue());
+	}
+
+	/**
+	 * <code>MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, generateBoth, true)</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param target
+	 *            the given target
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param upperOrder
+	 *            the given upperbound on the multiplicative order of the given number
+	 * 
+	 * @param generateBoth
+	 *            specifies whether both the babylist and the giantlist should be generated and stored
+	 *            simultaneously instead of fully generating the babylist first and then generating the
+	 *            giantlist in-place
+	 * 
+	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
+	 *         <code>p</code> exists and <code>null</code> otherwise.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(upperOrder < 0) || (m < upperOrder)</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>gcd(n, m) != 1</code>
+	 */
+	public static Short discreteLogBabyGiant(short n, short target, short m, short upperOrder, boolean generateBoth)
+			throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException {
+		return MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, generateBoth, true);
+	}
+
+	/**
+	 * <code>MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, true)</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param target
+	 *            the given target
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param upperOrder
+	 *            the given upperbound on the multiplicative order of the given number
+	 * 
+	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
+	 *         <code>p</code> exists and <code>null</code> otherwise.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(upperOrder < 0) || (m < upperOrder)</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>gcd(n, m) != 1</code>
+	 */
+	public static Short discreteLogBabyGiant(short n, short target, short m, short upperOrder)
+			throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException {
+		return MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, true);
+	}
+
+	/**
+	 * <code>MathUtil.discreteLogBabyGiant(n, target, m, m)</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param target
+	 *            the given target
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
+	 *         <code>p</code> exists and <code>null</code> otherwise.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>gcd(n, m) != 1</code>
+	 */
+	public static Short discreteLogBabyGiant(short n, short target, short m)
+			throws InvalidModulusException, UndefinedInverseException {
+		return MathUtil.discreteLogBabyGiant(n, target, m, m);
+	}
+
+	/**
+	 * Compute <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
+	 * <code>p</code> exists and <code>null</code> otherwise using Shanks' Babystep-Giantstep algorithm.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param target
+	 *            the given target
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param upperOrder
+	 *            the given upperbound on the multiplicative order of the given number
+	 * 
+	 * @param generateBoth
+	 *            specifies whether both the babylist and the giantlist should be generated and stored
+	 *            simultaneously instead of fully generating the babylist first and then generating the
+	 *            giantlist in-place
+	 * 
+	 * @param hash
+	 *            specifies whether the data structure used to store the lists, should be a
+	 *            <code>HashMap</code> instead of a <code>TreeMap</code>
+	 * 
+	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
+	 *         <code>p</code> exists and <code>null</code> otherwise.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(upperOrder < 0) || (m < upperOrder)</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>gcd(n, m) != 1</code>
+	 */
+	public static Byte discreteLogBabyGiant(byte n, byte target, byte m, byte upperOrder, boolean generateBoth,
+			boolean hash) throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException {
+		final Long result = MathUtil.discreteLogBabyGiant((long) n, (long) target, (long) m, (long) upperOrder,
+				generateBoth, hash);
+		return ((result == null) ? null : result.byteValue());
+	}
+
+	/**
+	 * <code>MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, generateBoth, true)</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param target
+	 *            the given target
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param upperOrder
+	 *            the given upperbound on the multiplicative order of the given number
+	 * 
+	 * @param generateBoth
+	 *            specifies whether both the babylist and the giantlist should be generated and stored
+	 *            simultaneously instead of fully generating the babylist first and then generating the
+	 *            giantlist in-place
+	 * 
+	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
+	 *         <code>p</code> exists and <code>null</code> otherwise.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(upperOrder < 0) || (m < upperOrder)</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>gcd(n, m) != 1</code>
+	 */
+	public static Byte discreteLogBabyGiant(byte n, byte target, byte m, byte upperOrder, boolean generateBoth)
+			throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException {
+		return MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, generateBoth, true);
+	}
+
+	/**
+	 * <code>MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, true)</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param target
+	 *            the given target
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param upperOrder
+	 *            the given upperbound on the multiplicative order of the given number
+	 * 
+	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
+	 *         <code>p</code> exists and <code>null</code> otherwise.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(upperOrder < 0) || (m < upperOrder)</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>gcd(n, m) != 1</code>
+	 */
+	public static Byte discreteLogBabyGiant(byte n, byte target, byte m, byte upperOrder)
+			throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException {
+		return MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, true);
+	}
+
+	/**
+	 * <code>MathUtil.discreteLogBabyGiant(n, target, m, m)</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param target
+	 *            the given target
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
+	 *         <code>p</code> exists and <code>null</code> otherwise.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>gcd(n, m) != 1</code>
+	 */
+	public static Byte discreteLogBabyGiant(byte n, byte target, byte m)
+			throws InvalidModulusException, UndefinedInverseException {
+		return MathUtil.discreteLogBabyGiant(n, target, m, m);
 	}
 }

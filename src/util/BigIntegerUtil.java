@@ -696,7 +696,7 @@ public class BigIntegerUtil {
 	 *             If <code>(end - begin) > Integer.MAX_VALUE</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>(begin < 0) && (gcd(n, m) != 1)</code>
+	 *             If <code>(begin < 0) && ((n (mod m) == 0) || (gcd(n, m) != 1))</code>
 	 */
 	public static BigInteger[] modPowers(BigInteger n, BigInteger m, BigInteger begin, BigInteger end)
 			throws NullPointerException, InvalidModulusException, IllegalArgumentException, ArithmeticException,
@@ -725,11 +725,17 @@ public class BigIntegerUtil {
 		n = n.mod(m);
 
 		if (n.signum() == 0) { // i.e., n == 0
+			if (begin.signum() == -1) { // i.e., begin < 0
+				throw new UndefinedInverseException();
+			}
+			// begin >= 0
+
 			/**
-			 * This case is needed since 0 to any non-zero power is 0 and so any non-zero assignment of
+			 * This case is needed since 0 to any positive power is 0 and so any non-zero assignment of
 			 * <code>result[i]</code> will be wrong in this case. Furthermore, note that we are defining
 			 * <code>0<sup>0</sup> == 0</code> here even though it is undefined in math.
 			 */
+			Arrays.fill(result, BigInteger.ZERO);
 			return result;
 		}
 		// (n != 0) && (m != 1)

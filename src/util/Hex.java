@@ -42,7 +42,7 @@ public class Hex {
 	 */
 	public static byte[] toBytes(String s) throws NullPointerException, NumberFormatException {
 		final int l = s.length();
-		if ((l & 1) != 0) {
+		if ((l & 1) != 0) { // i.e., !MathUtil.isEven(l)
 			// When the string has an odd length, prepend a '0' to it.
 			s = "0" + s;
 		}
