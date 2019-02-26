@@ -100,9 +100,637 @@ public class MathUtil {
 	 * @param n
 	 *            the given number
 	 * 
+	 * @return <code>(n < 0) ? -1 : ((n == 0) ? 0 : 1)</code>.
+	 */
+	public static int signum(long n) {
+		return ((n < 0L) ? -1 : ((n == 0L) ? 0 : 1));
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return <code>(n < 0) ? -1 : ((n == 0) ? 0 : 1)</code>.
+	 */
+	public static int signum(int n) {
+		return ((n < 0) ? -1 : ((n == 0) ? 0 : 1));
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return <code>(n < 0) ? -1 : ((n == 0) ? 0 : 1)</code>.
+	 */
+	public static int signum(short n) {
+		return ((n < 0) ? -1 : ((n == 0) ? 0 : 1));
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return <code>(n < 0) ? -1 : ((n == 0) ? 0 : 1)</code>.
+	 */
+	public static int signum(byte n) {
+		return ((n < 0) ? -1 : ((n == 0) ? 0 : 1));
+	}
+
+	/**
+	 * @param n
+	 *            the given long primitive
+	 * 
+	 * @param args
+	 *            any number of long primitives
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(n >= 0) || ((valid i) implies (args[i] >= 0))</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static void ensureNegative(long n, long... args) throws IllegalArgumentException, NullPointerException {
+		if (n >= 0L) {
+			throw new IllegalArgumentException();
+		}
+		for (int i = 0; i != args.length; ++i) {
+			if (args[i] >= 0L) {
+				throw new IllegalArgumentException();
+			}
+		}
+	}
+
+	/**
+	 * @param n
+	 *            the given int primitive
+	 * 
+	 * @param args
+	 *            any number of int primitives
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(n >= 0) || ((valid i) implies (args[i] >= 0))</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static void ensureNegative(int n, int... args) throws IllegalArgumentException, NullPointerException {
+		if (n >= 0) {
+			throw new IllegalArgumentException();
+		}
+		for (int i = 0; i != args.length; ++i) {
+			if (args[i] >= 0) {
+				throw new IllegalArgumentException();
+			}
+		}
+	}
+
+	/**
+	 * @param n
+	 *            the given short primitive
+	 * 
+	 * @param args
+	 *            any number of short primitives
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(n >= 0) || ((valid i) implies (args[i] >= 0))</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static void ensureNegative(short n, short... args) throws IllegalArgumentException, NullPointerException {
+		if (n >= 0) {
+			throw new IllegalArgumentException();
+		}
+		for (int i = 0; i != args.length; ++i) {
+			if (args[i] >= 0) {
+				throw new IllegalArgumentException();
+			}
+		}
+	}
+
+	/**
+	 * @param n
+	 *            the given byte primitive
+	 * 
+	 * @param args
+	 *            any number of byte primitives
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(n >= 0) || ((valid i) implies (args[i] >= 0))</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static void ensureNegative(byte n, byte... args) throws IllegalArgumentException, NullPointerException {
+		if (n >= 0) {
+			throw new IllegalArgumentException();
+		}
+		for (int i = 0; i != args.length; ++i) {
+			if (args[i] >= 0) {
+				throw new IllegalArgumentException();
+			}
+		}
+	}
+
+	/**
+	 * @param n
+	 *            the given long primitive
+	 * 
+	 * @param args
+	 *            any number of long primitives
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(n < 0) || ((valid i) implies (args[i] < 0))</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static void ensureNonNegative(long n, long... args) throws IllegalArgumentException, NullPointerException {
+		if (n < 0L) {
+			throw new IllegalArgumentException();
+		}
+		for (int i = 0; i != args.length; ++i) {
+			if (args[i] < 0L) {
+				throw new IllegalArgumentException();
+			}
+		}
+	}
+
+	/**
+	 * @param n
+	 *            the given int primitive
+	 * 
+	 * @param args
+	 *            any number of int primitives
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(n < 0) || ((valid i) implies (args[i] < 0))</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static void ensureNonNegative(int n, int... args) throws IllegalArgumentException, NullPointerException {
+		if (n < 0) {
+			throw new IllegalArgumentException();
+		}
+		for (int i = 0; i != args.length; ++i) {
+			if (args[i] < 0) {
+				throw new IllegalArgumentException();
+			}
+		}
+	}
+
+	/**
+	 * @param n
+	 *            the given short primitive
+	 * 
+	 * @param args
+	 *            any number of short primitives
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(n < 0) || ((valid i) implies (args[i] < 0))</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static void ensureNonNegative(short n, short... args) throws IllegalArgumentException, NullPointerException {
+		if (n < 0) {
+			throw new IllegalArgumentException();
+		}
+		for (int i = 0; i != args.length; ++i) {
+			if (args[i] < 0) {
+				throw new IllegalArgumentException();
+			}
+		}
+	}
+
+	/**
+	 * @param n
+	 *            the given byte primitive
+	 * 
+	 * @param args
+	 *            any number of byte primitives
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(n < 0) || ((valid i) implies (args[i] < 0))</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static void ensureNonNegative(byte n, byte... args) throws IllegalArgumentException, NullPointerException {
+		if (n < 0) {
+			throw new IllegalArgumentException();
+		}
+		for (int i = 0; i != args.length; ++i) {
+			if (args[i] < 0) {
+				throw new IllegalArgumentException();
+			}
+		}
+	}
+
+	/**
+	 * @param n
+	 *            the given long primitive
+	 * 
+	 * @param args
+	 *            any number of long primitives
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(n != 0) || ((valid i) implies (args[i] != 0))</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static void ensureZero(long n, long... args) throws IllegalArgumentException, NullPointerException {
+		if (n != 0L) {
+			throw new IllegalArgumentException();
+		}
+		for (int i = 0; i != args.length; ++i) {
+			if (args[i] != 0L) {
+				throw new IllegalArgumentException();
+			}
+		}
+	}
+
+	/**
+	 * @param n
+	 *            the given int primitive
+	 * 
+	 * @param args
+	 *            any number of int primitives
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(n != 0) || ((valid i) implies (args[i] != 0))</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static void ensureZero(int n, int... args) throws IllegalArgumentException, NullPointerException {
+		if (n != 0) {
+			throw new IllegalArgumentException();
+		}
+		for (int i = 0; i != args.length; ++i) {
+			if (args[i] != 0) {
+				throw new IllegalArgumentException();
+			}
+		}
+	}
+
+	/**
+	 * @param n
+	 *            the given short primitive
+	 * 
+	 * @param args
+	 *            any number of short primitives
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(n != 0) || ((valid i) implies (args[i] != 0))</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static void ensureZero(short n, short... args) throws IllegalArgumentException, NullPointerException {
+		if (n != 0) {
+			throw new IllegalArgumentException();
+		}
+		for (int i = 0; i != args.length; ++i) {
+			if (args[i] != 0) {
+				throw new IllegalArgumentException();
+			}
+		}
+	}
+
+	/**
+	 * @param n
+	 *            the given byte primitive
+	 * 
+	 * @param args
+	 *            any number of byte primitives
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(n != 0) || ((valid i) implies (args[i] != 0))</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static void ensureZero(byte n, byte... args) throws IllegalArgumentException, NullPointerException {
+		if (n != 0) {
+			throw new IllegalArgumentException();
+		}
+		for (int i = 0; i != args.length; ++i) {
+			if (args[i] != 0) {
+				throw new IllegalArgumentException();
+			}
+		}
+	}
+
+	/**
+	 * @param n
+	 *            the given long primitive
+	 * 
+	 * @param args
+	 *            any number of long primitives
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(n == 0) || ((valid i) implies (args[i] == 0))</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static void ensureNonZero(long n, long... args) throws IllegalArgumentException, NullPointerException {
+		if (n == 0L) {
+			throw new IllegalArgumentException();
+		}
+		for (int i = 0; i != args.length; ++i) {
+			if (args[i] == 0L) {
+				throw new IllegalArgumentException();
+			}
+		}
+	}
+
+	/**
+	 * @param n
+	 *            the given int primitive
+	 * 
+	 * @param args
+	 *            any number of int primitives
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(n == 0) || ((valid i) implies (args[i] == 0))</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static void ensureNonZero(int n, int... args) throws IllegalArgumentException, NullPointerException {
+		if (n == 0) {
+			throw new IllegalArgumentException();
+		}
+		for (int i = 0; i != args.length; ++i) {
+			if (args[i] == 0) {
+				throw new IllegalArgumentException();
+			}
+		}
+	}
+
+	/**
+	 * @param n
+	 *            the given short primitive
+	 * 
+	 * @param args
+	 *            any number of short primitives
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(n == 0) || ((valid i) implies (args[i] == 0))</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static void ensureNonZero(short n, short... args) throws IllegalArgumentException, NullPointerException {
+		if (n == 0) {
+			throw new IllegalArgumentException();
+		}
+		for (int i = 0; i != args.length; ++i) {
+			if (args[i] == 0) {
+				throw new IllegalArgumentException();
+			}
+		}
+	}
+
+	/**
+	 * @param n
+	 *            the given byte primitive
+	 * 
+	 * @param args
+	 *            any number of byte primitives
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(n == 0) || ((valid i) implies (args[i] == 0))</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static void ensureNonZero(byte n, byte... args) throws IllegalArgumentException, NullPointerException {
+		if (n == 0) {
+			throw new IllegalArgumentException();
+		}
+		for (int i = 0; i != args.length; ++i) {
+			if (args[i] == 0) {
+				throw new IllegalArgumentException();
+			}
+		}
+	}
+
+	/**
+	 * @param n
+	 *            the given long primitive
+	 * 
+	 * @param args
+	 *            any number of long primitives
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(n <= 0) || ((valid i) implies (args[i] <= 0))</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static void ensurePositive(long n, long... args) throws IllegalArgumentException, NullPointerException {
+		if (n <= 0L) {
+			throw new IllegalArgumentException();
+		}
+		for (int i = 0; i != args.length; ++i) {
+			if (args[i] <= 0L) {
+				throw new IllegalArgumentException();
+			}
+		}
+	}
+
+	/**
+	 * @param n
+	 *            the given int primitive
+	 * 
+	 * @param args
+	 *            any number of int primitives
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(n <= 0) || ((valid i) implies (args[i] <= 0))</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static void ensurePositive(int n, int... args) throws IllegalArgumentException, NullPointerException {
+		if (n <= 0) {
+			throw new IllegalArgumentException();
+		}
+		for (int i = 0; i != args.length; ++i) {
+			if (args[i] <= 0) {
+				throw new IllegalArgumentException();
+			}
+		}
+	}
+
+	/**
+	 * @param n
+	 *            the given short primitive
+	 * 
+	 * @param args
+	 *            any number of short primitives
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(n <= 0) || ((valid i) implies (args[i] <= 0))</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static void ensurePositive(short n, short... args) throws IllegalArgumentException, NullPointerException {
+		if (n <= 0) {
+			throw new IllegalArgumentException();
+		}
+		for (int i = 0; i != args.length; ++i) {
+			if (args[i] <= 0) {
+				throw new IllegalArgumentException();
+			}
+		}
+	}
+
+	/**
+	 * @param n
+	 *            the given byte primitive
+	 * 
+	 * @param args
+	 *            any number of byte primitives
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(n <= 0) || ((valid i) implies (args[i] <= 0))</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static void ensurePositive(byte n, byte... args) throws IllegalArgumentException, NullPointerException {
+		if (n <= 0) {
+			throw new IllegalArgumentException();
+		}
+		for (int i = 0; i != args.length; ++i) {
+			if (args[i] <= 0) {
+				throw new IllegalArgumentException();
+			}
+		}
+	}
+
+	/**
+	 * @param n
+	 *            the given long primitive
+	 * 
+	 * @param args
+	 *            any number of long primitives
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(n > 0) || ((valid i) implies (args[i] > 0))</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static void ensureNonPositive(long n, long... args) throws IllegalArgumentException, NullPointerException {
+		if (n > 0L) {
+			throw new IllegalArgumentException();
+		}
+		for (int i = 0; i != args.length; ++i) {
+			if (args[i] > 0L) {
+				throw new IllegalArgumentException();
+			}
+		}
+	}
+
+	/**
+	 * @param n
+	 *            the given int primitive
+	 * 
+	 * @param args
+	 *            any number of int primitives
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(n > 0) || ((valid i) implies (args[i] > 0))</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static void ensureNonPositive(int n, int... args) throws IllegalArgumentException, NullPointerException {
+		if (n > 0) {
+			throw new IllegalArgumentException();
+		}
+		for (int i = 0; i != args.length; ++i) {
+			if (args[i] > 0) {
+				throw new IllegalArgumentException();
+			}
+		}
+	}
+
+	/**
+	 * @param n
+	 *            the given short primitive
+	 * 
+	 * @param args
+	 *            any number of short primitives
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(n > 0) || ((valid i) implies (args[i] > 0))</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static void ensureNonPositive(short n, short... args) throws IllegalArgumentException, NullPointerException {
+		if (n > 0) {
+			throw new IllegalArgumentException();
+		}
+		for (int i = 0; i != args.length; ++i) {
+			if (args[i] > 0) {
+				throw new IllegalArgumentException();
+			}
+		}
+	}
+
+	/**
+	 * @param n
+	 *            the given byte primitive
+	 * 
+	 * @param args
+	 *            any number of byte primitives
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(n > 0) || ((valid i) implies (args[i] > 0))</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static void ensureNonPositive(byte n, byte... args) throws IllegalArgumentException, NullPointerException {
+		if (n > 0) {
+			throw new IllegalArgumentException();
+		}
+		for (int i = 0; i != args.length; ++i) {
+			if (args[i] > 0) {
+				throw new IllegalArgumentException();
+			}
+		}
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
 	 * @return <code>true</code> if and only if the given number is even.
 	 */
-	public static boolean isEven(byte n) {
+	public static boolean isEven(long n) {
+		// Odd numbers have their lowest bit set.
+		// By using bitwise and, we can check this fact.
+		return ((n &= 1L) == 0L);
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return <code>true</code> if and only if the given number is even.
+	 */
+	public static boolean isEven(int n) {
 		// Odd numbers have their lowest bit set.
 		// By using bitwise and, we can check this fact.
 		return ((n &= 1) == 0);
@@ -126,7 +754,7 @@ public class MathUtil {
 	 * 
 	 * @return <code>true</code> if and only if the given number is even.
 	 */
-	public static boolean isEven(int n) {
+	public static boolean isEven(byte n) {
 		// Odd numbers have their lowest bit set.
 		// By using bitwise and, we can check this fact.
 		return ((n &= 1) == 0);
@@ -134,54 +762,202 @@ public class MathUtil {
 
 	/**
 	 * @param n
-	 *            the given number
+	 *            the given long primitive
 	 * 
-	 * @return <code>true</code> if and only if the given number is even.
+	 * @param args
+	 *            any number of long primitives
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If
+	 *             <code>(!MathUtil.isEven(n)) || ((valid i) implies (!MathUtil.isEven(args[i])))</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
 	 */
-	public static boolean isEven(long n) {
-		// Odd numbers have their lowest bit set.
-		// By using bitwise and, we can check this fact.
-		return ((n &= 1L) == 0L);
+	public static void ensureEven(long n, long... args) throws IllegalArgumentException, NullPointerException {
+		if ((n & 1L) != 0L) { // i.e., !MathUtil.isEven(n)
+			throw new IllegalArgumentException();
+		}
+		for (int i = 0; i != args.length; ++i) {
+			if ((args[i] & 1L) != 0L) { // i.e., !MathUtil.isEven(args[i])
+				throw new IllegalArgumentException();
+			}
+		}
 	}
 
 	/**
 	 * @param n
-	 *            the given number
+	 *            the given int primitive
 	 * 
-	 * @return <code>(n < 0) ? -1 : ((n == 0) ? 0 : 1)</code>.
+	 * @param args
+	 *            any number of int primitives
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If
+	 *             <code>(!MathUtil.isEven(n)) || ((valid i) implies (!MathUtil.isEven(args[i])))</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
 	 */
-	public static int signum(byte n) {
-		return ((n < 0) ? -1 : ((n == 0) ? 0 : 1));
+	public static void ensureEven(int n, int... args) throws IllegalArgumentException, NullPointerException {
+		if ((n & 1) != 0) { // i.e., !MathUtil.isEven(n)
+			throw new IllegalArgumentException();
+		}
+		for (int i = 0; i != args.length; ++i) {
+			if ((args[i] & 1) != 0) { // i.e., !MathUtil.isEven(args[i])
+				throw new IllegalArgumentException();
+			}
+		}
 	}
 
 	/**
 	 * @param n
-	 *            the given number
+	 *            the given short primitive
 	 * 
-	 * @return <code>(n < 0) ? -1 : ((n == 0) ? 0 : 1)</code>.
+	 * @param args
+	 *            any number of short primitives
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If
+	 *             <code>(!MathUtil.isEven(n)) || ((valid i) implies (!MathUtil.isEven(args[i])))</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
 	 */
-	public static int signum(short n) {
-		return ((n < 0) ? -1 : ((n == 0) ? 0 : 1));
+	public static void ensureEven(short n, short... args) throws IllegalArgumentException, NullPointerException {
+		if ((n & 1) != 0) { // i.e., !MathUtil.isEven(n)
+			throw new IllegalArgumentException();
+		}
+		for (int i = 0; i != args.length; ++i) {
+			if ((args[i] & 1) != 0) { // i.e., !MathUtil.isEven(args[i])
+				throw new IllegalArgumentException();
+			}
+		}
 	}
 
 	/**
 	 * @param n
-	 *            the given number
+	 *            the given byte primitive
 	 * 
-	 * @return <code>(n < 0) ? -1 : ((n == 0) ? 0 : 1)</code>.
+	 * @param args
+	 *            any number of byte primitives
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If
+	 *             <code>(!MathUtil.isEven(n)) || ((valid i) implies (!MathUtil.isEven(args[i])))</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
 	 */
-	public static int signum(int n) {
-		return ((n < 0) ? -1 : ((n == 0) ? 0 : 1));
+	public static void ensureEven(byte n, byte... args) throws IllegalArgumentException, NullPointerException {
+		if ((n & 1) != 0) { // i.e., !MathUtil.isEven(n)
+			throw new IllegalArgumentException();
+		}
+		for (int i = 0; i != args.length; ++i) {
+			if ((args[i] & 1) != 0) { // i.e., !MathUtil.isEven(args[i])
+				throw new IllegalArgumentException();
+			}
+		}
 	}
 
 	/**
 	 * @param n
-	 *            the given number
+	 *            the given long primitive
 	 * 
-	 * @return <code>(n < 0) ? -1 : ((n == 0) ? 0 : 1)</code>.
+	 * @param args
+	 *            any number of long primitives
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If
+	 *             <code>(MathUtil.isEven(n)) || ((valid i) implies (MathUtil.isEven(args[i])))</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
 	 */
-	public static int signum(long n) {
-		return ((n < 0L) ? -1 : ((n == 0L) ? 0 : 1));
+	public static void ensureOdd(long n, long... args) throws IllegalArgumentException, NullPointerException {
+		if ((n & 1L) == 0L) { // i.e., MathUtil.isEven(n)
+			throw new IllegalArgumentException();
+		}
+		for (int i = 0; i != args.length; ++i) {
+			if ((args[i] & 1L) == 0L) { // i.e., MathUtil.isEven(args[i])
+				throw new IllegalArgumentException();
+			}
+		}
+	}
+
+	/**
+	 * @param n
+	 *            the given int primitive
+	 * 
+	 * @param args
+	 *            any number of int primitives
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If
+	 *             <code>(MathUtil.isEven(n)) || ((valid i) implies (MathUtil.isEven(args[i])))</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static void ensureOdd(int n, int... args) throws IllegalArgumentException, NullPointerException {
+		if ((n & 1) == 0) { // i.e., MathUtil.isEven(n)
+			throw new IllegalArgumentException();
+		}
+		for (int i = 0; i != args.length; ++i) {
+			if ((args[i] & 1) == 0) { // i.e., MathUtil.isEven(args[i])
+				throw new IllegalArgumentException();
+			}
+		}
+	}
+
+	/**
+	 * @param n
+	 *            the given short primitive
+	 * 
+	 * @param args
+	 *            any number of short primitives
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If
+	 *             <code>(MathUtil.isEven(n)) || ((valid i) implies (MathUtil.isEven(args[i])))</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static void ensureOdd(short n, short... args) throws IllegalArgumentException, NullPointerException {
+		if ((n & 1) == 0) { // i.e., MathUtil.isEven(n)
+			throw new IllegalArgumentException();
+		}
+		for (int i = 0; i != args.length; ++i) {
+			if ((args[i] & 1) == 0) { // i.e., MathUtil.isEven(args[i])
+				throw new IllegalArgumentException();
+			}
+		}
+	}
+
+	/**
+	 * @param n
+	 *            the given byte primitive
+	 * 
+	 * @param args
+	 *            any number of byte primitives
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If
+	 *             <code>(MathUtil.isEven(n)) || ((valid i) implies (MathUtil.isEven(args[i])))</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static void ensureOdd(byte n, byte... args) throws IllegalArgumentException, NullPointerException {
+		if ((n & 1) == 0) { // i.e., MathUtil.isEven(n)
+			throw new IllegalArgumentException();
+		}
+		for (int i = 0; i != args.length; ++i) {
+			if ((args[i] & 1) == 0) { // i.e., MathUtil.isEven(args[i])
+				throw new IllegalArgumentException();
+			}
+		}
 	}
 
 	/**
@@ -936,8 +1712,8 @@ public class MathUtil {
 	 * Precondition: <code>(result != null) && (result.size() != 0)</code>
 	 * 
 	 * @param result
-	 *            the map produced by <code>MathUtil.factor(long, boolean, boolean)</code> to be printed
-	 *            in the general case (i.e., absolute value of n was greater than 1)
+	 *            the map produced by <code>MathUtil.factorSqrt(long, boolean, boolean)</code> to be
+	 *            printed in the general case (i.e., absolute value of n was greater than 1)
 	 * 
 	 * @param hash
 	 *            specifies whether the data structure used to store the factors, is a
@@ -1056,7 +1832,7 @@ public class MathUtil {
 	 * 
 	 * @return The resulting Map object.
 	 */
-	public static Map<Long, Byte> factor(long n, boolean hash, boolean print) {
+	public static Map<Long, Byte> factorSqrt(long n, boolean hash, boolean print) {
 		final Map<Long, Byte> result = hash ? new HashMap<Long, Byte>() : new TreeMap<Long, Byte>();
 
 		// Factor a -1 out of n if it's negative.
@@ -1256,10 +2032,10 @@ public class MathUtil {
 	 *            specifies whether the data structure used to store the factors, should be a
 	 *            <code>HashMap</code> instead of a <code>TreeMap</code>
 	 * 
-	 * @return <code>MathUtil.factor(n, hash, false)</code>.
+	 * @return <code>MathUtil.factorSqrt(n, hash, false)</code>.
 	 */
-	public static Map<Long, Byte> factor(long n, boolean hash) {
-		return MathUtil.factor(n, hash, false);
+	public static Map<Long, Byte> factorSqrt(long n, boolean hash) {
+		return MathUtil.factorSqrt(n, hash, false);
 	}
 
 	/**
@@ -1297,18 +2073,18 @@ public class MathUtil {
 	 * @param n
 	 *            the given number
 	 * 
-	 * @return <code>MathUtil.factor(n, false)</code>.
+	 * @return <code>MathUtil.factorSqrt(n, false)</code>.
 	 */
-	public static Map<Long, Byte> factor(long n) {
-		return MathUtil.factor(n, false);
+	public static Map<Long, Byte> factorSqrt(long n) {
+		return MathUtil.factorSqrt(n, false);
 	}
 
 	/**
 	 * Precondition: <code>(result != null) && (result.size() != 0)</code>
 	 * 
 	 * @param result
-	 *            the map produced by <code>MathUtil.factor(int, boolean, boolean)</code> to be printed
-	 *            in the general case (i.e., absolute value of n was greater than 1)
+	 *            the map produced by <code>MathUtil.factorSqrt(int, boolean, boolean)</code> to be
+	 *            printed in the general case (i.e., absolute value of n was greater than 1)
 	 * 
 	 * @param hash
 	 *            specifies whether the data structure used to store the factors, is a
@@ -1427,7 +2203,7 @@ public class MathUtil {
 	 * 
 	 * @return The resulting Map object.
 	 */
-	public static Map<Integer, Byte> factor(int n, boolean hash, boolean print) {
+	public static Map<Integer, Byte> factorSqrt(int n, boolean hash, boolean print) {
 		final Map<Integer, Byte> result = hash ? new HashMap<Integer, Byte>() : new TreeMap<Integer, Byte>();
 
 		// Factor a -1 out of n if it's negative.
@@ -1627,10 +2403,10 @@ public class MathUtil {
 	 *            specifies whether the data structure used to store the factors, should be a
 	 *            <code>HashMap</code> instead of a <code>TreeMap</code>
 	 * 
-	 * @return <code>MathUtil.factor(n, hash, false)</code>.
+	 * @return <code>MathUtil.factorSqrt(n, hash, false)</code>.
 	 */
-	public static Map<Integer, Byte> factor(int n, boolean hash) {
-		return MathUtil.factor(n, hash, false);
+	public static Map<Integer, Byte> factorSqrt(int n, boolean hash) {
+		return MathUtil.factorSqrt(n, hash, false);
 	}
 
 	/**
@@ -1668,17 +2444,17 @@ public class MathUtil {
 	 * @param n
 	 *            the given number
 	 * 
-	 * @return <code>MathUtil.factor(n, false)</code>.
+	 * @return <code>MathUtil.factorSqrt(n, false)</code>.
 	 */
-	public static Map<Integer, Byte> factor(int n) {
-		return MathUtil.factor(n, false);
+	public static Map<Integer, Byte> factorSqrt(int n) {
+		return MathUtil.factorSqrt(n, false);
 	}
 
 	/**
 	 * Precondition: <code>(result != null) && (result.size() != 0)</code>
 	 * 
 	 * @param result
-	 *            the map produced by <code>MathUtil.factor(short, boolean, boolean)</code> to be
+	 *            the map produced by <code>MathUtil.factorSqrt(short, boolean, boolean)</code> to be
 	 *            printed in the general case (i.e., absolute value of n was greater than 1)
 	 * 
 	 * @param hash
@@ -1798,7 +2574,7 @@ public class MathUtil {
 	 * 
 	 * @return The resulting Map object.
 	 */
-	public static Map<Short, Byte> factor(short n, boolean hash, boolean print) {
+	public static Map<Short, Byte> factorSqrt(short n, boolean hash, boolean print) {
 		final Map<Short, Byte> result = hash ? new HashMap<Short, Byte>() : new TreeMap<Short, Byte>();
 
 		// Factor a -1 out of n if it's negative.
@@ -1998,10 +2774,10 @@ public class MathUtil {
 	 *            specifies whether the data structure used to store the factors, should be a
 	 *            <code>HashMap</code> instead of a <code>TreeMap</code>
 	 * 
-	 * @return <code>MathUtil.factor(n, hash, false)</code>.
+	 * @return <code>MathUtil.factorSqrt(n, hash, false)</code>.
 	 */
-	public static Map<Short, Byte> factor(short n, boolean hash) {
-		return MathUtil.factor(n, hash, false);
+	public static Map<Short, Byte> factorSqrt(short n, boolean hash) {
+		return MathUtil.factorSqrt(n, hash, false);
 	}
 
 	/**
@@ -2039,18 +2815,18 @@ public class MathUtil {
 	 * @param n
 	 *            the given number
 	 * 
-	 * @return <code>MathUtil.factor(n, false)</code>.
+	 * @return <code>MathUtil.factorSqrt(n, false)</code>.
 	 */
-	public static Map<Short, Byte> factor(short n) {
-		return MathUtil.factor(n, false);
+	public static Map<Short, Byte> factorSqrt(short n) {
+		return MathUtil.factorSqrt(n, false);
 	}
 
 	/**
 	 * Precondition: <code>(result != null) && (result.size() != 0)</code>
 	 * 
 	 * @param result
-	 *            the map produced by <code>MathUtil.factor(byte, boolean, boolean)</code> to be printed
-	 *            in the general case (i.e., absolute value of n was greater than 1)
+	 *            the map produced by <code>MathUtil.factorSqrt(byte, boolean, boolean)</code> to be
+	 *            printed in the general case (i.e., absolute value of n was greater than 1)
 	 * 
 	 * @param hash
 	 *            specifies whether the data structure used to store the factors, is a
@@ -2169,7 +2945,7 @@ public class MathUtil {
 	 * 
 	 * @return The resulting Map object.
 	 */
-	public static Map<Byte, Byte> factor(byte n, boolean hash, boolean print) {
+	public static Map<Byte, Byte> factorSqrt(byte n, boolean hash, boolean print) {
 		final Map<Byte, Byte> result = hash ? new HashMap<Byte, Byte>() : new TreeMap<Byte, Byte>();
 
 		// Factor a -1 out of n if it's negative.
@@ -2369,10 +3145,10 @@ public class MathUtil {
 	 *            specifies whether the data structure used to store the factors, should be a
 	 *            <code>HashMap</code> instead of a <code>TreeMap</code>
 	 * 
-	 * @return <code>MathUtil.factor(n, hash, false)</code>.
+	 * @return <code>MathUtil.factorSqrt(n, hash, false)</code>.
 	 */
-	public static Map<Byte, Byte> factor(byte n, boolean hash) {
-		return MathUtil.factor(n, hash, false);
+	public static Map<Byte, Byte> factorSqrt(byte n, boolean hash) {
+		return MathUtil.factorSqrt(n, hash, false);
 	}
 
 	/**
@@ -2410,10 +3186,10 @@ public class MathUtil {
 	 * @param n
 	 *            the given number
 	 * 
-	 * @return <code>MathUtil.factor(n, false)</code>.
+	 * @return <code>MathUtil.factorSqrt(n, false)</code>.
 	 */
-	public static Map<Byte, Byte> factor(byte n) {
-		return MathUtil.factor(n, false);
+	public static Map<Byte, Byte> factorSqrt(byte n) {
+		return MathUtil.factorSqrt(n, false);
 	}
 
 	/**
