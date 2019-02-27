@@ -1190,10 +1190,11 @@ public class MathUtil {
 		 */
 		/*
 		 * Have to use BigInteger to compute y' since every intermediate result in the formula for y' may
-		 * overflow a long.
+		 * overflow a long. However, note that y' itself fits in a long, and so we can call longValue
+		 * instead of longValueExact and not worry about a potential overflow of y'.
 		 */
 		final long y = BigInteger.valueOf(gcd).subtract(BigInteger.valueOf(x).multiply(BigInteger.valueOf(abs_a)))
-				.divide(BigInteger.valueOf(b)).longValueExact();
+				.divide(BigInteger.valueOf(b)).longValue();
 		return new long[] { x *= sign_a, y, gcd };
 	}
 
@@ -4510,7 +4511,7 @@ public class MathUtil {
 			return (((p &= 1L) == 0L) ? 1L : n);
 		}
 		// n != m - 1
-		// i.e., (1 < n) && (n < m - 1)
+		// i.e., (1 < n) && (n < m - 1) && (m > 3)
 
 		/**
 		 * <code>n<sup>p</sup> (mod m)</code> is: <br>
@@ -4784,7 +4785,7 @@ public class MathUtil {
 			return result;
 		}
 		// n != m - 1
-		// i.e., (1 < n) && (n < m - 1)
+		// i.e., (1 < n) && (n < m - 1) && (m > 3)
 
 		// Fix n to be in [-m / 2, m / 2] \cap \doubleZ.
 		n = MathUtil.modMinFixedInput(n, m);
@@ -4926,7 +4927,7 @@ public class MathUtil {
 			return result;
 		}
 		// n != m - 1
-		// i.e., (1 < n) && (n < m - 1)
+		// i.e., (1 < n) && (n < m - 1) && (m > 3)
 
 		// Fix n to be in [-m / 2, m / 2] \cap \doubleZ.
 		n = (int) MathUtil.modMinFixedInput(n, m);
@@ -5062,7 +5063,7 @@ public class MathUtil {
 			return result;
 		}
 		// n != m - 1
-		// i.e., (1 < n) && (n < m - 1)
+		// i.e., (1 < n) && (n < m - 1) && (m > 3)
 
 		// Fix n to be in [-m / 2, m / 2] \cap \doubleZ.
 		n = (short) MathUtil.modMinFixedInput(n, m);
@@ -5198,7 +5199,7 @@ public class MathUtil {
 			return result;
 		}
 		// n != m - 1
-		// i.e., (1 < n) && (n < m - 1)
+		// i.e., (1 < n) && (n < m - 1) && (m > 3)
 
 		// Fix n to be in [-m / 2, m / 2] \cap \doubleZ.
 		n = (byte) MathUtil.modMinFixedInput(n, m);
@@ -5237,6 +5238,132 @@ public class MathUtil {
 	 */
 	public static byte[] modPowers(byte n, byte m) throws InvalidModulusException {
 		return MathUtil.modPowers(n, m, (byte) 0, m);
+	}
+
+	/**
+	 * Check the following trivial cases: <br>
+	 * 1. <code>n == target</code> <br>
+	 * 2. <code>(n == 0) || (n == 1)</code> <br>
+	 * 3. <code>target == 1</code> <br>
+	 * 4. <code>n == m - 1</code> <br>
+	 * Precondition: <code>m > 0</code> <br>
+	 * Precondition: <code>(0 <= n) && (n <= m - 1)</code> <br>
+	 * Precondition: <code>(0 <= target) && (target <= m - 1)</code>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param target
+	 *            the given target
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
+	 *         <code>p</code> exists and <code>null</code> otherwise. Note that this function only
+	 *         checks the trivial cases and if <code>p</code> cannot be determined from them, it returns
+	 *         <code>-1</code>.
+	 */
+	protected static Long discreteLogTrivialFixedInput(long n, long target, long m) {
+		if (n == target) {
+			return 1L;
+		}
+		// n != target
+
+		if (n < 2L) { // i.e., (n == 0) || (n == 1)
+			// i.e., ((n == 0) && (target != 0)) || ((n == 1) && (target != 1))
+			return null;
+		}
+		// n >= 2
+		// i.e., (1 < n) && (n <= m - 1) && (m > 2)
+
+		if (target == 1L) {
+			// n to the power of 0 is 1 except when n is 0 which we know isn't the case.
+			return 0L;
+		}
+		// target != 1
+
+		/**
+		 * It's fine to do <code>--m</code> instead of <code>m - 1</code> since we don't need the value of
+		 * <code>m</code> to remain unchanged.
+		 */
+		if (n == --m) { // i.e., n == -1 (mod m)
+			// -1 to any even power is 1 (but target != 1) and otherwise is -1 (but target != -1).
+			return null;
+		}
+		// n != m - 1
+		// i.e., (1 < n) && (n < m - 1) && (m > 3)
+
+		// Cannot determine the answer since it is non-trivial.
+		return -1L;
+	}
+
+	/**
+	 * Perform a linear search for <code>p</code> such that
+	 * <code>n<sup>p</sup> (mod m) == target</code>. <br>
+	 * Note that this function does not check for the special cases
+	 * <code>n == 0, &plusmn;1, target (mod m)</code>, or <code>target == 1</code> and so it will still
+	 * take <code>O(end - begin)</code> steps even though the answer can be trivially determined in
+	 * <code>O(1)</code> steps. Therefore, for the best performance, it is recommended to check those
+	 * cases before calling this function. The reason why it does not check for the special cases, is
+	 * that this function is specified as protected and is only called by other public functions which
+	 * do handle those special cases themselves (in their own unique ways) and so checking for the
+	 * special cases here, would only serve to decrease the overall runtime. <br>
+	 * Precondition: <code>m > 2</code> <br>
+	 * Precondition: <code>(1 < n) && (n < m - 1)</code> <br>
+	 * Precondition: <code>(0 <= target) && (target <= m - 1)</code> <br>
+	 * Precondition: <code>begin < end</code>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param target
+	 *            the given target
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param begin
+	 *            the given begin power
+	 * 
+	 * @param end
+	 *            the given end power
+	 * 
+	 * @param n_to_begin
+	 *            <code>n<sup>begin</sup> (mod m)</code>
+	 * 
+	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
+	 *         <code>p</code> exists and <code>null</code> otherwise.
+	 */
+	protected static Long discreteLogLinearSearchFixedInput(long n, long target, long m, long begin, long end,
+			long n_to_begin) {
+		// Fix n to be in [-m / 2, m / 2] \cap \doubleZ.
+		n = MathUtil.modMinFixedInput(n, m);
+		// Fix target to be in [-m / 2, m / 2] \cap \doubleZ.
+		target = MathUtil.modMinFixedInput(target, m);
+
+		// Iteratively compute n to the power of (i + begin) in mod m and compare the result to target.
+		long n_to_i = n_to_begin;
+		for (long i = begin; i != end; ++i) {
+			// Check for match.
+			if (n_to_i == target) {
+				return i;
+			}
+
+			// Update n_to_i.
+			if (((n_to_i = MathUtil.modMultFixedInput(n_to_i, n, m)) == n) && (i != begin)) {
+				/**
+				 * This will only happen when <code>n</code>'s multiplicative order has been reached and
+				 * <code>n_to_i</code> has wrapped back to <code>n</code>. Note that for some choices of
+				 * <code>n</code> and <code>m</code>, <code>n_to_i</code> will never wrap back to <code>1</code> but
+				 * it may wrap back to <code>n</code>. <code>n</code>'s multiplicative order is
+				 * <code>i - begin</code>.
+				 */
+				break;
+			}
+		}
+		// No power of n resulted in target.
+		return null;
 	}
 
 	/**
@@ -5289,63 +5416,21 @@ public class MathUtil {
 		target = MathUtil.modFixedInput(target, m);
 
 		// Handle the simple special cases.
-		if (n < 2L) { // i.e., (n == 0) || (n == 1)
-			if (n == 0L) {
-				// 0 to any non-zero power is 0 and 0 to the power of 0 is undefined.
-				return ((target == 0L) ? 1L : null);
-			}
-			// n != 0
-			// i.e., n == 1
-
-			// 1 to any power is 1.
-			return ((target == 1L) ? 0L : null);
+		final Long result = MathUtil.discreteLogTrivialFixedInput(n, target, m);
+		if (result != -1L) {
+			return result;
 		}
-		// n >= 2
-		// i.e., (1 < n) && (n <= m - 1) && (m > 2)
-		if (target == 1L) {
-			// n to the power of 0 is 1 except when n is 0 which we know isn't the case.
-			return 0L;
-		}
-		// target != 1
-		if (n == m - 1L) { // i.e., n == -1 (mod m)
-			// -1 to any even power is 1 (but target != 1) and otherwise is -1.
-			return ((target == n) ? 1L : null);
-		}
-		// n != m - 1
-		// i.e., (1 < n) && (n < m - 1)
+		// i.e., (1 < n) && (n < m - 1) && (m > 3) && (target != 1) && (n != target)
 		if (begin == end) {
+			/*
+			 * This case is only an optimization since the loop will never execute but extra unnecessary work is
+			 * performed to arrive at the same result.
+			 */
 			return null;
 		}
 		// begin != end
 		// i.e., begin < end
-
-		// Fix n to be in [-m / 2, m / 2] \cap \doubleZ.
-		n = MathUtil.modMinFixedInput(n, m);
-		// Fix target to be in [-m / 2, m / 2] \cap \doubleZ.
-		target = MathUtil.modMinFixedInput(target, m);
-
-		// Iteratively compute n to the power of (i + begin) in mod m and compare the result to target.
-		long n_to_i = MathUtil.modPow(n, begin, m);
-		for (long i = begin; i != end; ++i) {
-			// Check for match.
-			if (n_to_i == target) {
-				return i;
-			}
-
-			// Update n_to_i.
-			if (((n_to_i = modMultFixedInput(n_to_i, n, m)) == n) && (i != begin)) {
-				/**
-				 * This will only happen when <code>n</code>'s multiplicative order has been reached and
-				 * <code>n_to_i</code> has wrapped back to <code>n</code>. Note that for some choices of
-				 * <code>n</code> and <code>m</code>, <code>n_to_i</code> will never wrap back to <code>1</code> but
-				 * it may wrap back to <code>n</code>. <code>n</code>'s multiplicative order is
-				 * <code>i - begin</code>.
-				 */
-				break;
-			}
-		}
-		// No power of n resulted in target.
-		return null;
+		return MathUtil.discreteLogLinearSearchFixedInput(n, target, m, begin, end, MathUtil.modPow(n, begin, m));
 	}
 
 	/**
@@ -5564,7 +5649,7 @@ public class MathUtil {
 	 * <code>p</code> exists and <code>null</code> otherwise using Shanks' Babystep-Giantstep algorithm.
 	 * <br>
 	 * Note that this function does not check for the special cases
-	 * <code>n == 0, &plusmn;1 (mod m)</code>, or <code>target == 1 (mod m)</code> and so it will still
+	 * <code>n == 0, &plusmn;1, target (mod m)</code>, or <code>target == 1</code> and so it will still
 	 * take <code>O(bound)</code> steps even though the answer can be trivially determined in
 	 * <code>O(1)</code> steps. Therefore, for the best performance, it is recommended to check those
 	 * cases before calling this function. The reason why it does not check for the special cases, is
@@ -5574,8 +5659,7 @@ public class MathUtil {
 	 * Precondition: <code>m > 2</code> <br>
 	 * Precondition: <code>(1 < n) && (n < m - 1)</code> <br>
 	 * Precondition: <code>(0 <= target) && (target <= m - 1)</code> <br>
-	 * Precondition: <code>(1 <= upperOrder) && (upperOrder <= m)</code> <br>
-	 * Precondition: <code>bound <= Integer.MAX_VALUE</code>
+	 * Precondition: <code>(2 <= bound) && (bound <= Integer.MAX_VALUE)</code>
 	 * 
 	 * @param n
 	 *            the given number
@@ -5586,8 +5670,12 @@ public class MathUtil {
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @param upperOrder
-	 *            the given upperbound on the multiplicative order of the given number
+	 * @param bound
+	 *            <code>((long) Math.sqrt(upperOrder)) + 1</code> where <code>upperOrder</code> is the
+	 *            upperbound on the multiplicative order of the given number (i.e., the multiplicative
+	 *            order of <code>n</code> in <code>mod m</code> is &le; <code>upperOrder</code>)
+	 *            satisfying the following precondition:
+	 *            <code>(2 <= upperOrder) && (upperOrder <= m - 1)</code>
 	 * 
 	 * @param generateBoth
 	 *            specifies whether both the babylist and the giantlist should be generated and stored
@@ -5598,17 +5686,14 @@ public class MathUtil {
 	 *            specifies whether the data structure used to store the lists, should be a
 	 *            <code>HashMap</code> instead of a <code>TreeMap</code>
 	 * 
-	 * @param bound
-	 *            <code>((long) Math.sqrt(upperOrder)) + 1</code>
-	 * 
 	 * @param n_inverse
 	 *            <code>n<sup>-1</sup> (mod m)</code>
 	 * 
 	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
 	 *         <code>p</code> exists and <code>null</code> otherwise.
 	 */
-	protected static Long discreteLogBabyGiantFixedInput(long n, long target, long m, long upperOrder,
-			boolean generateBoth, boolean hash, long bound, long n_inverse) {
+	protected static Long discreteLogBabyGiantFixedInput(long n, long target, long m, long bound, boolean generateBoth,
+			boolean hash, long n_inverse) {
 		final long giant_factor = MathUtil.modPowFixedInput(n_inverse, bound, m);
 
 		// Fix n to be in [-m / 2, m / 2] \cap \doubleZ.
@@ -5737,7 +5822,9 @@ public class MathUtil {
 	 *            the given modulus
 	 * 
 	 * @param upperOrder
-	 *            the given upperbound on the multiplicative order of the given number
+	 *            the given upperbound on the multiplicative order of the given number (i.e., the
+	 *            multiplicative order of <code>n</code> in <code>mod m</code> is &le;
+	 *            <code>upperOrder</code>)
 	 * 
 	 * @param generateBoth
 	 *            specifies whether both the babylist and the giantlist should be generated and stored
@@ -5755,7 +5842,7 @@ public class MathUtil {
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(upperOrder < 0) || (m < upperOrder)</code>
+	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>gcd(n, m) != 1</code>
@@ -5768,11 +5855,11 @@ public class MathUtil {
 			throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException, ArithmeticException {
 		if (m < 1L) {
 			throw new InvalidModulusException();
-		} else if ((upperOrder < 0L) || (m < upperOrder)) {
+		} else if ((upperOrder < 1L) || (m - 1L < upperOrder)) {
 			throw new IllegalArgumentException();
 		}
-		// (m >= 1) && (0 <= upperOrder) && (upperOrder <= m)
-		// i.e., (m > 0) && (0 <= upperOrder) && (upperOrder <= m)
+		// (m >= 1) && (1 <= upperOrder) && (upperOrder <= m - 1)
+		// i.e., (m > 0) && (1 <= upperOrder) && (upperOrder <= m - 1)
 
 		// Fix n to be in [0, m - 1] \cap \doubleZ.
 		n = MathUtil.modFixedInput(n, m);
@@ -5780,35 +5867,17 @@ public class MathUtil {
 		target = MathUtil.modFixedInput(target, m);
 
 		// Handle the simple special cases.
-		if (n < 2L) { // i.e., (n == 0) || (n == 1)
-			if (n == 0L) {
-				// 0 to any non-zero power is 0 and 0 to the power of 0 is undefined.
-				return ((target == 0L) ? 1L : null);
-			}
-			// n != 0
-			// i.e., n == 1
-
-			// 1 to any power is 1.
-			return ((target == 1L) ? 0L : null);
+		final Long result = MathUtil.discreteLogTrivialFixedInput(n, target, m);
+		if (result != -1L) {
+			return result;
 		}
-		// n >= 2
-		// i.e., (1 < n) && (n <= m - 1) && (m > 2)
-		if (target == 1L) {
-			// n to the power of 0 is 1 except when n is 0 which we know isn't the case.
-			return 0L;
-		}
-		// target != 1
-		if (n == m - 1L) { // i.e., n == -1 (mod m)
-			// -1 to any even power is 1 (but target != 1) and otherwise is -1.
-			return ((target == n) ? 1L : null);
-		}
-		// n != m - 1
-		// i.e., (1 < n) && (n < m - 1)
-		if (upperOrder == 0L) {
+		// i.e., (1 < n) && (n < m - 1) && (m > 3) && (target != 1) && (n != target)
+		if (upperOrder == 1L) {
+			// upperOrder == 1 implies that n == 1 but we know that this isn't the case.
 			return null;
 		}
-		// upperOrder != 0
-		// i.e., (1 <= upperOrder) && (upperOrder <= m)
+		// upperOrder != 1
+		// i.e., (2 <= upperOrder) && (upperOrder <= m - 1)
 
 		// Applying Math.floor before casting to long is unnecessary and it causes a large slow down.
 		final long bound = ((long) Math.sqrt(upperOrder)) + 1L; // bound >= 2
@@ -5816,7 +5885,7 @@ public class MathUtil {
 			throw new ArithmeticException();
 		}
 		// bound <= Integer.MAX_VALUE
-		return MathUtil.discreteLogBabyGiantFixedInput(n, target, m, upperOrder, generateBoth, hash, bound,
+		return MathUtil.discreteLogBabyGiantFixedInput(n, target, m, bound, generateBoth, hash,
 				MathUtil.modInverseFixedInput(n, m));
 	}
 
@@ -5833,7 +5902,9 @@ public class MathUtil {
 	 *            the given modulus
 	 * 
 	 * @param upperOrder
-	 *            the given upperbound on the multiplicative order of the given number
+	 *            the given upperbound on the multiplicative order of the given number (i.e., the
+	 *            multiplicative order of <code>n</code> in <code>mod m</code> is &le;
+	 *            <code>upperOrder</code>)
 	 * 
 	 * @param generateBoth
 	 *            specifies whether both the babylist and the giantlist should be generated and stored
@@ -5847,7 +5918,7 @@ public class MathUtil {
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(upperOrder < 0) || (m < upperOrder)</code>
+	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>gcd(n, m) != 1</code>
@@ -5873,7 +5944,9 @@ public class MathUtil {
 	 *            the given modulus
 	 * 
 	 * @param upperOrder
-	 *            the given upperbound on the multiplicative order of the given number
+	 *            the given upperbound on the multiplicative order of the given number (i.e., the
+	 *            multiplicative order of <code>n</code> in <code>mod m</code> is &le;
+	 *            <code>upperOrder</code>)
 	 * 
 	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
 	 *         <code>p</code> exists and <code>null</code> otherwise.
@@ -5882,7 +5955,7 @@ public class MathUtil {
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(upperOrder < 0) || (m < upperOrder)</code>
+	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>gcd(n, m) != 1</code>
@@ -5896,7 +5969,7 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogBabyGiant(n, target, m, m)</code>.
+	 * <code>MathUtil.discreteLogBabyGiant(n, target, m, m - 1)</code>.
 	 * 
 	 * @param n
 	 *            the given number
@@ -5917,11 +5990,11 @@ public class MathUtil {
 	 *             If <code>gcd(n, m) != 1</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>(((long) Math.sqrt(m)) + 1) > Integer.MAX_VALUE</code>
+	 *             If <code>(((long) Math.sqrt(m - 1)) + 1) > Integer.MAX_VALUE</code>
 	 */
 	public static Long discreteLogBabyGiant(long n, long target, long m)
 			throws InvalidModulusException, UndefinedInverseException, ArithmeticException {
-		return MathUtil.discreteLogBabyGiant(n, target, m, m);
+		return MathUtil.discreteLogBabyGiant(n, target, m, m - 1L);
 	}
 
 	/**
@@ -5938,7 +6011,9 @@ public class MathUtil {
 	 *            the given modulus
 	 * 
 	 * @param upperOrder
-	 *            the given upperbound on the multiplicative order of the given number
+	 *            the given upperbound on the multiplicative order of the given number (i.e., the
+	 *            multiplicative order of <code>n</code> in <code>mod m</code> is &le;
+	 *            <code>upperOrder</code>)
 	 * 
 	 * @param generateBoth
 	 *            specifies whether both the babylist and the giantlist should be generated and stored
@@ -5956,7 +6031,7 @@ public class MathUtil {
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(upperOrder < 0) || (m < upperOrder)</code>
+	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>gcd(n, m) != 1</code>
@@ -5981,7 +6056,9 @@ public class MathUtil {
 	 *            the given modulus
 	 * 
 	 * @param upperOrder
-	 *            the given upperbound on the multiplicative order of the given number
+	 *            the given upperbound on the multiplicative order of the given number (i.e., the
+	 *            multiplicative order of <code>n</code> in <code>mod m</code> is &le;
+	 *            <code>upperOrder</code>)
 	 * 
 	 * @param generateBoth
 	 *            specifies whether both the babylist and the giantlist should be generated and stored
@@ -5995,7 +6072,7 @@ public class MathUtil {
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(upperOrder < 0) || (m < upperOrder)</code>
+	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>gcd(n, m) != 1</code>
@@ -6018,7 +6095,9 @@ public class MathUtil {
 	 *            the given modulus
 	 * 
 	 * @param upperOrder
-	 *            the given upperbound on the multiplicative order of the given number
+	 *            the given upperbound on the multiplicative order of the given number (i.e., the
+	 *            multiplicative order of <code>n</code> in <code>mod m</code> is &le;
+	 *            <code>upperOrder</code>)
 	 * 
 	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
 	 *         <code>p</code> exists and <code>null</code> otherwise.
@@ -6027,7 +6106,7 @@ public class MathUtil {
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(upperOrder < 0) || (m < upperOrder)</code>
+	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>gcd(n, m) != 1</code>
@@ -6038,7 +6117,7 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogBabyGiant(n, target, m, m)</code>.
+	 * <code>MathUtil.discreteLogBabyGiant(n, target, m, m - 1)</code>.
 	 * 
 	 * @param n
 	 *            the given number
@@ -6060,7 +6139,7 @@ public class MathUtil {
 	 */
 	public static Integer discreteLogBabyGiant(int n, int target, int m)
 			throws InvalidModulusException, UndefinedInverseException {
-		return MathUtil.discreteLogBabyGiant(n, target, m, m);
+		return MathUtil.discreteLogBabyGiant(n, target, m, m - 1);
 	}
 
 	/**
@@ -6077,7 +6156,9 @@ public class MathUtil {
 	 *            the given modulus
 	 * 
 	 * @param upperOrder
-	 *            the given upperbound on the multiplicative order of the given number
+	 *            the given upperbound on the multiplicative order of the given number (i.e., the
+	 *            multiplicative order of <code>n</code> in <code>mod m</code> is &le;
+	 *            <code>upperOrder</code>)
 	 * 
 	 * @param generateBoth
 	 *            specifies whether both the babylist and the giantlist should be generated and stored
@@ -6095,7 +6176,7 @@ public class MathUtil {
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(upperOrder < 0) || (m < upperOrder)</code>
+	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>gcd(n, m) != 1</code>
@@ -6120,7 +6201,9 @@ public class MathUtil {
 	 *            the given modulus
 	 * 
 	 * @param upperOrder
-	 *            the given upperbound on the multiplicative order of the given number
+	 *            the given upperbound on the multiplicative order of the given number (i.e., the
+	 *            multiplicative order of <code>n</code> in <code>mod m</code> is &le;
+	 *            <code>upperOrder</code>)
 	 * 
 	 * @param generateBoth
 	 *            specifies whether both the babylist and the giantlist should be generated and stored
@@ -6134,7 +6217,7 @@ public class MathUtil {
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(upperOrder < 0) || (m < upperOrder)</code>
+	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>gcd(n, m) != 1</code>
@@ -6157,7 +6240,9 @@ public class MathUtil {
 	 *            the given modulus
 	 * 
 	 * @param upperOrder
-	 *            the given upperbound on the multiplicative order of the given number
+	 *            the given upperbound on the multiplicative order of the given number (i.e., the
+	 *            multiplicative order of <code>n</code> in <code>mod m</code> is &le;
+	 *            <code>upperOrder</code>)
 	 * 
 	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
 	 *         <code>p</code> exists and <code>null</code> otherwise.
@@ -6166,7 +6251,7 @@ public class MathUtil {
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(upperOrder < 0) || (m < upperOrder)</code>
+	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>gcd(n, m) != 1</code>
@@ -6177,7 +6262,7 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogBabyGiant(n, target, m, m)</code>.
+	 * <code>MathUtil.discreteLogBabyGiant(n, target, m, (short) (m - 1))</code>.
 	 * 
 	 * @param n
 	 *            the given number
@@ -6199,7 +6284,7 @@ public class MathUtil {
 	 */
 	public static Short discreteLogBabyGiant(short n, short target, short m)
 			throws InvalidModulusException, UndefinedInverseException {
-		return MathUtil.discreteLogBabyGiant(n, target, m, m);
+		return MathUtil.discreteLogBabyGiant(n, target, m, (short) (m - 1));
 	}
 
 	/**
@@ -6216,7 +6301,9 @@ public class MathUtil {
 	 *            the given modulus
 	 * 
 	 * @param upperOrder
-	 *            the given upperbound on the multiplicative order of the given number
+	 *            the given upperbound on the multiplicative order of the given number (i.e., the
+	 *            multiplicative order of <code>n</code> in <code>mod m</code> is &le;
+	 *            <code>upperOrder</code>)
 	 * 
 	 * @param generateBoth
 	 *            specifies whether both the babylist and the giantlist should be generated and stored
@@ -6234,7 +6321,7 @@ public class MathUtil {
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(upperOrder < 0) || (m < upperOrder)</code>
+	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>gcd(n, m) != 1</code>
@@ -6259,7 +6346,9 @@ public class MathUtil {
 	 *            the given modulus
 	 * 
 	 * @param upperOrder
-	 *            the given upperbound on the multiplicative order of the given number
+	 *            the given upperbound on the multiplicative order of the given number (i.e., the
+	 *            multiplicative order of <code>n</code> in <code>mod m</code> is &le;
+	 *            <code>upperOrder</code>)
 	 * 
 	 * @param generateBoth
 	 *            specifies whether both the babylist and the giantlist should be generated and stored
@@ -6273,7 +6362,7 @@ public class MathUtil {
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(upperOrder < 0) || (m < upperOrder)</code>
+	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>gcd(n, m) != 1</code>
@@ -6296,7 +6385,9 @@ public class MathUtil {
 	 *            the given modulus
 	 * 
 	 * @param upperOrder
-	 *            the given upperbound on the multiplicative order of the given number
+	 *            the given upperbound on the multiplicative order of the given number (i.e., the
+	 *            multiplicative order of <code>n</code> in <code>mod m</code> is &le;
+	 *            <code>upperOrder</code>)
 	 * 
 	 * @return <code>p</code> such that <code>n<sup>p</sup> (mod m) == target</code> if such a
 	 *         <code>p</code> exists and <code>null</code> otherwise.
@@ -6305,7 +6396,7 @@ public class MathUtil {
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(upperOrder < 0) || (m < upperOrder)</code>
+	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>gcd(n, m) != 1</code>
@@ -6316,7 +6407,7 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogBabyGiant(n, target, m, m)</code>.
+	 * <code>MathUtil.discreteLogBabyGiant(n, target, m, (byte) (m - 1))</code>.
 	 * 
 	 * @param n
 	 *            the given number
@@ -6338,6 +6429,6 @@ public class MathUtil {
 	 */
 	public static Byte discreteLogBabyGiant(byte n, byte target, byte m)
 			throws InvalidModulusException, UndefinedInverseException {
-		return MathUtil.discreteLogBabyGiant(n, target, m, m);
+		return MathUtil.discreteLogBabyGiant(n, target, m, (byte) (m - 1));
 	}
 }
