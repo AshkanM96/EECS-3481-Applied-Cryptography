@@ -2,6 +2,7 @@ package util;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.HashMap;
 
 /**
  * Utility math methods in addition to MathUtil but mainly focused on statistical purposes.
@@ -22,6 +23,21 @@ public class StatUtil {
 	 * Default scale to be used for BigDecimal operations.
 	 */
 	public static final int DEFAULT_SCALE = 20;
+
+	/**
+	 * Factorials map.
+	 */
+	protected static HashMap<Integer, BigInteger> factorials = null;
+
+	/**
+	 * Subfactorials map.
+	 */
+	protected static HashMap<Integer, BigInteger> subfactorials = null;
+
+	/**
+	 * Fibonacci numbers map.
+	 */
+	protected static HashMap<Integer, BigInteger> fibonaccis = null;
 
 	/**
 	 * Prevent instantiation.
@@ -49,7 +65,7 @@ public class StatUtil {
 		// Compute n! in the loop and then return it.
 		BigInteger result = BigInteger.ONE;
 		for (BigInteger i = BigInteger.ONE; !i.equals(n); /* Update inside. */) {
-			// i! = i * (i - 1)!
+			// i! = i * (i - 1)! for all i >= 1
 			i = i.add(BigInteger.ONE);
 			result = result.multiply(i);
 		}
@@ -97,7 +113,7 @@ public class StatUtil {
 		// Compute n! in the loop and then return it.
 		BigInteger result = BigInteger.ONE;
 		for (long i = 1L; i != n; /* Update inside. */) {
-			// i! = i * (i - 1)!
+			// i! = i * (i - 1)! for all i >= 1
 			/**
 			 * Note that <code>BigInteger.valueOf(long)</code> calls are much cheaper than performing arithmetic
 			 * operations on a <code>BigInteger</code> since those are fully general operations for potentially
@@ -132,6 +148,64 @@ public class StatUtil {
 	}
 
 	/**
+	 * Recursively retrieve/compute_and_store <code>n factorial</code> (i.e., <code>n!</code>). <br>
+	 * Precondition: <code>StatUtil.factorials != null</code> <br>
+	 * Precondition: <code>StatUtil.factorials.get(0) == BigInteger.ONE</code> <br>
+	 * Precondition: <code>n >= 0</code>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return <code>n factorial</code> (i.e., <code>n!</code>).
+	 */
+	protected static BigInteger factorialMapFixedInput(int n) {
+		BigInteger result = StatUtil.factorials.get(n);
+		if (result == null) { // i.e., n != 0
+			// i.e., n >= 1
+
+			// Recursively retrieve/compute_and_store (n - 1)! then compute n! from it.
+			// n! = n * (n - 1)! for all n >= 1
+			// Recurse first then construct BigInteger object for optimization.
+			result = StatUtil.factorialMapFixedInput(n - 1).multiply(BigInteger.valueOf(n));
+
+			// Store n! so that it is not recomputed later.
+			StatUtil.factorials.put(n, result);
+		}
+		return result;
+	}
+
+	/**
+	 * Recursively retrieve/compute_and_store <code>n factorial</code> (i.e., <code>n!</code>).
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return <code>n factorial</code> (i.e., <code>n!</code>).
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>n < 0</code>
+	 */
+	public static BigInteger factorialMap(int n) throws IllegalArgumentException {
+		if (n < 0) {
+			throw new IllegalArgumentException();
+		} else if (n < 2) { // (n == 0) || (n == 1)
+			// (0! == 1) && (1! == 1)
+			return BigInteger.ONE;
+		}
+		// n >= 2
+
+		// Initialize StatUtil.factorials if needed. Executed at most once.
+		if (StatUtil.factorials == null) {
+			StatUtil.factorials = new HashMap<Integer, BigInteger>();
+			StatUtil.factorials.put(0, BigInteger.ONE); // Require: 0! == 1
+			StatUtil.factorials.put(1, BigInteger.ONE); // Optimization: 1! == 1
+		}
+
+		// Recursively retrieve/compute_and_store n! then return it.
+		return StatUtil.factorialMapFixedInput(n);
+	}
+
+	/**
 	 * Linearly compute <code>n subfactorial</code> (i.e., <code>!n</code>). <br>
 	 * Precondition: <code>(n != null) && (n >= 0)</code>
 	 * 
@@ -150,7 +224,7 @@ public class StatUtil {
 		// Compute !n in the loop and then return it.
 		BigInteger result = BigInteger.ZERO;
 		for (BigInteger i = BigInteger.ONE; !i.equals(n); /* Update inside. */) {
-			// !i = i * !(i - 1) + (-1)^i
+			// !i = i * !(i - 1) + (-1)^i for all i >= 1
 			result = result.multiply(i = i.add(BigInteger.ONE));
 			result = i.testBit(0) ? result.subtract(BigInteger.ONE) : result.add(BigInteger.ONE);
 		}
@@ -198,7 +272,7 @@ public class StatUtil {
 		// Compute !n in the loop and then return it.
 		BigInteger result = BigInteger.ZERO;
 		for (long i = 1L; i != n; /* Update inside. */) {
-			// !i = i * !(i - 1) + (-1)^i
+			// !i = i * !(i - 1) + (-1)^i for all i >= 1
 			/**
 			 * Note that <code>BigInteger.valueOf(long)</code> calls are much cheaper than performing arithmetic
 			 * operations on a <code>BigInteger</code> since those are fully general operations for potentially
@@ -236,6 +310,71 @@ public class StatUtil {
 		}
 		// n >= 0
 		return StatUtil.subfactorialLinearFixedInput(n);
+	}
+
+	/**
+	 * Recursively retrieve/compute_and_store <code>n subfactorial</code> (i.e., <code>!n</code>). <br>
+	 * Precondition: <code>StatUtil.subfactorials != null</code> <br>
+	 * Precondition: <code>StatUtil.subfactorials.get(0) == BigInteger.ONE</code> <br>
+	 * Precondition: <code>n >= 0</code>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return <code>n subfactorial</code> (i.e., <code>!n</code>).
+	 */
+	protected static BigInteger subfactorialMapFixedInput(int n) {
+		BigInteger result = StatUtil.subfactorials.get(n);
+		if (result == null) { // i.e., n != 0
+			// i.e., n >= 1
+
+			// Recursively retrieve/compute_and_store !(n - 1) then compute !n from it.
+			// !n = n * !(n - 1) + (-1)^n for all n >= 1
+			// Recurse first then construct BigInteger object for optimization.
+			result = StatUtil.subfactorialMapFixedInput(n - 1).multiply(BigInteger.valueOf(n));
+			/**
+			 * Don't do <code>(n &= 1) != 0</code> since we need the value of <code>n</code> to remain
+			 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
+			 * will mutate <code>n</code>.
+			 */
+			result = ((n & 1) != 0) ? result.subtract(BigInteger.ONE) : result.add(BigInteger.ONE);
+
+			// Store !n so that it is not recomputed later.
+			StatUtil.subfactorials.put(n, result);
+		}
+		return result;
+	}
+
+	/**
+	 * Recursively retrieve/compute_and_store <code>n subfactorial</code> (i.e., <code>!n</code>).
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return <code>n subfactorial</code> (i.e., <code>!n</code>).
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>n < 0</code>
+	 */
+	public static BigInteger subfactorialMap(int n) throws IllegalArgumentException {
+		if (n < 0) {
+			throw new IllegalArgumentException();
+		} else if (n < 2) { // (n == 0) || (n == 1)
+			// (!0 == 1) && (!1 == 0)
+			// The following valueOf call just retrieves BigInteger.ONE or BigInteger.ZERO.
+			return BigInteger.valueOf(1L - n);
+		}
+		// n >= 2
+
+		// Initialize StatUtil.subfactorials if needed. Executed at most once.
+		if (StatUtil.subfactorials == null) {
+			StatUtil.subfactorials = new HashMap<Integer, BigInteger>();
+			StatUtil.subfactorials.put(0, BigInteger.ONE); // Require: !0 == 1
+			StatUtil.subfactorials.put(1, BigInteger.ZERO); // Optimization: !1 == 0
+		}
+
+		// Recursively retrieve/compute_and_store !n then return it.
+		return StatUtil.subfactorialMapFixedInput(n);
 	}
 
 	/**
@@ -899,14 +1038,14 @@ public class StatUtil {
 		// i.e., n >= 1
 
 		// Compute Fn in the loop and then return it.
-		BigInteger Fi_2 = BigInteger.ZERO, Fi_1 = BigInteger.ONE, Fi = BigInteger.ONE;
+		BigInteger Fi_1 = BigInteger.ZERO, Fi = BigInteger.ONE, Fip1 = BigInteger.ONE;
 		for (BigInteger i = BigInteger.ONE; !i.equals(n); i = i.add(BigInteger.ONE)) {
-			// Fi = Fi_1 + Fi_2
-			Fi = Fi_1.add(Fi_2);
-			Fi_2 = Fi_1;
+			// Fi = Fi_1 + Fi_2 for all i >= 2
+			Fip1 = Fi.add(Fi_1);
 			Fi_1 = Fi;
+			Fi = Fip1;
 		}
-		return Fi;
+		return Fip1;
 	}
 
 	/**
@@ -948,14 +1087,14 @@ public class StatUtil {
 		 */
 
 		// Compute Fn in the loop and then return it.
-		BigInteger Fi_2 = BigInteger.ZERO, Fi_1 = BigInteger.ONE, Fi = BigInteger.ONE;
+		BigInteger Fi_1 = BigInteger.ZERO, Fi = BigInteger.ONE, Fip1 = BigInteger.ONE;
 		for (long i = 1L; i != n; ++i) {
-			// Fi = Fi_1 + Fi_2
-			Fi = Fi_1.add(Fi_2);
-			Fi_2 = Fi_1;
+			// Fi = Fi_1 + Fi_2 for all i >= 2
+			Fip1 = Fi.add(Fi_1);
 			Fi_1 = Fi;
+			Fi = Fip1;
 		}
-		return Fi;
+		return Fip1;
 	}
 
 	/**
@@ -975,5 +1114,65 @@ public class StatUtil {
 		}
 		// n >= 0
 		return StatUtil.fibonacciLinearFixedInput(n);
+	}
+
+	/**
+	 * Recursively retrieve/compute_and_store the <code>n<sup>th</sup></code> fibonacci number. <br>
+	 * Precondition: <code>StatUtil.fibonaccis != null</code> <br>
+	 * Precondition: <code>StatUtil.fibonaccis.get(0) == BigInteger.ZERO</code> <br>
+	 * Precondition: <code>StatUtil.fibonaccis.get(1) == BigInteger.ONE</code> <br>
+	 * Precondition: <code>n >= 0</code>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return The <code>n<sup>th</sup></code> fibonacci number.
+	 */
+	protected static BigInteger fibonacciMapFixedInput(int n) {
+		BigInteger result = StatUtil.fibonaccis.get(n);
+		if (result == null) { // i.e., (n != 0) && (n != 1)
+			// i.e., n >= 2
+
+			// Recursively retrieve/compute_and_store Fn_1 then compute Fn from it.
+			// Note that by recursing on n - 1, we also recursively compute (and store) Fn_2 if needed.
+			// Fn = Fn_1 + Fn_2 for all n >= 2
+			result = StatUtil.fibonacciMapFixedInput(n - 1).add(StatUtil.fibonaccis.get(n - 2));
+
+			// Store Fn so that it is not recomputed later.
+			StatUtil.fibonaccis.put(n, result);
+		}
+		return result;
+	}
+
+	/**
+	 * Recursively retrieve/compute_and_store the <code>n<sup>th</sup></code> fibonacci number.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return The <code>n<sup>th</sup></code> fibonacci number.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>n < 0</code>
+	 */
+	public static BigInteger fibonacciMap(int n) throws IllegalArgumentException {
+		if (n < 0) {
+			throw new IllegalArgumentException();
+		} else if (n < 2) { // (n == 0) || (n == 1)
+			// (F0 == 0) && (F1 == 1)
+			// The following valueOf call just retrieves BigInteger.ZERO or BigInteger.ONE.
+			return BigInteger.valueOf(n);
+		}
+		// n >= 2
+
+		// Initialize StatUtil.fibonaccis if needed. Executed at most once.
+		if (StatUtil.fibonaccis == null) {
+			StatUtil.fibonaccis = new HashMap<Integer, BigInteger>();
+			StatUtil.fibonaccis.put(0, BigInteger.ZERO); // Require: F0 == 0
+			StatUtil.fibonaccis.put(1, BigInteger.ONE); // Require: F1 == 1
+		}
+
+		// Recursively retrieve/compute_and_store Fn then return it.
+		return StatUtil.fibonacciMapFixedInput(n);
 	}
 }

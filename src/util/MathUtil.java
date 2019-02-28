@@ -5312,7 +5312,7 @@ public class MathUtil {
 	 * Precondition: <code>m > 2</code> <br>
 	 * Precondition: <code>(1 < n) && (n < m - 1)</code> <br>
 	 * Precondition: <code>(0 <= target) && (target <= m - 1)</code> <br>
-	 * Precondition: <code>begin < end</code>
+	 * Precondition: <code>begin <= end</code>
 	 * 
 	 * @param n
 	 *            the given number
