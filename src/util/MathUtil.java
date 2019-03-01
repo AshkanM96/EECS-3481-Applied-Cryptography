@@ -1740,11 +1740,11 @@ public class MathUtil {
 		 */
 		if (hash) { // i.e., result instanceof HashMap
 			final Iterator<Map.Entry<Long, Byte>> it = result.entrySet().iterator();
-			Map.Entry<Long, Byte> e = null;
+			Map.Entry<Long, Byte> entry = null;
 			boolean notExit = true;
 			do {
-				e = it.next();
-				System.out.print("(" + e.getKey() + ")^" + e.getValue());
+				entry = it.next();
+				System.out.print("(" + entry.getKey() + ")^" + entry.getValue());
 				// The following is meant to be an assignment of notExit.
 				if (notExit = it.hasNext()) {
 					System.out.print(" * ");
@@ -1773,9 +1773,9 @@ public class MathUtil {
 			System.out.print("(" + first.getKey() + ")^" + first.getValue());
 			if (result.size() != 0) {
 				final Iterator<Map.Entry<Long, Byte>> it = result.entrySet().iterator();
-				for (Map.Entry<Long, Byte> e = null; it.hasNext(); /* Update inside. */) {
-					e = it.next();
-					System.out.print(" * (" + e.getKey() + ")^" + e.getValue());
+				for (Map.Entry<Long, Byte> entry = null; it.hasNext(); /* Update inside. */) {
+					entry = it.next();
+					System.out.print(" * (" + entry.getKey() + ")^" + entry.getValue());
 				}
 			}
 			// Put all of then removed factors back into result before returning.
@@ -1799,8 +1799,8 @@ public class MathUtil {
 	 * 
 	 * <pre>
 	 * <code>
-	 * for (final Map.Entry&lt;Long, Byte&gt; e : Result.entrySet()) {
-	 * 	assert ((e.getKey() == -1L) || (MathUtil.isPrimeSqrt(e.getKey())));
+	 * for (final Map.Entry&lt;Long, Byte&gt; entry : Result.entrySet()) {
+	 * 	assert (((entry.getKey() == -1) || (MathUtil.isPrimeSqrt(entry.getKey()))) && ((0 < entry.getValue()) && (entry.getValue() < 64)));
 	 * }
 	 * </code>
 	 * </pre>
@@ -1812,11 +1812,11 @@ public class MathUtil {
 	 * if (n == Long.MIN_VALUE) {
 	 * 	assert ((Result.size() == 2) && (Result.get(2L) == 63));
 	 * } else if (!Result.isEmpty()) {
-	 * 	BigInteger N = BigInteger.ONE;
-	 * 	for (final Map.Entry&lt;Long, Byte&gt; e : Result.entrySet()) {
-	 * 		N = N.multiply(BigInteger.valueOf(e.getKey()).pow(e.getValue()));
+	 * 	long N = 1L;
+	 * 	for (final Map.Entry&lt;Long, Byte&gt; entry : Result.entrySet()) {
+	 * 		N = Math.multiplyExact(N, MathUtil.powExact(entry.getKey(), entry.getValue()));
 	 * 	}
-	 * 	assert (n == N.longValueExact());
+	 * 	assert (n == N);
 	 * }
 	 * </code>
 	 * </pre>
@@ -1836,7 +1836,7 @@ public class MathUtil {
 	public static Map<Long, Byte> factorSqrt(long n, boolean hash, boolean print) {
 		final Map<Long, Byte> result = hash ? new HashMap<Long, Byte>() : new TreeMap<Long, Byte>();
 
-		// Factor a -1 out of n if it's negative.
+		// Factor -1 out of n if it's negative.
 		if (n < 0L) {
 			result.put(-1L, (byte) 1);
 			// Only print if requested.
@@ -2004,8 +2004,8 @@ public class MathUtil {
 	 * 
 	 * <pre>
 	 * <code>
-	 * for (final Map.Entry&lt;Long, Byte&gt; e : Result.entrySet()) {
-	 * 	assert ((e.getKey() == -1L) || (MathUtil.isPrimeSqrt(e.getKey())));
+	 * for (final Map.Entry&lt;Long, Byte&gt; entry : Result.entrySet()) {
+	 * 	assert (((entry.getKey() == -1) || (MathUtil.isPrimeSqrt(entry.getKey()))) && ((0 < entry.getValue()) && (entry.getValue() < 64)));
 	 * }
 	 * </code>
 	 * </pre>
@@ -2017,11 +2017,11 @@ public class MathUtil {
 	 * if (n == Long.MIN_VALUE) {
 	 * 	assert ((Result.size() == 2) && (Result.get(2L) == 63));
 	 * } else if (!Result.isEmpty()) {
-	 * 	BigInteger N = BigInteger.ONE;
-	 * 	for (final Map.Entry&lt;Long, Byte&gt; e : Result.entrySet()) {
-	 * 		N = N.multiply(BigInteger.valueOf(e.getKey()).pow(e.getValue()));
+	 * 	long N = 1L;
+	 * 	for (final Map.Entry&lt;Long, Byte&gt; entry : Result.entrySet()) {
+	 * 		N = Math.multiplyExact(N, MathUtil.powExact(entry.getKey(), entry.getValue()));
 	 * 	}
-	 * 	assert (n == N.longValueExact());
+	 * 	assert (n == N);
 	 * }
 	 * </code>
 	 * </pre>
@@ -2049,8 +2049,8 @@ public class MathUtil {
 	 * 
 	 * <pre>
 	 * <code>
-	 * for (final Map.Entry&lt;Long, Byte&gt; e : Result.entrySet()) {
-	 * 	assert ((e.getKey() == -1L) || (MathUtil.isPrimeSqrt(e.getKey())));
+	 * for (final Map.Entry&lt;Long, Byte&gt; entry : Result.entrySet()) {
+	 * 	assert (((entry.getKey() == -1) || (MathUtil.isPrimeSqrt(entry.getKey()))) && ((0 < entry.getValue()) && (entry.getValue() < 64)));
 	 * }
 	 * </code>
 	 * </pre>
@@ -2062,11 +2062,11 @@ public class MathUtil {
 	 * if (n == Long.MIN_VALUE) {
 	 * 	assert ((Result.size() == 2) && (Result.get(2L) == 63));
 	 * } else if (!Result.isEmpty()) {
-	 * 	BigInteger N = BigInteger.ONE;
-	 * 	for (final Map.Entry&lt;Long, Byte&gt; e : Result.entrySet()) {
-	 * 		N = N.multiply(BigInteger.valueOf(e.getKey()).pow(e.getValue()));
+	 * 	long N = 1L;
+	 * 	for (final Map.Entry&lt;Long, Byte&gt; entry : Result.entrySet()) {
+	 * 		N = Math.multiplyExact(N, MathUtil.powExact(entry.getKey(), entry.getValue()));
 	 * 	}
-	 * 	assert (n == N.longValueExact());
+	 * 	assert (n == N);
 	 * }
 	 * </code>
 	 * </pre>
@@ -2111,11 +2111,11 @@ public class MathUtil {
 		 */
 		if (hash) { // i.e., result instanceof HashMap
 			final Iterator<Map.Entry<Integer, Byte>> it = result.entrySet().iterator();
-			Map.Entry<Integer, Byte> e = null;
+			Map.Entry<Integer, Byte> entry = null;
 			boolean notExit = true;
 			do {
-				e = it.next();
-				System.out.print("(" + e.getKey() + ")^" + e.getValue());
+				entry = it.next();
+				System.out.print("(" + entry.getKey() + ")^" + entry.getValue());
 				// The following is meant to be an assignment of notExit.
 				if (notExit = it.hasNext()) {
 					System.out.print(" * ");
@@ -2144,9 +2144,9 @@ public class MathUtil {
 			System.out.print("(" + first.getKey() + ")^" + first.getValue());
 			if (result.size() != 0) {
 				final Iterator<Map.Entry<Integer, Byte>> it = result.entrySet().iterator();
-				for (Map.Entry<Integer, Byte> e = null; it.hasNext(); /* Update inside. */) {
-					e = it.next();
-					System.out.print(" * (" + e.getKey() + ")^" + e.getValue());
+				for (Map.Entry<Integer, Byte> entry = null; it.hasNext(); /* Update inside. */) {
+					entry = it.next();
+					System.out.print(" * (" + entry.getKey() + ")^" + entry.getValue());
 				}
 			}
 			// Put all of then removed factors back into result before returning.
@@ -2170,8 +2170,8 @@ public class MathUtil {
 	 * 
 	 * <pre>
 	 * <code>
-	 * for (final Map.Entry&lt;Integer, Byte&gt; e : Result.entrySet()) {
-	 * 	assert ((e.getKey() == -1) || (MathUtil.isPrimeSqrt(e.getKey())));
+	 * for (final Map.Entry&lt;Integer, Byte&gt; entry : Result.entrySet()) {
+	 * 	assert (((entry.getKey() == -1) || (MathUtil.isPrimeSqrt(entry.getKey()))) && ((0 < entry.getValue()) && (entry.getValue() < 32)));
 	 * }
 	 * </code>
 	 * </pre>
@@ -2184,8 +2184,8 @@ public class MathUtil {
 	 * 	assert ((Result.size() == 2) && (Result.get(2) == 31));
 	 * } else if (!Result.isEmpty()) {
 	 * 	long N = 1L;
-	 * 	for (final Map.Entry&lt;Integer, Byte&gt; e : Result.entrySet()) {
-	 * 		N = Math.multiplyExact(N, (int) Math.pow(e.getKey(), e.getValue()));
+	 * 	for (final Map.Entry&lt;Integer, Byte&gt; entry : Result.entrySet()) {
+	 * 		N = Math.multiplyExact(N, MathUtil.powExact(entry.getKey(), entry.getValue()));
 	 * 	}
 	 * 	assert (n == N);
 	 * }
@@ -2207,7 +2207,7 @@ public class MathUtil {
 	public static Map<Integer, Byte> factorSqrt(int n, boolean hash, boolean print) {
 		final Map<Integer, Byte> result = hash ? new HashMap<Integer, Byte>() : new TreeMap<Integer, Byte>();
 
-		// Factor a -1 out of n if it's negative.
+		// Factor -1 out of n if it's negative.
 		if (n < 0) {
 			result.put(-1, (byte) 1);
 			// Only print if requested.
@@ -2375,8 +2375,8 @@ public class MathUtil {
 	 * 
 	 * <pre>
 	 * <code>
-	 * for (final Map.Entry&lt;Integer, Byte&gt; e : Result.entrySet()) {
-	 * 	assert ((e.getKey() == -1) || (MathUtil.isPrimeSqrt(e.getKey())));
+	 * for (final Map.Entry&lt;Integer, Byte&gt; entry : Result.entrySet()) {
+	 * 	assert (((entry.getKey() == -1) || (MathUtil.isPrimeSqrt(entry.getKey()))) && ((0 < entry.getValue()) && (entry.getValue() < 32)));
 	 * }
 	 * </code>
 	 * </pre>
@@ -2389,8 +2389,8 @@ public class MathUtil {
 	 * 	assert ((Result.size() == 2) && (Result.get(2) == 31));
 	 * } else if (!Result.isEmpty()) {
 	 * 	long N = 1L;
-	 * 	for (final Map.Entry&lt;Integer, Byte&gt; e : Result.entrySet()) {
-	 * 		N = Math.multiplyExact(N, (int) Math.pow(e.getKey(), e.getValue()));
+	 * 	for (final Map.Entry&lt;Integer, Byte&gt; entry : Result.entrySet()) {
+	 * 		N = Math.multiplyExact(N, MathUtil.powExact(entry.getKey(), entry.getValue()));
 	 * 	}
 	 * 	assert (n == N);
 	 * }
@@ -2420,8 +2420,8 @@ public class MathUtil {
 	 * 
 	 * <pre>
 	 * <code>
-	 * for (final Map.Entry&lt;Integer, Byte&gt; e : Result.entrySet()) {
-	 * 	assert ((e.getKey() == -1) || (MathUtil.isPrimeSqrt(e.getKey())));
+	 * for (final Map.Entry&lt;Integer, Byte&gt; entry : Result.entrySet()) {
+	 * 	assert (((entry.getKey() == -1) || (MathUtil.isPrimeSqrt(entry.getKey()))) && ((0 < entry.getValue()) && (entry.getValue() < 32)));
 	 * }
 	 * </code>
 	 * </pre>
@@ -2434,8 +2434,8 @@ public class MathUtil {
 	 * 	assert ((Result.size() == 2) && (Result.get(2) == 31));
 	 * } else if (!Result.isEmpty()) {
 	 * 	long N = 1L;
-	 * 	for (final Map.Entry&lt;Integer, Byte&gt; e : Result.entrySet()) {
-	 * 		N = Math.multiplyExact(N, (int) Math.pow(e.getKey(), e.getValue()));
+	 * 	for (final Map.Entry&lt;Integer, Byte&gt; entry : Result.entrySet()) {
+	 * 		N = Math.multiplyExact(N, MathUtil.powExact(entry.getKey(), entry.getValue()));
 	 * 	}
 	 * 	assert (n == N);
 	 * }
@@ -2482,11 +2482,11 @@ public class MathUtil {
 		 */
 		if (hash) { // i.e., result instanceof HashMap
 			final Iterator<Map.Entry<Short, Byte>> it = result.entrySet().iterator();
-			Map.Entry<Short, Byte> e = null;
+			Map.Entry<Short, Byte> entry = null;
 			boolean notExit = true;
 			do {
-				e = it.next();
-				System.out.print("(" + e.getKey() + ")^" + e.getValue());
+				entry = it.next();
+				System.out.print("(" + entry.getKey() + ")^" + entry.getValue());
 				// The following is meant to be an assignment of notExit.
 				if (notExit = it.hasNext()) {
 					System.out.print(" * ");
@@ -2515,9 +2515,9 @@ public class MathUtil {
 			System.out.print("(" + first.getKey() + ")^" + first.getValue());
 			if (result.size() != 0) {
 				final Iterator<Map.Entry<Short, Byte>> it = result.entrySet().iterator();
-				for (Map.Entry<Short, Byte> e = null; it.hasNext(); /* Update inside. */) {
-					e = it.next();
-					System.out.print(" * (" + e.getKey() + ")^" + e.getValue());
+				for (Map.Entry<Short, Byte> entry = null; it.hasNext(); /* Update inside. */) {
+					entry = it.next();
+					System.out.print(" * (" + entry.getKey() + ")^" + entry.getValue());
 				}
 			}
 			// Put all of then removed factors back into result before returning.
@@ -2541,8 +2541,8 @@ public class MathUtil {
 	 * 
 	 * <pre>
 	 * <code>
-	 * for (final Map.Entry&lt;Short, Byte&gt; e : Result.entrySet()) {
-	 * 	assert ((e.getKey() == -1) || (MathUtil.isPrimeSqrt(e.getKey())));
+	 * for (final Map.Entry&lt;Short, Byte&gt; entry : Result.entrySet()) {
+	 * 	assert (((entry.getKey() == -1) || (MathUtil.isPrimeSqrt(entry.getKey()))) && ((0 < entry.getValue()) && (entry.getValue() < 16)));
 	 * }
 	 * </code>
 	 * </pre>
@@ -2555,8 +2555,8 @@ public class MathUtil {
 	 * 	assert ((Result.size() == 2) && (Result.get((short) 2) == 15));
 	 * } else if (!Result.isEmpty()) {
 	 * 	long N = 1L;
-	 * 	for (final Map.Entry&lt;Short, Byte&gt; e : Result.entrySet()) {
-	 * 		N = Math.multiplyExact(N, (short) Math.pow(e.getKey(), e.getValue()));
+	 * 	for (final Map.Entry&lt;Short, Byte&gt; entry : Result.entrySet()) {
+	 * 		N = Math.multiplyExact(N, MathUtil.powExact(entry.getKey(), entry.getValue()));
 	 * 	}
 	 * 	assert (n == N);
 	 * }
@@ -2578,7 +2578,7 @@ public class MathUtil {
 	public static Map<Short, Byte> factorSqrt(short n, boolean hash, boolean print) {
 		final Map<Short, Byte> result = hash ? new HashMap<Short, Byte>() : new TreeMap<Short, Byte>();
 
-		// Factor a -1 out of n if it's negative.
+		// Factor -1 out of n if it's negative.
 		if (n < 0) {
 			result.put((short) -1, (byte) 1);
 			// Only print if requested.
@@ -2746,8 +2746,8 @@ public class MathUtil {
 	 * 
 	 * <pre>
 	 * <code>
-	 * for (final Map.Entry&lt;Short, Byte&gt; e : Result.entrySet()) {
-	 * 	assert ((e.getKey() == -1) || (MathUtil.isPrimeSqrt(e.getKey())));
+	 * for (final Map.Entry&lt;Short, Byte&gt; entry : Result.entrySet()) {
+	 * 	assert (((entry.getKey() == -1) || (MathUtil.isPrimeSqrt(entry.getKey()))) && ((0 < entry.getValue()) && (entry.getValue() < 16)));
 	 * }
 	 * </code>
 	 * </pre>
@@ -2760,8 +2760,8 @@ public class MathUtil {
 	 * 	assert ((Result.size() == 2) && (Result.get((short) 2) == 15));
 	 * } else if (!Result.isEmpty()) {
 	 * 	long N = 1L;
-	 * 	for (final Map.Entry&lt;Short, Byte&gt; e : Result.entrySet()) {
-	 * 		N = Math.multiplyExact(N, (short) Math.pow(e.getKey(), e.getValue()));
+	 * 	for (final Map.Entry&lt;Short, Byte&gt; entry : Result.entrySet()) {
+	 * 		N = Math.multiplyExact(N, MathUtil.powExact(entry.getKey(), entry.getValue()));
 	 * 	}
 	 * 	assert (n == N);
 	 * }
@@ -2791,8 +2791,8 @@ public class MathUtil {
 	 * 
 	 * <pre>
 	 * <code>
-	 * for (final Map.Entry&lt;Short, Byte&gt; e : Result.entrySet()) {
-	 * 	assert ((e.getKey() == -1) || (MathUtil.isPrimeSqrt(e.getKey())));
+	 * for (final Map.Entry&lt;Short, Byte&gt; entry : Result.entrySet()) {
+	 * 	assert (((entry.getKey() == -1) || (MathUtil.isPrimeSqrt(entry.getKey()))) && ((0 < entry.getValue()) && (entry.getValue() < 16)));
 	 * }
 	 * </code>
 	 * </pre>
@@ -2805,8 +2805,8 @@ public class MathUtil {
 	 * 	assert ((Result.size() == 2) && (Result.get((short) 2) == 15));
 	 * } else if (!Result.isEmpty()) {
 	 * 	long N = 1L;
-	 * 	for (final Map.Entry&lt;Short, Byte&gt; e : Result.entrySet()) {
-	 * 		N = Math.multiplyExact(N, (short) Math.pow(e.getKey(), e.getValue()));
+	 * 	for (final Map.Entry&lt;Short, Byte&gt; entry : Result.entrySet()) {
+	 * 		N = Math.multiplyExact(N, MathUtil.powExact(entry.getKey(), entry.getValue()));
 	 * 	}
 	 * 	assert (n == N);
 	 * }
@@ -2853,11 +2853,11 @@ public class MathUtil {
 		 */
 		if (hash) { // i.e., result instanceof HashMap
 			final Iterator<Map.Entry<Byte, Byte>> it = result.entrySet().iterator();
-			Map.Entry<Byte, Byte> e = null;
+			Map.Entry<Byte, Byte> entry = null;
 			boolean notExit = true;
 			do {
-				e = it.next();
-				System.out.print("(" + e.getKey() + ")^" + e.getValue());
+				entry = it.next();
+				System.out.print("(" + entry.getKey() + ")^" + entry.getValue());
 				// The following is meant to be an assignment of notExit.
 				if (notExit = it.hasNext()) {
 					System.out.print(" * ");
@@ -2886,9 +2886,9 @@ public class MathUtil {
 			System.out.print("(" + first.getKey() + ")^" + first.getValue());
 			if (result.size() != 0) {
 				final Iterator<Map.Entry<Byte, Byte>> it = result.entrySet().iterator();
-				for (Map.Entry<Byte, Byte> e = null; it.hasNext(); /* Update inside. */) {
-					e = it.next();
-					System.out.print(" * (" + e.getKey() + ")^" + e.getValue());
+				for (Map.Entry<Byte, Byte> entry = null; it.hasNext(); /* Update inside. */) {
+					entry = it.next();
+					System.out.print(" * (" + entry.getKey() + ")^" + entry.getValue());
 				}
 			}
 			// Put all of then removed factors back into result before returning.
@@ -2912,8 +2912,8 @@ public class MathUtil {
 	 * 
 	 * <pre>
 	 * <code>
-	 * for (final Map.Entry&lt;Byte, Byte&gt; e : Result.entrySet()) {
-	 * 	assert ((e.getKey() == -1) || (MathUtil.isPrimeSqrt(e.getKey())));
+	 * for (final Map.Entry&lt;Byte, Byte&gt; entry : Result.entrySet()) {
+	 * 	assert (((entry.getKey() == -1) || (MathUtil.isPrimeSqrt(entry.getKey()))) && ((0 < entry.getValue()) && (entry.getValue() < 8)));
 	 * }
 	 * </code>
 	 * </pre>
@@ -2926,8 +2926,8 @@ public class MathUtil {
 	 * 	assert ((Result.size() == 2) && (Result.get((byte) 2) == 7));
 	 * } else if (!Result.isEmpty()) {
 	 * 	long N = 1L;
-	 * 	for (final Map.Entry&lt;Byte, Byte&gt; e : Result.entrySet()) {
-	 * 		N = Math.multiplyExact(N, (byte) Math.pow(e.getKey(), e.getValue()));
+	 * 	for (final Map.Entry&lt;Byte, Byte&gt; entry : Result.entrySet()) {
+	 * 		N = Math.multiplyExact(N, MathUtil.powExact(entry.getKey(), entry.getValue()));
 	 * 	}
 	 * 	assert (n == N);
 	 * }
@@ -2949,7 +2949,7 @@ public class MathUtil {
 	public static Map<Byte, Byte> factorSqrt(byte n, boolean hash, boolean print) {
 		final Map<Byte, Byte> result = hash ? new HashMap<Byte, Byte>() : new TreeMap<Byte, Byte>();
 
-		// Factor a -1 out of n if it's negative.
+		// Factor -1 out of n if it's negative.
 		if (n < 0) {
 			result.put((byte) -1, (byte) 1);
 			// Only print if requested.
@@ -3117,8 +3117,8 @@ public class MathUtil {
 	 * 
 	 * <pre>
 	 * <code>
-	 * for (final Map.Entry&lt;Byte, Byte&gt; e : Result.entrySet()) {
-	 * 	assert ((e.getKey() == -1) || (MathUtil.isPrimeSqrt(e.getKey())));
+	 * for (final Map.Entry&lt;Byte, Byte&gt; entry : Result.entrySet()) {
+	 * 	assert (((entry.getKey() == -1) || (MathUtil.isPrimeSqrt(entry.getKey()))) && ((0 < entry.getValue()) && (entry.getValue() < 8)));
 	 * }
 	 * </code>
 	 * </pre>
@@ -3131,8 +3131,8 @@ public class MathUtil {
 	 * 	assert ((Result.size() == 2) && (Result.get((byte) 2) == 7));
 	 * } else if (!Result.isEmpty()) {
 	 * 	long N = 1L;
-	 * 	for (final Map.Entry&lt;Byte, Byte&gt; e : Result.entrySet()) {
-	 * 		N = Math.multiplyExact(N, (byte) Math.pow(e.getKey(), e.getValue()));
+	 * 	for (final Map.Entry&lt;Byte, Byte&gt; entry : Result.entrySet()) {
+	 * 		N = Math.multiplyExact(N, MathUtil.powExact(entry.getKey(), entry.getValue()));
 	 * 	}
 	 * 	assert (n == N);
 	 * }
@@ -3162,8 +3162,8 @@ public class MathUtil {
 	 * 
 	 * <pre>
 	 * <code>
-	 * for (final Map.Entry&lt;Byte, Byte&gt; e : Result.entrySet()) {
-	 * 	assert ((e.getKey() == -1) || (MathUtil.isPrimeSqrt(e.getKey())));
+	 * for (final Map.Entry&lt;Byte, Byte&gt; entry : Result.entrySet()) {
+	 * 	assert (((entry.getKey() == -1) || (MathUtil.isPrimeSqrt(entry.getKey()))) && ((0 < entry.getValue()) && (entry.getValue() < 8)));
 	 * }
 	 * </code>
 	 * </pre>
@@ -3176,8 +3176,8 @@ public class MathUtil {
 	 * 	assert ((Result.size() == 2) && (Result.get((byte) 2) == 7));
 	 * } else if (!Result.isEmpty()) {
 	 * 	long N = 1L;
-	 * 	for (final Map.Entry&lt;Byte, Byte&gt; e : Result.entrySet()) {
-	 * 		N = Math.multiplyExact(N, (byte) Math.pow(e.getKey(), e.getValue()));
+	 * 	for (final Map.Entry&lt;Byte, Byte&gt; entry : Result.entrySet()) {
+	 * 		N = Math.multiplyExact(N, MathUtil.powExact(entry.getKey(), entry.getValue()));
 	 * 	}
 	 * 	assert (n == N);
 	 * }
@@ -3366,6 +3366,275 @@ public class MathUtil {
 	 */
 	public static byte eulerTotientSqrt(byte n) {
 		return ((byte) MathUtil.eulerTotientSqrt((long) n));
+	}
+
+	/**
+	 * Compute <code>n<sup>p</sup></code> using the fast power (a.k.a. successive squaring) algorithm.
+	 * <br>
+	 * Note that this function does not check for overflows which may have occurred during the
+	 * calculations.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param p
+	 *            the given power
+	 * 
+	 * @return <code>n<sup>p</sup></code>.
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>(p < 0) && (n == 0)</code>
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>(p == 0) && (n == 0)</code>
+	 */
+	public static long pow(long n, long p) throws UndefinedInverseException, ArithmeticException {
+		if (p < 0L) {
+			if (n == 0L) {
+				throw new UndefinedInverseException();
+			}
+			// n != 0
+			return 0L; // floor(1 / n) == 0
+		}
+		// p >= 0
+
+		if (n == 0L) {
+			if (p == 0L) {
+				throw new ArithmeticException();
+			}
+			return 0L;
+		} else if (n == 1L) {
+			return 1L;
+		}
+		// (n != 0) && (n != 1)
+
+		long result = 1L;
+		boolean notExit = (p != 0L);
+		for (long n_to_2_to_i = n; notExit; /* Update inside. */) {
+			/**
+			 * Don't do <code>(p &= 1L) != 0L</code> since we need the value of <code>p</code> to remain
+			 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
+			 * will mutate <code>p</code>.
+			 */
+			if ((p & 1L) != 0L) {
+				result *= n_to_2_to_i;
+			}
+			// The following is meant to be an assignment of notExit and p.
+			if (notExit = ((p /= 2L) != 0L)) {
+				n_to_2_to_i *= n_to_2_to_i;
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Compute <code>n<sup>p</sup></code> using the fast power (a.k.a. successive squaring) algorithm.
+	 * <br>
+	 * Note that this function does not check for overflows which may have occurred during the
+	 * calculations.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param p
+	 *            the given power
+	 * 
+	 * @return <code>n<sup>p</sup></code>.
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>(p < 0) && (n == 0)</code>
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>(p == 0) && (n == 0)</code>
+	 */
+	public static int pow(int n, int p) throws UndefinedInverseException, ArithmeticException {
+		return ((int) MathUtil.pow((long) n, (long) p));
+	}
+
+	/**
+	 * Compute <code>n<sup>p</sup></code> using the fast power (a.k.a. successive squaring) algorithm.
+	 * <br>
+	 * Note that this function does not check for overflows which may have occurred during the
+	 * calculations.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param p
+	 *            the given power
+	 * 
+	 * @return <code>n<sup>p</sup></code>.
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>(p < 0) && (n == 0)</code>
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>(p == 0) && (n == 0)</code>
+	 */
+	public static short pow(short n, short p) throws UndefinedInverseException, ArithmeticException {
+		return ((short) MathUtil.pow((long) n, (long) p));
+	}
+
+	/**
+	 * Compute <code>n<sup>p</sup></code> using the fast power (a.k.a. successive squaring) algorithm.
+	 * <br>
+	 * Note that this function does not check for overflows which may have occurred during the
+	 * calculations.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param p
+	 *            the given power
+	 * 
+	 * @return <code>n<sup>p</sup></code>.
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>(p < 0) && (n == 0)</code>
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>(p == 0) && (n == 0)</code>
+	 */
+	public static byte pow(byte n, byte p) throws UndefinedInverseException, ArithmeticException {
+		return ((byte) MathUtil.pow((long) n, (long) p));
+	}
+
+	/**
+	 * Compute <code>n<sup>p</sup></code> using the fast power (a.k.a. successive squaring) algorithm.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param p
+	 *            the given power
+	 * 
+	 * @return <code>n<sup>p</sup></code>.
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>(p < 0) && (n == 0)</code>
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>((p == 0) && (n == 0))
+	 *             || ((Long.MAX_VALUE < n<sup>p</sup>) || (n<sup>p</sup> < Long.MIN_VALUE))</code>
+	 */
+	public static long powExact(long n, byte p) throws UndefinedInverseException, ArithmeticException {
+		if (p < 0) {
+			if (n == 0L) {
+				throw new UndefinedInverseException();
+			}
+			// n != 0
+			return 0L; // floor(1 / n) == 0
+		}
+		// p >= 0
+
+		if (n == 0L) {
+			if (p == 0) {
+				throw new IllegalArgumentException();
+			}
+			return 0L;
+		} else if (n == 1L) {
+			return 1L;
+		}
+		// (n != 0) && (n != 1)
+
+		long result = 1L;
+		boolean notExit = (p != 0);
+		for (long n_to_2_to_i = n; notExit; /* Update inside. */) {
+			/**
+			 * Don't do <code>(p &= 1) != 0</code> since we need the value of <code>p</code> to remain
+			 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
+			 * will mutate <code>p</code>.
+			 */
+			if ((p & 1) != 0) {
+				result = Math.multiplyExact(result, n_to_2_to_i);
+			}
+			// The following is meant to be an assignment of notExit and p.
+			if (notExit = ((p /= 2) != 0)) {
+				n_to_2_to_i = Math.multiplyExact(n_to_2_to_i, n_to_2_to_i);
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Compute <code>n<sup>p</sup></code> using the fast power (a.k.a. successive squaring) algorithm.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param p
+	 *            the given power
+	 * 
+	 * @return <code>n<sup>p</sup></code>.
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>(p < 0) && (n == 0)</code>
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>((p == 0) && (n == 0))
+	 *             || ((Integer.MAX_VALUE < n<sup>p</sup>) || (n<sup>p</sup> < Integer.MIN_VALUE))</code>
+	 */
+	public static int powExact(int n, byte p) throws UndefinedInverseException, ArithmeticException {
+		final long result = MathUtil.powExact((long) n, p);
+		if ((Integer.MAX_VALUE < result) || (result < Integer.MIN_VALUE)) {
+			throw new ArithmeticException();
+		}
+		// (Integer.MIN_VALUE <= result) && (result <= Integer.MAX_VALUE)
+		return ((int) result);
+	}
+
+	/**
+	 * Compute <code>n<sup>p</sup></code> using the fast power (a.k.a. successive squaring) algorithm.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param p
+	 *            the given power
+	 * 
+	 * @return <code>n<sup>p</sup></code>.
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>(p < 0) && (n == 0)</code>
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>((p == 0) && (n == 0))
+	 *             || ((Short.MAX_VALUE < n<sup>p</sup>) || (n<sup>p</sup> < Short.MIN_VALUE))</code>
+	 */
+	public static short powExact(short n, byte p) throws UndefinedInverseException, ArithmeticException {
+		final long result = MathUtil.powExact((long) n, p);
+		if ((Short.MAX_VALUE < result) || (result < Short.MIN_VALUE)) {
+			throw new ArithmeticException();
+		}
+		// (Short.MIN_VALUE <= result) && (result <= Short.MAX_VALUE)
+		return ((short) result);
+	}
+
+	/**
+	 * Compute <code>n<sup>p</sup></code> using the fast power (a.k.a. successive squaring) algorithm.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param p
+	 *            the given power
+	 * 
+	 * @return <code>n<sup>p</sup></code>.
+	 * 
+	 * @throws UndefinedInverseException
+	 *             If <code>(p < 0) && (n == 0)</code>
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>((p == 0) && (n == 0))
+	 *             || ((Byte.MAX_VALUE < n<sup>p</sup>) || (n<sup>p</sup> < Byte.MIN_VALUE))</code>
+	 */
+	public static byte powExact(byte n, byte p) throws UndefinedInverseException, ArithmeticException {
+		final long result = MathUtil.powExact((long) n, p);
+		if ((Byte.MAX_VALUE < result) || (result < Byte.MIN_VALUE)) {
+			throw new ArithmeticException();
+		}
+		// (Byte.MIN_VALUE <= result) && (result <= Byte.MAX_VALUE)
+		return ((byte) result);
 	}
 
 	/**
@@ -4069,7 +4338,7 @@ public class MathUtil {
 		// min == Math.min(MathUtil.mod(a, m), MathUtil.mod(b, m))
 
 		long result = 0L;
-		for (; min != 0L; min /= 2L) {
+		for (boolean notExit = (min != 0L); notExit; /* Update inside. */) {
 			/**
 			 * Don't do <code>(min &= 1L) != 0L</code> since we need the value of <code>min</code> to remain
 			 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
@@ -4078,7 +4347,10 @@ public class MathUtil {
 			if ((min & 1L) != 0L) { // i.e., !MathUtil.isEven(min)
 				result = MathUtil.modMinFixedInput((result += max) % m, m);
 			}
-			max = MathUtil.modMinFixedInput((max += max) % m, m); // Double max (mod m).
+			// The following is meant to be an assignment of notExit and min.
+			if (notExit = ((min /= 2L) != 0L)) {
+				max = MathUtil.modMinFixedInput((max += max) % m, m); // Double max (mod m).
+			}
 		}
 		return result;
 	}
@@ -4399,7 +4671,7 @@ public class MathUtil {
 	}
 
 	/**
-	 * Compute <code>n<sup>p</sup> (mod m)</code> using the fast power (a.k.a., successive squaring)
+	 * Compute <code>n<sup>p</sup> (mod m)</code> using the fast power (a.k.a. successive squaring)
 	 * algorithm. <br>
 	 * Note that this function does not check for the special cases <code>n == &plusmn;1 (mod m)</code>
 	 * and so it will still take <code>O(lg(p))</code> steps even though the answer can be trivially
@@ -4426,7 +4698,8 @@ public class MathUtil {
 	 */
 	protected static long modPowFixedInput(long n, long p, long m) {
 		long result = 1L;
-		for (long n_to_2_to_i = MathUtil.modMinFixedInput(n, m); p != 0L; p /= 2L) {
+		boolean notExit = (p != 0L);
+		for (long n_to_2_to_i = MathUtil.modMinFixedInput(n, m); notExit; /* Update inside. */) {
 			/**
 			 * Don't do <code>(p &= 1L) != 0L</code> since we need the value of <code>p</code> to remain
 			 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
@@ -4435,12 +4708,18 @@ public class MathUtil {
 			if ((p & 1L) != 0L) { // i.e., !MathUtil.isEven(p)
 				result = MathUtil.modMultFixedInput(result, n_to_2_to_i, m);
 			}
-			n_to_2_to_i = MathUtil.modMultFixedInput(n_to_2_to_i, n_to_2_to_i, m); // Square n_to_2_to_i (mod m).
+			// The following is meant to be an assignment of notExit and p.
+			if (notExit = ((p /= 2L) != 0L)) {
+				n_to_2_to_i = MathUtil.modMultFixedInput(n_to_2_to_i, n_to_2_to_i, m); // Square n_to_2_to_i (mod m).
+			}
 		}
 		return result;
 	}
 
 	/**
+	 * Compute <code>n<sup>p</sup> (mod m)</code> using the fast power (a.k.a. successive squaring)
+	 * algorithm.
+	 * 
 	 * @param n
 	 *            the given number
 	 * 
@@ -4464,7 +4743,7 @@ public class MathUtil {
 	public static long modPow(long n, long p, long m)
 			throws InvalidModulusException, UndefinedInverseException, ArithmeticException {
 		if (m < 2L) { // i.e., (m < 1) || (m == 1)
-			if (m == 1L) {
+			if (m == 1L) { // i.e., n == 0 (mod m)
 				if (p < 0L) {
 					throw new UndefinedInverseException();
 				} else if (p == 0L) {
@@ -4552,6 +4831,9 @@ public class MathUtil {
 	}
 
 	/**
+	 * Compute <code>n<sup>p</sup> (mod m)</code> using the fast power (a.k.a. successive squaring)
+	 * algorithm.
+	 * 
 	 * @param n
 	 *            the given number
 	 * 
@@ -4577,6 +4859,9 @@ public class MathUtil {
 	}
 
 	/**
+	 * Compute <code>n<sup>p</sup> (mod m)</code> using the fast power (a.k.a. successive squaring)
+	 * algorithm.
+	 * 
 	 * @param n
 	 *            the given number
 	 * 
@@ -4602,6 +4887,9 @@ public class MathUtil {
 	}
 
 	/**
+	 * Compute <code>n<sup>p</sup> (mod m)</code> using the fast power (a.k.a. successive squaring)
+	 * algorithm.
+	 * 
 	 * @param n
 	 *            the given number
 	 * 
@@ -5299,7 +5587,7 @@ public class MathUtil {
 	}
 
 	/**
-	 * Perform a linear search for <code>p</code> such that
+	 * Perform a linear search for <code>p</code> in <code>[begin, end)</code> such that
 	 * <code>n<sup>p</sup> (mod m) == target</code>. <br>
 	 * Note that this function does not check for the special cases
 	 * <code>n == 0, &plusmn;1, target (mod m)</code>, or <code>target == 1</code> and so it will still
@@ -5342,8 +5630,9 @@ public class MathUtil {
 		// Fix target to be in [-m / 2, m / 2] \cap \doubleZ.
 		target = MathUtil.modMinFixedInput(target, m);
 
+		// Fix n_to_begin to be in [-m / 2, m / 2] \cap \doubleZ.
+		long n_to_i = n_to_begin = MathUtil.modMinFixedInput(n_to_begin, m);
 		// Iteratively compute n to the power of (i + begin) in mod m and compare the result to target.
-		long n_to_i = n_to_begin;
 		for (long i = begin; i != end; ++i) {
 			// Check for match.
 			if (n_to_i == target) {
@@ -5701,9 +5990,13 @@ public class MathUtil {
 		// Fix target to be in [-m / 2, m / 2] \cap \doubleZ.
 		target = MathUtil.modMinFixedInput(target, m);
 
-		// Shanks' Babystep Giantstep Algorithm.
+		// Shanks' Babystep-Giantstep Algorithm.
 		final Map<Long, Long> babylist = hash ? new HashMap<Long, Long>((int) bound) : new TreeMap<Long, Long>();
 		if (generateBoth) {
+			/**
+			 * <code>generateBoth</code> so generate both the babylist and the giant list simultaneously one
+			 * element at a time.
+			 */
 			final Map<Long, Long> giantlist = hash ? new HashMap<Long, Long>((int) bound) : new TreeMap<Long, Long>();
 			Long baby_index = null, giant_index = null;
 			Long order_n = null, order_giant_factor = null;
@@ -5760,7 +6053,10 @@ public class MathUtil {
 			}
 			return null;
 		}
-		// !generateBoth so fully generate the babylist and then generate the giantlist in-place.
+		/**
+		 * <code>!generateBoth</code> so fully generate the babylist and then generate the giantlist
+		 * in-place.
+		 */
 		babylist.put(1L, 0L);
 		for (long baby_index = 1L, baby = n; baby_index != bound; ++baby_index) {
 			// Check for match.
@@ -6431,4 +6727,177 @@ public class MathUtil {
 			throws InvalidModulusException, UndefinedInverseException {
 		return MathUtil.discreteLogBabyGiant(n, target, m, (byte) (m - 1));
 	}
+
+	// TODO 2: Documentation (including preconditions similar to other discreteLog FixedInput methods)
+	protected static Long discreteLogPohligHellmanFixedInput(long n, long target, long m, long upperOrder,
+			boolean linearSearchIfNotBabyGiant, boolean simple, Map<Long, Byte> upperOrderFactors,
+			boolean generateBothBabyGiant, boolean hashBabyGiant)
+			throws ArithmeticException, UndefinedInverseException {
+		if ((upperOrderFactors.size() == 1) && (upperOrderFactors.containsKey(n))) { // i.e., upperOrder is prime
+			// Therefore, we have to use Babystep-Giantstep or Linear-Search.
+
+			// Applying Math.floor before casting to long is unnecessary and it causes a large slow down.
+			final long bound = ((long) Math.sqrt(upperOrder)) + 1L; // bound >= 2
+			if (bound > Integer.MAX_VALUE) {
+				// Only Linear-Search if requested.
+				if (linearSearchIfNotBabyGiant) {
+					return MathUtil.discreteLogLinearSearchFixedInput(n, target, m, 1L, upperOrder, n);
+				}
+				throw new ArithmeticException();
+			}
+			// bound <= Integer.MAX_VALUE
+
+			final long[] x_y_gcd = MathUtil.gcdExtendedFixedInput(n, m);
+			if (x_y_gcd[2] == 1L) { // i.e., gcd(n, m) == 1
+				// i.e., <code>n<sup>-1</sup> (mod m)</code> does exist.
+				return MathUtil.discreteLogBabyGiantFixedInput(n, target, m, bound, generateBothBabyGiant,
+						hashBabyGiant, MathUtil.modFixedInput(x_y_gcd[0], m));
+			}
+			// gcd(n, m) != 1
+			// i.e., <code>n<sup>-1</sup> (mod m)</code> doesn't exist.
+
+			// Only Linear-Search if requested.
+			if (linearSearchIfNotBabyGiant) {
+				return MathUtil.discreteLogLinearSearchFixedInput(n, target, m, 1L, upperOrder, n);
+			}
+			throw new UndefinedInverseException();
+		}
+		// upperOrder is not prime.
+
+		if (simple) {
+			/**
+			 * <code>simple</code> so just break the congruence <code>(mod m)</code> into congruences
+			 * <code>(mod p<sub>i</sub><sup>e<sub>i</sub></sup>)</code> and solve each separately.
+			 */
+			final Iterator<Map.Entry<Long, Byte>> it = upperOrderFactors.entrySet().iterator();
+
+			// Retrieve the first prime base and its power.
+			Map.Entry<Long, Byte> entry = it.next();
+			// Compute the congruence with solution <code>(mod p<sub>i</sub><sup>e<sub>i</sub></sup>)</code>.
+			long p_i_to_e_i = MathUtil.pow(entry.getKey(), entry.getValue()), quotient = upperOrder / p_i_to_e_i,
+					bound = 0L;
+			long n_i = MathUtil.modPowFixedInput(n, quotient, m),
+					target_i = MathUtil.modPowFixedInput(target, quotient, m);
+			if (n_i < 0L) {
+				n_i += m;
+			}
+			if (target_i < 0L) {
+				target_i += m;
+			}
+
+			// Solve the congruence with solution <code>(mod p<sub>i</sub><sup>e<sub>i</sub></sup>)</code>.
+			Long x = MathUtil.discreteLogTrivialFixedInput(n_i, target_i, m);
+			if (x == -1L) { // i.e., x is non-trivial.
+				// Applying Math.floor before casting to long is unnecessary and it causes a large slow down.
+				bound = ((long) Math.sqrt(p_i_to_e_i)) + 1L; // p_i_to_e_i >= 2 so bound >= 2
+				if (bound > Integer.MAX_VALUE) {
+					// Only Linear-Search if requested.
+					if (linearSearchIfNotBabyGiant) {
+						x = MathUtil.discreteLogLinearSearchFixedInput(n_i, target_i, m, 1L, p_i_to_e_i, n_i);
+					} else {
+						throw new ArithmeticException();
+					}
+				} else { // i.e., bound <= Integer.MAX_VALUE
+					x = MathUtil.discreteLogBabyGiantFixedInput(n_i, target_i, m, bound, generateBothBabyGiant,
+							hashBabyGiant, MathUtil.modInverse(n_i, m));
+				}
+			}
+			if (x == null) { // i.e., no solution <code>(mod p<sub>i</sub><sup>e<sub>i</sub></sup>)</code>.
+				return null;
+			}
+
+			// Save the first solution for later.
+			long m_i = p_i_to_e_i;
+			x = MathUtil.modFixedInput(x, m_i);
+
+			// Process the remaining factors of upperOrder.
+			long[] crt_result = null;
+			for (Long x_i = null; it.hasNext(); /* Update inside. */) {
+				// Retrieve the next prime base and its power.
+				entry = it.next();
+				// Compute the congruence with solution <code>(mod p<sub>i</sub><sup>e<sub>i</sub></sup>)</code>.
+				quotient = upperOrder / (p_i_to_e_i = MathUtil.pow(entry.getKey(), entry.getValue()));
+				if ((n_i = MathUtil.modPowFixedInput(n, quotient, m)) < 0L) {
+					n_i += m;
+				}
+				if ((target_i = MathUtil.modPowFixedInput(target, quotient, m)) < 0L) {
+					target_i += m;
+				}
+
+				// Solve the congruence with solution <code>(mod p<sub>i</sub><sup>e<sub>i</sub></sup>)</code>.
+				x_i = MathUtil.discreteLogTrivialFixedInput(n_i, target_i, m);
+				if (x_i == -1L) { // i.e., x_i is non-trivial.
+					// Applying Math.floor before casting to long is unnecessary and it causes a large slow down.
+					bound = ((long) Math.sqrt(p_i_to_e_i)) + 1L; // p_i_to_e_i >= 2 so bound >= 2
+					if (bound > Integer.MAX_VALUE) {
+						// Only Linear-Search if requested.
+						if (linearSearchIfNotBabyGiant) {
+							x_i = MathUtil.discreteLogLinearSearchFixedInput(n_i, target_i, m, 1L, p_i_to_e_i, n_i);
+						} else {
+							throw new ArithmeticException();
+						}
+					} else { // i.e., bound <= Integer.MAX_VALUE
+						x_i = MathUtil.discreteLogBabyGiantFixedInput(n_i, target_i, m, bound, generateBothBabyGiant,
+								hashBabyGiant, MathUtil.modInverse(n_i, m));
+					}
+				}
+				if (x_i == null) { // i.e., no solution <code>(mod p<sub>i</sub><sup>e<sub>i</sub></sup>)</code>.
+					return null;
+				}
+
+				// Use C.R.T. to combine the other solutions with the first.
+				crt_result = MathUtil.crt(x, m_i, x_i, p_i_to_e_i);
+				x = crt_result[0];
+				m_i = crt_result[1];
+			}
+			// <code>(m_i == upperOrder) && (n<sup>x</sup> (mod m) == target)</code>
+			return x;
+		}
+		/**
+		 * <code>!simple</code> so after breaking the congruence <code>(mod m)</code> into congruences with
+		 * solutions <code>(mod p<sub>i</sub><sup>e<sub>i</sub></sup>)</code>, break each congruence with
+		 * solution <code>(mod p<sub>i</sub><sup>e<sub>i</sub></sup>)</code> into <code>e<sub>i</sub></code>
+		 * separate congruences.
+		 */
+		// TODO 1: Implement the more sophisticated logic here.
+		throw new UnsupportedOperationException();
+	}
+
+	// TODO 3: Documentation
+	public static Long discreteLogPohligHellman(long n, long target, long m, long upperOrder,
+			boolean linearSearchIfNotBabyGiant, boolean simple, boolean hashFactor, boolean generateBothBabyGiant,
+			boolean hashBabyGiant)
+			throws InvalidModulusException, IllegalArgumentException, ArithmeticException, UndefinedInverseException {
+		if (m < 1L) {
+			throw new InvalidModulusException();
+		} else if ((upperOrder < 1L) || (m - 1L < upperOrder)) {
+			throw new IllegalArgumentException();
+		}
+		// (m >= 1) && (1 <= upperOrder) && (upperOrder <= m - 1)
+		// i.e., (m > 0) && (1 <= upperOrder) && (upperOrder <= m - 1)
+
+		// Fix n to be in [0, m - 1] \cap \doubleZ.
+		n = MathUtil.modFixedInput(n, m);
+		// Fix target to be in [0, m - 1] \cap \doubleZ.
+		target = MathUtil.modFixedInput(target, m);
+
+		// Handle the simple special cases.
+		final Long result = MathUtil.discreteLogTrivialFixedInput(n, target, m);
+		if (result != -1L) {
+			return result;
+		}
+		// i.e., (1 < n) && (n < m - 1) && (m > 3) && (target != 1) && (n != target)
+		if (upperOrder == 1L) {
+			// upperOrder == 1 implies that n == 1 but we know that this isn't the case.
+			return null;
+		}
+		// upperOrder != 1
+		// i.e., (2 <= upperOrder) && (upperOrder <= m - 1)
+
+		// Factor upperOrder and then perform the Pohlig-Hellman algorithm.
+		return MathUtil.discreteLogPohligHellmanFixedInput(n, target, m, upperOrder, linearSearchIfNotBabyGiant, simple,
+				MathUtil.factorSqrt(n, hashFactor), generateBothBabyGiant, hashBabyGiant);
+	}
+
+	// TODO 4: Overloads with default values for extra arguments + int/short/byte
 }
