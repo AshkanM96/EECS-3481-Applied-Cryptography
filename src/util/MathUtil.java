@@ -3802,7 +3802,7 @@ public class MathUtil {
 	 *             If <code>m < 2</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>gcd(n, m) != 1</code>
+	 *             If <code>gcd(n (mod m), m) != 1</code>
 	 */
 	public static long modInverse(long n, long m) throws InvalidModulusException, UndefinedInverseException {
 		if (m < 2L) {
@@ -3836,7 +3836,7 @@ public class MathUtil {
 	 *             If <code>m < 2</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>gcd(n, m) != 1</code>
+	 *             If <code>gcd(n (mod m), m) != 1</code>
 	 */
 	public static int modInverse(int n, int m) throws InvalidModulusException, UndefinedInverseException {
 		if (m < 2) {
@@ -3870,7 +3870,7 @@ public class MathUtil {
 	 *             If <code>m < 2</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>gcd(n, m) != 1</code>
+	 *             If <code>gcd(n (mod m), m) != 1</code>
 	 */
 	public static short modInverse(short n, short m) throws InvalidModulusException, UndefinedInverseException {
 		if (m < 2) {
@@ -3904,7 +3904,7 @@ public class MathUtil {
 	 *             If <code>m < 2</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>gcd(n, m) != 1</code>
+	 *             If <code>gcd(n (mod m), m) != 1</code>
 	 */
 	public static byte modInverse(byte n, byte m) throws InvalidModulusException, UndefinedInverseException {
 		if (m < 2) {
@@ -4994,7 +4994,7 @@ public class MathUtil {
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>(p < 0) && ((n (mod m) == 0) || (gcd(n, m) != 1))</code>
+	 *             If <code>(p < 0) && ((n (mod m) == 0) || (gcd(n (mod m), m) != 1))</code>
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>(p == 0) && (n (mod m) == 0)</code>
@@ -5110,12 +5110,13 @@ public class MathUtil {
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>(p < 0) && ((n (mod m) == 0) || (gcd(n, m) != 1))</code>
+	 *             If <code>(p < 0) && ((n (mod m) == 0) || (gcd(n (mod m), m) != 1))</code>
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>(p == 0) && (n (mod m) == 0)</code>
 	 */
-	public static int modPow(int n, int p, int m) throws ArithmeticException {
+	public static int modPow(int n, int p, int m)
+			throws InvalidModulusException, UndefinedInverseException, ArithmeticException {
 		return ((int) MathUtil.modPow((long) n, (long) p, (long) m));
 	}
 
@@ -5138,12 +5139,13 @@ public class MathUtil {
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>(p < 0) && ((n (mod m) == 0) || (gcd(n, m) != 1))</code>
+	 *             If <code>(p < 0) && ((n (mod m) == 0) || (gcd(n (mod m), m) != 1))</code>
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>(p == 0) && (n (mod m) == 0)</code>
 	 */
-	public static short modPow(short n, short p, short m) throws ArithmeticException {
+	public static short modPow(short n, short p, short m)
+			throws InvalidModulusException, UndefinedInverseException, ArithmeticException {
 		return ((short) MathUtil.modPow((long) n, (long) p, (long) m));
 	}
 
@@ -5166,12 +5168,13 @@ public class MathUtil {
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>(p < 0) && ((n (mod m) == 0) || (gcd(n, m) != 1))</code>
+	 *             If <code>(p < 0) && ((n (mod m) == 0) || (gcd(n (mod m), m) != 1))</code>
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>(p == 0) && (n (mod m) == 0)</code>
 	 */
-	public static byte modPow(byte n, byte p, byte m) throws ArithmeticException {
+	public static byte modPow(byte n, byte p, byte m)
+			throws InvalidModulusException, UndefinedInverseException, ArithmeticException {
 		return ((byte) MathUtil.modPow((long) n, (long) p, (long) m));
 	}
 
@@ -5267,7 +5270,7 @@ public class MathUtil {
 	 *             If <code>(end - begin) > Integer.MAX_VALUE</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>(begin < 0) && ((n (mod m) == 0) || (gcd(n, m) != 1))</code>
+	 *             If <code>(begin < 0) && ((n (mod m) == 0) || (gcd(n (mod m), m) != 1))</code>
 	 */
 	public static long[] modPowers(long n, long m, long begin, long end)
 			throws InvalidModulusException, IllegalArgumentException, ArithmeticException, UndefinedInverseException {
@@ -5411,7 +5414,7 @@ public class MathUtil {
 	 *             If <code>(end - begin) > Integer.MAX_VALUE</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>(begin < 0) && ((n (mod m) == 0) || (gcd(n, m) != 1))</code>
+	 *             If <code>(begin < 0) && ((n (mod m) == 0) || (gcd(n (mod m), m) != 1))</code>
 	 */
 	public static int[] modPowers(int n, int m, int begin, int end)
 			throws InvalidModulusException, IllegalArgumentException, ArithmeticException, UndefinedInverseException {
@@ -5549,7 +5552,7 @@ public class MathUtil {
 	 *             If <code>begin > end</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>(begin < 0) && ((n (mod m) == 0) || (gcd(n, m) != 1))</code>
+	 *             If <code>(begin < 0) && ((n (mod m) == 0) || (gcd(n (mod m), m) != 1))</code>
 	 */
 	public static short[] modPowers(short n, short m, short begin, short end)
 			throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException {
@@ -5687,7 +5690,7 @@ public class MathUtil {
 	 *             If <code>begin > end</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>(begin < 0) && ((n (mod m) == 0) || (gcd(n, m) != 1))</code>
+	 *             If <code>(begin < 0) && ((n (mod m) == 0) || (gcd(n (mod m), m) != 1))</code>
 	 */
 	public static byte[] modPowers(byte n, byte m, byte begin, byte end)
 			throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException {
@@ -5956,7 +5959,7 @@ public class MathUtil {
 	 *             If <code>begin > end</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>(begin < 0) && (gcd(n, m) != 1)</code>
+	 *             If <code>(begin < 0) && (gcd(n (mod m), m) != 1)</code>
 	 */
 	public static Long discreteLogLinearSearch(long n, long target, long m, long begin, long end)
 			throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException {
@@ -6052,7 +6055,7 @@ public class MathUtil {
 	 *             If <code>begin > end</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>(begin < 0) && (gcd(n, m) != 1)</code>
+	 *             If <code>(begin < 0) && (gcd(n (mod m), m) != 1)</code>
 	 */
 	public static Integer discreteLogLinearSearch(int n, int target, int m, int begin, int end)
 			throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException {
@@ -6115,7 +6118,7 @@ public class MathUtil {
 	 *             If <code>begin > end</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>(begin < 0) && (gcd(n, m) != 1)</code>
+	 *             If <code>(begin < 0) && (gcd(n (mod m), m) != 1)</code>
 	 */
 	public static Short discreteLogLinearSearch(short n, short target, short m, short begin, short end)
 			throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException {
@@ -6178,7 +6181,7 @@ public class MathUtil {
 	 *             If <code>begin > end</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>(begin < 0) && (gcd(n, m) != 1)</code>
+	 *             If <code>(begin < 0) && (gcd(n (mod m), m) != 1)</code>
 	 */
 	public static Byte discreteLogLinearSearch(byte n, byte target, byte m, byte begin, byte end)
 			throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException {
@@ -6419,7 +6422,7 @@ public class MathUtil {
 	 *             If <code>(((long) Math.sqrt(upperOrder)) + 1) > Integer.MAX_VALUE</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>gcd(n, m) != 1</code>
+	 *             If <code>gcd(n (mod m), m) != 1</code>
 	 */
 	public static Long discreteLogBabyGiant(long n, long target, long m, long upperOrder, boolean generateBoth,
 			boolean hash)
@@ -6501,7 +6504,7 @@ public class MathUtil {
 	 *             If <code>(((long) Math.sqrt(upperOrder)) + 1) > Integer.MAX_VALUE</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>gcd(n, m) != 1</code>
+	 *             If <code>gcd(n (mod m), m) != 1</code>
 	 */
 	public static Long discreteLogBabyGiant(long n, long target, long m, long upperOrder, boolean generateBoth)
 			throws InvalidModulusException, IllegalArgumentException, ArithmeticException, UndefinedInverseException {
@@ -6538,7 +6541,7 @@ public class MathUtil {
 	 *             If <code>(((long) Math.sqrt(upperOrder)) + 1) > Integer.MAX_VALUE</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>gcd(n, m) != 1</code>
+	 *             If <code>gcd(n (mod m), m) != 1</code>
 	 */
 	public static Long discreteLogBabyGiant(long n, long target, long m, long upperOrder)
 			throws InvalidModulusException, IllegalArgumentException, ArithmeticException, UndefinedInverseException {
@@ -6567,7 +6570,7 @@ public class MathUtil {
 	 *             If <code>(((long) Math.sqrt(m - 1)) + 1) > Integer.MAX_VALUE</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>gcd(n, m) != 1</code>
+	 *             If <code>gcd(n (mod m), m) != 1</code>
 	 */
 	public static Long discreteLogBabyGiant(long n, long target, long m)
 			throws InvalidModulusException, ArithmeticException, UndefinedInverseException {
@@ -6611,7 +6614,7 @@ public class MathUtil {
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>gcd(n, m) != 1</code>
+	 *             If <code>gcd(n (mod m), m) != 1</code>
 	 */
 	public static Integer discreteLogBabyGiant(int n, int target, int m, int upperOrder, boolean generateBoth,
 			boolean hash) throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException {
@@ -6652,7 +6655,7 @@ public class MathUtil {
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>gcd(n, m) != 1</code>
+	 *             If <code>gcd(n (mod m), m) != 1</code>
 	 */
 	public static Integer discreteLogBabyGiant(int n, int target, int m, int upperOrder, boolean generateBoth)
 			throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException {
@@ -6686,7 +6689,7 @@ public class MathUtil {
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>gcd(n, m) != 1</code>
+	 *             If <code>gcd(n (mod m), m) != 1</code>
 	 */
 	public static Integer discreteLogBabyGiant(int n, int target, int m, int upperOrder)
 			throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException {
@@ -6712,7 +6715,7 @@ public class MathUtil {
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>gcd(n, m) != 1</code>
+	 *             If <code>gcd(n (mod m), m) != 1</code>
 	 */
 	public static Integer discreteLogBabyGiant(int n, int target, int m)
 			throws InvalidModulusException, UndefinedInverseException {
@@ -6756,7 +6759,7 @@ public class MathUtil {
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>gcd(n, m) != 1</code>
+	 *             If <code>gcd(n (mod m), m) != 1</code>
 	 */
 	public static Short discreteLogBabyGiant(short n, short target, short m, short upperOrder, boolean generateBoth,
 			boolean hash) throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException {
@@ -6797,7 +6800,7 @@ public class MathUtil {
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>gcd(n, m) != 1</code>
+	 *             If <code>gcd(n (mod m), m) != 1</code>
 	 */
 	public static Short discreteLogBabyGiant(short n, short target, short m, short upperOrder, boolean generateBoth)
 			throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException {
@@ -6831,7 +6834,7 @@ public class MathUtil {
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>gcd(n, m) != 1</code>
+	 *             If <code>gcd(n (mod m), m) != 1</code>
 	 */
 	public static Short discreteLogBabyGiant(short n, short target, short m, short upperOrder)
 			throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException {
@@ -6857,7 +6860,7 @@ public class MathUtil {
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>gcd(n, m) != 1</code>
+	 *             If <code>gcd(n (mod m), m) != 1</code>
 	 */
 	public static Short discreteLogBabyGiant(short n, short target, short m)
 			throws InvalidModulusException, UndefinedInverseException {
@@ -6901,7 +6904,7 @@ public class MathUtil {
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>gcd(n, m) != 1</code>
+	 *             If <code>gcd(n (mod m), m) != 1</code>
 	 */
 	public static Byte discreteLogBabyGiant(byte n, byte target, byte m, byte upperOrder, boolean generateBoth,
 			boolean hash) throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException {
@@ -6942,7 +6945,7 @@ public class MathUtil {
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>gcd(n, m) != 1</code>
+	 *             If <code>gcd(n (mod m), m) != 1</code>
 	 */
 	public static Byte discreteLogBabyGiant(byte n, byte target, byte m, byte upperOrder, boolean generateBoth)
 			throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException {
@@ -6976,7 +6979,7 @@ public class MathUtil {
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>gcd(n, m) != 1</code>
+	 *             If <code>gcd(n (mod m), m) != 1</code>
 	 */
 	public static Byte discreteLogBabyGiant(byte n, byte target, byte m, byte upperOrder)
 			throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException {
@@ -7002,7 +7005,7 @@ public class MathUtil {
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>gcd(n, m) != 1</code>
+	 *             If <code>gcd(n (mod m), m) != 1</code>
 	 */
 	public static Byte discreteLogBabyGiant(byte n, byte target, byte m)
 			throws InvalidModulusException, UndefinedInverseException {
@@ -7064,11 +7067,12 @@ public class MathUtil {
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
-	 *             && ((((long) Math.sqrt(p_to_e)) + 1) > Integer.MAX_VALUE)</code>
+	 *             && ((simple && ((((long) Math.sqrt(p_to_e)) + 1) > Integer.MAX_VALUE))
+	 *             	|| ((!simple) && ((((long) Math.sqrt(p)) + 1) > Integer.MAX_VALUE)))</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
-	 *             && ((gcd(n, m) != 1) || (gcd(n<sup>p<sup>(e - 1)</sup></sup>, m) != 1))</code>
+	 *             && ((gcd(n, m) != 1) || (gcd(n<sup>p<sup>(e - 1)</sup></sup> (mod m), m) != 1))</code>
 	 */
 	protected static Long discreteLogPohligHellmanFixedInput(long n, long target, long m, long p, long e, long p_to_e,
 			boolean linearSearchIfNotBabyGiant, boolean simple, boolean generateBothBabyGiant, boolean hashBabyGiant)
@@ -7097,17 +7101,20 @@ public class MathUtil {
 			if (bound > Integer.MAX_VALUE) {
 				// Only Linear-Search if requested.
 				if (linearSearchIfNotBabyGiant) {
+					// Runtime is in <code>O(p_to_e)</code>.
 					x = MathUtil.discreteLogLinearSearchFixedInput(n, target, m, 1L, p_to_e, n);
 				} else {
 					throw new ArithmeticException();
 				}
 			} else { // bound <= Integer.MAX_VALUE
 				try {
+					// Runtime is in <code>O(sqrt(p_to_e))</code>.
 					x = MathUtil.discreteLogBabyGiantFixedInput(n, target, m, bound, generateBothBabyGiant,
 							hashBabyGiant, MathUtil.modInverseFixedInput(n, m));
 				} catch (UndefinedInverseException ex) {
 					// Only Linear-Search if requested.
 					if (linearSearchIfNotBabyGiant) {
+						// Runtime is in <code>O(p_to_e)</code>.
 						x = MathUtil.discreteLogLinearSearchFixedInput(n, target, m, 1L, p_to_e, n);
 					} else { // i.e., !linearSearchIfNotBabyGiant
 						/*
@@ -7128,17 +7135,17 @@ public class MathUtil {
 		// Algorithm is from https://en.wikipedia.org/wiki/Pohlig%E2%80%93Hellman_algorithm.
 		final long p_to_e_minus_1 = p_to_e / p;
 		final long n_inverse = MathUtil.modInverseFixedInput(n, m);
-		long lambda = MathUtil.modPowFixedInput(n, p_to_e_minus_1, m);
-		// Fix lambda to be in [0, m - 1] \cap \doubleZ.
-		if (lambda < 0L) {
-			lambda += m;
+		long nu = MathUtil.modPowFixedInput(n, p_to_e_minus_1, m); // order(nu) <= p
+		// Fix nu to be in [0, m - 1] \cap \doubleZ.
+		if (nu < 0L) {
+			nu += m;
 		}
-		// (0 <= lambda) && (lambda <= m - 1)
-		Long lambda_inverse = null;
+		// (0 <= nu) && (nu <= m - 1)
+		Long nu_inverse = null;
 		try {
-			lambda_inverse = MathUtil.modInverseFixedInput(lambda, m);
+			nu_inverse = MathUtil.modInverseFixedInput(nu, m);
 		} catch (UndefinedInverseException ex) {
-			lambda_inverse = null;
+			nu_inverse = null;
 			if (!linearSearchIfNotBabyGiant) {
 				/*
 				 * If we cannot find x using Babystep-Giantstep and we are not permitted to use Linear-Search, then
@@ -7166,27 +7173,34 @@ public class MathUtil {
 			// (0 <= target_k) && (target_k <= m - 1)
 
 			// Handle the simple special cases.
-			d_k = MathUtil.discreteLogTrivialFixedInput(lambda, target_k, m);
+			d_k = MathUtil.discreteLogTrivialFixedInput(nu, target_k, m);
 			if (d_k == null) {
 				return null;
 			} else if (d_k == -1L) { // i.e., d_k is non-trivial.
-				// i.e., (1 < lambda) && (lambda < m - 1) && (m > 3) && (target_k != 1) && (lambda != target_k)
+				// i.e., (1 < nu) && (nu < m - 1) && (m > 3) && (target_k != 1) && (nu != target_k)
 
 				// Applying Math.floor before casting to long is unnecessary and it causes a large slow down.
-				bound = ((long) Math.sqrt(p_to_e)) + 1L; // bound >= 2
+				bound = ((long) Math.sqrt(p)) + 1L; // bound >= 2
 				if (bound > Integer.MAX_VALUE) {
 					// Only Linear-Search if requested.
 					if (linearSearchIfNotBabyGiant) {
-						d_k = MathUtil.discreteLogLinearSearchFixedInput(lambda, target_k, m, 1L, p_to_e, lambda);
-					} else {
+						// Runtime is in <code>O(p)</code>.
+						d_k = MathUtil.discreteLogLinearSearchFixedInput(nu, target_k, m, 1L, p, nu);
+					} else { // i.e., !linearSearchIfNotBabyGiant
+						/*
+						 * If we cannot find x using Babystep-Giantstep and we are not permitted to use Linear-Search,
+						 * then propagate the exception.
+						 */
 						throw new ArithmeticException();
 					}
 				} else { // bound <= Integer.MAX_VALUE
-					if (lambda_inverse == null) { // i.e., linearSearchIfNotBabyGiant
-						d_k = MathUtil.discreteLogLinearSearchFixedInput(lambda, target_k, m, 1L, p_to_e, lambda);
+					if (nu_inverse == null) { // i.e., linearSearchIfNotBabyGiant
+						// Runtime is in <code>O(p)</code>.
+						d_k = MathUtil.discreteLogLinearSearchFixedInput(nu, target_k, m, 1L, p, nu);
 					} else {
-						d_k = MathUtil.discreteLogBabyGiantFixedInput(lambda, target_k, m, bound, generateBothBabyGiant,
-								hashBabyGiant, lambda_inverse);
+						// Runtime is in <code>O(sqrt(p))</code>.
+						d_k = MathUtil.discreteLogBabyGiantFixedInput(nu, target_k, m, bound, generateBothBabyGiant,
+								hashBabyGiant, nu_inverse);
 					}
 				}
 
@@ -7288,11 +7302,12 @@ public class MathUtil {
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
-	 *             && ((((long) Math.sqrt(max(p<sub>i</sub><sup>e<sub>i</sub></sup>))) + 1) > Integer.MAX_VALUE)</code>
+	 *             && ((simple && ((((long) Math.sqrt(max(p<sub>i</sub><sup>e<sub>i</sub></sup>))) + 1) > Integer.MAX_VALUE))
+	 *             	|| ((!simple) && ((((long) Math.sqrt(max(p<sub>i</sub>))) + 1) > Integer.MAX_VALUE)))</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
-	 *             && ((gcd(n, m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup>, m) != 1))</code>
+	 *             && ((gcd(n, m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup> (mod m), m) != 1))</code>
 	 */
 	protected static Long discreteLogPohligHellmanFixedInput(long n, long target, long m, long upperOrder,
 			boolean linearSearchIfNotBabyGiant, boolean simple, Map<Long, Byte> upperOrderFactors,
@@ -7308,32 +7323,29 @@ public class MathUtil {
 				if (linearSearchIfNotBabyGiant) {
 					return MathUtil.discreteLogLinearSearchFixedInput(n, target, m, 1L, upperOrder, n);
 				}
+				// !linearSearchIfNotBabyGiant
+				/*
+				 * If we cannot find x using Babystep-Giantstep and we are not permitted to use Linear-Search, then
+				 * propagate the exception.
+				 */
 				throw new ArithmeticException();
 			}
 			// bound <= Integer.MAX_VALUE
-
-			final long[] x_y_gcd = MathUtil.gcdExtendedFixedInput(n, m);
-			if (x_y_gcd[2] == 1L) { // i.e., gcd(n, m) == 1
-				// i.e., <code>n<sup>-1</sup> (mod m)</code> does exist.
-				/**
-				 * It's fine to do <code>x_y_gcd[0] %= m</code> and <code>n_inverse += m</code> instead of
-				 * <code>x_y_gcd[0] % m</code> and <code>n_inverse + m</code> since we don't need the value of
-				 * <code>x_y_gcd[0]</code> and <code>n_inverse</code> to remain unchanged at this point. Note that
-				 * the difference is the <code>%=</code> and <code>+=</code> instead of the <code>%</code> and
-				 * <code>+</code> which will mutate <code>x_y_gcd[0]</code> and <code>n_inverse</code>.
-				 */
-				long n_inverse = x_y_gcd[0] %= m;
+			try {
 				return MathUtil.discreteLogBabyGiantFixedInput(n, target, m, bound, generateBothBabyGiant,
-						hashBabyGiant, (n_inverse < 0L) ? (n_inverse += m) : n_inverse);
+						hashBabyGiant, MathUtil.modInverseFixedInput(n, m));
+			} catch (UndefinedInverseException ex) {
+				// Only Linear-Search if requested.
+				if (linearSearchIfNotBabyGiant) {
+					return MathUtil.discreteLogLinearSearchFixedInput(n, target, m, 1L, upperOrder, n);
+				}
+				// !linearSearchIfNotBabyGiant
+				/*
+				 * If we cannot find x using Babystep-Giantstep and we are not permitted to use Linear-Search, then
+				 * propagate the exception.
+				 */
+				throw ex;
 			}
-			// gcd(n, m) != 1
-			// i.e., <code>n<sup>-1</sup> (mod m)</code> doesn't exist.
-
-			// Only Linear-Search if requested.
-			if (linearSearchIfNotBabyGiant) {
-				return MathUtil.discreteLogLinearSearchFixedInput(n, target, m, 1L, upperOrder, n);
-			}
-			throw new UndefinedInverseException();
 		}
 		// upperOrder is not prime.
 
@@ -7460,11 +7472,12 @@ public class MathUtil {
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
-	 *             && ((((long) Math.sqrt(max(p<sub>i</sub><sup>e<sub>i</sub></sup>))) + 1) > Integer.MAX_VALUE)</code>
+	 *             && ((simple && ((((long) Math.sqrt(max(p<sub>i</sub><sup>e<sub>i</sub></sup>))) + 1) > Integer.MAX_VALUE))
+	 *             	|| ((!simple) && ((((long) Math.sqrt(max(p<sub>i</sub>))) + 1) > Integer.MAX_VALUE)))</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
-	 *             && ((gcd(n, m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup>, m) != 1))</code>
+	 *             && ((gcd(n (mod m), m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup> (mod m), m) != 1))</code>
 	 */
 	public static Long discreteLogPohligHellman(long n, long target, long m, long upperOrder,
 			boolean linearSearchIfNotBabyGiant, boolean simple, boolean hashFactor, boolean generateBothBabyGiant,
@@ -7555,11 +7568,12 @@ public class MathUtil {
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
-	 *             && ((((long) Math.sqrt(max(p<sub>i</sub><sup>e<sub>i</sub></sup>))) + 1) > Integer.MAX_VALUE)</code>
+	 *             && ((simple && ((((long) Math.sqrt(max(p<sub>i</sub><sup>e<sub>i</sub></sup>))) + 1) > Integer.MAX_VALUE))
+	 *             	|| ((!simple) && ((((long) Math.sqrt(max(p<sub>i</sub>))) + 1) > Integer.MAX_VALUE)))</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
-	 *             && ((gcd(n, m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup>, m) != 1))</code>
+	 *             && ((gcd(n (mod m), m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup> (mod m), m) != 1))</code>
 	 */
 	public static Long discreteLogPohligHellman(long n, long target, long m, long upperOrder,
 			boolean linearSearchIfNotBabyGiant, boolean simple, boolean hashFactor, boolean generateBothBabyGiant)
@@ -7611,11 +7625,12 @@ public class MathUtil {
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
-	 *             && ((((long) Math.sqrt(max(p<sub>i</sub><sup>e<sub>i</sub></sup>))) + 1) > Integer.MAX_VALUE)</code>
+	 *             && ((simple && ((((long) Math.sqrt(max(p<sub>i</sub><sup>e<sub>i</sub></sup>))) + 1) > Integer.MAX_VALUE))
+	 *             	|| ((!simple) && ((((long) Math.sqrt(max(p<sub>i</sub>))) + 1) > Integer.MAX_VALUE)))</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
-	 *             && ((gcd(n, m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup>, m) != 1))</code>
+	 *             && ((gcd(n (mod m), m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup> (mod m), m) != 1))</code>
 	 */
 	public static Long discreteLogPohligHellman(long n, long target, long m, long upperOrder,
 			boolean linearSearchIfNotBabyGiant, boolean simple, boolean hashFactor)
@@ -7662,11 +7677,12 @@ public class MathUtil {
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
-	 *             && ((((long) Math.sqrt(max(p<sub>i</sub><sup>e<sub>i</sub></sup>))) + 1) > Integer.MAX_VALUE)</code>
+	 *             && ((simple && ((((long) Math.sqrt(max(p<sub>i</sub><sup>e<sub>i</sub></sup>))) + 1) > Integer.MAX_VALUE))
+	 *             	|| ((!simple) && ((((long) Math.sqrt(max(p<sub>i</sub>))) + 1) > Integer.MAX_VALUE)))</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
-	 *             && ((gcd(n, m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup>, m) != 1))</code>
+	 *             && ((gcd(n (mod m), m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup> (mod m), m) != 1))</code>
 	 */
 	public static Long discreteLogPohligHellman(long n, long target, long m, long upperOrder,
 			boolean linearSearchIfNotBabyGiant, boolean simple)
@@ -7706,11 +7722,11 @@ public class MathUtil {
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
-	 *             && ((((long) Math.sqrt(max(p<sub>i</sub><sup>e<sub>i</sub></sup>))) + 1) > Integer.MAX_VALUE)</code>
+	 *             && ((((long) Math.sqrt(max(p<sub>i</sub>))) + 1) > Integer.MAX_VALUE)</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
-	 *             && ((gcd(n, m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup>, m) != 1))</code>
+	 *             && ((gcd(n (mod m), m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup> (mod m), m) != 1))</code>
 	 */
 	public static Long discreteLogPohligHellman(long n, long target, long m, long upperOrder,
 			boolean linearSearchIfNotBabyGiant)
@@ -7745,12 +7761,11 @@ public class MathUtil {
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If
-	 *             <code>(((long) Math.sqrt(max(p<sub>i</sub><sup>e<sub>i</sub></sup>))) + 1) > Integer.MAX_VALUE</code>
+	 *             If <code>(((long) Math.sqrt(max(p<sub>i</sub>))) + 1) > Integer.MAX_VALUE</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If
-	 *             <code>(gcd(n, m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup>, m) != 1)</code>
+	 *             <code>(gcd(n (mod m), m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup> (mod m), m) != 1)</code>
 	 */
 	public static Long discreteLogPohligHellman(long n, long target, long m, long upperOrder)
 			throws InvalidModulusException, IllegalArgumentException, ArithmeticException, UndefinedInverseException {
@@ -7776,11 +7791,10 @@ public class MathUtil {
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If
-	 *             <code>(((long) Math.sqrt(max(p<sub>i</sub><sup>e<sub>i</sub></sup>))) + 1) > Integer.MAX_VALUE</code>
+	 *             If <code>(((long) Math.sqrt(max(p<sub>i</sub>))) + 1) > Integer.MAX_VALUE</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>gcd(n, m) != 1</code>
+	 *             If <code>gcd(n (mod m), m) != 1</code>
 	 */
 	public static Long discreteLogPohligHellman(long n, long target, long m)
 			throws InvalidModulusException, ArithmeticException, UndefinedInverseException {
@@ -7841,7 +7855,7 @@ public class MathUtil {
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
-	 *             && ((gcd(n, m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup>, m) != 1))</code>
+	 *             && ((gcd(n (mod m), m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup> (mod m), m) != 1))</code>
 	 */
 	public static Integer discreteLogPohligHellman(int n, int target, int m, int upperOrder,
 			boolean linearSearchIfNotBabyGiant, boolean simple, boolean hashFactor, boolean generateBothBabyGiant,
@@ -7899,7 +7913,7 @@ public class MathUtil {
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
-	 *             && ((gcd(n, m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup>, m) != 1))</code>
+	 *             && ((gcd(n (mod m), m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup> (mod m), m) != 1))</code>
 	 */
 	public static Integer discreteLogPohligHellman(int n, int target, int m, int upperOrder,
 			boolean linearSearchIfNotBabyGiant, boolean simple, boolean hashFactor, boolean generateBothBabyGiant)
@@ -7951,7 +7965,7 @@ public class MathUtil {
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
-	 *             && ((gcd(n, m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup>, m) != 1))</code>
+	 *             && ((gcd(n (mod m), m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup> (mod m), m) != 1))</code>
 	 */
 	public static Integer discreteLogPohligHellman(int n, int target, int m, int upperOrder,
 			boolean linearSearchIfNotBabyGiant, boolean simple, boolean hashFactor)
@@ -7998,7 +8012,7 @@ public class MathUtil {
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
-	 *             && ((gcd(n, m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup>, m) != 1))</code>
+	 *             && ((gcd(n (mod m), m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup> (mod m), m) != 1))</code>
 	 */
 	public static Integer discreteLogPohligHellman(int n, int target, int m, int upperOrder,
 			boolean linearSearchIfNotBabyGiant, boolean simple)
@@ -8038,7 +8052,7 @@ public class MathUtil {
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
-	 *             && ((gcd(n, m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup>, m) != 1))</code>
+	 *             && ((gcd(n (mod m), m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup> (mod m), m) != 1))</code>
 	 */
 	public static Integer discreteLogPohligHellman(int n, int target, int m, int upperOrder,
 			boolean linearSearchIfNotBabyGiant)
@@ -8074,7 +8088,7 @@ public class MathUtil {
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If
-	 *             <code>(gcd(n, m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup>, m) != 1)</code>
+	 *             <code>(gcd(n (mod m), m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup> (mod m), m) != 1)</code>
 	 */
 	public static Integer discreteLogPohligHellman(int n, int target, int m, int upperOrder)
 			throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException {
@@ -8100,7 +8114,7 @@ public class MathUtil {
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>gcd(n, m) != 1</code>
+	 *             If <code>gcd(n (mod m), m) != 1</code>
 	 */
 	public static Integer discreteLogPohligHellman(int n, int target, int m)
 			throws InvalidModulusException, UndefinedInverseException {
@@ -8161,7 +8175,7 @@ public class MathUtil {
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
-	 *             && ((gcd(n, m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup>, m) != 1))</code>
+	 *             && ((gcd(n (mod m), m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup> (mod m), m) != 1))</code>
 	 */
 	public static Short discreteLogPohligHellman(short n, short target, short m, short upperOrder,
 			boolean linearSearchIfNotBabyGiant, boolean simple, boolean hashFactor, boolean generateBothBabyGiant,
@@ -8219,7 +8233,7 @@ public class MathUtil {
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
-	 *             && ((gcd(n, m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup>, m) != 1))</code>
+	 *             && ((gcd(n (mod m), m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup> (mod m), m) != 1))</code>
 	 */
 	public static Short discreteLogPohligHellman(short n, short target, short m, short upperOrder,
 			boolean linearSearchIfNotBabyGiant, boolean simple, boolean hashFactor, boolean generateBothBabyGiant)
@@ -8271,7 +8285,7 @@ public class MathUtil {
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
-	 *             && ((gcd(n, m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup>, m) != 1))</code>
+	 *             && ((gcd(n (mod m), m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup> (mod m), m) != 1))</code>
 	 */
 	public static Short discreteLogPohligHellman(short n, short target, short m, short upperOrder,
 			boolean linearSearchIfNotBabyGiant, boolean simple, boolean hashFactor)
@@ -8318,7 +8332,7 @@ public class MathUtil {
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
-	 *             && ((gcd(n, m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup>, m) != 1))</code>
+	 *             && ((gcd(n (mod m), m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup> (mod m), m) != 1))</code>
 	 */
 	public static Short discreteLogPohligHellman(short n, short target, short m, short upperOrder,
 			boolean linearSearchIfNotBabyGiant, boolean simple)
@@ -8358,7 +8372,7 @@ public class MathUtil {
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
-	 *             && ((gcd(n, m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup>, m) != 1))</code>
+	 *             && ((gcd(n (mod m), m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup> (mod m), m) != 1))</code>
 	 */
 	public static Short discreteLogPohligHellman(short n, short target, short m, short upperOrder,
 			boolean linearSearchIfNotBabyGiant)
@@ -8394,7 +8408,7 @@ public class MathUtil {
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If
-	 *             <code>(gcd(n, m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup>, m) != 1)</code>
+	 *             <code>(gcd(n (mod m), m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup> (mod m), m) != 1)</code>
 	 */
 	public static Short discreteLogPohligHellman(short n, short target, short m, short upperOrder)
 			throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException {
@@ -8420,7 +8434,7 @@ public class MathUtil {
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>gcd(n, m) != 1</code>
+	 *             If <code>gcd(n (mod m), m) != 1</code>
 	 */
 	public static Short discreteLogPohligHellman(short n, short target, short m)
 			throws InvalidModulusException, UndefinedInverseException {
@@ -8481,7 +8495,7 @@ public class MathUtil {
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
-	 *             && ((gcd(n, m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup>, m) != 1))</code>
+	 *             && ((gcd(n (mod m), m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup> (mod m), m) != 1))</code>
 	 */
 	public static Byte discreteLogPohligHellman(byte n, byte target, byte m, byte upperOrder,
 			boolean linearSearchIfNotBabyGiant, boolean simple, boolean hashFactor, boolean generateBothBabyGiant,
@@ -8539,7 +8553,7 @@ public class MathUtil {
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
-	 *             && ((gcd(n, m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup>, m) != 1))</code>
+	 *             && ((gcd(n (mod m), m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup> (mod m), m) != 1))</code>
 	 */
 	public static Byte discreteLogPohligHellman(byte n, byte target, byte m, byte upperOrder,
 			boolean linearSearchIfNotBabyGiant, boolean simple, boolean hashFactor, boolean generateBothBabyGiant)
@@ -8591,7 +8605,7 @@ public class MathUtil {
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
-	 *             && ((gcd(n, m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup>, m) != 1))</code>
+	 *             && ((gcd(n (mod m), m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup> (mod m), m) != 1))</code>
 	 */
 	public static Byte discreteLogPohligHellman(byte n, byte target, byte m, byte upperOrder,
 			boolean linearSearchIfNotBabyGiant, boolean simple, boolean hashFactor)
@@ -8638,7 +8652,7 @@ public class MathUtil {
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
-	 *             && ((gcd(n, m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup>, m) != 1))</code>
+	 *             && ((gcd(n (mod m), m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup> (mod m), m) != 1))</code>
 	 */
 	public static Byte discreteLogPohligHellman(byte n, byte target, byte m, byte upperOrder,
 			boolean linearSearchIfNotBabyGiant, boolean simple)
@@ -8678,7 +8692,7 @@ public class MathUtil {
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
-	 *             && ((gcd(n, m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup>, m) != 1))</code>
+	 *             && ((gcd(n (mod m), m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup> (mod m), m) != 1))</code>
 	 */
 	public static Byte discreteLogPohligHellman(byte n, byte target, byte m, byte upperOrder,
 			boolean linearSearchIfNotBabyGiant)
@@ -8714,7 +8728,7 @@ public class MathUtil {
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If
-	 *             <code>(gcd(n, m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup>, m) != 1)</code>
+	 *             <code>(gcd(n (mod m), m) != 1) || (gcd(n<sup>p<sub>i</sub><sup>(e<sub>i</sub> - 1)</sup></sup> (mod m), m) != 1)</code>
 	 */
 	public static Byte discreteLogPohligHellman(byte n, byte target, byte m, byte upperOrder)
 			throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException {
@@ -8740,7 +8754,7 @@ public class MathUtil {
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws UndefinedInverseException
-	 *             If <code>gcd(n, m) != 1</code>
+	 *             If <code>gcd(n (mod m), m) != 1</code>
 	 */
 	public static Byte discreteLogPohligHellman(byte n, byte target, byte m)
 			throws InvalidModulusException, UndefinedInverseException {
