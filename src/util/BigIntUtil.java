@@ -454,19 +454,30 @@ public class BigIntUtil {
 		// (a > 0) && (b > 0)
 
 		// lcm(a, b) == (a * b) / gcd(a, b)
-		return (a.divide(a.gcd(b))).multiply(b);
+		return a.divide(a.gcd(b)).multiply(b);
 	}
 
 	/**
 	 * Chinese Remainder Theorem. <br>
 	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>Result.length == 3</code> <br>
+	 * Postcondition: <code>justAnswer implies (Result.length == 2)</code> <br>
+	 * Postcondition: <code>(!justAnswer) implies (Result.length == 5)</code> <br>
 	 * Postcondition:
 	 * <code>Result[0] == n1 * (<sup>m2</sup>&frasl;<sub>gcd(m1, m2)</sub>) * (m2<sup>-1</sup> (mod m1))
 	 * + n2 * (<sup>m1</sup>&frasl;<sub>gcd(m1, m2)</sub>) * (m1<sup>-1</sup> (mod m2)) (mod lcm(m1, m2))</code>
 	 * <br>
 	 * Postcondition: <code>Result[1] == lcm(m1, m2)</code> <br>
-	 * Postcondition: <code>Result[2] == gcd(m1, m2)</code>
+	 * Postcondition:
+	 * 
+	 * <pre>
+	 * <code>
+	 * if (Result.length == 5) {
+	 * 	assert (Result[2] == gcd(m1, m2));
+	 * 	assert (Result[3] == m1<sup>-1</sup> (mod m2));
+	 * 	assert (Result[4] == m2<sup>-1</sup> (mod m1));  
+	 * }
+	 * </code>
+	 * </pre>
 	 * 
 	 * @param n1
 	 *            the first given number
@@ -479,6 +490,9 @@ public class BigIntUtil {
 	 * 
 	 * @param m2
 	 *            the second given modulus
+	 * 
+	 * @param justAnswer
+	 *            specifies whether the resulting array should only contain the answer
 	 * 
 	 * @param modBefore
 	 *            specifies whether <code>n1</code> and <code>n2</code> should be modded by
@@ -499,8 +513,9 @@ public class BigIntUtil {
 	 * @throws IllegalArgumentException
 	 *             If <code>n1 != n2 (mod gcd(m1, m2))</code>
 	 */
-	public static BigInteger[] crt(BigInteger n1, BigInteger m1, BigInteger n2, BigInteger m2, boolean modBefore,
-			boolean modAfterEveryStep) throws NullPointerException, InvalidModulusException, IllegalArgumentException {
+	public static BigInteger[] crt(BigInteger n1, BigInteger m1, BigInteger n2, BigInteger m2, boolean justAnswer,
+			boolean modBefore, boolean modAfterEveryStep)
+			throws NullPointerException, InvalidModulusException, IllegalArgumentException {
 		if ((n1 == null) || (n2 == null)) {
 			throw new NullPointerException();
 		} else if ((m1.signum() != 1) || (m2.signum() != 1)) { // i.e., (m1 <= 0) || (m2 <= 0)
@@ -509,21 +524,24 @@ public class BigIntUtil {
 		// (m1 > 0) && (m2 > 0)
 
 		// Find integers x and y such that x * m1 + y * m2 == gcd(m1, m2).
-		final BigInteger[] result = BigIntUtil.gcdExtended(m1, m2);
-		final BigInteger gcd = result[2];
+		final BigInteger[] x_y_gcd = BigIntUtil.gcdExtended(m1, m2);
+		final BigInteger gcd = x_y_gcd[2];
+		final boolean coprime = gcd.equals(BigInteger.ONE);
 
 		// Compute the new modulus which is the least common multiple of m1 and m2.
 		final BigInteger og_m1 = m1, og_m2 = m2;
-		final BigInteger m = (m1 = m1.divide(gcd)).multiply(m2);
-
-		// Handle the invalid case and update the coprime flag if needed.
-		final boolean coprime = gcd.equals(BigInteger.ONE);
-		if (!coprime) { // i.e., gcd != 1
+		BigInteger m = null; // lcm(m1, m2) == (m1 * m2) / gcd(m1, m2)
+		if (coprime) { // i.e., gcd == 1
+			m = m1.multiply(m2);
+		} else { // i.e., gcd != 1
+			// Handle the invalid case.
 			if (!n1.mod(gcd).equals(n2.mod(gcd))) {
 				throw new IllegalArgumentException();
 			}
+			m = (m1 = m1.divide(gcd)).multiply(m2);
 			m2 = m2.divide(gcd);
 		}
+		// (m1 == og_m1 / gcd) && (m2 == og_m2 / gcd) && (m == lcm(og_m1, og_m2))
 
 		// Mod n1 and n2 before the computation if requested.
 		if (modBefore) {
@@ -532,7 +550,7 @@ public class BigIntUtil {
 		}
 
 		// Apply the C.R.T. formula for two congruences.
-		final BigInteger m1_inverse = result[0].mod(og_m2), m2_inverse = result[1].mod(og_m1);
+		final BigInteger m1_inverse = x_y_gcd[0].mod(og_m2), m2_inverse = x_y_gcd[1].mod(og_m1);
 		BigInteger lhs = n1.multiply(m2), rhs = n2.multiply(m1);
 		if (modAfterEveryStep) {
 			lhs = lhs.mod(m).multiply(m2_inverse).mod(m);
@@ -541,19 +559,36 @@ public class BigIntUtil {
 			lhs = lhs.multiply(m2_inverse);
 			rhs = rhs.multiply(m1_inverse);
 		}
-		return new BigInteger[] { lhs.add(rhs).mod(m), m, gcd };
+		lhs = lhs.add(rhs).mod(m);
+
+		// Return either just the answer or the answer along with all of the extra information.
+		if (justAnswer) {
+			return new BigInteger[] { lhs, m };
+		}
+		return new BigInteger[] { lhs, m, gcd, m1_inverse, m2_inverse };
 	}
 
 	/**
 	 * Chinese Remainder Theorem. <br>
 	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>Result.length == 3</code> <br>
+	 * Postcondition: <code>justAnswer implies (Result.length == 2)</code> <br>
+	 * Postcondition: <code>(!justAnswer) implies (Result.length == 5)</code> <br>
 	 * Postcondition:
 	 * <code>Result[0] == n1 * (<sup>m2</sup>&frasl;<sub>gcd(m1, m2)</sub>) * (m2<sup>-1</sup> (mod m1))
 	 * + n2 * (<sup>m1</sup>&frasl;<sub>gcd(m1, m2)</sub>) * (m1<sup>-1</sup> (mod m2)) (mod lcm(m1, m2))</code>
 	 * <br>
 	 * Postcondition: <code>Result[1] == lcm(m1, m2)</code> <br>
-	 * Postcondition: <code>Result[2] == gcd(m1, m2)</code>
+	 * Postcondition:
+	 * 
+	 * <pre>
+	 * <code>
+	 * if (Result.length == 5) {
+	 * 	assert (Result[2] == gcd(m1, m2));
+	 * 	assert (Result[3] == m1<sup>-1</sup> (mod m2));
+	 * 	assert (Result[4] == m2<sup>-1</sup> (mod m1));  
+	 * }
+	 * </code>
+	 * </pre>
 	 * 
 	 * @param n1
 	 *            the first given number
@@ -567,11 +602,14 @@ public class BigIntUtil {
 	 * @param m2
 	 *            the second given modulus
 	 * 
+	 * @param justAnswer
+	 *            specifies whether the resulting array should only contain the answer
+	 * 
 	 * @param modBefore
 	 *            specifies whether <code>n1</code> and <code>n2</code> should be modded by
 	 *            <code>m1</code> and <code>m2</code> respectively before applying the formula
 	 * 
-	 * @return <code>BigIntegerUtil.crt(n1, m1, n2, m2, modBefore, true)</code>.
+	 * @return The resulting BigInteger array.
 	 * 
 	 * @throws NullPointerException
 	 *             If <code>(n1 == null) || (m1 == null) || (n2 == null) || (m2 == null)</code>
@@ -582,21 +620,32 @@ public class BigIntUtil {
 	 * @throws IllegalArgumentException
 	 *             If <code>n1 != n2 (mod gcd(m1, m2))</code>
 	 */
-	public static BigInteger[] crt(BigInteger n1, BigInteger m1, BigInteger n2, BigInteger m2, boolean modBefore)
-			throws NullPointerException, InvalidModulusException, IllegalArgumentException {
-		return BigIntUtil.crt(n1, m1, n2, m2, modBefore, true);
+	public static BigInteger[] crt(BigInteger n1, BigInteger m1, BigInteger n2, BigInteger m2, boolean justAnswer,
+			boolean modBefore) throws NullPointerException, InvalidModulusException, IllegalArgumentException {
+		return BigIntUtil.crt(n1, m1, n2, m2, justAnswer, modBefore, true);
 	}
 
 	/**
 	 * Chinese Remainder Theorem. <br>
 	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>Result.length == 3</code> <br>
+	 * Postcondition: <code>justAnswer implies (Result.length == 2)</code> <br>
+	 * Postcondition: <code>(!justAnswer) implies (Result.length == 5)</code> <br>
 	 * Postcondition:
 	 * <code>Result[0] == n1 * (<sup>m2</sup>&frasl;<sub>gcd(m1, m2)</sub>) * (m2<sup>-1</sup> (mod m1))
 	 * + n2 * (<sup>m1</sup>&frasl;<sub>gcd(m1, m2)</sub>) * (m1<sup>-1</sup> (mod m2)) (mod lcm(m1, m2))</code>
 	 * <br>
 	 * Postcondition: <code>Result[1] == lcm(m1, m2)</code> <br>
-	 * Postcondition: <code>Result[2] == gcd(m1, m2)</code>
+	 * Postcondition:
+	 * 
+	 * <pre>
+	 * <code>
+	 * if (Result.length == 5) {
+	 * 	assert (Result[2] == gcd(m1, m2));
+	 * 	assert (Result[3] == m1<sup>-1</sup> (mod m2));
+	 * 	assert (Result[4] == m2<sup>-1</sup> (mod m1));  
+	 * }
+	 * </code>
+	 * </pre>
 	 * 
 	 * @param n1
 	 *            the first given number
@@ -610,7 +659,48 @@ public class BigIntUtil {
 	 * @param m2
 	 *            the second given modulus
 	 * 
-	 * @return <code>BigIntegerUtil.crt(n1, m1, n2, m2, true)</code>.
+	 * @param justAnswer
+	 *            specifies whether the resulting array should only contain the answer
+	 * 
+	 * @return The resulting BigInteger array.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>(n1 == null) || (m1 == null) || (n2 == null) || (m2 == null)</code>
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>(m1 < 1) || (m2 < 1)</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>n1 != n2 (mod gcd(m1, m2))</code>
+	 */
+	public static BigInteger[] crt(BigInteger n1, BigInteger m1, BigInteger n2, BigInteger m2, boolean justAnswer)
+			throws NullPointerException, InvalidModulusException, IllegalArgumentException {
+		return BigIntUtil.crt(n1, m1, n2, m2, justAnswer, true);
+	}
+
+	/**
+	 * Chinese Remainder Theorem. <br>
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>Result.length == 2</code> <br>
+	 * Postcondition:
+	 * <code>Result[0] == n1 * (<sup>m2</sup>&frasl;<sub>gcd(m1, m2)</sub>) * (m2<sup>-1</sup> (mod m1))
+	 * + n2 * (<sup>m1</sup>&frasl;<sub>gcd(m1, m2)</sub>) * (m1<sup>-1</sup> (mod m2)) (mod lcm(m1, m2))</code>
+	 * <br>
+	 * Postcondition: <code>Result[1] == lcm(m1, m2)</code>
+	 * 
+	 * @param n1
+	 *            the first given number
+	 * 
+	 * @param m1
+	 *            the first given modulus
+	 * 
+	 * @param n2
+	 *            the second given number
+	 * 
+	 * @param m2
+	 *            the second given modulus
+	 * 
+	 * @return The resulting BigInteger array.
 	 * 
 	 * @throws NullPointerException
 	 *             If <code>(n1 == null) || (m1 == null) || (n2 == null) || (m2 == null)</code>
@@ -719,30 +809,28 @@ public class BigIntUtil {
 		n = n.mod(m);
 
 		if (n.signum() == 0) { // i.e., n == 0
-			if (begin.signum() == -1) { // i.e., begin < 0
-				throw new UndefinedInverseException();
-			}
-			// begin >= 0
-
 			/**
 			 * This case is needed since 0 to any positive power is 0 and so any non-zero assignment of
 			 * <code>result[i]</code> will be wrong in this case. Furthermore, note that we are defining
 			 * <code>0<sup>0</sup> == 0</code> here even though it is undefined in math.
 			 */
+			if (begin.signum() == -1) { // i.e., begin < 0
+				throw new UndefinedInverseException();
+			}
+			// begin >= 0
 			Arrays.fill(result, BigInteger.ZERO);
 			return result;
-		}
-		// (n != 0) && (m != 1)
-		// i.e., (n != 0) && (m > 1)
-
-		if (n.equals(BigInteger.ONE)) { // i.e., n == 1 (mod m)
+		} else if (n.equals(BigInteger.ONE)) { // i.e., n == 1 (mod m)
 			/*
 			 * This case is only an optimization since 1 to any power is 1 and so the loop will do extra
 			 * unnecessary work to arrive at the same result.
 			 */
 			Arrays.fill(result, BigInteger.ONE);
 			return result;
-		} else if (n.add(BigInteger.ONE).equals(m)) { // i.e., n == -1 (mod m)
+		}
+		// n >= 2
+		// i.e., (1 < n) && (n <= m - 1) && (m > 2)
+		if (n.add(BigInteger.ONE).equals(m)) { // i.e., n == -1 (mod m)
 			/*
 			 * This case is only an optimization since -1 to any even power is 1 and otherwise is -1. So the
 			 * loop will do extra unnecessary work to arrive at the same result.
@@ -753,8 +841,8 @@ public class BigIntUtil {
 			}
 			return result;
 		}
-		// (n != 1) && (n != m - 1)
-		// i.e., (1 < n) && (n < m - 1)
+		// n != m - 1
+		// i.e., (1 < n) && (n < m - 1) && (m > 3)
 
 		// Fill and return the resulting BigInteger array.
 		BigInteger n_to_i = n.modPow(begin, m);
