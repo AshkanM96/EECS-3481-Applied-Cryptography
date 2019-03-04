@@ -1947,7 +1947,7 @@ public class MathUtil {
 		 * <code>sqrt(n)</code>. <br>
 		 * <br>
 		 * 
-		 * But due to the above loop, we know that <code>n</code> is prime at this point.
+		 * Therefore, due to the above loop, we know that <code>n</code> is prime at this point.
 		 */
 		return true;
 	}
@@ -2266,8 +2266,8 @@ public class MathUtil {
 		 * <code>sqrt(n)</code>. <br>
 		 * <br>
 		 * 
-		 * But due to the above loop, we know that <code>n</code> is prime and a divisor of the original
-		 * value of <code>n</code> at this point.
+		 * Therefore, due to the above loop, we know that <code>n</code> is prime and a divisor of the
+		 * original value of <code>n</code> at this point.
 		 */
 		result.put(n, (byte) 1);
 		// Only print if requested.
@@ -2638,8 +2638,8 @@ public class MathUtil {
 		 * <code>sqrt(n)</code>. <br>
 		 * <br>
 		 * 
-		 * But due to the above loop, we know that <code>n</code> is prime and a divisor of the original
-		 * value of <code>n</code> at this point.
+		 * Therefore, due to the above loop, we know that <code>n</code> is prime and a divisor of the
+		 * original value of <code>n</code> at this point.
 		 */
 		result.put(n, (byte) 1);
 		// Only print if requested.
@@ -3010,8 +3010,8 @@ public class MathUtil {
 		 * <code>sqrt(n)</code>. <br>
 		 * <br>
 		 * 
-		 * But due to the above loop, we know that <code>n</code> is prime and a divisor of the original
-		 * value of <code>n</code> at this point.
+		 * Therefore, due to the above loop, we know that <code>n</code> is prime and a divisor of the
+		 * original value of <code>n</code> at this point.
 		 */
 		result.put(n, (byte) 1);
 		// Only print if requested.
@@ -3382,8 +3382,8 @@ public class MathUtil {
 		 * <code>sqrt(n)</code>. <br>
 		 * <br>
 		 * 
-		 * But due to the above loop, we know that <code>n</code> is prime and a divisor of the original
-		 * value of <code>n</code> at this point.
+		 * Therefore, due to the above loop, we know that <code>n</code> is prime and a divisor of the
+		 * original value of <code>n</code> at this point.
 		 */
 		result.put(n, (byte) 1);
 		// Only print if requested.
@@ -3610,8 +3610,8 @@ public class MathUtil {
 		 * <code>sqrt(n)</code>. <br>
 		 * <br>
 		 * 
-		 * But due to the above loop, we know that <code>n</code> is prime and a divisor of the original
-		 * value of <code>n</code> at this point.
+		 * Therefore, due to the above loop, we know that <code>n</code> is prime and a divisor of the
+		 * original value of <code>n</code> at this point.
 		 */
 		return (result -= (result / n));
 	}
@@ -6272,7 +6272,7 @@ public class MathUtil {
 		final Map<Long, Long> babylist = hash ? new HashMap<Long, Long>((int) bound) : new TreeMap<Long, Long>();
 		if (generateBoth) {
 			/**
-			 * <code>generateBoth</code> so generate both the babylist and the giant list simultaneously one
+			 * <code>generateBoth</code> so generate both the babylist and the giantlist simultaneously one
 			 * element at a time.
 			 */
 			final Map<Long, Long> giantlist = hash ? new HashMap<Long, Long>((int) bound) : new TreeMap<Long, Long>();
@@ -7429,7 +7429,7 @@ public class MathUtil {
 		if (n_i < 0L) {
 			n_i += m;
 		}
-		// (0 <= n_i) && (n_i <= m - 1)
+		// (0 <= n_i) && (n_i <= m - 1) && (order(n_i) <= p_i_to_e_i)
 		if (target_i < 0L) {
 			target_i += m;
 		}
@@ -7454,7 +7454,7 @@ public class MathUtil {
 			if ((n_i = MathUtil.modPowFixedInput(n, quotient, m)) < 0L) {
 				n_i += m;
 			}
-			// (0 <= n_i) && (n_i <= m - 1)
+			// (0 <= n_i) && (n_i <= m - 1) && (order(n_i) <= p_i_to_e_i)
 			if ((target_i = MathUtil.modPowFixedInput(target, quotient, m)) < 0L) {
 				target_i += m;
 			}
