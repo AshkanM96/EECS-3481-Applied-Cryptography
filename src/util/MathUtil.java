@@ -7083,39 +7083,42 @@ public class MathUtil {
 		}
 
 		// Handle the simple special cases.
-		Long x = MathUtil.discreteLogTrivialFixedInput(n, target, m);
-		if (x == null) {
+		final Long result = MathUtil.discreteLogTrivialFixedInput(n, target, m);
+		if (result == null) {
 			return null;
-		} else if (x != -1L) { // i.e., x is trivial.
-			return x;
+		} else if (result != -1L) { // i.e., result is trivial.
+			return result;
 		}
 		// i.e., (1 < n) && (n < m - 1) && (m > 3) && (target != 1) && (n != target)
+		boolean linearSearch = false; // linear search flag
 
 		if (simple) {
 			/**
 			 * <code>simple</code> so just solve the problem directly using Babystep-Giantstep or Linear-Search
 			 * (i.e., elementary methods).
 			 */
+			long n_inverse = 0L;
+
 			// Applying Math.floor before casting to long is unnecessary and it causes a large slow down.
 			final long bound = ((long) Math.sqrt(p_to_e)) + 1L; // bound >= 2
 			if (bound > Integer.MAX_VALUE) {
-				// Only Linear-Search if requested.
 				if (linearSearchIfNotBabyGiant) {
-					// Runtime is in <code>O(p_to_e)</code>.
-					x = MathUtil.discreteLogLinearSearchFixedInput(n, target, m, 1L, p_to_e, n);
-				} else {
+					// Set the linear search flag denoting the fact that we have to use Linear-Search.
+					linearSearch = true;
+				} else { // i.e., !linearSearchIfNotBabyGiant
+					/*
+					 * If we cannot find x using Babystep-Giantstep and we are not permitted to use Linear-Search, then
+					 * propagate the exception.
+					 */
 					throw new ArithmeticException();
 				}
-			} else { // bound <= Integer.MAX_VALUE
+			} else { // i.e., bound <= Integer.MAX_VALUE
 				try {
-					// Runtime is in <code>O(sqrt(p_to_e))</code>.
-					x = MathUtil.discreteLogBabyGiantFixedInput(n, target, m, bound, generateBothBabyGiant,
-							hashBabyGiant, MathUtil.modInverseFixedInput(n, m));
+					n_inverse = MathUtil.modInverseFixedInput(n, m);
 				} catch (UndefinedInverseException ex) {
-					// Only Linear-Search if requested.
 					if (linearSearchIfNotBabyGiant) {
-						// Runtime is in <code>O(p_to_e)</code>.
-						x = MathUtil.discreteLogLinearSearchFixedInput(n, target, m, 1L, p_to_e, n);
+						// Set the linear search flag denoting the fact that we have to use Linear-Search.
+						linearSearch = true;
 					} else { // i.e., !linearSearchIfNotBabyGiant
 						/*
 						 * If we cannot find x using Babystep-Giantstep and we are not permitted to use Linear-Search,
@@ -7125,39 +7128,111 @@ public class MathUtil {
 					}
 				}
 			}
-			return x;
+
+			if (linearSearch) {
+				// Runtime is in <code>O(p_to_e)</code>.
+				return MathUtil.discreteLogLinearSearchFixedInput(n, target, m, 1L, p_to_e, n);
+			}
+			// Runtime is in <code>O(sqrt(p_to_e))</code>.
+			return MathUtil.discreteLogBabyGiantFixedInput(n, target, m, bound, generateBothBabyGiant, hashBabyGiant,
+					n_inverse);
 		}
 		/**
 		 * <code>!simple</code> so iteratively compute the <code>p</code>-adic digits of the result
 		 * separately by repeatedly shifting out all but one unknown digit in the exponent, and then compute
 		 * that one unknown digit by elementary methods.
 		 */
-		// Algorithm is from https://en.wikipedia.org/wiki/Pohlig%E2%80%93Hellman_algorithm.
-		final long p_to_e_minus_1 = p_to_e / p;
 		final long n_inverse = MathUtil.modInverseFixedInput(n, m);
-		long nu = MathUtil.modPowFixedInput(n, p_to_e_minus_1, m); // order(nu) <= p
+		final long p_to_e_minus_1 = p_to_e / p;
+		long nu = MathUtil.modPowFixedInput(n, p_to_e_minus_1, m), nu_inverse = 0L; // order(nu) <= p
 		// Fix nu to be in [0, m - 1] \cap \doubleZ.
 		if (nu < 0L) {
 			nu += m;
 		}
 		// (0 <= nu) && (nu <= m - 1)
-		Long nu_inverse = null;
-		try {
-			nu_inverse = MathUtil.modInverseFixedInput(nu, m);
-		} catch (UndefinedInverseException ex) {
-			nu_inverse = null;
-			if (!linearSearchIfNotBabyGiant) {
+
+		// Applying Math.floor before casting to long is unnecessary and it causes a large slow down.
+		final long bound = ((long) Math.sqrt(p)) + 1L; // bound >= 2
+		if (bound > Integer.MAX_VALUE) {
+			if (linearSearchIfNotBabyGiant) {
+				// Set the linear search flag denoting the fact that we have to use Linear-Search.
+				linearSearch = true;
+			} else { // i.e., !linearSearchIfNotBabyGiant
 				/*
 				 * If we cannot find x using Babystep-Giantstep and we are not permitted to use Linear-Search, then
 				 * propagate the exception.
 				 */
-				throw ex;
+				throw new ArithmeticException();
+			}
+		} else { // i.e., bound <= Integer.MAX_VALUE
+			try {
+				nu_inverse = MathUtil.modInverseFixedInput(nu, m);
+			} catch (UndefinedInverseException ex) {
+				if (linearSearchIfNotBabyGiant) {
+					// Set the linear search flag denoting the fact that we have to use Linear-Search.
+					linearSearch = true;
+				} else { // i.e., !linearSearchIfNotBabyGiant
+					/*
+					 * If we cannot find x using Babystep-Giantstep and we are not permitted to use Linear-Search, then
+					 * propagate the exception.
+					 */
+					throw ex;
+				}
 			}
 		}
 
-		x = 0L;
+		/*
+		 * In the implementation, we have chosen to duplicate the entire loop instead of writing it once and
+		 * having it evaluate the linearSearch boolean in every iteration for efficiency purposes.
+		 */
+		if (linearSearch) { // i.e., ((bound > Integer.MAX_VALUE) || (gcd(nu, m) != 1)) && linearSearchIfNotBabyGiant
+			// Algorithm is from https://en.wikipedia.org/wiki/Pohlig%E2%80%93Hellman_algorithm.
+			long x = 0L;
+			Long d_k = null;
+			for (long k = 0L, target_k = 0L, p_to_k = 1L; k != e; ++k, p_to_k *= p) {
+				/**
+				 * Compute
+				 * <code>target_k == (n<sup>-x<sub>k</sub></sup> * target)<sup>p<sup>(e - 1 - k)</sup></sup> (mod m)</code>.
+				 */
+				target_k = MathUtil.modMultFixedInput(MathUtil.modPowFixedInput(n_inverse, x, m), target, m);
+				if (target_k != 0L) {
+					target_k = MathUtil.modPowFixedInput(target_k, p_to_e_minus_1 / p_to_k, m);
+				}
+				// Fix target_k to be in [0, m - 1] \cap \doubleZ.
+				if (target_k < 0L) {
+					target_k += m;
+				}
+				// (0 <= target_k) && (target_k <= m - 1)
+
+				// Handle the simple special cases.
+				d_k = MathUtil.discreteLogTrivialFixedInput(nu, target_k, m);
+				if (d_k == null) {
+					return null;
+				} else if (d_k == -1L) { // i.e., d_k is non-trivial.
+					// i.e., (1 < nu) && (nu < m - 1) && (m > 3) && (target_k != 1) && (nu != target_k)
+
+					// Runtime is in <code>O(p)</code>.
+					d_k = MathUtil.discreteLogLinearSearchFixedInput(nu, target_k, m, 1L, p, nu);
+					if (d_k == null) {
+						return null;
+					}
+				}
+
+				// Update x.
+				/**
+				 * It's fine to do <code>d_k *= p_to_k</code> instead of <code>d_k * p_to_k</code> since we don't
+				 * need the value of <code>d_k</code> to remain unchanged at this point. Note that the difference is
+				 * the <code>*=</code> instead of the <code>*</code> which will mutate <code>d_k</code>.
+				 */
+				x += (d_k *= p_to_k);
+			}
+			return x;
+		}
+		// i.e., (bound <= Integer.MAX_VALUE) && (gcd(nu, m) == 1)
+		// Algorithm is from https://en.wikipedia.org/wiki/Pohlig%E2%80%93Hellman_algorithm.
+		long x = 0L;
 		Long d_k = null;
-		for (long k = 0L, target_k = 0L, p_to_k = 1L, bound = 0L; k != e; ++k, p_to_k *= p) {
+		for (long k = 0L, target_k = 0L, p_to_k = 1L; k != e; ++k, p_to_k *= p) {
 			/**
 			 * Compute
 			 * <code>target_k == (n<sup>-x<sub>k</sub></sup> * target)<sup>p<sup>(e - 1 - k)</sup></sup> (mod m)</code>.
@@ -7179,31 +7254,9 @@ public class MathUtil {
 			} else if (d_k == -1L) { // i.e., d_k is non-trivial.
 				// i.e., (1 < nu) && (nu < m - 1) && (m > 3) && (target_k != 1) && (nu != target_k)
 
-				// Applying Math.floor before casting to long is unnecessary and it causes a large slow down.
-				bound = ((long) Math.sqrt(p)) + 1L; // bound >= 2
-				if (bound > Integer.MAX_VALUE) {
-					// Only Linear-Search if requested.
-					if (linearSearchIfNotBabyGiant) {
-						// Runtime is in <code>O(p)</code>.
-						d_k = MathUtil.discreteLogLinearSearchFixedInput(nu, target_k, m, 1L, p, nu);
-					} else { // i.e., !linearSearchIfNotBabyGiant
-						/*
-						 * If we cannot find x using Babystep-Giantstep and we are not permitted to use Linear-Search,
-						 * then propagate the exception.
-						 */
-						throw new ArithmeticException();
-					}
-				} else { // bound <= Integer.MAX_VALUE
-					if (nu_inverse == null) { // i.e., linearSearchIfNotBabyGiant
-						// Runtime is in <code>O(p)</code>.
-						d_k = MathUtil.discreteLogLinearSearchFixedInput(nu, target_k, m, 1L, p, nu);
-					} else {
-						// Runtime is in <code>O(sqrt(p))</code>.
-						d_k = MathUtil.discreteLogBabyGiantFixedInput(nu, target_k, m, bound, generateBothBabyGiant,
-								hashBabyGiant, nu_inverse);
-					}
-				}
-
+				// Runtime is in <code>O(sqrt(p))</code>.
+				d_k = MathUtil.discreteLogBabyGiantFixedInput(nu, target_k, m, bound, generateBothBabyGiant,
+						hashBabyGiant, nu_inverse);
 				if (d_k == null) {
 					return null;
 				}
@@ -7315,39 +7368,48 @@ public class MathUtil {
 			throws ArithmeticException, UndefinedInverseException {
 		if ((upperOrderFactors.size() == 1) && upperOrderFactors.containsKey(upperOrder)) { // i.e., upperOrder is prime
 			// Therefore, we have to use Babystep-Giantstep or Linear-Search.
+			boolean linearSearch = false; // linear search flag
+			long n_inverse = 0L;
 
 			// Applying Math.floor before casting to long is unnecessary and it causes a large slow down.
 			final long bound = ((long) Math.sqrt(upperOrder)) + 1L; // bound >= 2
 			if (bound > Integer.MAX_VALUE) {
-				// Only Linear-Search if requested.
 				if (linearSearchIfNotBabyGiant) {
-					return MathUtil.discreteLogLinearSearchFixedInput(n, target, m, 1L, upperOrder, n);
+					// Set the linear search flag denoting the fact that we have to use Linear-Search.
+					linearSearch = true;
+				} else { // i.e., !linearSearchIfNotBabyGiant
+					/*
+					 * If we cannot find x using Babystep-Giantstep and we are not permitted to use Linear-Search, then
+					 * propagate the exception.
+					 */
+					throw new ArithmeticException();
 				}
-				// !linearSearchIfNotBabyGiant
-				/*
-				 * If we cannot find x using Babystep-Giantstep and we are not permitted to use Linear-Search, then
-				 * propagate the exception.
-				 */
-				throw new ArithmeticException();
-			}
-			// bound <= Integer.MAX_VALUE
-			try {
-				return MathUtil.discreteLogBabyGiantFixedInput(n, target, m, bound, generateBothBabyGiant,
-						hashBabyGiant, MathUtil.modInverseFixedInput(n, m));
-			} catch (UndefinedInverseException ex) {
-				// Only Linear-Search if requested.
-				if (linearSearchIfNotBabyGiant) {
-					return MathUtil.discreteLogLinearSearchFixedInput(n, target, m, 1L, upperOrder, n);
+			} else { // i.e., bound <= Integer.MAX_VALUE
+				try {
+					n_inverse = MathUtil.modInverseFixedInput(n, m);
+				} catch (UndefinedInverseException ex) {
+					if (linearSearchIfNotBabyGiant) {
+						// Set the linear search flag denoting the fact that we have to use Linear-Search.
+						linearSearch = true;
+					} else { // i.e., !linearSearchIfNotBabyGiant
+						/*
+						 * If we cannot find x using Babystep-Giantstep and we are not permitted to use Linear-Search,
+						 * then propagate the exception.
+						 */
+						throw ex;
+					}
 				}
-				// !linearSearchIfNotBabyGiant
-				/*
-				 * If we cannot find x using Babystep-Giantstep and we are not permitted to use Linear-Search, then
-				 * propagate the exception.
-				 */
-				throw ex;
 			}
+
+			if (linearSearch) {
+				// Runtime is in <code>O(upperOrder)</code>.
+				return MathUtil.discreteLogLinearSearchFixedInput(n, target, m, 1L, upperOrder, n);
+			}
+			// Runtime is in <code>O(sqrt(upperOrder))</code>.
+			return MathUtil.discreteLogBabyGiantFixedInput(n, target, m, bound, generateBothBabyGiant, hashBabyGiant,
+					n_inverse);
 		}
-		// upperOrder is not prime.
+		// i.e., upperOrder is not prime.
 
 		/*
 		 * In the implementation, we have chosen to unravel the first iteration of the loop and duplicate it
@@ -7378,10 +7440,6 @@ public class MathUtil {
 				linearSearchIfNotBabyGiant, simple, generateBothBabyGiant, hashBabyGiant);
 		if (x == null) {
 			return null;
-		}
-		// Fix x to be in [0, m_i - 1] \cap \doubleZ.
-		if ((x %= m_i) < 0L) {
-			x += m_i;
 		}
 
 		// Process the remaining factors of upperOrder.
@@ -7414,7 +7472,7 @@ public class MathUtil {
 			x = crt_result[0];
 			m_i = crt_result[1];
 		}
-		// <code>(m_i == upperOrder) && (n<sup>x</sup> (mod m) == target)</code>
+		// <code>(m_i == upperOrder) && (x != null) && (n<sup>x</sup> (mod m) == target)</code>
 		return x;
 	}
 
