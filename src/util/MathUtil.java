@@ -1989,7 +1989,7 @@ public class MathUtil {
 	}
 
 	/**
-	 * Precondition: <code>(result != null) && (result.size() != 0)</code>
+	 * Precondition: <code>(result != null) && (result.size() >= 1)</code>
 	 * 
 	 * @param result
 	 *            the map produced by <code>MathUtil.factorSqrt(long, boolean, boolean)</code> to be
@@ -2011,6 +2011,7 @@ public class MathUtil {
 			negative = true;
 			System.out.print(" * ");
 		}
+		// Even if a -1 factor was removed, we know that result.size() >= 1 at this point.
 
 		/*
 		 * There is no ordering in a HashMap so just iterate through it and print all of the factors.
@@ -2047,15 +2048,15 @@ public class MathUtil {
 		if (result.size() == 1) {
 			final Map.Entry<Long, Byte> first = ((TreeMap<Long, Byte>) result).firstEntry();
 			System.out.print("(" + first.getKey() + ")^" + first.getValue());
-		} else {
+		} else { // result.size() != 1
+			// i.e., result.size() >= 2
 			final Map.Entry<Long, Byte> first = ((TreeMap<Long, Byte>) result).pollFirstEntry();
 			System.out.print("(" + first.getKey() + ")^" + first.getValue());
-			if (result.size() != 0) {
-				final Iterator<Map.Entry<Long, Byte>> it = result.entrySet().iterator();
-				for (Map.Entry<Long, Byte> entry = null; it.hasNext(); /* Update inside. */) {
-					entry = it.next();
-					System.out.print(" * (" + entry.getKey() + ")^" + entry.getValue());
-				}
+			// result.size() >= 1
+			final Iterator<Map.Entry<Long, Byte>> it = result.entrySet().iterator();
+			for (Map.Entry<Long, Byte> entry = null; it.hasNext(); /* Update inside. */) {
+				entry = it.next();
+				System.out.print(" * (" + entry.getKey() + ")^" + entry.getValue());
 			}
 			// Put all of then removed factors back into result before returning.
 			result.put(first.getKey(), first.getValue());
@@ -2361,7 +2362,7 @@ public class MathUtil {
 	}
 
 	/**
-	 * Precondition: <code>(result != null) && (result.size() != 0)</code>
+	 * Precondition: <code>(result != null) && (result.size() >= 1)</code>
 	 * 
 	 * @param result
 	 *            the map produced by <code>MathUtil.factorSqrt(int, boolean, boolean)</code> to be
@@ -2383,6 +2384,7 @@ public class MathUtil {
 			negative = true;
 			System.out.print(" * ");
 		}
+		// Even if a -1 factor was removed, we know that result.size() >= 1 at this point.
 
 		/*
 		 * There is no ordering in a HashMap so just iterate through it and print all of the factors.
@@ -2419,15 +2421,15 @@ public class MathUtil {
 		if (result.size() == 1) {
 			final Map.Entry<Integer, Byte> first = ((TreeMap<Integer, Byte>) result).firstEntry();
 			System.out.print("(" + first.getKey() + ")^" + first.getValue());
-		} else {
+		} else { // result.size() != 1
+			// i.e., result.size() >= 2
 			final Map.Entry<Integer, Byte> first = ((TreeMap<Integer, Byte>) result).pollFirstEntry();
 			System.out.print("(" + first.getKey() + ")^" + first.getValue());
-			if (result.size() != 0) {
-				final Iterator<Map.Entry<Integer, Byte>> it = result.entrySet().iterator();
-				for (Map.Entry<Integer, Byte> entry = null; it.hasNext(); /* Update inside. */) {
-					entry = it.next();
-					System.out.print(" * (" + entry.getKey() + ")^" + entry.getValue());
-				}
+			// result.size() >= 1
+			final Iterator<Map.Entry<Integer, Byte>> it = result.entrySet().iterator();
+			for (Map.Entry<Integer, Byte> entry = null; it.hasNext(); /* Update inside. */) {
+				entry = it.next();
+				System.out.print(" * (" + entry.getKey() + ")^" + entry.getValue());
 			}
 			// Put all of then removed factors back into result before returning.
 			result.put(first.getKey(), first.getValue());
@@ -2733,7 +2735,7 @@ public class MathUtil {
 	}
 
 	/**
-	 * Precondition: <code>(result != null) && (result.size() != 0)</code>
+	 * Precondition: <code>(result != null) && (result.size() >= 1)</code>
 	 * 
 	 * @param result
 	 *            the map produced by <code>MathUtil.factorSqrt(short, boolean, boolean)</code> to be
@@ -2755,6 +2757,7 @@ public class MathUtil {
 			negative = true;
 			System.out.print(" * ");
 		}
+		// Even if a -1 factor was removed, we know that result.size() >= 1 at this point.
 
 		/*
 		 * There is no ordering in a HashMap so just iterate through it and print all of the factors.
@@ -2791,15 +2794,15 @@ public class MathUtil {
 		if (result.size() == 1) {
 			final Map.Entry<Short, Byte> first = ((TreeMap<Short, Byte>) result).firstEntry();
 			System.out.print("(" + first.getKey() + ")^" + first.getValue());
-		} else {
+		} else { // result.size() != 1
+			// i.e., result.size() >= 2
 			final Map.Entry<Short, Byte> first = ((TreeMap<Short, Byte>) result).pollFirstEntry();
 			System.out.print("(" + first.getKey() + ")^" + first.getValue());
-			if (result.size() != 0) {
-				final Iterator<Map.Entry<Short, Byte>> it = result.entrySet().iterator();
-				for (Map.Entry<Short, Byte> entry = null; it.hasNext(); /* Update inside. */) {
-					entry = it.next();
-					System.out.print(" * (" + entry.getKey() + ")^" + entry.getValue());
-				}
+			// result.size() >= 1
+			final Iterator<Map.Entry<Short, Byte>> it = result.entrySet().iterator();
+			for (Map.Entry<Short, Byte> entry = null; it.hasNext(); /* Update inside. */) {
+				entry = it.next();
+				System.out.print(" * (" + entry.getKey() + ")^" + entry.getValue());
 			}
 			// Put all of then removed factors back into result before returning.
 			result.put(first.getKey(), first.getValue());
@@ -3105,7 +3108,7 @@ public class MathUtil {
 	}
 
 	/**
-	 * Precondition: <code>(result != null) && (result.size() != 0)</code>
+	 * Precondition: <code>(result != null) && (result.size() >= 1)</code>
 	 * 
 	 * @param result
 	 *            the map produced by <code>MathUtil.factorSqrt(byte, boolean, boolean)</code> to be
@@ -3127,6 +3130,7 @@ public class MathUtil {
 			negative = true;
 			System.out.print(" * ");
 		}
+		// Even if a -1 factor was removed, we know that result.size() >= 1 at this point.
 
 		/*
 		 * There is no ordering in a HashMap so just iterate through it and print all of the factors.
@@ -3163,15 +3167,15 @@ public class MathUtil {
 		if (result.size() == 1) {
 			final Map.Entry<Byte, Byte> first = ((TreeMap<Byte, Byte>) result).firstEntry();
 			System.out.print("(" + first.getKey() + ")^" + first.getValue());
-		} else {
+		} else { // result.size() != 1
+			// i.e., result.size() >= 2
 			final Map.Entry<Byte, Byte> first = ((TreeMap<Byte, Byte>) result).pollFirstEntry();
 			System.out.print("(" + first.getKey() + ")^" + first.getValue());
-			if (result.size() != 0) {
-				final Iterator<Map.Entry<Byte, Byte>> it = result.entrySet().iterator();
-				for (Map.Entry<Byte, Byte> entry = null; it.hasNext(); /* Update inside. */) {
-					entry = it.next();
-					System.out.print(" * (" + entry.getKey() + ")^" + entry.getValue());
-				}
+			// result.size() >= 1
+			final Iterator<Map.Entry<Byte, Byte>> it = result.entrySet().iterator();
+			for (Map.Entry<Byte, Byte> entry = null; it.hasNext(); /* Update inside. */) {
+				entry = it.next();
+				System.out.print(" * (" + entry.getKey() + ")^" + entry.getValue());
 			}
 			// Put all of then removed factors back into result before returning.
 			result.put(first.getKey(), first.getValue());
