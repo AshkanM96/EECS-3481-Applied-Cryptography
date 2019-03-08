@@ -347,8 +347,6 @@ public class Caesar {
 			}
 			System.out.println('\n');
 		}
-
-		// Create Result and return it.
 		return new CryptoInfoCaesar(probableCaesarKey, probablePlaintext);
 	}
 
@@ -465,8 +463,6 @@ public class Caesar {
 			}
 			System.out.println('\n');
 		}
-
-		// Create Result and return it.
 		return new CryptoInfoCaesar(probableCaesarKey, probablePlaintext);
 	}
 

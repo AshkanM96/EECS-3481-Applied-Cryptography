@@ -146,8 +146,6 @@ public class MillerRabin {
 			if (print) {
 				System.out.println(b + " is a witness of n's compositeness by Fermat's test.\n");
 			}
-
-			// Create Result and return it.
 			return new TestResultMillerRabin(this.n, false, b);
 		}
 
@@ -178,8 +176,6 @@ public class MillerRabin {
 						System.out.println("\nTest is inconclusive with base " + b
 								+ " since the exponent has reached an odd number but the remainder is still 1.\n");
 					}
-
-					// Create Result and return it.
 					return new TestResultMillerRabin(this.n, true, b);
 				}
 
@@ -206,8 +202,6 @@ public class MillerRabin {
 				System.out
 						.println("Test is inconclusive with base " + b + " since the final remainder is -1 (mod n).\n");
 			}
-
-			// Create Result and return it.
 			return new TestResultMillerRabin(this.n, true, b);
 		}
 
@@ -221,8 +215,6 @@ public class MillerRabin {
 			System.out.println("and\nGCD(n, " + r + " + 1) == " + superFactor2);
 			System.out.println("\n" + b + " is a witness of n's compositeness.\n");
 		}
-
-		// Create Result and return it.
 		return new TestResultMillerRabin(this.n, false, b, superFactor1, superFactor2);
 	}
 
@@ -305,8 +297,6 @@ public class MillerRabin {
 			System.out.println("gcd(n, " + b + ") == " + gcd + " != 1.");
 			System.out.println("Therefore, " + b + " is a witness of n's compositeness.\n");
 		}
-
-		// Create Result and return it.
 		return new TestResultMillerRabin(this.n, false, b, gcd);
 	}
 

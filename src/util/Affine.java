@@ -2,6 +2,7 @@ package util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -561,17 +562,19 @@ public class Affine {
 			}
 		}
 
-		// Create possibleAlphaValues and possibleBetaValues.
-		final int[] possibleAlphaValues = new int[affineKey.size()];
-		final int[] possibleBetaValues = new int[affineKey.size()];
-		int index = 0;
-		for (final Map.Entry<Integer, Integer> e : affineKey.entrySet()) {
-			possibleAlphaValues[index] = e.getKey();
-			possibleBetaValues[index] = e.getValue();
-			++index;
+		// Create and fill the resulting integer arrays.
+		final int size = affineKey.size();
+		final int[] possibleAlphaValues = new int[size];
+		final int[] possibleBetaValues = new int[size];
+		if (size != 0) {
+			final Iterator<Map.Entry<Integer, Integer>> it = affineKey.entrySet().iterator();
+			Map.Entry<Integer, Integer> e = null;
+			for (int index = 0; index != size; ++index) {
+				e = it.next();
+				possibleAlphaValues[index] = e.getKey();
+				possibleBetaValues[index] = e.getValue();
+			}
 		}
-
-		// Create int[] array and return it.
 		return new int[][] { possibleAlphaValues, possibleBetaValues };
 	}
 
@@ -630,7 +633,7 @@ public class Affine {
 			}
 		}
 
-		// Create int array and return it.
+		// Create and fill the resulting integer array.
 		final int[] result = new int[possibleAlphaValues.size()];
 		for (int i = 0; i != result.length; ++i) {
 			result[i] = possibleAlphaValues.get(i);
@@ -748,8 +751,6 @@ public class Affine {
 			}
 			System.out.println('\n');
 		}
-
-		// Create Result and return it.
 		return new CryptoInfoAffine(probableAlpha, probableBeta, probablePlaintext);
 	}
 
@@ -907,8 +908,6 @@ public class Affine {
 				System.out.println('\n');
 			}
 		}
-
-		// Create Result and return it.
 		return new CryptoInfoAffine(keys[0], keys[1], probablePlaintexts);
 	}
 

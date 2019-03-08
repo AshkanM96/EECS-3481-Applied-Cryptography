@@ -2121,7 +2121,7 @@ public class MathUtil {
 		 * <code>sqrt(n)</code>. <br>
 		 * <br>
 		 * 
-		 * Therefore, due to the above loop, we know that <code>n</code> is prime and a divisor of the
+		 * Therefore, due to the above loop, we know that <code>n</code> is a prime and a divisor of the
 		 * original value of <code>n</code> at this point.
 		 */
 		result.put(n, (byte) 1);
@@ -2494,7 +2494,7 @@ public class MathUtil {
 		 * <code>sqrt(n)</code>. <br>
 		 * <br>
 		 * 
-		 * Therefore, due to the above loop, we know that <code>n</code> is prime and a divisor of the
+		 * Therefore, due to the above loop, we know that <code>n</code> is a prime and a divisor of the
 		 * original value of <code>n</code> at this point.
 		 */
 		result.put(n, (byte) 1);
@@ -2867,7 +2867,7 @@ public class MathUtil {
 		 * <code>sqrt(n)</code>. <br>
 		 * <br>
 		 * 
-		 * Therefore, due to the above loop, we know that <code>n</code> is prime and a divisor of the
+		 * Therefore, due to the above loop, we know that <code>n</code> is a prime and a divisor of the
 		 * original value of <code>n</code> at this point.
 		 */
 		result.put(n, (byte) 1);
@@ -3240,7 +3240,7 @@ public class MathUtil {
 		 * <code>sqrt(n)</code>. <br>
 		 * <br>
 		 * 
-		 * Therefore, due to the above loop, we know that <code>n</code> is prime and a divisor of the
+		 * Therefore, due to the above loop, we know that <code>n</code> is a prime and a divisor of the
 		 * original value of <code>n</code> at this point.
 		 */
 		result.put(n, (byte) 1);
@@ -3468,7 +3468,7 @@ public class MathUtil {
 		 * <code>sqrt(n)</code>. <br>
 		 * <br>
 		 * 
-		 * Therefore, due to the above loop, we know that <code>n</code> is prime and a divisor of the
+		 * Therefore, due to the above loop, we know that <code>n</code> is a prime and a divisor of the
 		 * original value of <code>n</code> at this point.
 		 */
 		return (result -= (result / n));
@@ -5666,7 +5666,9 @@ public class MathUtil {
 	 * 4. <code>n == m - 1</code> <br>
 	 * Precondition: <code>m > 0</code> <br>
 	 * Precondition: <code>(0 <= n) && (n <= m - 1)</code> <br>
-	 * Precondition: <code>(0 <= target) && (target <= m - 1)</code>
+	 * Precondition: <code>(0 <= target) && (target <= m - 1)</code> <br>
+	 * Postcondition:
+	 * <code>((Result != null) && (Result == -1)) implies ((m > 3) && (1 < n) && (n < m - 1) && (target != 1) && (n != target))</code>
 	 * 
 	 * @param n
 	 *            the given number
@@ -5845,7 +5847,7 @@ public class MathUtil {
 		} else if (result != -1L) { // i.e., result is trivial.
 			return result;
 		}
-		// i.e., (1 < n) && (n < m - 1) && (m > 3) && (target != 1) && (n != target)
+		// (m > 3) && (1 < n) && (n < m - 1) && (target != 1) && (n != target)
 		if (begin == end) {
 			/*
 			 * This case is only an optimization since the loop will never execute but extra unnecessary work is
@@ -6309,7 +6311,7 @@ public class MathUtil {
 		} else if (result != -1L) { // i.e., result is trivial.
 			return result;
 		}
-		// i.e., (1 < n) && (n < m - 1) && (m > 3) && (target != 1) && (n != target)
+		// (m > 3) && (1 < n) && (n < m - 1) && (target != 1) && (n != target)
 		if (upperOrder == 1L) {
 			// upperOrder == 1 implies that n == 1 but we know that this isn't the case.
 			return null;
@@ -6947,7 +6949,7 @@ public class MathUtil {
 		} else if (result != -1L) { // i.e., result is trivial.
 			return result;
 		}
-		// i.e., (1 < n) && (n < m - 1) && (m > 3) && (target != 1) && (n != target)
+		// (m > 3) && (1 < n) && (n < m - 1) && (target != 1) && (n != target)
 		boolean linearSearch = false; // linear search flag
 
 		if (simple) {
@@ -7067,7 +7069,7 @@ public class MathUtil {
 				if (d_k == null) {
 					return null;
 				} else if (d_k == -1L) { // i.e., d_k is non-trivial.
-					// i.e., (1 < nu) && (nu < m - 1) && (m > 3) && (target_k != 1) && (nu != target_k)
+					// i.e., (m > 3) && (1 < nu) && (nu < m - 1) && (target_k != 1) && (nu != target_k)
 
 					// Runtime is in <code>O(p)</code>.
 					d_k = MathUtil.discreteLogLinearSearchFixedInput(nu, target_k, m, 1L, p, nu);
@@ -7110,7 +7112,7 @@ public class MathUtil {
 			if (d_k == null) {
 				return null;
 			} else if (d_k == -1L) { // i.e., d_k is non-trivial.
-				// i.e., (1 < nu) && (nu < m - 1) && (m > 3) && (target_k != 1) && (nu != target_k)
+				// i.e., (m > 3) && (1 < nu) && (nu < m - 1) && (target_k != 1) && (nu != target_k)
 
 				// Runtime is in <code>O(sqrt(p))</code>.
 				d_k = MathUtil.discreteLogBabyGiantFixedInput(nu, target_k, m, bound, generateBothBabyGiant,
@@ -7423,7 +7425,7 @@ public class MathUtil {
 		} else if (result != -1L) { // i.e., result is trivial.
 			return result;
 		}
-		// i.e., (1 < n) && (n < m - 1) && (m > 3) && (target != 1) && (n != target)
+		// (m > 3) && (1 < n) && (n < m - 1) && (target != 1) && (n != target)
 		if (upperOrder == 1L) {
 			// upperOrder == 1 implies that n == 1 but we know that this isn't the case.
 			return null;

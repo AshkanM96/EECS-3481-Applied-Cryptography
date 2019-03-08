@@ -151,7 +151,7 @@ public class RSAUtil {
 			throw new IllegalArgumentException();
 		}
 
-		// Create Result and return it.
+		// Create and fill the resulting BigInteger array.
 		return new BigInteger[] { n, e, d };
 	}
 

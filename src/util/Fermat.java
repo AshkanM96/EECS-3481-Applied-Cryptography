@@ -195,8 +195,6 @@ public class Fermat {
 			System.out.println("gcd(n, " + b + ") == " + gcd + " != 1.");
 			System.out.println("Therefore, " + b + " is a witness of n's compositeness.\n");
 		}
-
-		// Create Result and return it.
 		return new TestResultFermat(this.n, false, b);
 	}
 

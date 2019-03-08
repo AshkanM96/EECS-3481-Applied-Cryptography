@@ -909,8 +909,6 @@ public class Vigenere implements Iterable<Character> {
 			}
 			System.out.println('\n');
 		}
-
-		// Create Result and return it.
 		return new CryptoInfoVigenere(keyWord, probablePlaintext);
 	}
 

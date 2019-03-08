@@ -115,31 +115,16 @@ public class PrimeUtil {
 	}
 
 	/**
-	 * Runtime is in <code>O(sqrt(n))</code>.
+	 * Runtime is in <code>O(sqrt(n))</code>. <br>
+	 * Precondition: <code>n > 3</code> <br>
+	 * Precondition: <code>(n % 2 != 0) && (n % 3 != 0)</code>
 	 * 
 	 * @param n
 	 *            the given number
 	 * 
-	 * @return <code>true</code> if and only if the given number is prime.
+	 * @return <code>true</code> if and only if the given number is a prime.
 	 */
-	public static boolean isPrimeSqrt(long n) {
-		if (n < 2L) {
-			// The first prime is 2.
-			return false;
-		} else if (n < 4L) { // i.e., (n == 2) || (n == 3)
-			// The only primes that are not 1 or 5 (mod 6), are 2 and 3.
-			return true;
-		} else if (((n & 1L) == 0L) || (n % 3L == 0L)) {
-			/**
-			 * Don't do <code>(n &= 1L) == 0L</code> since we need the value of <code>n</code> to remain
-			 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
-			 * will mutate <code>n</code>.
-			 */
-			// n > 3 and is divisible by 2 or 3 (or both).
-			return false;
-		}
-		// n is an odd integer greater than 3 and not divisible by 3.
-
+	protected static boolean isPrimeSqrtFixedInput(long n) {
 		/**
 		 * <pre>
 		 * <code>
@@ -179,7 +164,7 @@ public class PrimeUtil {
 		 * <code>sqrt(n)</code>. <br>
 		 * <br>
 		 * 
-		 * Therefore, due to the above loop, we know that <code>n</code> is prime at this point.
+		 * Therefore, due to the above loop, we know that <code>n</code> is a prime at this point.
 		 */
 		return true;
 	}
@@ -190,10 +175,52 @@ public class PrimeUtil {
 	 * @param n
 	 *            the given number
 	 * 
-	 * @return <code>true</code> if and only if the given number is prime.
+	 * @return <code>true</code> if and only if the given number is a prime.
+	 */
+	public static boolean isPrimeSqrt(long n) {
+		if (n < 2L) {
+			// The first prime is 2.
+			return false;
+		} else if (n < 4L) { // i.e., (n == 2) || (n == 3)
+			return true;
+		} else if (((n & 1L) == 0L) || (n % 3L == 0L)) {
+			/**
+			 * Don't do <code>(n &= 1L) == 0L</code> since we need the value of <code>n</code> to remain
+			 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
+			 * will mutate <code>n</code>.
+			 */
+			// n is an integer greater than 3 and is divisible by 2 or 3 (or both).
+			return false;
+		}
+		// n is an odd integer greater than 3 and not divisible by 3.
+		return PrimeUtil.isPrimeSqrtFixedInput(n);
+	}
+
+	/**
+	 * Runtime is in <code>O(sqrt(n))</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return <code>true</code> if and only if the given number is a prime.
 	 */
 	public static boolean isPrimeSqrt(int n) {
-		return PrimeUtil.isPrimeSqrt((long) n);
+		if (n < 2) {
+			// The first prime is 2.
+			return false;
+		} else if (n < 4) { // i.e., (n == 2) || (n == 3)
+			return true;
+		} else if (((n & 1) == 0) || (n % 3 == 0)) {
+			/**
+			 * Don't do <code>(n &= 1) == 0</code> since we need the value of <code>n</code> to remain
+			 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
+			 * will mutate <code>n</code>.
+			 */
+			// n is an integer greater than 3 and is divisible by 2 or 3 (or both).
+			return false;
+		}
+		// n is an odd integer greater than 3 and not divisible by 3.
+		return PrimeUtil.isPrimeSqrtFixedInput(n);
 	}
 
 	/**
@@ -202,10 +229,25 @@ public class PrimeUtil {
 	 * @param n
 	 *            the given number
 	 * 
-	 * @return <code>true</code> if and only if the given number is prime.
+	 * @return <code>true</code> if and only if the given number is a prime.
 	 */
 	public static boolean isPrimeSqrt(short n) {
-		return PrimeUtil.isPrimeSqrt((long) n);
+		if (n < 2) {
+			// The first prime is 2.
+			return false;
+		} else if (n < 4) { // i.e., (n == 2) || (n == 3)
+			return true;
+		} else if (((n & 1) == 0) || (n % 3 == 0)) {
+			/**
+			 * Don't do <code>(n &= 1) == 0</code> since we need the value of <code>n</code> to remain
+			 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
+			 * will mutate <code>n</code>.
+			 */
+			// n is an integer greater than 3 and is divisible by 2 or 3 (or both).
+			return false;
+		}
+		// n is an odd integer greater than 3 and not divisible by 3.
+		return PrimeUtil.isPrimeSqrtFixedInput(n);
 	}
 
 	/**
@@ -214,9 +256,608 @@ public class PrimeUtil {
 	 * @param n
 	 *            the given number
 	 * 
-	 * @return <code>true</code> if and only if the given number is prime.
+	 * @return <code>true</code> if and only if the given number is a prime.
 	 */
 	public static boolean isPrimeSqrt(byte n) {
-		return PrimeUtil.isPrimeSqrt((long) n);
+		if (n < 2) {
+			// The first prime is 2.
+			return false;
+		} else if (n < 4) { // i.e., (n == 2) || (n == 3)
+			return true;
+		} else if (((n & 1) == 0) || (n % 3 == 0)) {
+			/**
+			 * Don't do <code>(n &= 1) == 0</code> since we need the value of <code>n</code> to remain
+			 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
+			 * will mutate <code>n</code>.
+			 */
+			// n is an integer greater than 3 and is divisible by 2 or 3 (or both).
+			return false;
+		}
+		// n is an odd integer greater than 3 and not divisible by 3.
+		return PrimeUtil.isPrimeSqrtFixedInput(n);
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return The first prime greater than <code>n</code>.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>n >= PrimeUtil.LARGEST_PRIME_LONG</code>
+	 */
+	public static long primeAfter(long n) throws IllegalArgumentException {
+		if (n >= PrimeUtil.LARGEST_PRIME_LONG) {
+			throw new IllegalArgumentException();
+		}
+		// n < PrimeUtil.LARGEST_PRIME_LONG
+
+		if (n < 4L) { // i.e., (n < 2) || (n == 2) || (n == 3)
+			return ((n < 2L) ? 2L : ((n == 2L) ? 3L : 5L));
+		}
+		// n >= 4
+
+		/**
+		 * <pre>
+		 * <code>
+		 * Any integer n, is one of 0, 1, 2, 3, 4, or 5 (mod 6).
+		 * However, if n is greater than 3, then it can only be prime if it is 1 or 5 (mod 6) since otherwise
+		 * it would be divisible by 2 or 3 (or both in the case of 0 (mod 6)).
+		 * </code>
+		 * </pre>
+		 * 
+		 * Don't do <code>n %= 6L</code> since we need the value of <code>n</code> to remain unchanged. Note
+		 * that the difference is the <code>%=</code> instead of the <code>%</code> which will mutate
+		 * <code>n</code>.
+		 */
+		final long mod6 = n % 6L;
+		if (mod6 == 0L) { // i.e., n == 6, 12, 18, 24, ...
+			// Since n is 0 (mod 6), check if n + 1 is a prime separately.
+			final long p = n + 1L;
+			if (PrimeUtil.isPrimeSqrtFixedInput(p)) {
+				return p;
+			}
+			// n >= 24
+
+			// Update n to be the first integer which is 5 (mod 6) and greater than the original value of n.
+			n += 5L; // n >= 29
+		} else if (mod6 == 5L) { // i.e., n == 5, 11, 17, 23, ...
+			// Since n is 5 (mod 6), check if n + 2 is a prime separately.
+			final long p = n + 2L;
+			if (PrimeUtil.isPrimeSqrtFixedInput(p)) {
+				return p;
+			}
+			// n >= 23
+
+			// Update n to be the first integer which is 5 (mod 6) and greater than the original value of n.
+			n += 6L; // n >= 29
+		} else { // i.e., (mod6 == 1) || (mod6 == 2) || (mod6 == 3) || (mod6 == 4)
+			// Update n to be the first integer which is 5 (mod 6) and greater than the original value of n.
+			n += 5L - mod6; // n >= 5
+		}
+		// (n % 6 == 5) && (n >= 5)
+		for (/* Already initialized. */; true; n += 4L) {
+			/**
+			 * It's fine to do <code>n += 2</code> instead of <code>n + 2</code> since we don't need the value
+			 * of <code>n</code> to remain unchanged but quite the opposite. We have actually separated the
+			 * incrementation of <code>n</code> by <code>6</code>, into an incrementation by <code>2</code> and
+			 * an incrementation by <code>4</code> due to the need to add <code>2</code> to <code>n</code> at
+			 * this point and the fact that <code>+=</code> is faster than <code>+</code> due to it not creating
+			 * a temporary. Note that the difference is the <code>+=</code> instead of the <code>+</code> which
+			 * will mutate <code>n</code>.
+			 */
+			// Check if n (i.e., -1 (mod 6)) or n + 2 (i.e., 1 (mod 6)) is a prime.
+			if (PrimeUtil.isPrimeSqrtFixedInput(n)) {
+				break;
+			} else if (PrimeUtil.isPrimeSqrtFixedInput(n += 2L)) {
+				break;
+			}
+		}
+		return n;
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return The first prime greater than <code>n</code>.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>n >= PrimeUtil.LARGEST_PRIME_INT</code>
+	 */
+	public static int primeAfter(int n) throws IllegalArgumentException {
+		if (n >= PrimeUtil.LARGEST_PRIME_INT) {
+			throw new IllegalArgumentException();
+		}
+		// n < PrimeUtil.LARGEST_PRIME_INT
+		return ((int) PrimeUtil.primeAfter((long) n));
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return The first prime greater than <code>n</code>.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>n >= PrimeUtil.LARGEST_PRIME_SHORT</code>
+	 */
+	public static short primeAfter(short n) throws IllegalArgumentException {
+		if (n >= PrimeUtil.LARGEST_PRIME_SHORT) {
+			throw new IllegalArgumentException();
+		}
+		// n < PrimeUtil.LARGEST_PRIME_SHORT
+		return ((short) PrimeUtil.primeAfter((long) n));
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return The first prime greater than <code>n</code>.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>n >= PrimeUtil.LARGEST_PRIME_BYTE</code>
+	 */
+	public static byte primeAfter(byte n) throws IllegalArgumentException {
+		if (n >= PrimeUtil.LARGEST_PRIME_BYTE) {
+			throw new IllegalArgumentException();
+		}
+		// n < PrimeUtil.LARGEST_PRIME_BYTE
+		return ((byte) PrimeUtil.primeAfter((long) n));
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return The first prime smaller than <code>n</code>.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>n < 3</code>
+	 */
+	public static long primeBefore(long n) throws IllegalArgumentException {
+		if (n < 4L) { // i.e., (n < 3) || (n == 3)
+			if (n < 3L) {
+				// The first prime is 2.
+				throw new IllegalArgumentException();
+			}
+			// n >= 3
+			// i.e., n == 3
+			return 2L;
+		}
+		// n >= 4
+
+		/**
+		 * <pre>
+		 * <code>
+		 * Any integer n, is one of 0, 1, 2, 3, 4, or 5 (mod 6).
+		 * However, if n is greater than 3, then it can only be prime if it is 1 or 5 (mod 6) since otherwise
+		 * it would be divisible by 2 or 3 (or both in the case of 0 (mod 6)).
+		 * </code>
+		 * </pre>
+		 * 
+		 * Don't do <code>n %= 6L</code> since we need the value of <code>n</code> to remain unchanged. Note
+		 * that the difference is the <code>%=</code> instead of the <code>%</code> which will mutate
+		 * <code>n</code>.
+		 */
+		final long mod6 = n % 6L;
+		if (mod6 == 0L) { // i.e., n == 6, 12, 18, 24, 30, 36, ...
+			// Since n is 0 (mod 6), check if n - 1 is a prime separately.
+			final long p = n - 1L;
+			if (PrimeUtil.isPrimeSqrtFixedInput(p)) {
+				return p;
+			}
+			// n >= 36
+
+			// Update n to be the first integer which is 1 (mod 6) and smaller than the original value of n.
+			n -= 5L; // n >= 31
+		} else if (mod6 == 1L) { // i.e., n == 7, 13, 19, 25, 31, 37, ...
+			// Since n is 1 (mod 6), check if n - 2 is a prime separately.
+			final long p = n - 2L;
+			if (PrimeUtil.isPrimeSqrtFixedInput(p)) {
+				return p;
+			}
+			// n >= 37
+
+			// Update n to be the first integer which is 1 (mod 6) and smaller than the original value of n.
+			n -= 6L; // n >= 31
+		} else { // i.e., (mod6 == 2) || (mod6 == 3) || (mod6 == 4) || (mod6 == 5)
+			if (n == mod6) { // i.e., (n == 4) || (n == 5)
+				return 3L;
+			}
+			// n >= 8
+
+			// Update n to be the first integer which is 1 (mod 6) and smaller than the original value of n.
+			n += 1L - mod6; // n >= 7
+		}
+		// (n % 6 == 1) && (n >= 7)
+		for (/* Already initialized. */; true; n -= 4L) {
+			/**
+			 * It's fine to do <code>n -= 2</code> instead of <code>n - 2</code> since we don't need the value
+			 * of <code>n</code> to remain unchanged but quite the opposite. We have actually separated the
+			 * decrementation of <code>n</code> by <code>6</code>, into a decrementation by <code>2</code> and a
+			 * decrementation by <code>4</code> due to the need to subtract <code>2</code> from <code>n</code>
+			 * at this point and the fact that <code>-=</code> is faster than <code>-</code> due to it not
+			 * creating a temporary. Note that the difference is the <code>-=</code> instead of the
+			 * <code>-</code> which will mutate <code>n</code>.
+			 */
+			// Check if n (i.e., 1 (mod 6)) or n - 2 (i.e., -1 (mod 6)) is a prime.
+			if (PrimeUtil.isPrimeSqrtFixedInput(n)) {
+				break;
+			} else if (PrimeUtil.isPrimeSqrtFixedInput(n -= 2L)) {
+				break;
+			}
+		}
+		return n;
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return The first prime smaller than <code>n</code>.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>n < 3</code>
+	 */
+	public static int primeBefore(int n) throws IllegalArgumentException {
+		return ((int) PrimeUtil.primeBefore((long) n));
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return The first prime smaller than <code>n</code>.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>n < 3</code>
+	 */
+	public static short primeBefore(short n) throws IllegalArgumentException {
+		return ((short) PrimeUtil.primeBefore((long) n));
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return The first prime smaller than <code>n</code>.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>n < 3</code>
+	 */
+	public static byte primeBefore(byte n) throws IllegalArgumentException {
+		return ((byte) PrimeUtil.primeBefore((long) n));
+	}
+
+	/**
+	 * Runtime is in <code>O(sqrt(n))</code>. <br>
+	 * Precondition: <code>n > 7</code> <br>
+	 * Precondition: <code>n % 12 == 11</code>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return <code>true</code> if and only if the given number is a safe prime.
+	 */
+	protected static boolean isSafePrimeSqrtFixedInput(long n) {
+		// A safe prime is a prime that is one more than a multiple of 2.
+		if (PrimeUtil.isPrimeSqrtFixedInput(n)) { // i.e., n is a prime greater than 7.
+			final long N = (n - 1L) / 2L; // n >= 11 so N >= 5
+			if (((N & 1L) == 0L) || (N % 3L == 0L)) {
+				// N is an integer greater than 4 and is divisible by 2 or 3 (or both).
+				return false;
+			}
+			return PrimeUtil.isPrimeSqrtFixedInput(N);
+		}
+		return false;
+	}
+
+	/**
+	 * Runtime is in <code>O(sqrt(n))</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return <code>true</code> if and only if the given number is a safe prime.
+	 */
+	public static boolean isSafePrimeSqrt(long n) {
+		if (n < 5L) {
+			// The first safe prime is 5.
+			return false;
+		} else if (((n & 1L) == 0L) || (n % 3L == 0L)) {
+			/**
+			 * Don't do <code>(n &= 1L) == 0L</code> since we need the value of <code>n</code> to remain
+			 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
+			 * will mutate <code>n</code>.
+			 */
+			// n is an integer greater than 4 and is divisible by 2 or 3 (or both).
+			return false;
+		} else if (n < 8L) { // i.e., (n == 5) || (n == 7)
+			return true;
+		} else if (n % 12L != 11L) {
+			// Safe primes greater than 7, are 3 (mod 4) and 5 (mod 6) which by C.R.T., they are 11 (mod 12).
+			return false;
+		}
+		// n is an odd integer greater than 7 and not divisible by 3 and equivalent to 11 (mod 12).
+		return PrimeUtil.isSafePrimeSqrtFixedInput(n);
+	}
+
+	/**
+	 * Runtime is in <code>O(sqrt(n))</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return <code>true</code> if and only if the given number is a safe prime.
+	 */
+	public static boolean isSafePrimeSqrt(int n) {
+		if (n < 5) {
+			// The first safe prime is 5.
+			return false;
+		} else if (((n & 1) == 0) || (n % 3 == 0)) {
+			/**
+			 * Don't do <code>(n &= 1) == 0</code> since we need the value of <code>n</code> to remain
+			 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
+			 * will mutate <code>n</code>.
+			 */
+			// n is an integer greater than 4 and is divisible by 2 or 3 (or both).
+			return false;
+		} else if (n < 8) { // i.e., (n == 5) || (n == 7)
+			return true;
+		} else if (n % 12 != 11) {
+			// Safe primes greater than 7, are 3 (mod 4) and 5 (mod 6) which by C.R.T., they are 11 (mod 12).
+			return false;
+		}
+		// n is an odd integer greater than 7 and not divisible by 3 and equivalent to 11 (mod 12).
+		return PrimeUtil.isSafePrimeSqrtFixedInput(n);
+	}
+
+	/**
+	 * Runtime is in <code>O(sqrt(n))</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return <code>true</code> if and only if the given number is a safe prime.
+	 */
+	public static boolean isSafePrimeSqrt(short n) {
+		if (n < 5) {
+			// The first safe prime is 5.
+			return false;
+		} else if (((n & 1) == 0) || (n % 3 == 0)) {
+			/**
+			 * Don't do <code>(n &= 1) == 0</code> since we need the value of <code>n</code> to remain
+			 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
+			 * will mutate <code>n</code>.
+			 */
+			// n is an integer greater than 4 and is divisible by 2 or 3 (or both).
+			return false;
+		} else if (n < 8) { // i.e., (n == 5) || (n == 7)
+			return true;
+		} else if (n % 12 != 11) {
+			// Safe primes greater than 7, are 3 (mod 4) and 5 (mod 6) which by C.R.T., they are 11 (mod 12).
+			return false;
+		}
+		// n is an odd integer greater than 7 and not divisible by 3 and equivalent to 11 (mod 12).
+		return PrimeUtil.isSafePrimeSqrtFixedInput(n);
+	}
+
+	/**
+	 * Runtime is in <code>O(sqrt(n))</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return <code>true</code> if and only if the given number is a safe prime.
+	 */
+	public static boolean isSafePrimeSqrt(byte n) {
+		if (n < 5) {
+			// The first safe prime is 5.
+			return false;
+		} else if (((n & 1) == 0) || (n % 3 == 0)) {
+			/**
+			 * Don't do <code>(n &= 1) == 0</code> since we need the value of <code>n</code> to remain
+			 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
+			 * will mutate <code>n</code>.
+			 */
+			// n is an integer greater than 4 and is divisible by 2 or 3 (or both).
+			return false;
+		} else if (n < 8) { // i.e., (n == 5) || (n == 7)
+			return true;
+		} else if (n % 12 != 11) {
+			// Safe primes greater than 7, are 3 (mod 4) and 5 (mod 6) which by C.R.T., they are 11 (mod 12).
+			return false;
+		}
+		// n is an odd integer greater than 7 and not divisible by 3 and equivalent to 11 (mod 12).
+		return PrimeUtil.isSafePrimeSqrtFixedInput(n);
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return The first safe prime greater than <code>n</code>.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>n >= PrimeUtil.LARGEST_SAFE_PRIME_LONG</code>
+	 */
+	public static long safePrimeAfter(long n) throws IllegalArgumentException {
+		if (n >= PrimeUtil.LARGEST_SAFE_PRIME_LONG) {
+			throw new IllegalArgumentException();
+		}
+		// n < PrimeUtil.LARGEST_SAFE_PRIME_LONG
+
+		if (n < 8L) { // i.e., (n < 5) || (n == 5) || (n == 6) || (n == 7)
+			return ((n < 5L) ? 5L : ((n < 7L) ? 7L : 11L));
+		}
+		// n >= 8
+
+		/**
+		 * Don't do <code>n %= 12L</code> since we need the value of <code>n</code> to remain unchanged.
+		 * Note that the difference is the <code>%=</code> instead of the <code>%</code> which will mutate
+		 * <code>n</code>.
+		 */
+		final long mod12 = n % 12L;
+		if (mod12 == 11L) { // i.e., n == 11, ...
+			// Update n to be the first integer which is 11 (mod 12) and greater than the original value of n.
+			n += 12L; // n >= 23
+		} else { // i.e., (0 <= mod12) && (mod12 <= 10)
+			// Update n to be the first integer which is 11 (mod 12) and greater than the original value of n.
+			n += 11L - mod12; // n >= 23
+		}
+		// (n % 12 == 11) && (n >= 23)
+		for (/* Already initialized. */; true; n += 12L) {
+			// Check if n (i.e., 11 (mod 12)) is a safe prime.
+			if (PrimeUtil.isSafePrimeSqrtFixedInput(n)) {
+				break;
+			}
+		}
+		return n;
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return The first safe prime greater than <code>n</code>.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>n >= PrimeUtil.LARGEST_SAFE_PRIME_INT</code>
+	 */
+	public static int safePrimeAfter(int n) throws IllegalArgumentException {
+		if (n >= PrimeUtil.LARGEST_SAFE_PRIME_INT) {
+			throw new IllegalArgumentException();
+		}
+		// n < PrimeUtil.LARGEST_SAFE_PRIME_INT
+		return ((int) PrimeUtil.safePrimeAfter((long) n));
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return The first safe prime greater than <code>n</code>.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>n >= PrimeUtil.LARGEST_SAFE_PRIME_SHORT</code>
+	 */
+	public static short safePrimeAfter(short n) throws IllegalArgumentException {
+		if (n >= PrimeUtil.LARGEST_SAFE_PRIME_SHORT) {
+			throw new IllegalArgumentException();
+		}
+		// n < PrimeUtil.LARGEST_SAFE_PRIME_SHORT
+		return ((short) PrimeUtil.safePrimeAfter((long) n));
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return The first safe prime greater than <code>n</code>.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>n >= PrimeUtil.LARGEST_SAFE_PRIME_BYTE</code>
+	 */
+	public static byte safePrimeAfter(byte n) throws IllegalArgumentException {
+		if (n >= PrimeUtil.LARGEST_SAFE_PRIME_BYTE) {
+			throw new IllegalArgumentException();
+		}
+		// n < PrimeUtil.LARGEST_SAFE_PRIME_BYTE
+		return ((byte) PrimeUtil.safePrimeAfter((long) n));
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return The first safe prime smaller than <code>n</code>.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>n < 6</code>
+	 */
+	public static long safePrimeBefore(long n) throws IllegalArgumentException {
+		if (n < 8L) { // i.e., (n < 6) || (n == 6) || (n == 7)
+			if (n < 6L) {
+				// The first safe prime is 5.
+				throw new IllegalArgumentException();
+			}
+			// n >= 6
+			// i.e., (n == 6) || (n == 7)
+			return 5L;
+		}
+		// n >= 8
+
+		/**
+		 * Don't do <code>n %= 12L</code> since we need the value of <code>n</code> to remain unchanged.
+		 * Note that the difference is the <code>%=</code> instead of the <code>%</code> which will mutate
+		 * <code>n</code>.
+		 */
+		final long mod12 = n % 12L;
+		if (mod12 == 11L) { // i.e., n == 11, 23, ...
+			if (n == 11L) {
+				return 7L;
+			}
+			// n >= 23
+
+			// Update n to be the first integer which is 11 (mod 12) and smaller than the original value of n.
+			n -= 12L; // n >= 11
+		} else { // i.e., (0 <= mod12) && (mod12 <= 10)
+			if (n < 13L) { // i.e., ((8 <= n) && (n <= 10)) || (n == 12)
+				return ((n == 12L) ? 11L : 7L);
+			}
+			// n >= 13
+
+			// Update n to be the first integer which is 11 (mod 12) and smaller than the original value of n.
+			n -= 1L + mod12; // n >= 11
+		}
+		// (n % 12 == 11) && (n >= 11)
+		for (/* Already initialized. */; true; n -= 12L) {
+			// Check if n (i.e., 11 (mod 12)) is a safe prime.
+			if (PrimeUtil.isSafePrimeSqrtFixedInput(n)) {
+				break;
+			}
+		}
+		return n;
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return The first safe prime smaller than <code>n</code>.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>n < 6</code>
+	 */
+	public static int safePrimeBefore(int n) throws IllegalArgumentException {
+		return ((int) PrimeUtil.safePrimeBefore((long) n));
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return The first safe prime smaller than <code>n</code>.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>n < 6</code>
+	 */
+	public static short safePrimeBefore(short n) throws IllegalArgumentException {
+		return ((short) PrimeUtil.safePrimeBefore((long) n));
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return The first safe prime smaller than <code>n</code>.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>n < 6</code>
+	 */
+	public static byte safePrimeBefore(byte n) throws IllegalArgumentException {
+		return ((byte) PrimeUtil.safePrimeBefore((long) n));
 	}
 }
