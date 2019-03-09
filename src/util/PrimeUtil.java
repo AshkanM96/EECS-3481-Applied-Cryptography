@@ -13,17 +13,17 @@ public class PrimeUtil {
 	 */
 
 	/**
-	 * First prime which is also the only prime that is 2 (mod 6).
+	 * The first prime which is also the only prime that is 2 (mod 6).
 	 */
 	public static final byte FIRST_PRIME = 2;
 
 	/**
-	 * Second prime which is also the only prime that is 3 (mod 6).
+	 * The second prime which is also the only prime that is 3 (mod 6).
 	 */
 	public static final byte SECOND_PRIME = 3;
 
 	/**
-	 * Largest prime less than or equal to Byte.MAX_VALUE.
+	 * Largest prime less than or equal to Byte.MAX_VALUE which is Byte.MAX_VALUE itself.
 	 */
 	public static final byte LARGEST_PRIME_BYTE = 127;
 
@@ -43,7 +43,7 @@ public class PrimeUtil {
 	public static final int SMALLEST_PRIME_NOT_SHORT = 32771;
 
 	/**
-	 * Largest prime less than or equal to Integer.MAX_VALUE.
+	 * Largest prime less than or equal to Integer.MAX_VALUE which is Integer.MAX_VALUE itself.
 	 */
 	public static final int LARGEST_PRIME_INT = 2147483647;
 
@@ -63,7 +63,7 @@ public class PrimeUtil {
 	public static final BigInteger SMALLEST_PRIME_NOT_LONG = new BigInteger("9223372036854775837");
 
 	/**
-	 * First safe prime.
+	 * The first safe prime.
 	 */
 	public static final byte FIRST_SAFE_PRIME = 5;
 
@@ -129,7 +129,7 @@ public class PrimeUtil {
 		 * <pre>
 		 * <code>
 		 * Any integer i, is one of 0, 1, 2, 3, 4, or 5 (mod 6).
-		 * However, if i is greater than 3, then it can only be prime if it is 1 or 5 (mod 6) since otherwise
+		 * However, if i is greater than 3, then it can only be a prime if it is 1 or 5 (mod 6) since otherwise
 		 * it would be divisible by 2 or 3 (or both in the case of 0 (mod 6)).
 		 * </code>
 		 * </pre>
@@ -301,7 +301,7 @@ public class PrimeUtil {
 		 * <pre>
 		 * <code>
 		 * Any integer n, is one of 0, 1, 2, 3, 4, or 5 (mod 6).
-		 * However, if n is greater than 3, then it can only be prime if it is 1 or 5 (mod 6) since otherwise
+		 * However, if n is greater than 3, then it can only be a prime if it is 1 or 5 (mod 6) since otherwise
 		 * it would be divisible by 2 or 3 (or both in the case of 0 (mod 6)).
 		 * </code>
 		 * </pre>
@@ -432,7 +432,7 @@ public class PrimeUtil {
 		 * <pre>
 		 * <code>
 		 * Any integer n, is one of 0, 1, 2, 3, 4, or 5 (mod 6).
-		 * However, if n is greater than 3, then it can only be prime if it is 1 or 5 (mod 6) since otherwise
+		 * However, if n is greater than 3, then it can only be a prime if it is 1 or 5 (mod 6) since otherwise
 		 * it would be divisible by 2 or 3 (or both in the case of 0 (mod 6)).
 		 * </code>
 		 * </pre>
@@ -566,21 +566,22 @@ public class PrimeUtil {
 		if (n < 5L) {
 			// The first safe prime is 5.
 			return false;
-		} else if (((n & 1L) == 0L) || (n % 3L == 0L)) {
-			/**
-			 * Don't do <code>(n &= 1L) == 0L</code> since we need the value of <code>n</code> to remain
-			 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
-			 * will mutate <code>n</code>.
-			 */
-			// n is an integer greater than 4 and is divisible by 2 or 3 (or both).
-			return false;
-		} else if (n < 8L) { // i.e., (n == 5) || (n == 7)
-			return true;
+		} else if (n < 8L) { // i.e., (n == 5) || (n == 6) || (n == 7)
+			return (n != 6L);
 		} else if (n % 12L != 11L) {
-			// Safe primes greater than 7, are 3 (mod 4) and 5 (mod 6) which by C.R.T., they are 11 (mod 12).
+			/**
+			 * <pre>
+			 * <code>
+			 * Any integer n, is one of 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, or 11 (mod 12).
+			 * However, if n is greater than 7, then it can only be a safe prime if it is 11 (mod 12) since otherwise
+			 * it would be divisible by 2 or 3 (or both in the cases of 0, or 6 (mod 12))
+			 * or (n - 1) / 2 would be divisible by 2 or 3 (or both in the case of 1 (mod 12)).
+			 * </code>
+			 * </pre>
+			 */
 			return false;
 		}
-		// n is an odd integer greater than 7 and not divisible by 3 and equivalent to 11 (mod 12).
+		// n is an odd integer greater than 7 equivalent to 11 (mod 12).
 		return PrimeUtil.isSafePrimeSqrtFixedInput(n);
 	}
 
@@ -596,21 +597,22 @@ public class PrimeUtil {
 		if (n < 5) {
 			// The first safe prime is 5.
 			return false;
-		} else if (((n & 1) == 0) || (n % 3 == 0)) {
-			/**
-			 * Don't do <code>(n &= 1) == 0</code> since we need the value of <code>n</code> to remain
-			 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
-			 * will mutate <code>n</code>.
-			 */
-			// n is an integer greater than 4 and is divisible by 2 or 3 (or both).
-			return false;
-		} else if (n < 8) { // i.e., (n == 5) || (n == 7)
-			return true;
+		} else if (n < 8) { // i.e., (n == 5) || (n == 6) || (n == 7)
+			return (n != 6);
 		} else if (n % 12 != 11) {
-			// Safe primes greater than 7, are 3 (mod 4) and 5 (mod 6) which by C.R.T., they are 11 (mod 12).
+			/**
+			 * <pre>
+			 * <code>
+			 * Any integer n, is one of 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, or 11 (mod 12).
+			 * However, if n is greater than 7, then it can only be a safe prime if it is 11 (mod 12) since otherwise
+			 * it would be divisible by 2 or 3 (or both in the cases of 0, or 6 (mod 12))
+			 * or (n - 1) / 2 would be divisible by 2 or 3 (or both in the case of 1 (mod 12)).
+			 * </code>
+			 * </pre>
+			 */
 			return false;
 		}
-		// n is an odd integer greater than 7 and not divisible by 3 and equivalent to 11 (mod 12).
+		// n is an odd integer greater than 7 equivalent to 11 (mod 12).
 		return PrimeUtil.isSafePrimeSqrtFixedInput(n);
 	}
 
@@ -626,21 +628,22 @@ public class PrimeUtil {
 		if (n < 5) {
 			// The first safe prime is 5.
 			return false;
-		} else if (((n & 1) == 0) || (n % 3 == 0)) {
-			/**
-			 * Don't do <code>(n &= 1) == 0</code> since we need the value of <code>n</code> to remain
-			 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
-			 * will mutate <code>n</code>.
-			 */
-			// n is an integer greater than 4 and is divisible by 2 or 3 (or both).
-			return false;
-		} else if (n < 8) { // i.e., (n == 5) || (n == 7)
-			return true;
+		} else if (n < 8) { // i.e., (n == 5) || (n == 6) || (n == 7)
+			return (n != 6);
 		} else if (n % 12 != 11) {
-			// Safe primes greater than 7, are 3 (mod 4) and 5 (mod 6) which by C.R.T., they are 11 (mod 12).
+			/**
+			 * <pre>
+			 * <code>
+			 * Any integer n, is one of 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, or 11 (mod 12).
+			 * However, if n is greater than 7, then it can only be a safe prime if it is 11 (mod 12) since otherwise
+			 * it would be divisible by 2 or 3 (or both in the cases of 0, or 6 (mod 12))
+			 * or (n - 1) / 2 would be divisible by 2 or 3 (or both in the case of 1 (mod 12)).
+			 * </code>
+			 * </pre>
+			 */
 			return false;
 		}
-		// n is an odd integer greater than 7 and not divisible by 3 and equivalent to 11 (mod 12).
+		// n is an odd integer greater than 7 equivalent to 11 (mod 12).
 		return PrimeUtil.isSafePrimeSqrtFixedInput(n);
 	}
 
@@ -656,21 +659,22 @@ public class PrimeUtil {
 		if (n < 5) {
 			// The first safe prime is 5.
 			return false;
-		} else if (((n & 1) == 0) || (n % 3 == 0)) {
-			/**
-			 * Don't do <code>(n &= 1) == 0</code> since we need the value of <code>n</code> to remain
-			 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
-			 * will mutate <code>n</code>.
-			 */
-			// n is an integer greater than 4 and is divisible by 2 or 3 (or both).
-			return false;
-		} else if (n < 8) { // i.e., (n == 5) || (n == 7)
-			return true;
+		} else if (n < 8) { // i.e., (n == 5) || (n == 6) || (n == 7)
+			return (n != 6);
 		} else if (n % 12 != 11) {
-			// Safe primes greater than 7, are 3 (mod 4) and 5 (mod 6) which by C.R.T., they are 11 (mod 12).
+			/**
+			 * <pre>
+			 * <code>
+			 * Any integer n, is one of 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, or 11 (mod 12).
+			 * However, if n is greater than 7, then it can only be a safe prime if it is 11 (mod 12) since otherwise
+			 * it would be divisible by 2 or 3 (or both in the cases of 0, or 6 (mod 12))
+			 * or (n - 1) / 2 would be divisible by 2 or 3 (or both in the case of 1 (mod 12)).
+			 * </code>
+			 * </pre>
+			 */
 			return false;
 		}
-		// n is an odd integer greater than 7 and not divisible by 3 and equivalent to 11 (mod 12).
+		// n is an odd integer greater than 7 equivalent to 11 (mod 12).
 		return PrimeUtil.isSafePrimeSqrtFixedInput(n);
 	}
 
@@ -695,6 +699,15 @@ public class PrimeUtil {
 		// n >= 8
 
 		/**
+		 * <pre>
+		 * <code>
+		 * Any integer n, is one of 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, or 11 (mod 12).
+		 * However, if n is greater than 7, then it can only be a safe prime if it is 11 (mod 12) since otherwise
+		 * it would be divisible by 2 or 3 (or both in the cases of 0, or 6 (mod 12))
+		 * or (n - 1) / 2 would be divisible by 2 or 3 (or both in the case of 1 (mod 12)).
+		 * </code>
+		 * </pre>
+		 * 
 		 * Don't do <code>n %= 12L</code> since we need the value of <code>n</code> to remain unchanged.
 		 * Note that the difference is the <code>%=</code> instead of the <code>%</code> which will mutate
 		 * <code>n</code>.
@@ -790,6 +803,15 @@ public class PrimeUtil {
 		// n >= 8
 
 		/**
+		 * <pre>
+		 * <code>
+		 * Any integer n, is one of 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, or 11 (mod 12).
+		 * However, if n is greater than 7, then it can only be a safe prime if it is 11 (mod 12) since otherwise
+		 * it would be divisible by 2 or 3 (or both in the cases of 0, or 6 (mod 12))
+		 * or (n - 1) / 2 would be divisible by 2 or 3 (or both in the case of 1 (mod 12)).
+		 * </code>
+		 * </pre>
+		 * 
 		 * Don't do <code>n %= 12L</code> since we need the value of <code>n</code> to remain unchanged.
 		 * Note that the difference is the <code>%=</code> instead of the <code>%</code> which will mutate
 		 * <code>n</code>.

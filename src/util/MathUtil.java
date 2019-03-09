@@ -2011,7 +2011,7 @@ public class MathUtil {
 		 * <pre>
 		 * <code>
 		 * Any integer i, is one of 0, 1, 2, 3, 4, or 5 (mod 6).
-		 * However, if i is greater than 3, then it can only be prime if it is 1 or 5 (mod 6) since otherwise
+		 * However, if i is greater than 3, then it can only be a prime if it is 1 or 5 (mod 6) since otherwise
 		 * it would be divisible by 2 or 3 (or both in the case of 0 (mod 6)).
 		 * </code>
 		 * </pre>
@@ -2023,7 +2023,7 @@ public class MathUtil {
 		 * by doing this, we can cut the total runtime by a third (i.e., runtime is in
 		 * <code>O(sqrt(n) / 3)</code> instead of <code>O(sqrt(n))</code>).
 		 */
-		// Count the power of each prime which will fit in a byte since the largest power is at most 63.
+		// Count the power of each prime which will fit in a byte since the largest power is at most 62.
 		byte power = 0;
 		/**
 		 * Don't do <code>(n &= 1L) == 0L</code> since we need the value of <code>n</code> to remain
@@ -2384,7 +2384,7 @@ public class MathUtil {
 		 * <pre>
 		 * <code>
 		 * Any integer i, is one of 0, 1, 2, 3, 4, or 5 (mod 6).
-		 * However, if i is greater than 3, then it can only be prime if it is 1 or 5 (mod 6) since otherwise
+		 * However, if i is greater than 3, then it can only be a prime if it is 1 or 5 (mod 6) since otherwise
 		 * it would be divisible by 2 or 3 (or both in the case of 0 (mod 6)).
 		 * </code>
 		 * </pre>
@@ -2396,7 +2396,7 @@ public class MathUtil {
 		 * by doing this, we can cut the total runtime by a third (i.e., runtime is in
 		 * <code>O(sqrt(n) / 3)</code> instead of <code>O(sqrt(n))</code>).
 		 */
-		// Count the power of each prime which will fit in a byte since the largest power is at most 31.
+		// Count the power of each prime which will fit in a byte since the largest power is at most 30.
 		byte power = 0;
 		/**
 		 * Don't do <code>(n &= 1) == 0</code> since we need the value of <code>n</code> to remain
@@ -2757,7 +2757,7 @@ public class MathUtil {
 		 * <pre>
 		 * <code>
 		 * Any integer i, is one of 0, 1, 2, 3, 4, or 5 (mod 6).
-		 * However, if i is greater than 3, then it can only be prime if it is 1 or 5 (mod 6) since otherwise
+		 * However, if i is greater than 3, then it can only be a prime if it is 1 or 5 (mod 6) since otherwise
 		 * it would be divisible by 2 or 3 (or both in the case of 0 (mod 6)).
 		 * </code>
 		 * </pre>
@@ -2769,7 +2769,7 @@ public class MathUtil {
 		 * by doing this, we can cut the total runtime by a third (i.e., runtime is in
 		 * <code>O(sqrt(n) / 3)</code> instead of <code>O(sqrt(n))</code>).
 		 */
-		// Count the power of each prime which will fit in a byte since the largest power is at most 15.
+		// Count the power of each prime which will fit in a byte since the largest power is at most 14.
 		byte power = 0;
 		/**
 		 * Don't do <code>(n &= 1) == 0</code> since we need the value of <code>n</code> to remain
@@ -3130,7 +3130,7 @@ public class MathUtil {
 		 * <pre>
 		 * <code>
 		 * Any integer i, is one of 0, 1, 2, 3, 4, or 5 (mod 6).
-		 * However, if i is greater than 3, then it can only be prime if it is 1 or 5 (mod 6) since otherwise
+		 * However, if i is greater than 3, then it can only be a prime if it is 1 or 5 (mod 6) since otherwise
 		 * it would be divisible by 2 or 3 (or both in the case of 0 (mod 6)).
 		 * </code>
 		 * </pre>
@@ -3142,7 +3142,7 @@ public class MathUtil {
 		 * by doing this, we can cut the total runtime by a third (i.e., runtime is in
 		 * <code>O(sqrt(n) / 3)</code> instead of <code>O(sqrt(n))</code>).
 		 */
-		// Count the power of each prime which will fit in a byte since the largest power is at most 7.
+		// Count the power of each prime which will fit in a byte since the largest power is at most 6.
 		byte power = 0;
 		/**
 		 * Don't do <code>(n &= 1) == 0</code> since we need the value of <code>n</code> to remain
@@ -3362,7 +3362,7 @@ public class MathUtil {
 		 * <pre>
 		 * <code>
 		 * Any integer i, is one of 0, 1, 2, 3, 4, or 5 (mod 6).
-		 * However, if i is greater than 3, then it can only be prime if it is 1 or 5 (mod 6) since otherwise
+		 * However, if i is greater than 3, then it can only be a prime if it is 1 or 5 (mod 6) since otherwise
 		 * it would be divisible by 2 or 3 (or both in the case of 0 (mod 6)).
 		 * </code>
 		 * </pre>
