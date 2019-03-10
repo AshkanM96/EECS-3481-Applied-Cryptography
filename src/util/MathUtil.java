@@ -7077,6 +7077,7 @@ public class MathUtil {
 						return null;
 					}
 				}
+				// (0 <= d_k) && (d_k <= p - 1)
 
 				// Update x.
 				/**
@@ -7121,14 +7122,15 @@ public class MathUtil {
 					return null;
 				}
 			}
+			// We know that (0 <= d_k) but we don't know if (d_k <= p - 1) or not.
 
 			// Update x.
 			/**
-			 * It's fine to do <code>d_k *= p_to_k</code> instead of <code>d_k * p_to_k</code> since we don't
-			 * need the value of <code>d_k</code> to remain unchanged at this point. Note that the difference is
-			 * the <code>*=</code> instead of the <code>*</code> which will mutate <code>d_k</code>.
+			 * It's fine to do <code>d_k %= p</code> instead of <code>d_k % p</code> since we don't need the
+			 * value of <code>d_k</code> to remain unchanged at this point. Note that the difference is the
+			 * <code>%=</code> instead of the <code>%</code> which will mutate <code>d_k</code>.
 			 */
-			x += (d_k *= p_to_k);
+			x += ((d_k %= p) * p_to_k);
 		}
 		return x;
 	}
