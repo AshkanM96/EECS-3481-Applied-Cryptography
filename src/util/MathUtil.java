@@ -5772,13 +5772,13 @@ public class MathUtil {
 			}
 
 			// Update n_to_i.
-			if (((n_to_i = MathUtil.modMultFixedInput(n_to_i, n, m)) == n) && (i != begin)) {
+			if (((n_to_i = MathUtil.modMultFixedInput(n_to_i, n, m)) == n_to_begin) && (i != begin)) {
 				/**
 				 * This will only happen when <code>n</code>'s multiplicative order has been reached and
-				 * <code>n_to_i</code> has wrapped back to <code>n</code>. Note that for some choices of
+				 * <code>n_to_i</code> has wrapped back to <code>n_to_begin</code>. Note that for some choices of
 				 * <code>n</code> and <code>m</code>, <code>n_to_i</code> will never wrap back to <code>1</code> but
-				 * it may wrap back to <code>n</code>. <code>n</code>'s multiplicative order is
-				 * <code>i - begin</code>.
+				 * it may wrap back to <code>n_to_begin</code>. <code>n</code>'s multiplicative order is
+				 * <code>i - begin + 1</code>.
 				 */
 				break;
 			}
