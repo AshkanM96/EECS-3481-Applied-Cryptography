@@ -5732,7 +5732,7 @@ public class MathUtil {
 	 * Precondition: <code>m > 2</code> <br>
 	 * Precondition: <code>(1 < n) && (n < m - 1)</code> <br>
 	 * Precondition: <code>(0 <= target) && (target <= m - 1)</code> <br>
-	 * Precondition: <code>begin <= end</code>
+	 * Precondition: <code>begin < end</code>
 	 * 
 	 * @param n
 	 *            the given number
@@ -5761,29 +5761,32 @@ public class MathUtil {
 		n = MathUtil.modMinFixedInput(n, m);
 		// Fix target to be in [-m / 2, m / 2] \cap \doubleZ.
 		target = MathUtil.modMinFixedInput(target, m);
-
 		// Fix n_to_begin to be in [-m / 2, m / 2] \cap \doubleZ.
-		long n_to_i = n_to_begin = MathUtil.modMinFixedInput(n_to_begin, m);
-		// Iteratively compute n to the power of (i + begin) in mod m and compare the result to target.
-		for (long i = begin; i != end; ++i) {
-			// Check for match.
-			if (n_to_i == target) {
-				return i;
-			}
+		n_to_begin = MathUtil.modMinFixedInput(n_to_begin, m);
 
+		// Iteratively compute n to the power of (i + begin) in mod m and compare the result to target.
+		if (n_to_begin == target) {
+			return begin;
+		}
+		for (long i = begin + 1L, n_to_i = n_to_begin; i != end; ++i) {
 			// Update n_to_i.
-			if (((n_to_i = MathUtil.modMultFixedInput(n_to_i, n, m)) == n_to_begin) && (i != begin)) {
+			if ((n_to_i = MathUtil.modMultFixedInput(n_to_i, n, m)) == n_to_begin) {
 				/**
 				 * This will only happen when <code>n</code>'s multiplicative order has been reached and
 				 * <code>n_to_i</code> has wrapped back to <code>n_to_begin</code>. Note that for some choices of
 				 * <code>n</code> and <code>m</code>, <code>n_to_i</code> will never wrap back to <code>1</code> but
 				 * it may wrap back to <code>n_to_begin</code>. <code>n</code>'s multiplicative order is
-				 * <code>i - begin + 1</code>.
+				 * <code>i - begin</code>.
 				 */
 				break;
 			}
+
+			// Check for a match.
+			if (n_to_i == target) {
+				return i;
+			}
 		}
-		// No power of n resulted in target.
+		// No power of n in [begin, end) \cap \doubleZ resulted in target.
 		return null;
 	}
 
@@ -6130,24 +6133,77 @@ public class MathUtil {
 
 		// Shanks' Babystep-Giantstep Algorithm.
 		final Map<Long, Long> babylist = hash ? new HashMap<Long, Long>((int) bound) : new TreeMap<Long, Long>();
+		babylist.put(1L, 0L);
 		if (generateBoth) {
 			/**
 			 * <code>generateBoth</code> so generate both the babylist and the giantlist simultaneously one
 			 * element at a time.
 			 */
 			final Map<Long, Long> giantlist = hash ? new HashMap<Long, Long>((int) bound) : new TreeMap<Long, Long>();
+			giantlist.put(target, 0L);
 			Long baby_index = null, giant_index = null;
 			Long order_n = null, order_giant_factor = null;
-			for (long index = 0L, baby = 1L, giant = target; index != bound; ++index) {
-				// Update the two lists.
-				babylist.putIfAbsent(baby, index);
-				giantlist.putIfAbsent(giant, index);
+			for (long index = 1L, baby = 1L, giant = target; index != bound; ++index) {
+				// Only update baby and babylist if n's multiplicative order hasn't been reached.
+				if (order_n == null) {
+					baby = MathUtil.modMultFixedInput(baby, n, m);
+					if ((baby_index = babylist.putIfAbsent(baby, index)) != null) {
+						/**
+						 * This will only happen when <code>n</code>'s multiplicative order has been reached and
+						 * <code>baby</code> has wrapped back to <code>n</code>. Note that for some choices of
+						 * <code>n</code> and <code>m</code>, <code>baby</code> will never wrap back to <code>1</code>
+						 * but it may wrap back to <code>n</code>.
+						 */
+						order_n = index - baby_index;
+						if (order_giant_factor != null) {
+							/**
+							 * This will only happen when the multiplicative order of both <code>n</code> and
+							 * <code>giant_factor</code> has been reached and both <code>baby</code> and
+							 * <code>giant</code> have wrapped back to their original values at some iteration. Thus, we
+							 * can conclude that an answer cannot be found. Note that it is enough to check if
+							 * <code>giant_factor</code>'s multiplicative order has been reached when <code>n</code>'s
+							 * multiplicative order has been reached for the very first time.
+							 */
+							break;
+						}
+					}
+				}
+				// Only update giant and giantlist if giant_factor's multiplicative order hasn't been reached.
+				if (order_giant_factor == null) {
+					giant = MathUtil.modMultFixedInput(giant, giant_factor, m);
+					if ((giant_index = giantlist.putIfAbsent(giant, index)) != null) {
+						/**
+						 * This will only happen when <code>giant_factor</code>'s multiplicative order has been reached
+						 * and <code>giant</code> has wrapped back to <code>target</code>.
+						 */
+						order_giant_factor = index - giant_index;
+						if (order_n != null) {
+							/**
+							 * This will only happen when the multiplicative order of both <code>n</code> and
+							 * <code>giant_factor</code> has been reached and both <code>baby</code> and
+							 * <code>giant</code> have wrapped back to their original values at some iteration. Thus, we
+							 * can conclude that an answer cannot be found. Note that it is enough to check if
+							 * <code>n</code>'s multiplicative order has been reached when <code>giant_factor</code>'s
+							 * multiplicative order has been reached for the very first time.
+							 */
+							break;
+						}
+					}
+				}
 
-				// Search for match between the two lists.
 				/**
-				 * The following expressions will never overflow since the maximum value is
-				 * <code>(bound - 1) * bound + (bound - 1) == bound<sup>2</sup> - 1</code>. However, since we
-				 * enforce <code>bound <= Integer.MAX_VALUE == 2<sup>31</sup> - 1</code> then we can conclude that
+				 * At this point, we know that <code>(order_n == null) || (order_giant_factor == null)</code> so at
+				 * least one set of the variables has been updated (i.e., either baby and babylist or giant and
+				 * giantlist or all of them have been updated) which means that we should search for a match.
+				 */
+
+				// Search for a match between babylist and giantlist.
+				/**
+				 * The following result expressions will never overflow since the maximum value is
+				 * <code>(bound - 1) * bound + (bound - 1) == bound<sup>2</sup> - 1</code>. However, due to the
+				 * precondition on <code>bound</code> (i.e.,
+				 * <code>(2 <= bound) && (bound <= Integer.MAX_VALUE == 2<sup>31</sup> - 1)</code>), we can conclude
+				 * that
 				 * <code>bound<sup>2</sup> - 1 <= (2<sup>62</sup> - 2<sup>32</sup> + 1) - 1 == 2<sup>62</sup> - 2<sup>32</sup></code>
 				 * which is much smaller than <code>2<sup>63</sup> - 1 == Long.MAX_VALUE</code>.
 				 */
@@ -6158,36 +6214,6 @@ public class MathUtil {
 				} else if ((giant_index = giantlist.get(baby)) != null) {
 					return ((giant_index *= bound) + index);
 				}
-
-				// Update baby and giant.
-				if (((baby = MathUtil.modMultFixedInput(baby, n, m)) == n) && (index != 0L)) {
-					/**
-					 * This will only happen when <code>n</code>'s multiplicative order has been reached and
-					 * <code>baby</code> has wrapped back to <code>n</code>. Note that for some choices of
-					 * <code>n</code> and <code>m</code>, <code>baby</code> will never wrap back to <code>1</code> but
-					 * it may wrap back to <code>n</code>.
-					 */
-					if (order_n == null) {
-						order_n = index;
-					}
-				}
-				if (((giant = MathUtil.modMultFixedInput(giant, giant_factor, m)) == target) && (index != 0L)) {
-					/**
-					 * This will only happen when <code>giant_factor</code>'s multiplicative order has been reached and
-					 * <code>giant</code> has wrapped back to <code>target</code>.
-					 */
-					if (order_giant_factor == null) {
-						order_giant_factor = index + 1L;
-					}
-				}
-				if ((order_n != null) && (order_giant_factor != null)) {
-					/**
-					 * This will only happen when the multiplicative order of both <code>n</code> and
-					 * <code>giant_factor</code> has been reached and both <code>baby</code> and <code>giant</code> have
-					 * wrapped back to their original values thus we can conclude that an answer cannot be found.
-					 */
-					break;
-				}
 			}
 			return null;
 		}
@@ -6195,40 +6221,30 @@ public class MathUtil {
 		 * <code>!generateBoth</code> so fully generate the babylist and then generate the giantlist
 		 * in-place.
 		 */
-		babylist.put(1L, 0L);
-		for (long baby_index = 1L, baby = n; baby_index != bound; ++baby_index) {
-			// Check for match.
-			if (baby == target) {
-				return baby_index;
-			}
-
-			// Update babylist and baby.
-			babylist.put(baby, baby_index);
+		babylist.put(n, 1L);
+		for (long baby_index = 2L, baby = n; baby_index != bound; ++baby_index) {
+			// Update baby.
 			if ((baby = MathUtil.modMultFixedInput(baby, n, m)) == n) {
 				/**
 				 * This will only happen when <code>n</code>'s multiplicative order has been reached and
 				 * <code>baby</code> has wrapped back to <code>n</code>. Note that for some choices of
 				 * <code>n</code> and <code>m</code>, <code>baby</code> will never wrap back to <code>1</code> but
 				 * it may wrap back to <code>n</code>. <code>n</code>'s multiplicative order is
-				 * <code>baby_index</code>.
+				 * <code>baby_index - 1</code>.
 				 */
 				break;
 			}
-		}
-		Long baby_index = null;
-		for (long giant_index = 0L, giant = target; giant_index != bound; ++giant_index) {
-			// Search for match between the two lists.
-			if ((baby_index = babylist.get(giant)) != null) {
-				/**
-				 * The following expression will never overflow since its maximum value is
-				 * <code>(bound - 1) * bound + (bound - 1) == bound<sup>2</sup> - 1</code>. However, since we
-				 * enforce <code>bound <= Integer.MAX_VALUE == 2<sup>31</sup> - 1</code> then we can conclude that
-				 * <code>bound<sup>2</sup> - 1 <= (2<sup>62</sup> - 2<sup>32</sup> + 1) - 1 == 2<sup>62</sup> - 2<sup>32</sup></code>
-				 * which is much smaller than <code>2<sup>63</sup> - 1 == Long.MAX_VALUE</code>.
-				 */
-				return ((giant_index *= bound) + baby_index);
+
+			// Check for a match.
+			if (baby == target) {
+				return baby_index;
 			}
 
+			// Update babylist.
+			babylist.put(baby, baby_index);
+		}
+		Long baby_index = null;
+		for (long giant_index = 1L, giant = target; giant_index != bound; ++giant_index) {
 			// Update giant.
 			if ((giant = MathUtil.modMultFixedInput(giant, giant_factor, m)) == target) {
 				/**
@@ -6237,6 +6253,20 @@ public class MathUtil {
 				 * multiplicative order is <code>giant_index</code>.
 				 */
 				break;
+			}
+
+			// Search for a match between babylist and giantlist.
+			if ((baby_index = babylist.get(giant)) != null) {
+				/**
+				 * The following result expression will never overflow since the maximum value is
+				 * <code>(bound - 1) * bound + (bound - 1) == bound<sup>2</sup> - 1</code>. However, due to the
+				 * precondition on <code>bound</code> (i.e.,
+				 * <code>(2 <= bound) && (bound <= Integer.MAX_VALUE == 2<sup>31</sup> - 1)</code>), we can conclude
+				 * that
+				 * <code>bound<sup>2</sup> - 1 <= (2<sup>62</sup> - 2<sup>32</sup> + 1) - 1 == 2<sup>62</sup> - 2<sup>32</sup></code>
+				 * which is much smaller than <code>2<sup>63</sup> - 1 == Long.MAX_VALUE</code>.
+				 */
+				return ((giant_index *= bound) + baby_index);
 			}
 		}
 		return null;
@@ -7081,6 +7111,11 @@ public class MathUtil {
 
 				// Update x.
 				/**
+				 * We know that <code>x</code> is in [0, p_to_e - 1] \cap \doubleZ at all times. We are just
+				 * calculating each digit of it in base <code>p</code> (i.e., the <code>d_k</code>'s) and so none of
+				 * the calculations will ever overflow. <br>
+				 * <br>
+				 * 
 				 * It's fine to do <code>d_k *= p_to_k</code> instead of <code>d_k * p_to_k</code> since we don't
 				 * need the value of <code>d_k</code> to remain unchanged at this point. Note that the difference is
 				 * the <code>*=</code> instead of the <code>*</code> which will mutate <code>d_k</code>.
@@ -7126,6 +7161,11 @@ public class MathUtil {
 
 			// Update x.
 			/**
+			 * We know that <code>x</code> is in [0, p_to_e - 1] \cap \doubleZ at all times. We are just
+			 * calculating each digit of it in base <code>p</code> (i.e., the <code>d_k</code>'s) and so none of
+			 * the calculations will ever overflow. <br>
+			 * <br>
+			 * 
 			 * It's fine to do <code>d_k %= p</code> instead of <code>d_k % p</code> since we don't need the
 			 * value of <code>d_k</code> to remain unchanged at this point. Note that the difference is the
 			 * <code>%=</code> instead of the <code>%</code> which will mutate <code>d_k</code>.
