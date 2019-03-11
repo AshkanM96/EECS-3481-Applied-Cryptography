@@ -6147,7 +6147,7 @@ public class MathUtil {
 				// Only update baby and babylist if n's multiplicative order hasn't been reached.
 				if (order_n == null) {
 					baby = MathUtil.modMultFixedInput(baby, n, m);
-					if ((baby_index = babylist.putIfAbsent(baby, index)) != null) {
+					if ((baby_index = babylist.put(baby, index)) != null) {
 						/**
 						 * This will only happen when <code>n</code>'s multiplicative order has been reached and
 						 * <code>baby</code> has wrapped back to <code>n</code>. Note that for some choices of
@@ -6171,7 +6171,7 @@ public class MathUtil {
 				// Only update giant and giantlist if giant_factor's multiplicative order hasn't been reached.
 				if (order_giant_factor == null) {
 					giant = MathUtil.modMultFixedInput(giant, giant_factor, m);
-					if ((giant_index = giantlist.putIfAbsent(giant, index)) != null) {
+					if ((giant_index = giantlist.put(giant, index)) != null) {
 						/**
 						 * This will only happen when <code>giant_factor</code>'s multiplicative order has been reached
 						 * and <code>giant</code> has wrapped back to <code>target</code>.
