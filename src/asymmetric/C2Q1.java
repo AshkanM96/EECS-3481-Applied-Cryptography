@@ -47,7 +47,7 @@ public class C2Q1 {
 
 		// Loop through all numbers in [1, n) coprime with n.
 		final BigInteger n = r.n;
-		for (BigInteger m = BigInteger.ONE, c = null, mPrime; !m.equals(n); m = m.add(BigInteger.ONE)) {
+		for (BigInteger m = BigInteger.ONE, c = null, mPrime = null; !m.equals(n); m = m.add(BigInteger.ONE)) {
 			if (m.gcd(n).equals(BigInteger.ONE)) {
 				// Compute the ciphertext by encrypting with public key.
 				c = r.apply(m, true);
