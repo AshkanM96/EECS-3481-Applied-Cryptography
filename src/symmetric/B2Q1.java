@@ -87,14 +87,14 @@ public class B2Q1 {
 		// Save the encrypted version of flippedPlaintext.
 		byte[] flippedCiphertext = null;
 		// Save the total number of different bits to be able to compute the average after the loop.
-		long totalDiffBitCount = 0;
-		for (int run = 0, flipBitIndex, flipByteIndex, flipBitMask, numDiffBits; run != B2Q1.MAX_RUNS; ++run) {
+		long totalDiffBitCount = 0L;
+		for (int run = 0, flipBitIndex = 0, flipByteIndex = 0, flipBitMask = 0, numDiffBits = 0; run != B2Q1.MAX_RUNS; ++run) {
 			// Generate a random integer in [0, B2Q1.PLAINTEXT.length * Binary.BITS_PER_BYTE].
 			flipBitIndex = prng.nextInt(B2Q1.PLAINTEXT.length * Binary.BITS_PER_BYTE);
 			// Compute the index in flippedPlaintext that contains the (flipBitIndex + 1)^th bit.
 			flipByteIndex = flipBitIndex / Binary.BITS_PER_BYTE;
 			// Compute a bitmask used to flip the (flipBitIndex + 1)^th bit in flippedPlaintext.
-			flipBitMask = 1 << ((Binary.BITS_PER_BYTE - 1) - flipBitIndex % Binary.BITS_PER_BYTE);
+			flipBitMask = 1 << ((Binary.BITS_PER_BYTE - 1) - (flipBitIndex % Binary.BITS_PER_BYTE));
 
 			// Create a copy of plaintext which will have its (flipBitIndex + 1)^th bit flipped.
 			System.arraycopy(B2Q1.PLAINTEXT, 0, flippedPlaintext, 0, flippedPlaintext.length);
