@@ -72,8 +72,7 @@ public class FoundationUtil {
 		}
 
 		final StringBuilder sb = new StringBuilder(filename);
-		sb.append('_');
-		sb.append(exhaustive ? FoundationUtil.PROBABLE_EXHAUSTIVE : FoundationUtil.PROBABLE_CRYPTA);
+		sb.append('_').append(exhaustive ? FoundationUtil.PROBABLE_EXHAUSTIVE : FoundationUtil.PROBABLE_CRYPTA);
 		return sb.toString();
 	}
 
@@ -127,8 +126,8 @@ public class FoundationUtil {
 
 		final StringBuilder sb = new StringBuilder(
 				input ? FoundationUtil.DATA_IN_DIRECTORY : FoundationUtil.DATA_OUT_DIRECTORY);
-		sb.append(filename).append('.');
-		sb.append(plaintext ? FoundationUtil.PLAINTEXT_EXTENSION : FoundationUtil.CIPHERTEXT_EXTENSION);
+		sb.append(filename).append('.')
+				.append(plaintext ? FoundationUtil.PLAINTEXT_EXTENSION : FoundationUtil.CIPHERTEXT_EXTENSION);
 		return sb.toString();
 	}
 
