@@ -38,6 +38,11 @@ public class SymCipherEng {
 	public static final int AES_BLOCK_SIZE = 16;
 
 	/**
+	 * Blowfish block size in bytes.
+	 */
+	public static final int BLOWFISH_BLOCK_SIZE = 8;
+
+	/**
 	 * Cipher engine.
 	 */
 	protected Cipher engine;
@@ -48,7 +53,7 @@ public class SymCipherEng {
 	 * @author Ashkan Moatamed
 	 */
 	public static enum ALGO_SYM {
-		DES, DESede, AES;
+		DES, DESede, AES, Blowfish;
 	};
 
 	/**

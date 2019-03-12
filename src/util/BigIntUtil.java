@@ -309,15 +309,15 @@ public class BigIntUtil {
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If
-	 *             <code>(!BigIntegerUtil.isEven(n)) || ((valid i) implies (!BigIntegerUtil.isEven(args[i])))</code>
+	 *             <code>(!BigIntUtil.isEven(n)) || ((valid i) implies (!BigIntUtil.isEven(args[i])))</code>
 	 */
 	public static void ensureEven(BigInteger n, BigInteger... args)
 			throws NullPointerException, IllegalArgumentException {
-		if (n.testBit(0)) {
+		if (n.testBit(0)) { // i.e., !BigIntUtil.isEven(n)
 			throw new IllegalArgumentException();
 		}
 		for (int i = 0; i != args.length; ++i) {
-			if (args[i].testBit(0)) {
+			if (args[i].testBit(0)) { // i.e., !BigIntUtil.isEven(args[i])
 				throw new IllegalArgumentException();
 			}
 		}
@@ -336,15 +336,15 @@ public class BigIntUtil {
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If
-	 *             <code>(BigIntegerUtil.isEven(n)) || ((valid i) implies (BigIntegerUtil.isEven(args[i])))</code>
+	 *             <code>(BigIntUtil.isEven(n)) || ((valid i) implies (BigIntUtil.isEven(args[i])))</code>
 	 */
 	public static void ensureOdd(BigInteger n, BigInteger... args)
 			throws NullPointerException, IllegalArgumentException {
-		if (!n.testBit(0)) {
+		if (!n.testBit(0)) { // i.e., BigIntUtil.isEven(n)
 			throw new IllegalArgumentException();
 		}
 		for (int i = 0; i != args.length; ++i) {
-			if (!args[i].testBit(0)) {
+			if (!args[i].testBit(0)) { // i.e., BigIntUtil.isEven(args[i])
 				throw new IllegalArgumentException();
 			}
 		}

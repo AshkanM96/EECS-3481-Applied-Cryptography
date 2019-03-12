@@ -47,10 +47,10 @@ public class Fermat {
 	public Fermat(BigInteger n) throws NullPointerException, IllegalArgumentException {
 		if (n.compareTo(Fermat.TWO) <= 0) { // i.e., n <= 2
 			throw new IllegalArgumentException();
-		} else if (!n.testBit(0)) { // i.e., BigIntegerUtil.isEven(n)
+		} else if (!n.testBit(0)) { // i.e., BigIntUtil.isEven(n)
 			throw new IllegalArgumentException();
 		}
-		// n is odd and >= 3
+		// n is an odd integer greater than 2
 
 		// The following is meant to be an assignment of this.n and this.n_minus_1.
 		this.n_minus_1 = (this.n = n).subtract(BigInteger.ONE);
@@ -142,7 +142,7 @@ public class Fermat {
 		} else if (this.n.compareTo(b) <= 0) { // i.e., this.n <= b
 			throw new IllegalArgumentException();
 		}
-		// At this point, we know that 1 < b < this.n.
+		// (1 < b) && (b < this.n)
 		if (!this.n.gcd(b).equals(BigInteger.ONE)) {
 			throw new IllegalArgumentException();
 		}
@@ -188,7 +188,7 @@ public class Fermat {
 			// Apply Fermat's little theorem since gcd(this.n, b) == 1.
 			return this.testCoprimeFixedInput(b, print);
 		}
-		// Since 1 < b < this.n with gcd(this.n, b) != 1, then b is a factor of this.n.
+		// Since (1 < b) && (b < this.n) with gcd(this.n, b) != 1, then b is a factor of this.n.
 
 		// Only print if requested.
 		if (print) {
@@ -222,7 +222,7 @@ public class Fermat {
 		} else if (this.n.compareTo(b) <= 0) { // i.e., this.n <= b
 			throw new IllegalArgumentException();
 		}
-		// At this point, we know that 1 < b < this.n.
+		// (1 < b) && (b < this.n)
 		return this.testFixedInput(b, print);
 	}
 

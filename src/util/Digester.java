@@ -19,15 +19,26 @@ public class Digester {
 	 * @author Ashkan Moatamed
 	 */
 	public static enum ALGO_HASH {
-		MD5, // MD5.toString() returns MD5.name which is "MD5".
+		MD2, // MD2.toString() returns MD2.name() which is "MD2".
+		MD5, // MD5.toString() returns MD5.name() which is "MD5".
 		SHA_1 {
 			public final String toString() {
 				return "SHA-1";
 			}
 		},
+		SHA_224 {
+			public final String toString() {
+				return "SHA-224";
+			}
+		},
 		SHA_256 {
 			public final String toString() {
 				return "SHA-256";
+			}
+		},
+		SHA_384 {
+			public final String toString() {
+				return "SHA-384";
 			}
 		},
 		SHA_512 {
@@ -50,7 +61,7 @@ public class Digester {
 		try {
 			return MessageDigest.getInstance(algo.toString());
 		} catch (NoSuchAlgorithmException ex) {
-			throw new ExceptionInInitializerError(algo.toString() + " hash is not provided!");
+			throw new ExceptionInInitializerError(algo.toString() + " hash algorithm is not provided!");
 		}
 	}
 

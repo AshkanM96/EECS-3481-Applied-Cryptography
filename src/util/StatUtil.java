@@ -5,7 +5,7 @@ import java.math.BigInteger;
 import java.util.HashMap;
 
 /**
- * Utility math methods in addition to MathUtil but mainly focused on statistical purposes.
+ * Utility math methods in addition to MathUtil but mainly focused on statistics.
  * 
  * @author Ashkan Moatamed
  */

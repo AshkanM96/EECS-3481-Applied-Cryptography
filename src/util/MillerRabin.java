@@ -54,10 +54,10 @@ public class MillerRabin {
 	public MillerRabin(BigInteger n) throws NullPointerException, IllegalArgumentException {
 		if (n.compareTo(MillerRabin.TWO) <= 0) { // i.e., n <= 2
 			throw new IllegalArgumentException();
-		} else if (!n.testBit(0)) { // i.e., BigIntegerUtil.isEven(n)
+		} else if (!n.testBit(0)) { // i.e., BigIntUtil.isEven(n)
 			throw new IllegalArgumentException();
 		}
-		// n is odd and >= 3
+		// n is an odd integer greater than 2
 
 		// The following is meant to be an assignment of this.n and this.n_minus_1.
 		this.n_minus_1 = (this.n = n).subtract(BigInteger.ONE);
@@ -168,7 +168,7 @@ public class MillerRabin {
 				exp = this.exponents_it.next();
 			} else {
 				// Check to see if the exponent is even.
-				if (exp.testBit(0)) { // i.e., !BigIntegerUtil.isEven(exp)
+				if (exp.testBit(0)) { // i.e., !BigIntUtil.isEven(exp)
 					// Exponent is odd but r is still 1 therefore the test is inconclusive.
 
 					// Only print if requested.
@@ -244,7 +244,7 @@ public class MillerRabin {
 		} else if (this.n.compareTo(b) <= 0) { // i.e., this.n <= b
 			throw new IllegalArgumentException();
 		}
-		// At this point, we know that 1 < b < this.n.
+		// (1 < b) && (b < this.n)
 		if (!this.n.gcd(b).equals(BigInteger.ONE)) {
 			throw new IllegalArgumentException();
 		}
@@ -290,7 +290,7 @@ public class MillerRabin {
 			// Apply Miller-Rabin's theorem since gcd(this.n, b) == 1.
 			return this.testCoprimeFixedInput(b, print);
 		}
-		// Since 1 < b < this.n with gcd(this.n, b) != 1, then b is a factor of this.n.
+		// Since (1 < b) && (b < this.n) with gcd(this.n, b) != 1, then b is a factor of this.n.
 
 		// Only print if requested.
 		if (print) {
@@ -325,7 +325,7 @@ public class MillerRabin {
 		} else if (this.n.compareTo(b) <= 0) { // i.e., this.n <= b
 			throw new IllegalArgumentException();
 		}
-		// At this point, we know that 1 < b < this.n.
+		// (1 < b) && (b < this.n)
 		return this.testFixedInput(b, print);
 	}
 
