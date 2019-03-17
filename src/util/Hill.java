@@ -108,19 +108,6 @@ public class Hill implements Iterable<Integer> {
 	}
 
 	/**
-	 * Construct a Hill object from the given Scytale object.
-	 * 
-	 * @param s
-	 *            the given Scytale object
-	 * 
-	 * @throws NullPointerException
-	 *             If <code>s == null</code>
-	 */
-	public Hill(Scytale s) throws NullPointerException {
-		this(s.key);
-	}
-
-	/**
 	 * Copy ctor.
 	 * 
 	 * @param other
@@ -416,6 +403,7 @@ public class Hill implements Iterable<Integer> {
 	/**
 	 * Encrypt the given plaintext char array. <code>this</code> must be successfully prepared using
 	 * <code>prepareKey()</code>. <br>
+	 * Precondition: <code>this.isValidKey()</code> <br>
 	 * Precondition: <code>Arrays.equals(p, CryptoTools.clean(p))</code>
 	 * 
 	 * @param p
@@ -423,14 +411,10 @@ public class Hill implements Iterable<Integer> {
 	 * 
 	 * @return The encrypted ciphertext char array.
 	 * 
-	 * @throws IllegalStateException
-	 *             If <code>!this.isValidKey()</code>
-	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>p.length != this.keySide()</code>
 	 */
-	protected char[] encryptFixedInput(char[] p) throws IllegalStateException, IllegalArgumentException {
-		this.validateKey();
+	protected char[] encryptFixedInput(char[] p) throws IllegalArgumentException {
 		if (p.length != this.keySide()) {
 			throw new IllegalArgumentException();
 		}
@@ -468,7 +452,6 @@ public class Hill implements Iterable<Integer> {
 	 *             If <code>CryptoTools.clean(p).length != this.keySide()</code>
 	 */
 	public char[] encrypt(char[] p) throws IllegalStateException, NullPointerException, IllegalArgumentException {
-		// Even though the following is a repeated check, it'll save a cleaning.
 		this.validateKey();
 		return this.encryptFixedInput(CryptoTools.clean(p));
 	}
@@ -476,6 +459,7 @@ public class Hill implements Iterable<Integer> {
 	/**
 	 * Encrypt the given plaintext byte array. <code>this</code> must be successfully prepared using
 	 * <code>prepareKey()</code>. <br>
+	 * Precondition: <code>this.isValidKey()</code> <br>
 	 * Precondition: <code>Arrays.equals(p, CryptoTools.clean(p))</code>
 	 * 
 	 * @param p
@@ -483,14 +467,10 @@ public class Hill implements Iterable<Integer> {
 	 * 
 	 * @return The encrypted ciphertext byte array.
 	 * 
-	 * @throws IllegalStateException
-	 *             If <code>!this.isValidKey()</code>
-	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>p.length != this.keySide()</code>
 	 */
-	protected byte[] encryptFixedInput(byte[] p) throws IllegalStateException, IllegalArgumentException {
-		this.validateKey();
+	protected byte[] encryptFixedInput(byte[] p) throws IllegalArgumentException {
 		if (p.length != this.keySide()) {
 			throw new IllegalArgumentException();
 		}
@@ -528,7 +508,6 @@ public class Hill implements Iterable<Integer> {
 	 *             If <code>CryptoTools.clean(p).length != this.keySide()</code>
 	 */
 	public byte[] encrypt(byte[] p) throws IllegalStateException, NullPointerException, IllegalArgumentException {
-		// Even though the following is a repeated check, it'll save a cleaning.
 		this.validateKey();
 		return this.encryptFixedInput(CryptoTools.clean(p));
 	}
@@ -536,6 +515,7 @@ public class Hill implements Iterable<Integer> {
 	/**
 	 * Decrypt the given ciphertext char array. <code>this</code> must be successfully prepared using
 	 * <code>prepareKey()</code>. <br>
+	 * Precondition: <code>this.isValidKey()</code> <br>
 	 * Precondition: <code>Arrays.equals(c, CryptoTools.clean(c))</code>
 	 * 
 	 * @param c
@@ -543,14 +523,10 @@ public class Hill implements Iterable<Integer> {
 	 * 
 	 * @return The decrypted plaintext char array.
 	 * 
-	 * @throws IllegalStateException
-	 *             If <code>!this.isValidKey()</code>
-	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>c.length != this.keySide()</code>
 	 */
-	protected char[] decryptFixedInput(char[] c) throws IllegalStateException, IllegalArgumentException {
-		this.validateKey();
+	protected char[] decryptFixedInput(char[] c) throws IllegalArgumentException {
 		if (c.length != this.keySide()) {
 			throw new IllegalArgumentException();
 		}
@@ -588,7 +564,6 @@ public class Hill implements Iterable<Integer> {
 	 *             If <code>CryptoTools.clean(c).length != this.keySide()</code>
 	 */
 	public char[] decrypt(char[] c) throws IllegalStateException, NullPointerException, IllegalArgumentException {
-		// Even though the following is a repeated check, it'll save a cleaning.
 		this.validateKey();
 		return this.decryptFixedInput(CryptoTools.clean(c));
 	}
@@ -596,6 +571,7 @@ public class Hill implements Iterable<Integer> {
 	/**
 	 * Decrypt the given ciphertext byte array. <code>this</code> must be successfully prepared using
 	 * <code>prepareKey()</code>. <br>
+	 * Precondition: <code>this.isValidKey()</code> <br>
 	 * Precondition: <code>Arrays.equals(c, CryptoTools.clean(c))</code>
 	 * 
 	 * @param c
@@ -603,14 +579,10 @@ public class Hill implements Iterable<Integer> {
 	 * 
 	 * @return The decrypted plaintext byte array.
 	 * 
-	 * @throws IllegalStateException
-	 *             If <code>!this.isValidKey()</code>
-	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>c.length != this.keySide()</code>
 	 */
-	protected byte[] decryptFixedInput(byte[] c) throws IllegalStateException, IllegalArgumentException {
-		this.validateKey();
+	protected byte[] decryptFixedInput(byte[] c) throws IllegalArgumentException {
 		if (c.length != this.keySide()) {
 			throw new IllegalArgumentException();
 		}
@@ -648,7 +620,6 @@ public class Hill implements Iterable<Integer> {
 	 *             If <code>CryptoTools.clean(c).length != this.keySide()</code>
 	 */
 	public byte[] decrypt(byte[] c) throws IllegalStateException, NullPointerException, IllegalArgumentException {
-		// Even though the following is a repeated check, it'll save a cleaning.
 		this.validateKey();
 		return this.decryptFixedInput(CryptoTools.clean(c));
 	}

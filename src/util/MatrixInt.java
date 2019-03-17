@@ -11,14 +11,17 @@ import java.util.NoSuchElementException;
 public class MatrixInt implements Iterable<Integer> {
 	/**
 	 * Dependencies: <code>
-	 * 		1. util.BidirectionalIterator
+	 * 		1. util.MathUtil
 	 * 		2. util.ArrayUtil
-	 * 		3. util.MathUtil
+	 * 		3. util.BidirectionalIterator
+	 * 		4. util.InvalidModulusException
+	 * 		5. util.UndefinedInverseException
 	 * </code>
 	 */
 
 	/**
-	 * ints are immutable. Therefore, it is "safe" to make the following final class attributes public.
+	 * int primitives are immutable. Therefore, it is "safe" to make the following final class
+	 * attributes public.
 	 */
 
 	/**
@@ -946,12 +949,12 @@ public class MatrixInt implements Iterable<Integer> {
 	 * 
 	 * @return <code>this</code>.
 	 * 
-	 * @throws ArithmeticException
+	 * @throws InvalidModulusException
 	 *             If <code>n <= 0</code>
 	 */
-	public MatrixInt modEquals(int n) throws ArithmeticException {
+	public MatrixInt modEquals(int n) throws InvalidModulusException {
 		if (n < 1) {
-			throw new ArithmeticException();
+			throw new InvalidModulusException();
 		}
 		// n >= 1
 		// i.e., n > 0
@@ -974,13 +977,13 @@ public class MatrixInt implements Iterable<Integer> {
 	 * 
 	 * @return <code>new MatrixInt(this).modEquals(n)</code>.
 	 * 
-	 * @throws ArithmeticException
+	 * @throws InvalidModulusException
 	 *             If <code>n <= 0</code>
 	 */
-	public MatrixInt mod(int n) throws ArithmeticException {
+	public MatrixInt mod(int n) throws InvalidModulusException {
 		// Even though the following is a repeated check, it'll save a copy construction.
 		if (n < 1) {
-			throw new ArithmeticException();
+			throw new InvalidModulusException();
 		}
 		// n >= 1
 		// i.e., n > 0
@@ -1321,12 +1324,12 @@ public class MatrixInt implements Iterable<Integer> {
 	 * 
 	 * @return <code>this.isSquare() && (MathUtil.gcd(this.determinant(), m) == 1)</code>.
 	 * 
-	 * @throws ArithmeticException
+	 * @throws InvalidModulusException
 	 *             If <code>m <= 0</code>
 	 */
-	public boolean isInvertibleMod(int m) throws ArithmeticException {
+	public boolean isInvertibleMod(int m) throws InvalidModulusException {
 		if (m < 1) {
-			throw new ArithmeticException();
+			throw new InvalidModulusException();
 		}
 		// m >= 1
 		// i.e., m > 0
@@ -1345,16 +1348,16 @@ public class MatrixInt implements Iterable<Integer> {
 	 * 
 	 * @return The resulting InverseInfo object.
 	 * 
-	 * @throws ArithmeticException
+	 * @throws InvalidModulusException
 	 *             If <code>m <= 1</code>
 	 * 
 	 * @throws IllegalStateException
 	 *             If <code>!this.isSquare()</code>
 	 */
-	public InverseInfo detInvMod(int m) throws ArithmeticException, IllegalStateException {
+	public InverseInfo detInvMod(int m) throws InvalidModulusException, IllegalStateException {
 		// Even though the following is a repeated check, it'll save a determinant calculation.
 		if (m < 2) {
-			throw new ArithmeticException();
+			throw new InvalidModulusException();
 		}
 		// m >= 2
 		// i.e., m > 1
@@ -1382,9 +1385,7 @@ public class MatrixInt implements Iterable<Integer> {
 				}
 			}
 			return new InverseInfo(determinant, inverse);
-		} catch (ArithmeticException ex) {
-			// This will only happen if gcd(determinant, m) != 1.
-
+		} catch (UndefinedInverseException ex) {
 			// null to denote the nonexistence of this matrix's inverse.
 			return new InverseInfo(determinant, null);
 		}
@@ -1396,13 +1397,13 @@ public class MatrixInt implements Iterable<Integer> {
 	 * 
 	 * @return The inverse of <code>this</code> using <code>(mod m)</code> arithmetic.
 	 * 
-	 * @throws ArithmeticException
+	 * @throws InvalidModulusException
 	 *             If <code>m <= 1</code>
 	 * 
 	 * @throws IllegalStateException
 	 *             If <code>!this.isInvertibleMod(m)</code>
 	 */
-	public MatrixInt inverseMod(int m) throws ArithmeticException, IllegalStateException {
+	public MatrixInt inverseMod(int m) throws InvalidModulusException, IllegalStateException {
 		final InverseInfo info = this.detInvMod(m);
 		if (info.inverse == null) {
 			throw new IllegalStateException();

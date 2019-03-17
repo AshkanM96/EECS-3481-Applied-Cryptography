@@ -181,7 +181,7 @@ public class MathUtil {
 			// Compute the remainder upon integer division.
 			remainder = max % min;
 
-			// Update max and min using: gcd(max, min) == gcd(min, remainder)
+			// Update max and min using the following fact: gcd(max, min) == gcd(min, remainder)
 			max = min;
 			min = remainder;
 		}
@@ -2417,17 +2417,18 @@ public class MathUtil {
 	public static long modPow(long n, long p, long m)
 			throws InvalidModulusException, UndefinedInverseException, ArithmeticException {
 		if (m < 2L) { // i.e., (m < 1) || (m == 1)
-			if (m == 1L) { // i.e., n == 0 (mod m)
-				if (p < 0L) {
-					throw new UndefinedInverseException();
-				} else if (p == 0L) {
-					throw new ArithmeticException();
-				}
-				return 0L;
+			if (m < 1L) {
+				throw new InvalidModulusException();
 			}
-			// m != 1
-			// i.e., m < 1
-			throw new InvalidModulusException();
+			// m >= 1
+			// i.e., m == 1
+			// i.e., n == 0 (mod m)
+			if (p < 0L) {
+				throw new UndefinedInverseException();
+			} else if (p == 0L) {
+				throw new ArithmeticException();
+			}
+			return 0L;
 		}
 		// m >= 2
 
@@ -2446,7 +2447,6 @@ public class MathUtil {
 			}
 			// n != 0
 			// i.e., n == 1
-
 			// 1 to any power is 1.
 			return 1L;
 		}
@@ -2481,10 +2481,8 @@ public class MathUtil {
 			return 1L;
 		}
 		// p < 0
-
 		// Compute the multiplicative inverse of n in mod m.
 		final long n_inverse = MathUtil.modInverseFixedInput(n, m);
-
 		// Handle the degenerate case where p's absolute value is not representable as a non-negative long.
 		if (p == Long.MIN_VALUE) { // i.e., -p == p < 0
 			/**
@@ -2496,7 +2494,6 @@ public class MathUtil {
 		}
 		// p != Long.MIN_VALUE
 		// i.e., -p > 0
-
 		/**
 		 * It's fine to do <code>p *= -1</code> instead of <code>-1 * p</code> since we don't need the value
 		 * of <code>p</code> to remain unchanged. Note that the difference is the <code>*=</code> instead of

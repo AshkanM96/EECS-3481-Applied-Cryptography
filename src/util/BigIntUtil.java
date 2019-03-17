@@ -2,6 +2,8 @@ package util;
 
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Utility BigInteger methods in addition to Java's BigInteger class.
@@ -835,7 +837,7 @@ public class BigIntUtil {
 			 * This case is only an optimization since -1 to any even power is 1 and otherwise is -1. So the
 			 * loop will do extra unnecessary work to arrive at the same result.
 			 */
-			boolean evenPow = !begin.testBit(0);
+			boolean evenPow = !begin.testBit(0); // i.e., BigIntUtil.isEven(begin)
 			for (int i = 0; i != length; ++i, evenPow = !evenPow) {
 				result[i] = evenPow ? BigInteger.ONE : n;
 			}
@@ -850,5 +852,151 @@ public class BigIntUtil {
 			result[i] = n_to_i;
 		}
 		return result;
+	}
+
+	/**
+	 * The probability that <code>n</code> represents a safe prime number will exceed
+	 * <code>1 - 2<sup>-certainty</sup></code>. Note that the execution time of this method is
+	 * proportional to the value of <code>certainty</code>. <br>
+	 * Postcondition: <code>(certainty <= 0) implies Result</code>
+	 * 
+	 * @param n
+	 *            the given BigInteger object
+	 * 
+	 * @param certainty
+	 *            a measure of the uncertainty that the caller is willing to tolerate
+	 * 
+	 * @return <code>true</code> if <code>n</code> is probably a safe prime and <code>false</code>
+	 *         otherwise.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>n == null</code>
+	 */
+	public static boolean isProbableSafePrime(BigInteger n, int certainty) throws NullPointerException {
+		if (certainty <= 0) {
+			return true;
+		}
+		// certainty > 0
+		// i.e., -certainty < 0
+
+		// Check if n and (n - 1) / 2 are both prime.
+		return (n.isProbablePrime(certainty) && n.shiftRight(1).isProbablePrime(certainty));
+	}
+
+	/**
+	 * Returns the first integer greater than <code>n</code> that is probably a safe prime. The
+	 * probability that the BigInteger represents a safe prime number will exceed
+	 * <code>1 - 2<sup>-100</sup></code>. This method will never skip over a prime when searching (i.e.,
+	 * if it returns <code>p</code>, then there is no safe prime <code>q</code> such that
+	 * <code>n < q < p</code>).
+	 * 
+	 * @param n
+	 *            the given BigInteger object
+	 * 
+	 * @return The resulting BigInteger object.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>n == null</code>
+	 */
+	public static BigInteger nextProbableSafePrime(BigInteger n) throws NullPointerException {
+		for (BigInteger p = null; true; /* Update inside. */) {
+			// Find the next probable prime after n.
+			p = n.nextProbablePrime();
+			// Check if (p - 1) / 2 is prime.
+			if (p.shiftRight(1).isProbablePrime(100)) {
+				return p;
+			}
+			// Update n.
+			n = p;
+		}
+	}
+
+	/**
+	 * Constructs a randomly generated positive BigInteger that is probably a safe prime, with the
+	 * specified bitLength. The probability that the BigInteger represents a safe prime number will
+	 * exceed <code>1 - 2<sup>-certainty</sup></code>. Note that the execution time of this method is
+	 * proportional to the value of <code>certainty</code>.
+	 * 
+	 * @param bitLength
+	 *            the bitlength of the returned BigInteger
+	 * 
+	 * @param certainty
+	 *            a measure of the uncertainty that the caller is willing to tolerate
+	 * 
+	 * @param rnd
+	 *            source of random bits used to select candidates to be tested for primality
+	 * 
+	 * @return The resulting BigInteger object.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>bitLength < 3</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>rnd == null</code>
+	 * 
+	 * @throws ArithmeticException
+	 *             Thrown by <code>new BigInteger(int, int, Random)</code>
+	 */
+	public static BigInteger probableSafePrime(int bitLength, int certainty, Random rnd)
+			throws IllegalArgumentException, NullPointerException, ArithmeticException {
+		if (bitLength < 3) { // The first safe prime is 5 which requires at least 3 bits to represent.
+			throw new IllegalArgumentException();
+		} else if (rnd == null) {
+			throw new NullPointerException();
+		}
+
+		for (BigInteger p = null; true; /* Update inside. */) {
+			// Generate a probable prime with the specified bitlength.
+			p = new BigInteger(bitLength, certainty, rnd);
+			// Check if (p - 1) / 2 is prime.
+			if (p.shiftRight(1).isProbablePrime(certainty)) {
+				return p;
+			}
+		}
+	}
+
+	/**
+	 * Constructs a randomly generated positive BigInteger that is probably a safe prime, with the
+	 * specified bitLength. The probability that the BigInteger represents a safe prime number will
+	 * exceed <code>1 - 2<sup>-certainty</sup></code>. Note that the execution time of this method is
+	 * proportional to the value of <code>certainty</code>.
+	 * 
+	 * @param bitLength
+	 *            the bitlength of the returned BigInteger
+	 * 
+	 * @param certainty
+	 *            a measure of the uncertainty that the caller is willing to tolerate
+	 * 
+	 * @return <code>BigIntUtil.probableSafePrime(bitLength, certainty, ThreadLocalRandom.current())</code>.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>bitLength < 3</code>
+	 * 
+	 * @throws ArithmeticException
+	 *             Thrown by <code>new BigInteger(int, int, Random)</code>
+	 */
+	public static BigInteger probableSafePrime(int bitLength, int certainty)
+			throws IllegalArgumentException, ArithmeticException {
+		return BigIntUtil.probableSafePrime(bitLength, certainty, ThreadLocalRandom.current());
+	}
+
+	/**
+	 * Constructs a randomly generated positive BigInteger that is probably a safe prime, with the
+	 * specified bitLength. The probability that the BigInteger represents a safe prime number will
+	 * exceed <code>1 - 2<sup>-100</sup></code>.
+	 * 
+	 * @param bitLength
+	 *            the bitlength of the returned BigInteger
+	 * 
+	 * @return <code>BigIntUtil.probableSafePrime(bitLength, 100)</code>.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>bitLength < 3</code>
+	 * 
+	 * @throws ArithmeticException
+	 *             Thrown by <code>new BigInteger(int, int, Random)</code>
+	 */
+	public static BigInteger probableSafePrime(int bitLength) throws IllegalArgumentException, ArithmeticException {
+		return BigIntUtil.probableSafePrime(bitLength, 100);
 	}
 }

@@ -115,19 +115,6 @@ public class Scytale implements Iterable<Integer> {
 	}
 
 	/**
-	 * Construct a Scytale object from the given Hill object.
-	 * 
-	 * @param h
-	 *            the given Hill object
-	 * 
-	 * @throws NullPointerException
-	 *             If <code>h == null</code>
-	 */
-	public Scytale(Hill h) throws NullPointerException {
-		this(h.key);
-	}
-
-	/**
 	 * Copy ctor.
 	 * 
 	 * @param other
@@ -406,6 +393,7 @@ public class Scytale implements Iterable<Integer> {
 	/**
 	 * Apply the key to the given char array. <code>this</code> must be successfully prepared using
 	 * <code>prepareKey()</code>. <br>
+	 * Precondition: <code>this.isValidKey()</code> <br>
 	 * Precondition: <code>Arrays.equals(data, CryptoTools.clean(data))</code>
 	 * 
 	 * @param data
@@ -413,14 +401,10 @@ public class Scytale implements Iterable<Integer> {
 	 * 
 	 * @return The resulting char array.
 	 * 
-	 * @throws IllegalStateException
-	 *             If <code>!this.isValidKey()</code>
-	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>data.length != this.keySide()</code>
 	 */
-	protected char[] applyFixedInput(char[] data) throws IllegalStateException, IllegalArgumentException {
-		this.validateKey();
+	protected char[] applyFixedInput(char[] data) throws IllegalArgumentException {
 		// Even though the following is a repeated check, it'll save
 		// an int array conversion and a row MatrixInt construction.
 		if (data.length != this.keySide()) {
@@ -448,7 +432,6 @@ public class Scytale implements Iterable<Integer> {
 	 *             If <code>CryptoTools.clean(data).length != this.keySide()</code>
 	 */
 	public char[] apply(char[] data) throws IllegalStateException, NullPointerException, IllegalArgumentException {
-		// Even though the following is a repeated check, it'll save a cleaning.
 		this.validateKey();
 		return this.applyFixedInput(CryptoTools.clean(data));
 	}
@@ -456,6 +439,7 @@ public class Scytale implements Iterable<Integer> {
 	/**
 	 * Apply the key to the given byte array. <code>this</code> must be successfully prepared using
 	 * <code>prepareKey()</code>. <br>
+	 * Precondition: <code>this.isValidKey()</code> <br>
 	 * Precondition: <code>Arrays.equals(data, CryptoTools.clean(data))</code>
 	 * 
 	 * @param data
@@ -463,14 +447,10 @@ public class Scytale implements Iterable<Integer> {
 	 * 
 	 * @return The resulting byte array.
 	 * 
-	 * @throws IllegalStateException
-	 *             If <code>!this.isValidKey()</code>
-	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>data.length != this.keySide()</code>
 	 */
-	protected byte[] applyFixedInput(byte[] data) throws IllegalStateException, IllegalArgumentException {
-		this.validateKey();
+	protected byte[] applyFixedInput(byte[] data) throws IllegalArgumentException {
 		// Even though the following is a repeated check, it'll save
 		// an int array conversion and a row MatrixInt construction.
 		if (data.length != this.keySide()) {
@@ -498,7 +478,6 @@ public class Scytale implements Iterable<Integer> {
 	 *             If <code>CryptoTools.clean(data).length != this.keySide()</code>
 	 */
 	public byte[] apply(byte[] data) throws IllegalStateException, NullPointerException, IllegalArgumentException {
-		// Even though the following is a repeated check, it'll save a cleaning.
 		this.validateKey();
 		return this.applyFixedInput(CryptoTools.clean(data));
 	}
@@ -530,22 +509,22 @@ public class Scytale implements Iterable<Integer> {
 
 		final MatrixInt matrix = new MatrixInt(MatrixInt.otherDim(data.length, numCols), numCols);
 		// Fill the matrix using its iterator with mutation support.
-		final MatrixInt.MatrixIntIterator it_matrix = matrix.iterator(true);
+		final MatrixInt.MatrixIntIterator matrix_it = matrix.iterator(true);
 		for (final char c : data) {
-			it_matrix.next((int) c);
+			matrix_it.next((int) c);
 		}
 
 		final char[] result = new char[data.length];
 		final MatrixInt transpose = matrix.transpose();
-		// it_transpose does not need to mutate transpose but
+		// transpose_it does not need to mutate transpose but
 		// allowing mutation, means direct pointer copy of matrix
 		// and so more time efficient.
-		final MatrixInt.MatrixIntIterator it_transpose = transpose.iterator(true);
+		final MatrixInt.MatrixIntIterator transpose_it = transpose.iterator(true);
 		for (int i = 0, entry = 0; i != result.length; /* Update inside. */) {
-			// No need to check it_transpose.hasNext(), since it_transpose size
+			// No need to check transpose_it.hasNext(), since transpose_it size
 			// (i.e., matrix size) is greater than or equal to data.length
 			// (i.e., result.length).
-			entry = it_transpose.next();
+			entry = transpose_it.next();
 			if (entry != 0) {
 				// Only non-zero entries originated from data.
 				result[i++] = (char) entry;
@@ -611,22 +590,22 @@ public class Scytale implements Iterable<Integer> {
 
 		final MatrixInt matrix = new MatrixInt(MatrixInt.otherDim(data.length, numCols), numCols);
 		// Fill the matrix using its iterator with mutation support.
-		final MatrixInt.MatrixIntIterator it_matrix = matrix.iterator(true);
+		final MatrixInt.MatrixIntIterator matrix_it = matrix.iterator(true);
 		for (final byte b : data) {
-			it_matrix.next((int) b);
+			matrix_it.next((int) b);
 		}
 
 		final byte[] result = new byte[data.length];
 		final MatrixInt transpose = matrix.transpose();
-		// it_transpose does not need to mutate transpose but
+		// transpose_it does not need to mutate transpose but
 		// allowing mutation, means direct pointer copy of matrix
 		// and so more time efficient.
-		final MatrixInt.MatrixIntIterator it_transpose = transpose.iterator(true);
+		final MatrixInt.MatrixIntIterator transpose_it = transpose.iterator(true);
 		for (int i = 0, entry = 0; i != result.length; /* Update inside. */) {
-			// No need to check it_transpose.hasNext(), since it_transpose size
+			// No need to check transpose_it.hasNext(), since transpose_it size
 			// (i.e., matrix size) is greater than or equal to data.length
 			// (i.e., result.length).
-			entry = it_transpose.next();
+			entry = transpose_it.next();
 			if (entry != 0) {
 				// Only non-zero entries originated from data.
 				result[i++] = (byte) entry;
