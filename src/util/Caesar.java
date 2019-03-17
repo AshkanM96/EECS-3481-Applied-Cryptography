@@ -331,7 +331,6 @@ public class Caesar {
 				probableCaesarKey = caesarKey;
 				System.arraycopy(decrytedText, 0, probablePlaintext, 0, c.length);
 			}
-
 			// Only print if requested.
 			if (print) {
 				System.out.println("Caesar key " + caesarKey + " gives dot product " + dotProduct + ".\n");
@@ -440,7 +439,6 @@ public class Caesar {
 				maxProb = prob;
 				maxProbLetter = letter;
 			}
-
 			// Only print if requested.
 			if (print) {
 				System.out.println("prob[\'" + letter + "\'] == " + prob + "\n");
@@ -453,7 +451,6 @@ public class Caesar {
 		for (int i = 0; i != c.length; ++i) {
 			probablePlaintext[i] = (byte) Caesar.decryptFixedInput(probableCaesarKey, c[i]);
 		}
-
 		// Only print if requested.
 		if (print) {
 			System.out.println("Probable caesar key is " + probableCaesarKey + ".\n");

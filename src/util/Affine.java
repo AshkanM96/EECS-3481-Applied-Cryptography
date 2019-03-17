@@ -717,7 +717,6 @@ public class Affine {
 			a.alpha(alpha); // Set the affine object's alpha attribute.
 			for (int beta = Affine.MIN_BETA_VALUE; beta != Affine.MAX_CIPHER_KEY_VALUE; ++beta) {
 				a.beta(beta); // Set the affine object's beta attribute.
-
 				// Decrypt the ciphertext using alpha and beta.
 				for (int i = 0; i != c.length; ++i) {
 					decrytedText[i] = (byte) a.decryptFixedInput(c[i]);
@@ -734,7 +733,6 @@ public class Affine {
 					probableBeta = beta;
 					System.arraycopy(decrytedText, 0, probablePlaintext, 0, c.length);
 				}
-
 				// Only print if requested.
 				if (print) {
 					System.out.println("Affine key " + a.toString() + " gives dot product " + dotProduct + ".\n");
@@ -860,13 +858,11 @@ public class Affine {
 				maxProb2 = prob;
 				maxProbLetter2 = letter;
 			}
-
 			// Only print if requested.
 			if (print) {
 				System.out.println("prob[\'" + letter + "\'] == " + prob + "\n");
 			}
 		}
-
 		// Only print if requested.
 		if (print) {
 			System.out.println("Probable mapping of \'E\' is \'" + maxProbLetter + "\'.\n");
@@ -881,23 +877,20 @@ public class Affine {
 			if (print) {
 				System.out.println("Unable to find any possible affine cipher keys.\n");
 			}
-
 			return null;
 		}
-		final byte[][] probablePlaintexts = new byte[numKeys][c.length];
 
 		// Decrypt the ciphertext using each found affine key.
+		final byte[][] probablePlaintexts = new byte[numKeys][c.length];
 		final Affine a = new Affine();
 		for (int keyNum = 0; keyNum != numKeys; ++keyNum) {
 			// Set the affine object's alpha and beta attributes.
 			a.alpha(keys[0][keyNum]);
 			a.beta(keys[1][keyNum]);
-
 			// Decrypt the ciphertext using the affine key.
 			for (int i = 0; i != c.length; ++i) {
 				probablePlaintexts[keyNum][i] = (byte) a.decryptFixedInput(c[i]);
 			}
-
 			// Only print if requested.
 			if (print) {
 				System.out.println("Probable affine key " + (keyNum + 1) + " is " + a.toString() + ".\n");
@@ -1016,7 +1009,7 @@ public class Affine {
 		 */
 		public CryptoInfoAffine(int[] alphas, int[] betas, byte[][] plaintexts)
 				throws NullPointerException, IllegalArgumentException {
-			// All arrays must be non-empty and have same length.
+			// All arrays must be non-empty and have the same length.
 			if (alphas.length == 0) {
 				throw new IllegalArgumentException();
 			} else if (alphas.length != betas.length) {
@@ -1025,7 +1018,7 @@ public class Affine {
 				throw new IllegalArgumentException();
 			}
 
-			// All entries of plaintexts have to have the same length.
+			// All entries of plaintexts must have the same length.
 			final int length = plaintexts[0].length;
 			for (int i = 1; i != plaintexts.length; ++i) {
 				if (plaintexts[i].length != length) {
@@ -1057,17 +1050,10 @@ public class Affine {
 				throw new NullPointerException();
 			}
 
-			// { alpha }
-			this.alphas = new int[1];
-			this.alphas[0] = alpha;
-
-			// { beta }
-			this.betas = new int[1];
-			this.betas[0] = beta;
-
-			// { plaintext }
-			this.plaintexts = new byte[1][plaintext.length];
-			this.plaintexts[0] = plaintext;
+			// Set this.
+			this.alphas = new int[] { alpha };
+			this.betas = new int[] { beta };
+			this.plaintexts = new byte[][] { plaintext };
 		}
 
 		/**

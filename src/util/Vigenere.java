@@ -750,7 +750,6 @@ public class Vigenere implements Iterable<Character> {
 			subset = baos.toByteArray();
 			baos.reset();
 			IC = CryptoTools.getICFixedInput(subset);
-
 			// Only print if requested.
 			if (print) {
 				System.out.println("Vigenere key length " + keyLength + " gives Index of Coincidence " + IC + ".\n");
@@ -761,7 +760,6 @@ public class Vigenere implements Iterable<Character> {
 				if (print) {
 					System.out.println("Probable vigenere key length is " + keyLength + ".\n");
 				}
-
 				return keyLength;
 			}
 		}
@@ -771,7 +769,6 @@ public class Vigenere implements Iterable<Character> {
 			System.out.println(
 					"Unable to find any possible vigenere cipher key length in range [1, " + maxKeyLength + "].\n");
 		}
-
 		return 0;
 	}
 
@@ -853,7 +850,6 @@ public class Vigenere implements Iterable<Character> {
 			if (print) {
 				System.out.println("keyLength == 0\n");
 			}
-
 			return null;
 		}
 
@@ -889,7 +885,6 @@ public class Vigenere implements Iterable<Character> {
 				}
 			}
 			keyWord[keyWordFilledIndex] = (char) (Caesar.key(maxFreqLetter, 'E') + 'A');
-
 			// Only print if requested.
 			if (print) {
 				System.out.println("Probable mapping of \'E\' is \'" + maxFreqLetter + "\'.");
@@ -899,7 +894,6 @@ public class Vigenere implements Iterable<Character> {
 
 		// Decrypt the ciphertext using keyWord.
 		final byte[] probablePlaintext = Vigenere.decryptFixedInput(keyWord, c, 0);
-
 		// Only print if requested.
 		if (print) {
 			System.out.println("Probable vigenere key is " + (new String(keyWord)) + ".\n");

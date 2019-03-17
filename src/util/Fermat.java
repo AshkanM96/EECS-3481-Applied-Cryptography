@@ -42,7 +42,7 @@ public class Fermat {
 	 *             If <code>n == null</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(n <= 2) || (n % 2 == 0)</code>
+	 *             If <code>(n <= 2) || (BigIntUtil.isEven(n))</code>
 	 */
 	public Fermat(BigInteger n) throws NullPointerException, IllegalArgumentException {
 		if (n.compareTo(Fermat.TWO) <= 0) { // i.e., n <= 2
@@ -90,8 +90,9 @@ public class Fermat {
 
 	/**
 	 * Perform Fermat's compositeness test on <code>this.n</code> with the given base. <br>
-	 * Precondition: <code>(BigInteger.ONE.compareTo(b) < 0) && (b.compareTo(this.n) < 0)</code> <br>
-	 * Precondition: <code>this.n.gcd(b).equals(BigInteger.ONE)</code>
+	 * Precondition: <code>b != null</code> <br>
+	 * Precondition: <code>(1 < b) && (b < this.n)</code> <br>
+	 * Precondition: <code>gcd(this.n, b) == 1</code>
 	 * 
 	 * @param b
 	 *            the given base
@@ -105,14 +106,11 @@ public class Fermat {
 	protected TestResultFermat testCoprimeFixedInput(BigInteger b, boolean print) {
 		final BigInteger r = b.modPow(this.n_minus_1, this.n);
 		final boolean isInconclusive = r.equals(BigInteger.ONE);
-
 		// Only print if requested.
 		if (print) {
-			System.out.println((isInconclusive ? "Test is inconclusive with base " + b + "."
-					: b + " is a witness of n's compositeness.") + "\n");
+			System.out.println(isInconclusive ? "Test is inconclusive with base " + b + ".\n"
+					: b + " is a witness of n's compositeness.\n");
 		}
-
-		// Create Result and return it.
 		return new TestResultFermat(this.n, isInconclusive, b);
 	}
 
@@ -132,20 +130,18 @@ public class Fermat {
 	 *             If <code>b == null</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(b.compareTo(BigInteger.ONE) <= 0) || (this.n.compareTo(b) <= 0)
-	 *             || (!this.n.gcd(b).equals(BigInteger.ONE))</code>
+	 *             If <code>(b <= 1) || (this.n <= b) || (gcd(this.n, b) != 1)</code>
 	 */
 	public TestResultFermat testCoprime(BigInteger b, boolean print)
 			throws IllegalArgumentException, NullPointerException {
-		if (b.compareTo(BigInteger.ONE) <= 0) { // i.e., b <= BigInteger.ONE
+		if (b.compareTo(BigInteger.ONE) <= 0) { // i.e., b <= 1
 			throw new IllegalArgumentException();
 		} else if (this.n.compareTo(b) <= 0) { // i.e., this.n <= b
 			throw new IllegalArgumentException();
-		}
-		// (1 < b) && (b < this.n)
-		if (!this.n.gcd(b).equals(BigInteger.ONE)) {
+		} else if (!this.n.gcd(b).equals(BigInteger.ONE)) { // i.e., gcd(this.n, b) != 1
 			throw new IllegalArgumentException();
 		}
+		// (1 < b) && (b < this.n) && (gcd(this.n, b) == 1)
 		return this.testCoprimeFixedInput(b, print);
 	}
 
@@ -161,8 +157,7 @@ public class Fermat {
 	 *             If <code>b == null</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(b.compareTo(BigInteger.ONE) <= 0) || (this.n.compareTo(b) <= 0)
-	 *             || (!this.n.gcd(b).equals(BigInteger.ONE))</code>
+	 *             If <code>(b <= 1) || (this.n <= b) || (gcd(this.n, b) != 1)</code>
 	 */
 	public TestResultFermat testCoprime(BigInteger b) throws IllegalArgumentException, NullPointerException {
 		return this.testCoprime(b, false);
@@ -170,7 +165,8 @@ public class Fermat {
 
 	/**
 	 * Perform Fermat's compositeness test on <code>this.n</code> with the given base. <br>
-	 * Precondition: <code>(BigInteger.ONE.compareTo(b) < 0) && (b.compareTo(this.n) < 0)</code>
+	 * Precondition: <code>b != null</code> <br>
+	 * Precondition: <code>(1 < b) && (b < this.n)</code>
 	 * 
 	 * @param b
 	 *            the given base
@@ -182,17 +178,15 @@ public class Fermat {
 	 * @return The resulting TestResultFermat object.
 	 */
 	protected TestResultFermat testFixedInput(BigInteger b, boolean print) {
-		// Check to see if gcd(this.n, b) == 1.
 		final BigInteger gcd = this.n.gcd(b);
-		if (gcd.equals(BigInteger.ONE)) {
-			// Apply Fermat's little theorem since gcd(this.n, b) == 1.
+		if (gcd.equals(BigInteger.ONE)) { // i.e., gcd(this.n, b) == 1
 			return this.testCoprimeFixedInput(b, print);
 		}
-		// Since (1 < b) && (b < this.n) with gcd(this.n, b) != 1, then b is a factor of this.n.
+		// gcd(this.n, b) != 1
 
 		// Only print if requested.
 		if (print) {
-			System.out.println("gcd(n, " + b + ") == " + gcd + " != 1.");
+			System.out.println("gcd(n, " + b + ") == " + gcd + " != 1");
 			System.out.println("Therefore, " + b + " is a witness of n's compositeness.\n");
 		}
 		return new TestResultFermat(this.n, false, b);
@@ -214,10 +208,10 @@ public class Fermat {
 	 *             If <code>b == null</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(b.compareTo(BigInteger.ONE) <= 0) || (this.n.compareTo(b) <= 0)</code>
+	 *             If <code>(b <= 1) || (this.n <= b)</code>
 	 */
 	public TestResultFermat test(BigInteger b, boolean print) throws NullPointerException, IllegalArgumentException {
-		if (b.compareTo(BigInteger.ONE) <= 0) { // i.e., b <= BigInteger.ONE
+		if (b.compareTo(BigInteger.ONE) <= 0) { // i.e., b <= 1
 			throw new IllegalArgumentException();
 		} else if (this.n.compareTo(b) <= 0) { // i.e., this.n <= b
 			throw new IllegalArgumentException();
@@ -238,7 +232,7 @@ public class Fermat {
 	 *             If <code>b == null</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(b.compareTo(BigInteger.ONE) <= 0) || (this.n.compareTo(b) <= 0)</code>
+	 *             If <code>(b <= 1) || (this.n <= b)</code>
 	 */
 	public TestResultFermat test(BigInteger b) throws NullPointerException, IllegalArgumentException {
 		return this.test(b, false);
@@ -252,7 +246,8 @@ public class Fermat {
 	 * Simple wrapper for compositeness test result. Saves the number, the test result, and the witness.
 	 * <br>
 	 * 
-	 * It's main usage is for the return type of <code>Fermat.test</code>.
+	 * It's main usage is for the return type of <code>Fermat::test</code> and
+	 * <code>Fermat::testCoprime</code>.
 	 * 
 	 * @author Ashkan Moatamed
 	 */
