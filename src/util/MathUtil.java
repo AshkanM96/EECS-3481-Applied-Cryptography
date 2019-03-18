@@ -4479,7 +4479,7 @@ public class MathUtil {
 	 *            the given unique prime divisor of <code>p_to_e</code>
 	 * 
 	 * @param e
-	 *            the given multiplicity of <code>p</code> in <code>p_to_e</code>
+	 *            the given power of <code>p</code> in <code>p_to_e</code>
 	 * 
 	 * @param p_to_e
 	 *            the given upperbound on the multiplicative order of the given number (i.e., the
@@ -4790,11 +4790,11 @@ public class MathUtil {
 	 *            specifies whether the simple version of the algorithm should be used (i.e., solving
 	 *            the discrete log problem modulo <code>p<sub>i</sub><sup>e<sub>i</sub></sup></code>
 	 *            directly by elementary methods where <code>p<sub>i</sub></code> is a prime factor of
-	 *            <code>upperOrder</code> with multiplicity <code>e<sub>i</sub></code>)
+	 *            <code>upperOrder</code> with power <code>e<sub>i</sub></code>)
 	 * 
 	 * @param upperOrderFactors
 	 *            the given map containing the (distinct) prime divisors of <code>upperOrder</code> as
-	 *            keys and their associated multiplicities as values
+	 *            keys and their associated powers as values
 	 * 
 	 * @param generateBothBabyGiant
 	 *            specifies whether both the babylist and the giantlist should be generated and stored
@@ -4958,7 +4958,7 @@ public class MathUtil {
 	 *            specifies whether the simple version of the algorithm should be used (i.e., solving
 	 *            the discrete log problem modulo <code>p<sub>i</sub><sup>e<sub>i</sub></sup></code>
 	 *            directly by elementary methods where <code>p<sub>i</sub></code> is a prime factor of
-	 *            <code>upperOrder</code> with multiplicity <code>e<sub>i</sub></code>)
+	 *            <code>upperOrder</code> with power <code>e<sub>i</sub></code>)
 	 * 
 	 * @param hashFactor
 	 *            specifies whether the data structure used to store the factors, should be a
@@ -5059,7 +5059,7 @@ public class MathUtil {
 	 *            specifies whether the simple version of the algorithm should be used (i.e., solving
 	 *            the discrete log problem modulo <code>p<sub>i</sub><sup>e<sub>i</sub></sup></code>
 	 *            directly by elementary methods where <code>p<sub>i</sub></code> is a prime factor of
-	 *            <code>upperOrder</code> with multiplicity <code>e<sub>i</sub></code>)
+	 *            <code>upperOrder</code> with power <code>e<sub>i</sub></code>)
 	 * 
 	 * @param hashFactor
 	 *            specifies whether the data structure used to store the factors, should be a
@@ -5121,7 +5121,7 @@ public class MathUtil {
 	 *            specifies whether the simple version of the algorithm should be used (i.e., solving
 	 *            the discrete log problem modulo <code>p<sub>i</sub><sup>e<sub>i</sub></sup></code>
 	 *            directly by elementary methods where <code>p<sub>i</sub></code> is a prime factor of
-	 *            <code>upperOrder</code> with multiplicity <code>e<sub>i</sub></code>)
+	 *            <code>upperOrder</code> with power <code>e<sub>i</sub></code>)
 	 * 
 	 * @param hashFactor
 	 *            specifies whether the data structure used to store the factors, should be a
@@ -5178,7 +5178,7 @@ public class MathUtil {
 	 *            specifies whether the simple version of the algorithm should be used (i.e., solving
 	 *            the discrete log problem modulo <code>p<sub>i</sub><sup>e<sub>i</sub></sup></code>
 	 *            directly by elementary methods where <code>p<sub>i</sub></code> is a prime factor of
-	 *            <code>upperOrder</code> with multiplicity <code>e<sub>i</sub></code>)
+	 *            <code>upperOrder</code> with power <code>e<sub>i</sub></code>)
 	 * 
 	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
 	 *         <code>x</code> exists and <code>null</code> otherwise.
@@ -5341,7 +5341,7 @@ public class MathUtil {
 	 *            specifies whether the simple version of the algorithm should be used (i.e., solving
 	 *            the discrete log problem modulo <code>p<sub>i</sub><sup>e<sub>i</sub></sup></code>
 	 *            directly by elementary methods where <code>p<sub>i</sub></code> is a prime factor of
-	 *            <code>upperOrder</code> with multiplicity <code>e<sub>i</sub></code>)
+	 *            <code>upperOrder</code> with power <code>e<sub>i</sub></code>)
 	 * 
 	 * @param hashFactor
 	 *            specifies whether the data structure used to store the factors, should be a
@@ -5404,7 +5404,7 @@ public class MathUtil {
 	 *            specifies whether the simple version of the algorithm should be used (i.e., solving
 	 *            the discrete log problem modulo <code>p<sub>i</sub><sup>e<sub>i</sub></sup></code>
 	 *            directly by elementary methods where <code>p<sub>i</sub></code> is a prime factor of
-	 *            <code>upperOrder</code> with multiplicity <code>e<sub>i</sub></code>)
+	 *            <code>upperOrder</code> with power <code>e<sub>i</sub></code>)
 	 * 
 	 * @param hashFactor
 	 *            specifies whether the data structure used to store the factors, should be a
@@ -5461,7 +5461,7 @@ public class MathUtil {
 	 *            specifies whether the simple version of the algorithm should be used (i.e., solving
 	 *            the discrete log problem modulo <code>p<sub>i</sub><sup>e<sub>i</sub></sup></code>
 	 *            directly by elementary methods where <code>p<sub>i</sub></code> is a prime factor of
-	 *            <code>upperOrder</code> with multiplicity <code>e<sub>i</sub></code>)
+	 *            <code>upperOrder</code> with power <code>e<sub>i</sub></code>)
 	 * 
 	 * @param hashFactor
 	 *            specifies whether the data structure used to store the factors, should be a
@@ -5513,7 +5513,7 @@ public class MathUtil {
 	 *            specifies whether the simple version of the algorithm should be used (i.e., solving
 	 *            the discrete log problem modulo <code>p<sub>i</sub><sup>e<sub>i</sub></sup></code>
 	 *            directly by elementary methods where <code>p<sub>i</sub></code> is a prime factor of
-	 *            <code>upperOrder</code> with multiplicity <code>e<sub>i</sub></code>)
+	 *            <code>upperOrder</code> with power <code>e<sub>i</sub></code>)
 	 * 
 	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
 	 *         <code>x</code> exists and <code>null</code> otherwise.
@@ -5661,7 +5661,7 @@ public class MathUtil {
 	 *            specifies whether the simple version of the algorithm should be used (i.e., solving
 	 *            the discrete log problem modulo <code>p<sub>i</sub><sup>e<sub>i</sub></sup></code>
 	 *            directly by elementary methods where <code>p<sub>i</sub></code> is a prime factor of
-	 *            <code>upperOrder</code> with multiplicity <code>e<sub>i</sub></code>)
+	 *            <code>upperOrder</code> with power <code>e<sub>i</sub></code>)
 	 * 
 	 * @param hashFactor
 	 *            specifies whether the data structure used to store the factors, should be a
@@ -5724,7 +5724,7 @@ public class MathUtil {
 	 *            specifies whether the simple version of the algorithm should be used (i.e., solving
 	 *            the discrete log problem modulo <code>p<sub>i</sub><sup>e<sub>i</sub></sup></code>
 	 *            directly by elementary methods where <code>p<sub>i</sub></code> is a prime factor of
-	 *            <code>upperOrder</code> with multiplicity <code>e<sub>i</sub></code>)
+	 *            <code>upperOrder</code> with power <code>e<sub>i</sub></code>)
 	 * 
 	 * @param hashFactor
 	 *            specifies whether the data structure used to store the factors, should be a
@@ -5781,7 +5781,7 @@ public class MathUtil {
 	 *            specifies whether the simple version of the algorithm should be used (i.e., solving
 	 *            the discrete log problem modulo <code>p<sub>i</sub><sup>e<sub>i</sub></sup></code>
 	 *            directly by elementary methods where <code>p<sub>i</sub></code> is a prime factor of
-	 *            <code>upperOrder</code> with multiplicity <code>e<sub>i</sub></code>)
+	 *            <code>upperOrder</code> with power <code>e<sub>i</sub></code>)
 	 * 
 	 * @param hashFactor
 	 *            specifies whether the data structure used to store the factors, should be a
@@ -5833,7 +5833,7 @@ public class MathUtil {
 	 *            specifies whether the simple version of the algorithm should be used (i.e., solving
 	 *            the discrete log problem modulo <code>p<sub>i</sub><sup>e<sub>i</sub></sup></code>
 	 *            directly by elementary methods where <code>p<sub>i</sub></code> is a prime factor of
-	 *            <code>upperOrder</code> with multiplicity <code>e<sub>i</sub></code>)
+	 *            <code>upperOrder</code> with power <code>e<sub>i</sub></code>)
 	 * 
 	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
 	 *         <code>x</code> exists and <code>null</code> otherwise.
@@ -5981,7 +5981,7 @@ public class MathUtil {
 	 *            specifies whether the simple version of the algorithm should be used (i.e., solving
 	 *            the discrete log problem modulo <code>p<sub>i</sub><sup>e<sub>i</sub></sup></code>
 	 *            directly by elementary methods where <code>p<sub>i</sub></code> is a prime factor of
-	 *            <code>upperOrder</code> with multiplicity <code>e<sub>i</sub></code>)
+	 *            <code>upperOrder</code> with power <code>e<sub>i</sub></code>)
 	 * 
 	 * @param hashFactor
 	 *            specifies whether the data structure used to store the factors, should be a
@@ -6044,7 +6044,7 @@ public class MathUtil {
 	 *            specifies whether the simple version of the algorithm should be used (i.e., solving
 	 *            the discrete log problem modulo <code>p<sub>i</sub><sup>e<sub>i</sub></sup></code>
 	 *            directly by elementary methods where <code>p<sub>i</sub></code> is a prime factor of
-	 *            <code>upperOrder</code> with multiplicity <code>e<sub>i</sub></code>)
+	 *            <code>upperOrder</code> with power <code>e<sub>i</sub></code>)
 	 * 
 	 * @param hashFactor
 	 *            specifies whether the data structure used to store the factors, should be a
@@ -6101,7 +6101,7 @@ public class MathUtil {
 	 *            specifies whether the simple version of the algorithm should be used (i.e., solving
 	 *            the discrete log problem modulo <code>p<sub>i</sub><sup>e<sub>i</sub></sup></code>
 	 *            directly by elementary methods where <code>p<sub>i</sub></code> is a prime factor of
-	 *            <code>upperOrder</code> with multiplicity <code>e<sub>i</sub></code>)
+	 *            <code>upperOrder</code> with power <code>e<sub>i</sub></code>)
 	 * 
 	 * @param hashFactor
 	 *            specifies whether the data structure used to store the factors, should be a
@@ -6153,7 +6153,7 @@ public class MathUtil {
 	 *            specifies whether the simple version of the algorithm should be used (i.e., solving
 	 *            the discrete log problem modulo <code>p<sub>i</sub><sup>e<sub>i</sub></sup></code>
 	 *            directly by elementary methods where <code>p<sub>i</sub></code> is a prime factor of
-	 *            <code>upperOrder</code> with multiplicity <code>e<sub>i</sub></code>)
+	 *            <code>upperOrder</code> with power <code>e<sub>i</sub></code>)
 	 * 
 	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
 	 *         <code>x</code> exists and <code>null</code> otherwise.
