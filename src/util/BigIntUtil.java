@@ -476,7 +476,7 @@ public class BigIntUtil {
 	 * if (Result.length == 5) {
 	 * 	assert (Result[2] == gcd(m1, m2));
 	 * 	assert (Result[3] == m1<sup>-1</sup> (mod m2));
-	 * 	assert (Result[4] == m2<sup>-1</sup> (mod m1));  
+	 * 	assert (Result[4] == m2<sup>-1</sup> (mod m1));
 	 * }
 	 * </code>
 	 * </pre>
@@ -587,7 +587,7 @@ public class BigIntUtil {
 	 * if (Result.length == 5) {
 	 * 	assert (Result[2] == gcd(m1, m2));
 	 * 	assert (Result[3] == m1<sup>-1</sup> (mod m2));
-	 * 	assert (Result[4] == m2<sup>-1</sup> (mod m1));  
+	 * 	assert (Result[4] == m2<sup>-1</sup> (mod m1));
 	 * }
 	 * </code>
 	 * </pre>
@@ -644,7 +644,7 @@ public class BigIntUtil {
 	 * if (Result.length == 5) {
 	 * 	assert (Result[2] == gcd(m1, m2));
 	 * 	assert (Result[3] == m1<sup>-1</sup> (mod m2));
-	 * 	assert (Result[4] == m2<sup>-1</sup> (mod m1));  
+	 * 	assert (Result[4] == m2<sup>-1</sup> (mod m1));
 	 * }
 	 * </code>
 	 * </pre>

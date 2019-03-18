@@ -1918,7 +1918,7 @@ public class MathUtil {
 	 * if (Result.length == 5) {
 	 * 	assert (Result[2] == gcd(m1, m2));
 	 * 	assert (Result[3] == m1<sup>-1</sup> (mod m2));
-	 * 	assert (Result[4] == m2<sup>-1</sup> (mod m1));  
+	 * 	assert (Result[4] == m2<sup>-1</sup> (mod m1));
 	 * }
 	 * </code>
 	 * </pre>
@@ -2058,7 +2058,7 @@ public class MathUtil {
 	 * if (Result.length == 5) {
 	 * 	assert (Result[2] == gcd(m1, m2));
 	 * 	assert (Result[3] == m1<sup>-1</sup> (mod m2));
-	 * 	assert (Result[4] == m2<sup>-1</sup> (mod m1));  
+	 * 	assert (Result[4] == m2<sup>-1</sup> (mod m1));
 	 * }
 	 * </code>
 	 * </pre>
@@ -2159,7 +2159,7 @@ public class MathUtil {
 	 * if (Result.length == 5) {
 	 * 	assert (Result[2] == gcd(m1, m2));
 	 * 	assert (Result[3] == m1<sup>-1</sup> (mod m2));
-	 * 	assert (Result[4] == m2<sup>-1</sup> (mod m1));  
+	 * 	assert (Result[4] == m2<sup>-1</sup> (mod m1));
 	 * }
 	 * </code>
 	 * </pre>
@@ -2260,7 +2260,7 @@ public class MathUtil {
 	 * if (Result.length == 5) {
 	 * 	assert (Result[2] == gcd(m1, m2));
 	 * 	assert (Result[3] == m1<sup>-1</sup> (mod m2));
-	 * 	assert (Result[4] == m2<sup>-1</sup> (mod m1));  
+	 * 	assert (Result[4] == m2<sup>-1</sup> (mod m1));
 	 * }
 	 * </code>
 	 * </pre>
@@ -4751,7 +4751,8 @@ public class MathUtil {
 	 * <pre>
 	 * <code>
 	 * for (final Map.Entry&lt;Long, Byte&gt; entry : upperOrderFactors.entrySet()) {
-	 * 	assert (NumUtil.isPrimeSqrt(entry.getKey()) && (0 < entry.getValue()) && (entry.getValue() < 63));
+	 * 	assert ((entry.getKey() != null) && NumUtil.isPrimeSqrt(entry.getKey()));
+	 * 	assert ((entry.getValue() != null) && (0 < entry.getValue()) && (entry.getValue() < 63));
 	 * }
 	 * </code>
 	 * </pre>

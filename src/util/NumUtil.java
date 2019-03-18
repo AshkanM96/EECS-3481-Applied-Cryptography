@@ -1748,14 +1748,17 @@ public class NumUtil {
 	 * Runtime is in <code>O(sqrt(n) + time for Result.size() many put operations)</code>. <br>
 	 * Postcondition: <code>Result != null</code> <br>
 	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if (Result.isEmpty())</code> <br>
-	 * Postcondition: <code>(n == -1) if and only if (Result.size() == 1)</code> <br>
-	 * Postcondition: <code>(n < 0) if and only if (Result.get(-1L) == 1)</code> <br>
+	 * Postcondition: <code>(n == -1) implies (Result.size() == 1)</code> <br>
+	 * Postcondition: <code>(n < 0) implies ((Result.get(-1L) != null) && (Result.get(-1L) == 1))</code>
+	 * <br>
+	 * Postcondition: <code>(n >= 0) implies (Result.get(-1L) == null)</code> <br>
 	 * Postcondition:
 	 * 
 	 * <pre>
 	 * <code>
 	 * for (final Map.Entry&lt;Long, Byte&gt; entry : Result.entrySet()) {
-	 * 	assert (((entry.getKey() == -1L) || NumUtil.isPrimeSqrt(entry.getKey())) && (0 < entry.getValue()) && (entry.getValue() < 64));
+	 * 	assert ((entry.getKey() != null) && ((entry.getKey() == -1L) || NumUtil.isPrimeSqrt(entry.getKey())));
+	 * 	assert ((entry.getValue() != null) && (0 < entry.getValue()) && (entry.getValue() < 64));
 	 * }
 	 * </code>
 	 * </pre>
@@ -1954,14 +1957,17 @@ public class NumUtil {
 	 * Runtime is in <code>O(sqrt(n) + time for Result.size() many put operations)</code>. <br>
 	 * Postcondition: <code>Result != null</code> <br>
 	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if (Result.isEmpty())</code> <br>
-	 * Postcondition: <code>(n == -1) if and only if (Result.size() == 1)</code> <br>
-	 * Postcondition: <code>(n < 0) if and only if (Result.get(-1L) == 1)</code> <br>
+	 * Postcondition: <code>(n == -1) implies (Result.size() == 1)</code> <br>
+	 * Postcondition: <code>(n < 0) implies ((Result.get(-1L) != null) && (Result.get(-1L) == 1))</code>
+	 * <br>
+	 * Postcondition: <code>(n >= 0) implies (Result.get(-1L) == null)</code> <br>
 	 * Postcondition:
 	 * 
 	 * <pre>
 	 * <code>
 	 * for (final Map.Entry&lt;Long, Byte&gt; entry : Result.entrySet()) {
-	 * 	assert (((entry.getKey() == -1L) || NumUtil.isPrimeSqrt(entry.getKey())) && (0 < entry.getValue()) && (entry.getValue() < 64));
+	 * 	assert ((entry.getKey() != null) && ((entry.getKey() == -1L) || NumUtil.isPrimeSqrt(entry.getKey())));
+	 * 	assert ((entry.getValue() != null) && (0 < entry.getValue()) && (entry.getValue() < 64));
 	 * }
 	 * </code>
 	 * </pre>
@@ -1999,14 +2005,17 @@ public class NumUtil {
 	 * Runtime is in <code>O(sqrt(n) + time for Result.size() many put operations)</code>. <br>
 	 * Postcondition: <code>Result != null</code> <br>
 	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if (Result.isEmpty())</code> <br>
-	 * Postcondition: <code>(n == -1) if and only if (Result.size() == 1)</code> <br>
-	 * Postcondition: <code>(n < 0) if and only if (Result.get(-1L) == 1)</code> <br>
+	 * Postcondition: <code>(n == -1) implies (Result.size() == 1)</code> <br>
+	 * Postcondition: <code>(n < 0) implies ((Result.get(-1L) != null) && (Result.get(-1L) == 1))</code>
+	 * <br>
+	 * Postcondition: <code>(n >= 0) implies (Result.get(-1L) == null)</code> <br>
 	 * Postcondition:
 	 * 
 	 * <pre>
 	 * <code>
 	 * for (final Map.Entry&lt;Long, Byte&gt; entry : Result.entrySet()) {
-	 * 	assert (((entry.getKey() == -1L) || NumUtil.isPrimeSqrt(entry.getKey())) && (0 < entry.getValue()) && (entry.getValue() < 64));
+	 * 	assert ((entry.getKey() != null) && ((entry.getKey() == -1L) || NumUtil.isPrimeSqrt(entry.getKey())));
+	 * 	assert ((entry.getValue() != null) && (0 < entry.getValue()) && (entry.getValue() < 64));
 	 * }
 	 * </code>
 	 * </pre>
@@ -2121,14 +2130,17 @@ public class NumUtil {
 	 * Runtime is in <code>O(sqrt(n) + time for Result.size() many put operations)</code>. <br>
 	 * Postcondition: <code>Result != null</code> <br>
 	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if (Result.isEmpty())</code> <br>
-	 * Postcondition: <code>(n == -1) if and only if (Result.size() == 1)</code> <br>
-	 * Postcondition: <code>(n < 0) if and only if (Result.get(-1) == 1)</code> <br>
+	 * Postcondition: <code>(n == -1) implies (Result.size() == 1)</code> <br>
+	 * Postcondition: <code>(n < 0) implies ((Result.get(-1) != null) && (Result.get(-1) == 1))</code>
+	 * <br>
+	 * Postcondition: <code>(n >= 0) implies (Result.get(-1) == null)</code> <br>
 	 * Postcondition:
 	 * 
 	 * <pre>
 	 * <code>
 	 * for (final Map.Entry&lt;Integer, Byte&gt; entry : Result.entrySet()) {
-	 * 	assert (((entry.getKey() == -1) || NumUtil.isPrimeSqrt(entry.getKey())) && (0 < entry.getValue()) && (entry.getValue() < 32));
+	 * 	assert ((entry.getKey() != null) && ((entry.getKey() == -1) || NumUtil.isPrimeSqrt(entry.getKey())));
+	 * 	assert ((entry.getValue() != null) && (0 < entry.getValue()) && (entry.getValue() < 32));
 	 * }
 	 * </code>
 	 * </pre>
@@ -2327,14 +2339,17 @@ public class NumUtil {
 	 * Runtime is in <code>O(sqrt(n) + time for Result.size() many put operations)</code>. <br>
 	 * Postcondition: <code>Result != null</code> <br>
 	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if (Result.isEmpty())</code> <br>
-	 * Postcondition: <code>(n == -1) if and only if (Result.size() == 1)</code> <br>
-	 * Postcondition: <code>(n < 0) if and only if (Result.get(-1) == 1)</code> <br>
+	 * Postcondition: <code>(n == -1) implies (Result.size() == 1)</code> <br>
+	 * Postcondition: <code>(n < 0) implies ((Result.get(-1) != null) && (Result.get(-1) == 1))</code>
+	 * <br>
+	 * Postcondition: <code>(n >= 0) implies (Result.get(-1) == null)</code> <br>
 	 * Postcondition:
 	 * 
 	 * <pre>
 	 * <code>
 	 * for (final Map.Entry&lt;Integer, Byte&gt; entry : Result.entrySet()) {
-	 * 	assert (((entry.getKey() == -1) || NumUtil.isPrimeSqrt(entry.getKey())) && (0 < entry.getValue()) && (entry.getValue() < 32));
+	 * 	assert ((entry.getKey() != null) && ((entry.getKey() == -1) || NumUtil.isPrimeSqrt(entry.getKey())));
+	 * 	assert ((entry.getValue() != null) && (0 < entry.getValue()) && (entry.getValue() < 32));
 	 * }
 	 * </code>
 	 * </pre>
@@ -2372,14 +2387,17 @@ public class NumUtil {
 	 * Runtime is in <code>O(sqrt(n) + time for Result.size() many put operations)</code>. <br>
 	 * Postcondition: <code>Result != null</code> <br>
 	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if (Result.isEmpty())</code> <br>
-	 * Postcondition: <code>(n == -1) if and only if (Result.size() == 1)</code> <br>
-	 * Postcondition: <code>(n < 0) if and only if (Result.get(-1) == 1)</code> <br>
+	 * Postcondition: <code>(n == -1) implies (Result.size() == 1)</code> <br>
+	 * Postcondition: <code>(n < 0) implies ((Result.get(-1) != null) && (Result.get(-1) == 1))</code>
+	 * <br>
+	 * Postcondition: <code>(n >= 0) implies (Result.get(-1) == null)</code> <br>
 	 * Postcondition:
 	 * 
 	 * <pre>
 	 * <code>
 	 * for (final Map.Entry&lt;Integer, Byte&gt; entry : Result.entrySet()) {
-	 * 	assert (((entry.getKey() == -1) || NumUtil.isPrimeSqrt(entry.getKey())) && (0 < entry.getValue()) && (entry.getValue() < 32));
+	 * 	assert ((entry.getKey() != null) && ((entry.getKey() == -1) || NumUtil.isPrimeSqrt(entry.getKey())));
+	 * 	assert ((entry.getValue() != null) && (0 < entry.getValue()) && (entry.getValue() < 32));
 	 * }
 	 * </code>
 	 * </pre>
@@ -2494,14 +2512,18 @@ public class NumUtil {
 	 * Runtime is in <code>O(sqrt(n) + time for Result.size() many put operations)</code>. <br>
 	 * Postcondition: <code>Result != null</code> <br>
 	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if (Result.isEmpty())</code> <br>
-	 * Postcondition: <code>(n == -1) if and only if (Result.size() == 1)</code> <br>
-	 * Postcondition: <code>(n < 0) if and only if (Result.get((short) -1) == 1)</code> <br>
+	 * Postcondition: <code>(n == -1) implies (Result.size() == 1)</code> <br>
+	 * Postcondition:
+	 * <code>(n < 0) implies ((Result.get((short) -1) != null) && (Result.get((short) -1) == 1))</code>
+	 * <br>
+	 * Postcondition: <code>(n >= 0) implies (Result.get((short) -1) == null)</code> <br>
 	 * Postcondition:
 	 * 
 	 * <pre>
 	 * <code>
 	 * for (final Map.Entry&lt;Short, Byte&gt; entry : Result.entrySet()) {
-	 * 	assert (((entry.getKey() == -1) || NumUtil.isPrimeSqrt(entry.getKey())) && (0 < entry.getValue()) && (entry.getValue() < 16));
+	 * 	assert ((entry.getKey() != null) && ((entry.getKey() == -1) || NumUtil.isPrimeSqrt(entry.getKey())));
+	 * 	assert ((entry.getValue() != null) && (0 < entry.getValue()) && (entry.getValue() < 16));
 	 * }
 	 * </code>
 	 * </pre>
@@ -2700,14 +2722,18 @@ public class NumUtil {
 	 * Runtime is in <code>O(sqrt(n) + time for Result.size() many put operations)</code>. <br>
 	 * Postcondition: <code>Result != null</code> <br>
 	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if (Result.isEmpty())</code> <br>
-	 * Postcondition: <code>(n == -1) if and only if (Result.size() == 1)</code> <br>
-	 * Postcondition: <code>(n < 0) if and only if (Result.get((short) -1) == 1)</code> <br>
+	 * Postcondition: <code>(n == -1) implies (Result.size() == 1)</code> <br>
+	 * Postcondition:
+	 * <code>(n < 0) implies ((Result.get((short) -1) != null) && (Result.get((short) -1) == 1))</code>
+	 * <br>
+	 * Postcondition: <code>(n >= 0) implies (Result.get((short) -1) == null)</code> <br>
 	 * Postcondition:
 	 * 
 	 * <pre>
 	 * <code>
 	 * for (final Map.Entry&lt;Short, Byte&gt; entry : Result.entrySet()) {
-	 * 	assert (((entry.getKey() == -1) || NumUtil.isPrimeSqrt(entry.getKey())) && (0 < entry.getValue()) && (entry.getValue() < 16));
+	 * 	assert ((entry.getKey() != null) && ((entry.getKey() == -1) || NumUtil.isPrimeSqrt(entry.getKey())));
+	 * 	assert ((entry.getValue() != null) && (0 < entry.getValue()) && (entry.getValue() < 16));
 	 * }
 	 * </code>
 	 * </pre>
@@ -2745,14 +2771,18 @@ public class NumUtil {
 	 * Runtime is in <code>O(sqrt(n) + time for Result.size() many put operations)</code>. <br>
 	 * Postcondition: <code>Result != null</code> <br>
 	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if (Result.isEmpty())</code> <br>
-	 * Postcondition: <code>(n == -1) if and only if (Result.size() == 1)</code> <br>
-	 * Postcondition: <code>(n < 0) if and only if (Result.get((short) -1) == 1)</code> <br>
+	 * Postcondition: <code>(n == -1) implies (Result.size() == 1)</code> <br>
+	 * Postcondition:
+	 * <code>(n < 0) implies ((Result.get((short) -1) != null) && (Result.get((short) -1) == 1))</code>
+	 * <br>
+	 * Postcondition: <code>(n >= 0) implies (Result.get((short) -1) == null)</code> <br>
 	 * Postcondition:
 	 * 
 	 * <pre>
 	 * <code>
 	 * for (final Map.Entry&lt;Short, Byte&gt; entry : Result.entrySet()) {
-	 * 	assert (((entry.getKey() == -1) || NumUtil.isPrimeSqrt(entry.getKey())) && (0 < entry.getValue()) && (entry.getValue() < 16));
+	 * 	assert ((entry.getKey() != null) && ((entry.getKey() == -1) || NumUtil.isPrimeSqrt(entry.getKey())));
+	 * 	assert ((entry.getValue() != null) && (0 < entry.getValue()) && (entry.getValue() < 16));
 	 * }
 	 * </code>
 	 * </pre>
@@ -2867,14 +2897,18 @@ public class NumUtil {
 	 * Runtime is in <code>O(sqrt(n) + time for Result.size() many put operations)</code>. <br>
 	 * Postcondition: <code>Result != null</code> <br>
 	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if (Result.isEmpty())</code> <br>
-	 * Postcondition: <code>(n == -1) if and only if (Result.size() == 1)</code> <br>
-	 * Postcondition: <code>(n < 0) if and only if (Result.get((byte) -1) == 1)</code> <br>
+	 * Postcondition: <code>(n == -1) implies (Result.size() == 1)</code> <br>
+	 * Postcondition:
+	 * <code>(n < 0) implies ((Result.get((byte) -1) != null) && (Result.get((byte) -1) == 1))</code>
+	 * <br>
+	 * Postcondition: <code>(n >= 0) implies (Result.get((byte) -1) == null)</code> <br>
 	 * Postcondition:
 	 * 
 	 * <pre>
 	 * <code>
 	 * for (final Map.Entry&lt;Byte, Byte&gt; entry : Result.entrySet()) {
-	 * 	assert (((entry.getKey() == -1) || NumUtil.isPrimeSqrt(entry.getKey())) && (0 < entry.getValue()) && (entry.getValue() < 8));
+	 * 	assert ((entry.getKey() != null) && ((entry.getKey() == -1) || NumUtil.isPrimeSqrt(entry.getKey())));
+	 * 	assert ((entry.getValue() != null) && (0 < entry.getValue()) && (entry.getValue() < 8));
 	 * }
 	 * </code>
 	 * </pre>
@@ -3073,14 +3107,18 @@ public class NumUtil {
 	 * Runtime is in <code>O(sqrt(n) + time for Result.size() many put operations)</code>. <br>
 	 * Postcondition: <code>Result != null</code> <br>
 	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if (Result.isEmpty())</code> <br>
-	 * Postcondition: <code>(n == -1) if and only if (Result.size() == 1)</code> <br>
-	 * Postcondition: <code>(n < 0) if and only if (Result.get((byte) -1) == 1)</code> <br>
+	 * Postcondition: <code>(n == -1) implies (Result.size() == 1)</code> <br>
+	 * Postcondition:
+	 * <code>(n < 0) implies ((Result.get((byte) -1) != null) && (Result.get((byte) -1) == 1))</code>
+	 * <br>
+	 * Postcondition: <code>(n >= 0) implies (Result.get((byte) -1) == null)</code> <br>
 	 * Postcondition:
 	 * 
 	 * <pre>
 	 * <code>
 	 * for (final Map.Entry&lt;Byte, Byte&gt; entry : Result.entrySet()) {
-	 * 	assert (((entry.getKey() == -1) || NumUtil.isPrimeSqrt(entry.getKey())) && (0 < entry.getValue()) && (entry.getValue() < 8));
+	 * 	assert ((entry.getKey() != null) && ((entry.getKey() == -1) || NumUtil.isPrimeSqrt(entry.getKey())));
+	 * 	assert ((entry.getValue() != null) && (0 < entry.getValue()) && (entry.getValue() < 8));
 	 * }
 	 * </code>
 	 * </pre>
@@ -3118,14 +3156,18 @@ public class NumUtil {
 	 * Runtime is in <code>O(sqrt(n) + time for Result.size() many put operations)</code>. <br>
 	 * Postcondition: <code>Result != null</code> <br>
 	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if (Result.isEmpty())</code> <br>
-	 * Postcondition: <code>(n == -1) if and only if (Result.size() == 1)</code> <br>
-	 * Postcondition: <code>(n < 0) if and only if (Result.get((byte) -1) == 1)</code> <br>
+	 * Postcondition: <code>(n == -1) implies (Result.size() == 1)</code> <br>
+	 * Postcondition:
+	 * <code>(n < 0) implies ((Result.get((byte) -1) != null) && (Result.get((byte) -1) == 1))</code>
+	 * <br>
+	 * Postcondition: <code>(n >= 0) implies (Result.get((byte) -1) == null)</code> <br>
 	 * Postcondition:
 	 * 
 	 * <pre>
 	 * <code>
 	 * for (final Map.Entry&lt;Byte, Byte&gt; entry : Result.entrySet()) {
-	 * 	assert (((entry.getKey() == -1) || NumUtil.isPrimeSqrt(entry.getKey())) && (0 < entry.getValue()) && (entry.getValue() < 8));
+	 * 	assert ((entry.getKey() != null) && ((entry.getKey() == -1) || NumUtil.isPrimeSqrt(entry.getKey())));
+	 * 	assert ((entry.getValue() != null) && (0 < entry.getValue()) && (entry.getValue() < 8));
 	 * }
 	 * </code>
 	 * </pre>

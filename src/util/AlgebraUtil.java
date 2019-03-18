@@ -2,7 +2,7 @@ package util;
 
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Utility math methods in addition to MathUtil but mainly focused on algebra.
@@ -31,26 +31,16 @@ public class AlgebraUtil {
 	 * Precondition: <code>NumUtil.factorSqrt((m % 2 == 0) ? (m / 2) : m).size() == 1</code> <br>
 	 * Precondition: <code>(1 < n) && (n < m - 1)</code> <br>
 	 * Precondition: <code>gcd(n, m) == 1</code> <br>
-	 * Precondition: <code>(phiMFactors != null) && (!phiMFactors.isEmpty())</code> <br>
+	 * Precondition: <code>(phiMFactorsKeySet != null) && (!phiMFactorsKeySet.isEmpty())</code> <br>
 	 * Precondition:
 	 * 
 	 * <pre>
 	 * <code>
-	 * for (final Map.Entry&lt;Long, Byte&gt; entry : phiMFactors.entrySet()) {
-	 * 	assert (NumUtil.isPrimeSqrt(entry.getKey()) && (0 < entry.getValue()) && (entry.getValue() < 63));
+	 * final Map&lt;Long, Byte&gt; factors = NumUtil.factorSqrt(phiM);
+	 * assert (phiMFactorsKeySet.size() == factors.size());
+	 * for (final Long q : phiMFactorsKeySet) {
+	 * 	assert ((q != null) && factors.containsKey(q));
 	 * }
-	 * </code>
-	 * </pre>
-	 * 
-	 * Precondition:
-	 * 
-	 * <pre>
-	 * <code>
-	 * long PhiM = 1L;
-	 * for (final Map.Entry&lt;Long, Byte&gt; entry : phiMFactors.entrySet()) {
-	 * 	PhiM = Math.multiplyExact(PhiM, MathUtil.powExact(entry.getKey(), entry.getValue()));
-	 * }
-	 * assert (phiM == PhiM);
 	 * </code>
 	 * </pre>
 	 * 
@@ -70,13 +60,13 @@ public class AlgebraUtil {
 	 * @return <code>true</code> if and only if <code>n</code> is a primitive root modulo
 	 *         <code>m</code>.
 	 */
-	protected static boolean isPrimitiveRootFixedInput(long n, long m, long phiM, Map<Long, Byte> phiMFactors) {
+	protected static boolean isPrimitiveRootFixedInput(long n, long m, long phiM, Set<Long> phiMFactorsKeySet) {
 		/**
-		 * We know that <code>!phiMFactors.isEmpty()</code> and so we can optimize the following loop by
-		 * removing an extra call to <code>it.hashNext()</code> by writing it as a do-while loop instead of
-		 * a for or while loop.
+		 * We know that <code>!phiMFactorsKeySet.isEmpty()</code> and so we can optimize the following loop
+		 * by removing an extra call to <code>it.hashNext()</code> by writing it as a do-while loop instead
+		 * of a for loop or a while loop.
 		 */
-		Iterator<Long> it = phiMFactors.keySet().iterator();
+		Iterator<Long> it = phiMFactorsKeySet.iterator();
 		do {
 			/**
 			 * We know that for <code>n</code> in <code>[2, m - 2] \cap \doubleZ</code> coprime with
@@ -213,29 +203,30 @@ public class AlgebraUtil {
 			return false;
 		}
 
-		// Retrieve the prime divisor of mOddFactor and its power.
-		final Entry<Long, Byte> p_e = mOddFactors.entrySet().iterator().next();
-		final long p = p_e.getKey();
-		final byte e = p_e.getValue();
-
 		/**
 		 * Compute <code>phi(m)</code> and then factor it. <br>
 		 * <br>
 		 * 
 		 * At this point, we know that one of the following is true: <br>
-		 * Case I: <code>m == p<sup>e</sup></code> <br>
-		 * Thus, <code>phi(m) == phi(p<sup>e</sup>) == p<sup>(e - 1)</sup> * (p - 1)</code> <br>
-		 * Case II: <code>m == 2 * p<sup>e</sup></code> <br>
-		 * Thus, <code>phi(m) == phi(2) * phi(p<sup>e</sup>) == 1 * p<sup>(e - 1)</sup> * (p - 1)</code>
+		 * Case I: <code>m == mOddFactor</code> <br>
+		 * Therefore, <code>phi(m) == phi(mOddFactor)</code> <br>
+		 * Case II: <code>m == 2 * mOddFactor</code> <br>
+		 * Therefore, <code>phi(m) == phi(2) * phi(mOddFactor) == 1 * phi(mOddFactor)</code> <br>
+		 * <br>
+		 * 
+		 * However, we also know that <code>mOddFactor == p<sup>e</sup></code> and so we can conclude that
+		 * <code>phi(m) == phi(mOddFactor) == mOddFactor * (1 - <sup>1</sup>&frasl;<sub>p</sub>)</code>.
 		 */
-		final long phiM = (e == 1) ? (p - 1L) : (p - 1L) * MathUtil.pow(p, e - 1);
+		final long p = mOddFactors.entrySet().iterator().next().getKey();
+		final long phiM = mOddFactor - (mOddFactor / p);
 		final Map<Long, Byte> phiMFactors = NumUtil.factorSqrt(phiM, hash, false);
 		// Only print if requested.
 		if (print) {
 			System.out.print("phi(m) = " + phiM + " = ");
 			NumUtil.printFactorsLong(phiMFactors, hash);
 		}
-		return AlgebraUtil.isPrimitiveRootFixedInput(n, m, phiM, phiMFactors);
+		final Set<Long> phiMFactorsKeySet = phiMFactors.keySet();
+		return AlgebraUtil.isPrimitiveRootFixedInput(n, m, phiM, phiMFactorsKeySet);
 	}
 
 	/**
