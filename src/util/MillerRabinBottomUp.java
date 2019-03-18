@@ -151,7 +151,7 @@ public class MillerRabinBottomUp {
 			}
 
 			prev_r = r; // Save the previous remainder for the Square-Root test.
-			r = r.modPow(MillerRabinBottomUp.TWO, this.n); // Square r (mod this.n).
+			r = r.multiply(r).mod(this.n); // Square r (mod this.n).
 			// Only print if requested.
 			if (print) {
 				System.out.println("r_" + i + " == " + r + ", exp_" + i + " == " + this.max_odd_factor + " * 2^"
