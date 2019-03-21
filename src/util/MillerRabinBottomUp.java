@@ -176,7 +176,6 @@ public class MillerRabinBottomUp {
 		 * At this point, we know that i == -1 and that r != 1 thus this.n is composite by Fermat's test.
 		 * However, we cannot find the super factors since we cannot perform the Square-Root test.
 		 */
-
 		// Only print if requested.
 		if (print) {
 			System.out.println("\n" + b + " is a witness of n's compositeness by Fermat's test.\n");
