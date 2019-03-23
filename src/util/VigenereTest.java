@@ -127,7 +127,7 @@ public class VigenereTest {
 			assertTrue("Correct ciphertexts", ArrayUtil.equals(ciphertexts, expectedCiphertexts));
 
 			final char[][] decryptedTexts = new char[numTexts][];
-			for (int i = numTexts - 1; i > -1; --i) {
+			for (int i = numTexts - 1; i != -1; --i) {
 				// Decryption has to be performed in reverse order using Vigenere::decrypt(char[]).
 				decryptedTexts[i] = v.decrypt(ciphertexts[i]);
 				assertTrue("Correct decryptedTexts[" + i + "]", Arrays.equals(decryptedTexts[i], plaintexts[i]));
@@ -206,7 +206,7 @@ public class VigenereTest {
 			assertTrue("Correct ciphertexts", ArrayUtil.equals(ciphertexts, expectedCiphertexts));
 
 			final byte[][] decryptedTexts = new byte[numTexts][];
-			for (int i = numTexts - 1; i > -1; --i) {
+			for (int i = numTexts - 1; i != -1; --i) {
 				// Decryption has to be performed in reverse order using Vigenere::decrypt(byte[]).
 				decryptedTexts[i] = v.decrypt(ciphertexts[i]);
 				assertTrue("Correct decryptedTexts[" + i + "]", Arrays.equals(decryptedTexts[i], plaintexts[i]));

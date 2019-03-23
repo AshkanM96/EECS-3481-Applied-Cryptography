@@ -3294,14 +3294,14 @@ public class NumUtil {
 	 *             If <code>n < 1</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(begin > end) || (begin < 0)
+	 *             If <code>(end < begin) || (begin < 0)
 	 *             || (base == 0 (mod n)) || (base == 1 (mod n)) || (base == -1 (mod n))</code>
 	 */
 	public static Long divisorPMinusOne(long n, long base, long begin, long end)
 			throws InvalidModulusException, IllegalArgumentException {
 		if (n < 1L) {
 			throw new InvalidModulusException();
-		} else if ((begin > end) || (begin < 0L)) {
+		} else if ((end < begin) || (begin < 0L)) {
 			throw new IllegalArgumentException();
 		}
 		// (n >= 1) && (begin <= end) && (begin >= 0)
@@ -3347,7 +3347,7 @@ public class NumUtil {
 		// i.e., (1 < base) && (base < n - 1)
 
 		// Check whether base and n have any common divisors by checking the gcd.
-		if (base > 3L) { // i.e., (base != 2) && (base != 3)
+		if (3L < base) { // i.e., (base != 2) && (base != 3)
 			final long gcd = MathUtil.gcdFixedInput(base, n);
 			if (gcd != 1L) {
 				return gcd;
@@ -3364,7 +3364,7 @@ public class NumUtil {
 
 		// Compute <code>base<sup>begin!</sup> (mod n)</code>.
 		long base_to_begin_factorial = base;
-		if (begin > 1L) { // i.e., begin! > 1
+		if (1L < begin) { // i.e., 1 < begin!
 			// Fix base_to_begin_factorial to be in [-n / 2, n / 2] \cap \doubleZ.
 			base_to_begin_factorial = MathUtil.modMinFixedInput(base_to_begin_factorial, n);
 			final long maxI = begin + 1L; // maxI >= 3
@@ -3453,7 +3453,7 @@ public class NumUtil {
 	 *             If <code>n < 1</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(begin > end) || (begin < 0)
+	 *             If <code>(end < begin) || (begin < 0)
 	 *             || (base == 0 (mod n)) || (base == 1 (mod n)) || (base == -1 (mod n))</code>
 	 */
 	public static Integer divisorPMinusOne(int n, int base, int begin, int end)
@@ -3540,7 +3540,7 @@ public class NumUtil {
 	 *             If <code>n < 1</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(begin > end) || (begin < 0)
+	 *             If <code>(end < begin) || (begin < 0)
 	 *             || (base == 0 (mod n)) || (base == 1 (mod n)) || (base == -1 (mod n))</code>
 	 */
 	public static Short divisorPMinusOne(short n, short base, short begin, short end)
@@ -3627,7 +3627,7 @@ public class NumUtil {
 	 *             If <code>n < 1</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(begin > end) || (begin < 0)
+	 *             If <code>(end < begin) || (begin < 0)
 	 *             || (base == 0 (mod n)) || (base == 1 (mod n)) || (base == -1 (mod n))</code>
 	 */
 	public static Byte divisorPMinusOne(byte n, byte base, byte begin, byte end)

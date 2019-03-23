@@ -658,7 +658,7 @@ public class MathUtil {
 	 * @return The least common multiple of the two numbers.
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>lcm(a, b) > Long.MAX_VALUE</code>
+	 *             If <code>Long.MAX_VALUE < lcm(a, b)</code>
 	 */
 	protected static long lcmExactFixedInput(long a, long b) throws ArithmeticException {
 		// lcm(0, b) == 0 == lcm(a, 0)
@@ -697,7 +697,7 @@ public class MathUtil {
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>(a == Long.MIN_VALUE) || (b == Long.MIN_VALUE)
-	 *             || (lcm(a, b) > Long.MAX_VALUE)</code>
+	 *             || (Long.MAX_VALUE < lcm(a, b))</code>
 	 */
 	public static long lcmExact(long a, long b) throws ArithmeticException {
 		/*
@@ -722,7 +722,7 @@ public class MathUtil {
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>(a == Integer.MIN_VALUE) || (b == Integer.MIN_VALUE)
-	 *             || (lcm(a, b) > Integer.MAX_VALUE)</code>
+	 *             || (Integer.MAX_VALUE < lcm(a, b))</code>
 	 */
 	public static int lcmExact(int a, int b) throws ArithmeticException {
 		/*
@@ -734,7 +734,7 @@ public class MathUtil {
 		}
 		// (a != Integer.MIN_VALUE) && (b != Integer.MIN_VALUE)
 		final long result = MathUtil.lcmExactFixedInput(a, b);
-		if (result > Integer.MAX_VALUE) {
+		if (Integer.MAX_VALUE < result) {
 			throw new ArithmeticException();
 		}
 		return ((int) result);
@@ -751,7 +751,7 @@ public class MathUtil {
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>(a == Short.MIN_VALUE) || (b == Short.MIN_VALUE)
-	 *             || (lcm(a, b) > Short.MAX_VALUE)</code>
+	 *             || (Short.MAX_VALUE < lcm(a, b))</code>
 	 */
 	public static short lcmExact(short a, short b) throws ArithmeticException {
 		/*
@@ -763,7 +763,7 @@ public class MathUtil {
 		}
 		// (a != Short.MIN_VALUE) && (b != Short.MIN_VALUE)
 		final long result = MathUtil.lcmExactFixedInput(a, b);
-		if (result > Short.MAX_VALUE) {
+		if (Short.MAX_VALUE < result) {
 			throw new ArithmeticException();
 		}
 		return ((short) result);
@@ -780,7 +780,7 @@ public class MathUtil {
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>(a == Byte.MIN_VALUE) || (b == Byte.MIN_VALUE)
-	 *             || (lcm(a, b) > Byte.MAX_VALUE)</code>
+	 *             || (Byte.MAX_VALUE < lcm(a, b))</code>
 	 */
 	public static byte lcmExact(byte a, byte b) throws ArithmeticException {
 		/*
@@ -792,7 +792,7 @@ public class MathUtil {
 		}
 		// (a != Byte.MIN_VALUE) && (b != Byte.MIN_VALUE)
 		final long result = MathUtil.lcmExactFixedInput(a, b);
-		if (result > Byte.MAX_VALUE) {
+		if (Byte.MAX_VALUE < result) {
 			throw new ArithmeticException();
 		}
 		return ((byte) result);
@@ -948,7 +948,7 @@ public class MathUtil {
 	 *             || ((Long.MAX_VALUE < n<sup>p</sup>) || (n<sup>p</sup> < Long.MIN_VALUE))</code>
 	 */
 	public static long powExact(long n, byte p) throws UndefinedInverseException, ArithmeticException {
-		if (p < 0) {
+		if (p < 0L) {
 			if (n == 0L) {
 				throw new UndefinedInverseException();
 			}
@@ -1945,7 +1945,7 @@ public class MathUtil {
 	 *             If <code>(m1 < 1) || (m2 < 1)</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>lcm(m1, m2) > Long.MAX_VALUE</code>
+	 *             If <code>Long.MAX_VALUE < lcm(m1, m2)</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>n1 != n2 (mod gcd(m1, m2))</code>
@@ -2032,7 +2032,7 @@ public class MathUtil {
 	 *             If <code>(m1 < 1) || (m2 < 1)</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>lcm(m1, m2) > Long.MAX_VALUE</code>
+	 *             If <code>Long.MAX_VALUE < lcm(m1, m2)</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>n1 != n2 (mod gcd(m1, m2))</code>
@@ -2088,13 +2088,13 @@ public class MathUtil {
 	 *             If <code>n1 != n2 (mod gcd(m1, m2))</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>lcm(m1, m2) > Integer.MAX_VALUE</code>
+	 *             If <code>Integer.MAX_VALUE < lcm(m1, m2)</code>
 	 */
 	public static int[] crt(int n1, int m1, int n2, int m2, boolean justAnswer)
 			throws InvalidModulusException, IllegalArgumentException, ArithmeticException {
 		final long[] result = MathUtil.crt((long) n1, (long) m1, (long) n2, (long) m2, justAnswer);
 		final long m = result[1]; // lcm(m1, m2)
-		if (m > Integer.MAX_VALUE) {
+		if (Integer.MAX_VALUE < m) {
 			throw new ArithmeticException();
 		}
 
@@ -2136,7 +2136,7 @@ public class MathUtil {
 	 *             If <code>n1 != n2 (mod gcd(m1, m2))</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>lcm(m1, m2) > Integer.MAX_VALUE</code>
+	 *             If <code>Integer.MAX_VALUE < lcm(m1, m2)</code>
 	 */
 	public static int[] crt(int n1, int m1, int n2, int m2)
 			throws InvalidModulusException, IllegalArgumentException, ArithmeticException {
@@ -2189,13 +2189,13 @@ public class MathUtil {
 	 *             If <code>n1 != n2 (mod gcd(m1, m2))</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>lcm(m1, m2) > Short.MAX_VALUE</code>
+	 *             If <code>Short.MAX_VALUE < lcm(m1, m2)</code>
 	 */
 	public static short[] crt(short n1, short m1, short n2, short m2, boolean justAnswer)
 			throws InvalidModulusException, IllegalArgumentException, ArithmeticException {
 		final long[] result = MathUtil.crt((long) n1, (long) m1, (long) n2, (long) m2, justAnswer);
 		final long m = result[1]; // lcm(m1, m2)
-		if (m > Short.MAX_VALUE) {
+		if (Short.MAX_VALUE < m) {
 			throw new ArithmeticException();
 		}
 
@@ -2237,7 +2237,7 @@ public class MathUtil {
 	 *             If <code>n1 != n2 (mod gcd(m1, m2))</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>lcm(m1, m2) > Short.MAX_VALUE</code>
+	 *             If <code>Short.MAX_VALUE < lcm(m1, m2)</code>
 	 */
 	public static short[] crt(short n1, short m1, short n2, short m2)
 			throws InvalidModulusException, IllegalArgumentException, ArithmeticException {
@@ -2290,13 +2290,13 @@ public class MathUtil {
 	 *             If <code>n1 != n2 (mod gcd(m1, m2))</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>lcm(m1, m2) > Byte.MAX_VALUE</code>
+	 *             If <code>Byte.MAX_VALUE < lcm(m1, m2)</code>
 	 */
 	public static byte[] crt(byte n1, byte m1, byte n2, byte m2, boolean justAnswer)
 			throws InvalidModulusException, IllegalArgumentException, ArithmeticException {
 		final long[] result = MathUtil.crt((long) n1, (long) m1, (long) n2, (long) m2, justAnswer);
 		final long m = result[1]; // lcm(m1, m2)
-		if (m > Byte.MAX_VALUE) {
+		if (Byte.MAX_VALUE < m) {
 			throw new ArithmeticException();
 		}
 
@@ -2338,7 +2338,7 @@ public class MathUtil {
 	 *             If <code>n1 != n2 (mod gcd(m1, m2))</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>lcm(m1, m2) > Byte.MAX_VALUE</code>
+	 *             If <code>Byte.MAX_VALUE < lcm(m1, m2)</code>
 	 */
 	public static byte[] crt(byte n1, byte m1, byte n2, byte m2)
 			throws InvalidModulusException, IllegalArgumentException, ArithmeticException {
@@ -2475,7 +2475,7 @@ public class MathUtil {
 		 * <code>1</code> if <code>p == 0</code> <br>
 		 * <code>(n<sup>-1</sup> (mod m))<sup>|p|</sup> (mod m)</code> if <code>p < 0</code>
 		 */
-		if (p > 0L) {
+		if (0L < p) {
 			long result = MathUtil.modPowFixedInput(n, p, m);
 			return ((result < 0L) ? (result += m) : result);
 		} else if (p == 0L) {
@@ -2601,14 +2601,14 @@ public class MathUtil {
 	 * @return <code>end - begin</code>.
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>begin > end</code>
+	 *             If <code>end < begin</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>(end - begin) > Integer.MAX_VALUE</code>
+	 *             If <code>Integer.MAX_VALUE < (end - begin)</code>
 	 */
 	protected static int powersLength(long begin, long end) throws IllegalArgumentException, ArithmeticException {
 		// Validate begin and end.
-		if (begin > end) {
+		if (end < begin) {
 			throw new IllegalArgumentException();
 		}
 		// begin <= end
@@ -2618,18 +2618,19 @@ public class MathUtil {
 		}
 		// begin < end
 
-		if (begin >= 0L) {
+		if (-1L < begin) { // i.e., begin >= 0
 			// 0 <= begin < end so end - begin will not overflow a long.
 			end -= begin;
-			if (end > Integer.MAX_VALUE) {
+			if (Integer.MAX_VALUE < end) {
 				throw new ArithmeticException();
 			}
 			return ((int) end);
 		}
-		// begin < 0
+		// begin <= -1
+		// i.e., begin < 0
 
 		// Therefore, Integer.MAX_VALUE + begin will not overflow a long.
-		if (end > Integer.MAX_VALUE + begin) {
+		if (Integer.MAX_VALUE + begin < end) {
 			throw new ArithmeticException();
 		}
 		// end <= Integer.MAX_VALUE + begin
@@ -2677,10 +2678,10 @@ public class MathUtil {
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>begin > end</code>
+	 *             If <code>end < begin</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>(end - begin) > Integer.MAX_VALUE</code>
+	 *             If <code>Integer.MAX_VALUE < (end - begin)</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(begin < 0) && ((n (mod m) == 0) || (gcd(n (mod m), m) != 1))</code>
@@ -2796,7 +2797,7 @@ public class MathUtil {
 	 *             If <code>end < 0</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>end > Integer.MAX_VALUE</code>
+	 *             If <code>Integer.MAX_VALUE < end</code>
 	 */
 	public static long[] modPowers(long n, long m, long end)
 			throws InvalidModulusException, IllegalArgumentException, ArithmeticException {
@@ -2822,7 +2823,7 @@ public class MathUtil {
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>m > Integer.MAX_VALUE</code>
+	 *             If <code>Integer.MAX_VALUE < m</code>
 	 */
 	public static long[] modPowers(long n, long m) throws InvalidModulusException, ArithmeticException {
 		return MathUtil.modPowers(n, m, m);
@@ -2853,10 +2854,10 @@ public class MathUtil {
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>begin > end</code>
+	 *             If <code>end < begin</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>(end - begin) > Integer.MAX_VALUE</code>
+	 *             If <code>Integer.MAX_VALUE < (end - begin)</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(begin < 0) && ((n (mod m) == 0) || (gcd(n (mod m), m) != 1))</code>
@@ -3022,7 +3023,7 @@ public class MathUtil {
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>begin > end</code>
+	 *             If <code>end < begin</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(begin < 0) && ((n (mod m) == 0) || (gcd(n (mod m), m) != 1))</code>
@@ -3189,7 +3190,7 @@ public class MathUtil {
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>begin > end</code>
+	 *             If <code>end < begin</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(begin < 0) && ((n (mod m) == 0) || (gcd(n (mod m), m) != 1))</code>
@@ -3491,7 +3492,7 @@ public class MathUtil {
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>begin > end</code>
+	 *             If <code>end < begin</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(begin < 0) && (gcd(n (mod m), m) != 1)</code>
@@ -3500,7 +3501,7 @@ public class MathUtil {
 			throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException {
 		if (m < 1L) {
 			throw new InvalidModulusException();
-		} else if (begin > end) {
+		} else if (end < begin) {
 			throw new IllegalArgumentException();
 		}
 		// (m >= 1) && (begin <= end)
@@ -3614,7 +3615,7 @@ public class MathUtil {
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>begin > end</code>
+	 *             If <code>end < begin</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(begin < 0) && (gcd(n (mod m), m) != 1)</code>
@@ -3708,7 +3709,7 @@ public class MathUtil {
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>begin > end</code>
+	 *             If <code>end < begin</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(begin < 0) && (gcd(n (mod m), m) != 1)</code>
@@ -3802,7 +3803,7 @@ public class MathUtil {
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>begin > end</code>
+	 *             If <code>end < begin</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(begin < 0) && (gcd(n (mod m), m) != 1)</code>
@@ -4101,7 +4102,7 @@ public class MathUtil {
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>(((long) Math.sqrt(upperOrder)) + 1) > Integer.MAX_VALUE</code>
+	 *             If <code>Integer.MAX_VALUE < (((long) Math.sqrt(upperOrder)) + 1)</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>gcd(n (mod m), m) != 1</code>
@@ -4143,7 +4144,7 @@ public class MathUtil {
 
 		// Applying Math.floor before casting to long is unnecessary and it causes a large slow down.
 		final long bound = ((long) Math.sqrt(upperOrder)) + 1L; // bound >= 2
-		if (bound > Integer.MAX_VALUE) {
+		if (Integer.MAX_VALUE < bound) {
 			throw new ArithmeticException();
 		}
 		// bound <= Integer.MAX_VALUE
@@ -4183,7 +4184,7 @@ public class MathUtil {
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>(((long) Math.sqrt(upperOrder)) + 1) > Integer.MAX_VALUE</code>
+	 *             If <code>Integer.MAX_VALUE < (((long) Math.sqrt(upperOrder)) + 1)</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>gcd(n (mod m), m) != 1</code>
@@ -4220,7 +4221,7 @@ public class MathUtil {
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>(((long) Math.sqrt(upperOrder)) + 1) > Integer.MAX_VALUE</code>
+	 *             If <code>Integer.MAX_VALUE < (((long) Math.sqrt(upperOrder)) + 1)</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>gcd(n (mod m), m) != 1</code>
@@ -4249,7 +4250,7 @@ public class MathUtil {
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>(((long) Math.sqrt(m - 1)) + 1) > Integer.MAX_VALUE</code>
+	 *             If <code>Integer.MAX_VALUE < (((long) Math.sqrt(m - 1)) + 1)</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>gcd(n (mod m), m) != 1</code>
@@ -4749,8 +4750,8 @@ public class MathUtil {
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
-	 *             && ((simple && ((((long) Math.sqrt(p_to_e)) + 1) > Integer.MAX_VALUE))
-	 *             	|| ((!simple) && ((((long) Math.sqrt(p)) + 1) > Integer.MAX_VALUE)))</code>
+	 *             && ((simple && (Integer.MAX_VALUE < (((long) Math.sqrt(p_to_e)) + 1)))
+	 *             	|| ((!simple) && (Integer.MAX_VALUE < (((long) Math.sqrt(p)) + 1))))</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
@@ -4783,7 +4784,7 @@ public class MathUtil {
 
 			// Applying Math.floor before casting to long is unnecessary and it causes a large slow down.
 			final long bound = ((long) Math.sqrt(p_to_e)) + 1L; // bound >= 2
-			if (bound > Integer.MAX_VALUE) {
+			if (Integer.MAX_VALUE < bound) {
 				if (linearSearchIfNotBabyGiant) {
 					// Set the linear search flag denoting the fact that we have to use Linear-Search.
 					linearSearch = true;
@@ -4835,7 +4836,7 @@ public class MathUtil {
 
 		// Applying Math.floor before casting to long is unnecessary and it causes a large slow down.
 		final long bound = ((long) Math.sqrt(p)) + 1L; // bound >= 2
-		if (bound > Integer.MAX_VALUE) {
+		if (Integer.MAX_VALUE < bound) {
 			if (linearSearchIfNotBabyGiant) {
 				// Set the linear search flag denoting the fact that we have to use Linear-Search.
 				linearSearch = true;
@@ -5050,8 +5051,8 @@ public class MathUtil {
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
-	 *             && ((simple && ((((long) Math.sqrt(max(p<sub>i</sub><sup>e<sub>i</sub></sup>))) + 1) > Integer.MAX_VALUE))
-	 *             	|| ((!simple) && ((((long) Math.sqrt(max(p<sub>i</sub>))) + 1) > Integer.MAX_VALUE)))</code>
+	 *             && ((simple && (Integer.MAX_VALUE < (((long) Math.sqrt(max(p<sub>i</sub><sup>e<sub>i</sub></sup>))) + 1)))
+	 *             	|| ((!simple) && (Integer.MAX_VALUE < (((long) Math.sqrt(max(p<sub>i</sub>))) + 1))))</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
@@ -5068,7 +5069,7 @@ public class MathUtil {
 
 			// Applying Math.floor before casting to long is unnecessary and it causes a large slow down.
 			final long bound = ((long) Math.sqrt(upperOrder)) + 1L; // bound >= 2
-			if (bound > Integer.MAX_VALUE) {
+			if (Integer.MAX_VALUE < bound) {
 				if (linearSearchIfNotBabyGiant) {
 					// Set the linear search flag denoting the fact that we have to use Linear-Search.
 					linearSearch = true;
@@ -5225,8 +5226,8 @@ public class MathUtil {
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
-	 *             && ((simple && ((((long) Math.sqrt(max(p<sub>i</sub><sup>e<sub>i</sub></sup>))) + 1) > Integer.MAX_VALUE))
-	 *             	|| ((!simple) && ((((long) Math.sqrt(max(p<sub>i</sub>))) + 1) > Integer.MAX_VALUE)))</code>
+	 *             && ((simple && (Integer.MAX_VALUE < (((long) Math.sqrt(max(p<sub>i</sub><sup>e<sub>i</sub></sup>))) + 1)))
+	 *             	|| ((!simple) && (Integer.MAX_VALUE < (((long) Math.sqrt(max(p<sub>i</sub>))) + 1))))</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
@@ -5321,8 +5322,8 @@ public class MathUtil {
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
-	 *             && ((simple && ((((long) Math.sqrt(max(p<sub>i</sub><sup>e<sub>i</sub></sup>))) + 1) > Integer.MAX_VALUE))
-	 *             	|| ((!simple) && ((((long) Math.sqrt(max(p<sub>i</sub>))) + 1) > Integer.MAX_VALUE)))</code>
+	 *             && ((simple && (Integer.MAX_VALUE < (((long) Math.sqrt(max(p<sub>i</sub><sup>e<sub>i</sub></sup>))) + 1)))
+	 *             	|| ((!simple) && (Integer.MAX_VALUE < (((long) Math.sqrt(max(p<sub>i</sub>))) + 1))))</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
@@ -5378,8 +5379,8 @@ public class MathUtil {
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
-	 *             && ((simple && ((((long) Math.sqrt(max(p<sub>i</sub><sup>e<sub>i</sub></sup>))) + 1) > Integer.MAX_VALUE))
-	 *             	|| ((!simple) && ((((long) Math.sqrt(max(p<sub>i</sub>))) + 1) > Integer.MAX_VALUE)))</code>
+	 *             && ((simple && (Integer.MAX_VALUE < (((long) Math.sqrt(max(p<sub>i</sub><sup>e<sub>i</sub></sup>))) + 1)))
+	 *             	|| ((!simple) && (Integer.MAX_VALUE < (((long) Math.sqrt(max(p<sub>i</sub>))) + 1))))</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
@@ -5430,8 +5431,8 @@ public class MathUtil {
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
-	 *             && ((simple && ((((long) Math.sqrt(max(p<sub>i</sub><sup>e<sub>i</sub></sup>))) + 1) > Integer.MAX_VALUE))
-	 *             	|| ((!simple) && ((((long) Math.sqrt(max(p<sub>i</sub>))) + 1) > Integer.MAX_VALUE)))</code>
+	 *             && ((simple && (Integer.MAX_VALUE < (((long) Math.sqrt(max(p<sub>i</sub><sup>e<sub>i</sub></sup>))) + 1)))
+	 *             	|| ((!simple) && (Integer.MAX_VALUE < (((long) Math.sqrt(max(p<sub>i</sub>))) + 1))))</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
@@ -5475,7 +5476,7 @@ public class MathUtil {
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
-	 *             && ((((long) Math.sqrt(max(p<sub>i</sub>))) + 1) > Integer.MAX_VALUE)</code>
+	 *             && (Integer.MAX_VALUE < (((long) Math.sqrt(max(p<sub>i</sub>))) + 1))</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(!linearSearchIfNotBabyGiant)
@@ -5514,7 +5515,7 @@ public class MathUtil {
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>(((long) Math.sqrt(max(p<sub>i</sub>))) + 1) > Integer.MAX_VALUE</code>
+	 *             If <code>Integer.MAX_VALUE < (((long) Math.sqrt(max(p<sub>i</sub>))) + 1)</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If
@@ -5544,7 +5545,7 @@ public class MathUtil {
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>(((long) Math.sqrt(max(p<sub>i</sub>))) + 1) > Integer.MAX_VALUE</code>
+	 *             If <code>Integer.MAX_VALUE < (((long) Math.sqrt(max(p<sub>i</sub>))) + 1)</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>gcd(n (mod m), m) != 1</code>

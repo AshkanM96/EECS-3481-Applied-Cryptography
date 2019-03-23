@@ -819,7 +819,7 @@ public class StatUtil {
 		if (n < 2) {
 			// Probability of >= 1 collision with <= 1 people is: <code>0</code>
 			return BigDecimal.ZERO;
-		} else if (n >= d) {
+		} else if (d <= n) {
 			/**
 			 * Probability of >= 1 collision with d or more people is:
 			 * <code>1 by the Pigeon Hole Principle</code>
@@ -945,7 +945,7 @@ public class StatUtil {
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(d < 1) || (m < 0) || (n < 0) || (scale < 0)
-	 *             || ((m < d) && (n < d) && (m + n > d))</code>
+	 *             || ((m < d) && (n < d) && (d < m + n))</code>
 	 */
 	public static BigDecimal birthday2Linear(int d, int m, int n, int scale, boolean outOf100)
 			throws IllegalArgumentException {
@@ -958,7 +958,7 @@ public class StatUtil {
 		if ((m == 0) || (n == 0)) {
 			// Probability of >= 1 collision with 0 people of at least one of the types is: <code>0</code>
 			return BigDecimal.ZERO;
-		} else if ((m >= d) && (n >= d)) {
+		} else if ((d <= m) && (d <= n)) {
 			/**
 			 * Probability of >= 1 collision with d or more people in each type, is:
 			 * <code>1 by the Pigeon Hole Principle</code>
@@ -968,7 +968,7 @@ public class StatUtil {
 		// (m != 0) && (n != 0) && (m < d) && (n < d)
 		// i.e., (1 <= m) && (1 <= n) && (m < d) && (n < d)
 
-		if (((long) m) + n > d) {
+		if (d < ((long) m) + n) {
 			throw new IllegalArgumentException();
 		}
 		// m + n <= d
@@ -994,7 +994,7 @@ public class StatUtil {
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(d < 1) || (m < 0) || (n < 0) || (scale < 0)
-	 *             || ((m < d) && (n < d) && (m + n > d))</code>
+	 *             || ((m < d) && (n < d) && (d < m + n))</code>
 	 */
 	public static BigDecimal birthday2Linear(int d, int m, int n, int scale) throws IllegalArgumentException {
 		return StatUtil.birthday2Linear(d, m, n, scale, true);
@@ -1015,7 +1015,7 @@ public class StatUtil {
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(d < 1) || (m < 0) || (n < 0)
-	 *             || ((m < d) && (n < d) && (m + n > d))</code>
+	 *             || ((m < d) && (n < d) && (d < m + n))</code>
 	 */
 	public static BigDecimal birthday2Linear(int d, int m, int n) throws IllegalArgumentException {
 		return StatUtil.birthday2Linear(d, m, n, StatUtil.DEFAULT_SCALE);

@@ -61,10 +61,10 @@ public class SinglyLinkedList<T> implements Iterable<T> {
 	 * @return <code>(int) this.size</code>.
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>this.size > Integer.MAX_VALUE</code>
+	 *             If <code>Integer.MAX_VALUE < this.size</code>
 	 */
 	public int sizeExact() throws ArithmeticException {
-		if (this.size > Integer.MAX_VALUE) {
+		if (Integer.MAX_VALUE < this.size) {
 			throw new ArithmeticException();
 		}
 		return ((int) this.size);
@@ -88,20 +88,21 @@ public class SinglyLinkedList<T> implements Iterable<T> {
 	 *             If <code>a == null</code>
 	 * 
 	 * @throws IndexOutOfBoundsException
-	 *             If <code>(beginIndex < 0) || (beginIndex >= this.size)
-	 *             || (endIndex < 0) || (endIndex > this.size)</code>
+	 *             If <code>(beginIndex < 0) || (this.size <= beginIndex)
+	 *             || (endIndex < 0) || (this.size < endIndex)</code>
 	 */
 	public void toArray(T[] a, long beginIndex, long endIndex) throws NullPointerException, IndexOutOfBoundsException {
 		if (a.length == 0) {
 			return;
-		} else if ((beginIndex < 0) || (beginIndex >= this.size)) {
+		} else if ((beginIndex < 0) || (this.size <= beginIndex)) {
 			throw new IndexOutOfBoundsException();
-		} else if ((endIndex < 0) || (endIndex > this.size)) {
+		} else if ((endIndex < 0) || (this.size < endIndex)) {
 			throw new IndexOutOfBoundsException();
-		} else if (beginIndex >= endIndex) {
+		} else if (endIndex <= beginIndex) {
 			a[0] = null;
 			return;
 		}
+		// (a.length != 0) && (0 <= beginIndex) && (beginIndex < endIndex) && (endIndex <= this.size)
 
 		// Advance the node pointer to the node with index beginIndex.
 		SLLNode<T> node = this.header.next;

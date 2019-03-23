@@ -731,16 +731,16 @@ public class BigIntUtil {
 	 *             If <code>(begin == null) || (end == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>begin > end</code>
+	 *             If <code>end < begin</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>(end - begin) > Integer.MAX_VALUE</code>
+	 *             If <code>Integer.MAX_VALUE < (end - begin)</code>
 	 */
 	protected static int powersLength(BigInteger begin, BigInteger end)
 			throws NullPointerException, IllegalArgumentException, ArithmeticException {
 		// Validate begin and end.
 		final int cmp = begin.compareTo(end);
-		if (cmp > 0) { // i.e., begin > end
+		if (0 < cmp) { // i.e., end < begin
 			throw new IllegalArgumentException();
 		}
 		// cmp <= 0
@@ -776,10 +776,10 @@ public class BigIntUtil {
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>begin > end</code>
+	 *             If <code>end < begin</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>(end - begin) > Integer.MAX_VALUE</code>
+	 *             If <code>Integer.MAX_VALUE < (end - begin)</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(begin < 0) && ((n (mod m) == 0) || (gcd(n, m) != 1))</code>
@@ -886,7 +886,7 @@ public class BigIntUtil {
 	 *             If <code>end < 0</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>end > Integer.MAX_VALUE</code>
+	 *             If <code>Integer.MAX_VALUE < end</code>
 	 */
 	public static BigInteger[] modPowers(BigInteger n, BigInteger m, BigInteger end)
 			throws NullPointerException, InvalidModulusException, IllegalArgumentException, ArithmeticException {
@@ -915,7 +915,7 @@ public class BigIntUtil {
 	 *             If <code>m < 1</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>m > Integer.MAX_VALUE</code>
+	 *             If <code>Integer.MAX_VALUE < m</code>
 	 */
 	public static BigInteger[] modPowers(BigInteger n, BigInteger m)
 			throws NullPointerException, InvalidModulusException, ArithmeticException {

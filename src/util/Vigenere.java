@@ -879,7 +879,8 @@ public class Vigenere implements Iterable<Character> {
 			maxFreq = freq[0];
 			maxFreqLetter = (char) ('A' + 0);
 			for (int i = 1, f = 0; i != freq.length; ++i) {
-				if ((f = freq[i]) > maxFreq) {
+				// The following is meant to be an assignment of f.
+				if (maxFreq < (f = freq[i])) {
 					maxFreq = f;
 					maxFreqLetter = (char) ('A' + i);
 				}

@@ -372,10 +372,10 @@ public class MatrixInt implements Iterable<Integer> {
 	 * @return The unknown matrix dimension.
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(size <= 0) || (dim <= 0) || (dim > size)</code>
+	 *             If <code>(size <= 0) || (dim <= 0) || (size < dim)</code>
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>((long) Math.ceil(((double) size) / dim)) > Integer.MAX_VALUE</code>
+	 *             If <code>Integer.MAX_VALUE < ((long) Math.ceil(((double) size) / dim))</code>
 	 */
 	public static int otherDim(long size, int dim) throws IllegalArgumentException, ArithmeticException {
 		if (size < 1) {
@@ -386,7 +386,7 @@ public class MatrixInt implements Iterable<Integer> {
 		// (size >= 1) && (1 <= dim) && (dim <= size)
 
 		final long result = (long) Math.ceil(((double) size) / dim);
-		if (result > Integer.MAX_VALUE) {
+		if (Integer.MAX_VALUE < result) {
 			throw new ArithmeticException();
 		}
 		return ((int) result);
@@ -1038,8 +1038,8 @@ public class MatrixInt implements Iterable<Integer> {
 	 * @return The resulting MatrixInt object.
 	 * 
 	 * @throws IndexOutOfBoundsException
-	 *             If <code>(excludingRow < 0) || (excludingRow > this.numRows)
-	 *             || (excludingCol < 0) || (excludingCol > this.numCols)</code>
+	 *             If <code>(excludingRow < 0) || (this.numRows < excludingRow)
+	 *             || (excludingCol < 0) || (this.numCols < excludingCol)</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>((excludingRow != this.numRows) && (this.numRows == 1))
@@ -1047,8 +1047,8 @@ public class MatrixInt implements Iterable<Integer> {
 	 */
 	public MatrixInt submatrix(int excludingRow, int excludingCol)
 			throws IndexOutOfBoundsException, IllegalArgumentException {
-		if ((excludingRow < 0) || (excludingRow > this.numRows) || (excludingCol < 0)
-				|| (excludingCol > this.numCols)) {
+		if ((excludingRow < 0) || (this.numRows < excludingRow) || (excludingCol < 0)
+				|| (this.numCols < excludingCol)) {
 			throw new IndexOutOfBoundsException();
 		}
 
@@ -1124,7 +1124,7 @@ public class MatrixInt implements Iterable<Integer> {
 	 * @return <code>this.submatrix(row, this.numCols)</code>.
 	 * 
 	 * @throws IndexOutOfBoundsException
-	 *             If <code>(row < 0) || (row > this.numRows)</code>
+	 *             If <code>(row < 0) || (this.numRows < row)</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(row != this.numRows) && (this.numRows == 1)</code>
@@ -1143,7 +1143,7 @@ public class MatrixInt implements Iterable<Integer> {
 	 * @return <code>this.submatrix(this.numRows, col)</code>.
 	 * 
 	 * @throws IndexOutOfBoundsException
-	 *             If <code>(col < 0) || (col > this.numCols)</code>
+	 *             If <code>(col < 0) || (this.numCols < col)</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(col != this.numCols) && (this.numCols == 1)</code>
