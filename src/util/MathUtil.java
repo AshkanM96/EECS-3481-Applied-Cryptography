@@ -348,7 +348,7 @@ public class MathUtil {
 		}
 		// abs_b == Math.abs(b)
 
-		// Algorithm is from Introduction to Mathematical Cryptography 2nd Edition Exercise 1.12.
+		// The algorithm is from Introduction to Mathematical Cryptography 2nd Edition Exercise 1.12.
 		long gcd = abs_a, x = 1L;
 		{
 			long u = 0L, v = abs_b, remainder = 0L, quotient = gcd, tmp = 0L;
@@ -799,7 +799,7 @@ public class MathUtil {
 	}
 
 	/**
-	 * Compute <code>n<sup>p</sup></code> using the fast power (a.k.a. successive squaring) algorithm.
+	 * Compute <code>n<sup>p</sup></code> using the Fast Power (a.k.a. Successive Squaring) Algorithm.
 	 * <br>
 	 * Note that this function does not check for overflows which may have occurred during the
 	 * calculations.
@@ -858,7 +858,7 @@ public class MathUtil {
 	}
 
 	/**
-	 * Compute <code>n<sup>p</sup></code> using the fast power (a.k.a. successive squaring) algorithm.
+	 * Compute <code>n<sup>p</sup></code> using the Fast Power (a.k.a. Successive Squaring) Algorithm.
 	 * <br>
 	 * Note that this function does not check for overflows which may have occurred during the
 	 * calculations.
@@ -882,7 +882,7 @@ public class MathUtil {
 	}
 
 	/**
-	 * Compute <code>n<sup>p</sup></code> using the fast power (a.k.a. successive squaring) algorithm.
+	 * Compute <code>n<sup>p</sup></code> using the Fast Power (a.k.a. Successive Squaring) Algorithm.
 	 * <br>
 	 * Note that this function does not check for overflows which may have occurred during the
 	 * calculations.
@@ -906,7 +906,7 @@ public class MathUtil {
 	}
 
 	/**
-	 * Compute <code>n<sup>p</sup></code> using the fast power (a.k.a. successive squaring) algorithm.
+	 * Compute <code>n<sup>p</sup></code> using the Fast Power (a.k.a. Successive Squaring) Algorithm.
 	 * <br>
 	 * Note that this function does not check for overflows which may have occurred during the
 	 * calculations.
@@ -930,7 +930,7 @@ public class MathUtil {
 	}
 
 	/**
-	 * Compute <code>n<sup>p</sup></code> using the fast power (a.k.a. successive squaring) algorithm.
+	 * Compute <code>n<sup>p</sup></code> using the Fast Power (a.k.a. Successive Squaring) Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -987,7 +987,7 @@ public class MathUtil {
 	}
 
 	/**
-	 * Compute <code>n<sup>p</sup></code> using the fast power (a.k.a. successive squaring) algorithm.
+	 * Compute <code>n<sup>p</sup></code> using the Fast Power (a.k.a. Successive Squaring) Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -1014,7 +1014,7 @@ public class MathUtil {
 	}
 
 	/**
-	 * Compute <code>n<sup>p</sup></code> using the fast power (a.k.a. successive squaring) algorithm.
+	 * Compute <code>n<sup>p</sup></code> using the Fast Power (a.k.a. Successive Squaring) Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -1041,7 +1041,7 @@ public class MathUtil {
 	}
 
 	/**
-	 * Compute <code>n<sup>p</sup></code> using the fast power (a.k.a. successive squaring) algorithm.
+	 * Compute <code>n<sup>p</sup></code> using the Fast Power (a.k.a. Successive Squaring) Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -1368,7 +1368,6 @@ public class MathUtil {
 			return ((abs_n < other) ? n : other);
 		}
 		// n >= 0
-
 		/**
 		 * By the precondition on <code>n</code>, we know that <code>(0 <= n <= m - 1)</code>. Therefore,
 		 * <code>(-m <= other <= -1)</code> and so <code>other < 0</code> but <code>-other</code> will not
@@ -1728,7 +1727,7 @@ public class MathUtil {
 	 * First attempt to multiply <code>a</code> and <code>b</code> normally using
 	 * <code>Math.multiplyExact</code> in <code>O(1) time</code>. If an overflow occurs during the
 	 * multiplication, then perform <code>O(lg(min(a (mod m), b (mod m))))</code> many additions in
-	 * <code>mod m</code>. <br>
+	 * <code>mod m</code> in <code>O(lg(min(a (mod m), b (mod m)))) time</code>. <br>
 	 * Precondition: <code>m > 0</code> <br>
 	 * Precondition: <code>|a| <= (m / 2)</code> <br>
 	 * Precondition: <code>|b| <= (m / 2)</code> <br>
@@ -1777,7 +1776,9 @@ public class MathUtil {
 			min = tmp;
 			max = a;
 		}
-		// min == Math.min(MathUtil.mod(a, m), MathUtil.mod(b, m))
+		/**
+		 * <code>(min == Math.min(MathUtil.mod(a, m), MathUtil.mod(b, m))) && (max == (min == MathUtil.mod(a, m)) ? b : a)</code>
+		 */
 
 		long result = 0L;
 		for (boolean notExit = (min != 0L); notExit; /* Update inside. */) {
@@ -2345,8 +2346,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * Compute <code>n<sup>p</sup> (mod m)</code> using the fast power (a.k.a. successive squaring)
-	 * algorithm. <br>
+	 * Compute <code>n<sup>p</sup> (mod m)</code> using the Fast Power (a.k.a. Successive Squaring)
+	 * Algorithm. <br>
 	 * Note that this function does not check for the special cases <code>n == &plusmn;1 (mod m)</code>
 	 * and so it will still take <code>O(lg(p))</code> steps even though the answer can be trivially
 	 * determined in <code>O(1)</code> steps. Therefore, for the best performance, it is recommended to
@@ -2391,8 +2392,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * Compute <code>n<sup>p</sup> (mod m)</code> using the fast power (a.k.a. successive squaring)
-	 * algorithm.
+	 * Compute <code>n<sup>p</sup> (mod m)</code> using the Fast Power (a.k.a. Successive Squaring)
+	 * Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -2504,8 +2505,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * Compute <code>n<sup>p</sup> (mod m)</code> using the fast power (a.k.a. successive squaring)
-	 * algorithm.
+	 * Compute <code>n<sup>p</sup> (mod m)</code> using the Fast Power (a.k.a. Successive Squaring)
+	 * Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -2533,8 +2534,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * Compute <code>n<sup>p</sup> (mod m)</code> using the fast power (a.k.a. successive squaring)
-	 * algorithm.
+	 * Compute <code>n<sup>p</sup> (mod m)</code> using the Fast Power (a.k.a. Successive Squaring)
+	 * Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -2562,8 +2563,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * Compute <code>n<sup>p</sup> (mod m)</code> using the fast power (a.k.a. successive squaring)
-	 * algorithm.
+	 * Compute <code>n<sup>p</sup> (mod m)</code> using the Fast Power (a.k.a. Successive Squaring)
+	 * Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -2774,6 +2775,38 @@ public class MathUtil {
 	 * Note that this function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in
 	 * math. <br>
 	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>Result.length == end</code> <br>
+	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>i</sup> (mod m))</code>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param end
+	 *            the given end power
+	 * 
+	 * @return <code>MathUtil.modPowers(n, m, 0L, end)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>end < 0</code>
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>end > Integer.MAX_VALUE</code>
+	 */
+	public static long[] modPowers(long n, long m, long end)
+			throws InvalidModulusException, IllegalArgumentException, ArithmeticException {
+		return MathUtil.modPowers(n, m, 0L, end);
+	}
+
+	/**
+	 * Note that this function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in
+	 * math. <br>
+	 * Postcondition: <code>Result != null</code> <br>
 	 * Postcondition: <code>Result.length == m</code> <br>
 	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>i</sup> (mod m))</code>
 	 * 
@@ -2783,7 +2816,7 @@ public class MathUtil {
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @return The resulting long array.
+	 * @return <code>MathUtil.modPowers(n, m, m)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
@@ -2792,7 +2825,7 @@ public class MathUtil {
 	 *             If <code>m > Integer.MAX_VALUE</code>
 	 */
 	public static long[] modPowers(long n, long m) throws InvalidModulusException, ArithmeticException {
-		return MathUtil.modPowers(n, m, 0L, m);
+		return MathUtil.modPowers(n, m, m);
 	}
 
 	/**
@@ -2918,6 +2951,34 @@ public class MathUtil {
 	 * Note that this function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in
 	 * math. <br>
 	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>Result.length == end</code> <br>
+	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>i</sup> (mod m))</code>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param end
+	 *            the given end power
+	 * 
+	 * @return <code>MathUtil.modPowers(n, m, 0, end)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>end < 0</code>
+	 */
+	public static int[] modPowers(int n, int m, int end) throws InvalidModulusException, IllegalArgumentException {
+		return MathUtil.modPowers(n, m, 0, end);
+	}
+
+	/**
+	 * Note that this function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in
+	 * math. <br>
+	 * Postcondition: <code>Result != null</code> <br>
 	 * Postcondition: <code>Result.length == m</code> <br>
 	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>i</sup> (mod m))</code>
 	 * 
@@ -2927,13 +2988,13 @@ public class MathUtil {
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @return The resulting integer array.
+	 * @return <code>MathUtil.modPowers(n, m, m)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
 	 */
 	public static int[] modPowers(int n, int m) throws InvalidModulusException {
-		return MathUtil.modPowers(n, m, 0, m);
+		return MathUtil.modPowers(n, m, m);
 	}
 
 	/**
@@ -3056,6 +3117,35 @@ public class MathUtil {
 	 * Note that this function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in
 	 * math. <br>
 	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>Result.length == end</code> <br>
+	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>i</sup> (mod m))</code>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param end
+	 *            the given end power
+	 * 
+	 * @return <code>MathUtil.modPowers(n, m, (short) 0, end)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>end < 0</code>
+	 */
+	public static short[] modPowers(short n, short m, short end)
+			throws InvalidModulusException, IllegalArgumentException {
+		return MathUtil.modPowers(n, m, (short) 0, end);
+	}
+
+	/**
+	 * Note that this function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in
+	 * math. <br>
+	 * Postcondition: <code>Result != null</code> <br>
 	 * Postcondition: <code>Result.length == m</code> <br>
 	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>i</sup> (mod m))</code>
 	 * 
@@ -3065,13 +3155,13 @@ public class MathUtil {
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @return The resulting short array.
+	 * @return <code>MathUtil.modPowers(n, m, m)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
 	 */
 	public static short[] modPowers(short n, short m) throws InvalidModulusException {
-		return MathUtil.modPowers(n, m, (short) 0, m);
+		return MathUtil.modPowers(n, m, m);
 	}
 
 	/**
@@ -3194,6 +3284,34 @@ public class MathUtil {
 	 * Note that this function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in
 	 * math. <br>
 	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>Result.length == end</code> <br>
+	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>i</sup> (mod m))</code>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param end
+	 *            the given end power
+	 * 
+	 * @return <code>MathUtil.modPowers(n, m, (byte) 0, end)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>end < 0</code>
+	 */
+	public static byte[] modPowers(byte n, byte m, byte end) throws InvalidModulusException, IllegalArgumentException {
+		return MathUtil.modPowers(n, m, (byte) 0, end);
+	}
+
+	/**
+	 * Note that this function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in
+	 * math. <br>
+	 * Postcondition: <code>Result != null</code> <br>
 	 * Postcondition: <code>Result.length == m</code> <br>
 	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>i</sup> (mod m))</code>
 	 * 
@@ -3203,13 +3321,13 @@ public class MathUtil {
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @return The resulting byte array.
+	 * @return <code>MathUtil.modPowers(n, m, m)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
 	 */
 	public static byte[] modPowers(byte n, byte m) throws InvalidModulusException {
-		return MathUtil.modPowers(n, m, (byte) 0, m);
+		return MathUtil.modPowers(n, m, m);
 	}
 
 	/**
@@ -3406,10 +3524,6 @@ public class MathUtil {
 		}
 		// (m > 3) && (1 < n) && (n < m - 1) && (target != 1) && (n != target)
 		if (begin == end) {
-			/*
-			 * This case is only an optimization since the loop will never execute but extra unnecessary work is
-			 * performed to arrive at the same result.
-			 */
 			return null;
 		}
 		// begin != end
@@ -3419,7 +3533,10 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogLinearSearch(n, target, m, 1L, m - 1L)</code>.
+	 * Perform a linear search for <code>x</code> such that
+	 * <code>n<sup>x</sup> (mod m) == target</code>. Note that even if the result is not
+	 * <code>null</code>, it is still not guaranteed to be in <code>[1, end)</code>. The purpose of
+	 * <code>end</code> is to bound the linear search for <code>x</code> in the general case.
 	 * 
 	 * @param n
 	 *            the given number
@@ -3430,14 +3547,42 @@ public class MathUtil {
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
-	 *         <code>x</code> exists and <code>null</code> otherwise.
+	 * @param end
+	 *            the given end power
+	 * 
+	 * @return <code>MathUtil.discreteLogLinearSearch(n, target, m, 1L, end)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>end < 1</code>
+	 */
+	public static Long discreteLogLinearSearch(long n, long target, long m, long end)
+			throws InvalidModulusException, IllegalArgumentException {
+		return MathUtil.discreteLogLinearSearch(n, target, m, 1L, end);
+	}
+
+	/**
+	 * Perform a linear search for <code>x</code> such that
+	 * <code>n<sup>x</sup> (mod m) == target</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param target
+	 *            the given target
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>MathUtil.discreteLogLinearSearch(n, target, m, m - 1L)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
 	 */
 	public static Long discreteLogLinearSearch(long n, long target, long m) throws InvalidModulusException {
-		return MathUtil.discreteLogLinearSearch(n, target, m, 1L, m - 1L);
+		return MathUtil.discreteLogLinearSearch(n, target, m, m - 1L);
 	}
 
 	/**
@@ -3482,7 +3627,10 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogLinearSearch(n, target, m, 1, m - 1)</code>.
+	 * Perform a linear search for <code>x</code> such that
+	 * <code>n<sup>x</sup> (mod m) == target</code>. Note that even if the result is not
+	 * <code>null</code>, it is still not guaranteed to be in <code>[1, end)</code>. The purpose of
+	 * <code>end</code> is to bound the linear search for <code>x</code> in the general case.
 	 * 
 	 * @param n
 	 *            the given number
@@ -3493,14 +3641,42 @@ public class MathUtil {
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
-	 *         <code>x</code> exists and <code>null</code> otherwise.
+	 * @param end
+	 *            the given end power
+	 * 
+	 * @return <code>MathUtil.discreteLogLinearSearch(n, target, m, 1, end)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>end < 1</code>
+	 */
+	public static Integer discreteLogLinearSearch(int n, int target, int m, int end)
+			throws InvalidModulusException, IllegalArgumentException {
+		return MathUtil.discreteLogLinearSearch(n, target, m, 1, end);
+	}
+
+	/**
+	 * Perform a linear search for <code>x</code> such that
+	 * <code>n<sup>x</sup> (mod m) == target</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param target
+	 *            the given target
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>MathUtil.discreteLogLinearSearch(n, target, m, m - 1)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
 	 */
 	public static Integer discreteLogLinearSearch(int n, int target, int m) throws InvalidModulusException {
-		return MathUtil.discreteLogLinearSearch(n, target, m, 1, m - 1);
+		return MathUtil.discreteLogLinearSearch(n, target, m, m - 1);
 	}
 
 	/**
@@ -3545,7 +3721,10 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogLinearSearch(n, target, m, (short) 1, (short) (m - 1))</code>.
+	 * Perform a linear search for <code>x</code> such that
+	 * <code>n<sup>x</sup> (mod m) == target</code>. Note that even if the result is not
+	 * <code>null</code>, it is still not guaranteed to be in <code>[1, end)</code>. The purpose of
+	 * <code>end</code> is to bound the linear search for <code>x</code> in the general case.
 	 * 
 	 * @param n
 	 *            the given number
@@ -3556,14 +3735,42 @@ public class MathUtil {
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
-	 *         <code>x</code> exists and <code>null</code> otherwise.
+	 * @param end
+	 *            the given end power
+	 * 
+	 * @return <code>MathUtil.discreteLogLinearSearch(n, target, m, (short) 1, end)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>end < 1</code>
+	 */
+	public static Short discreteLogLinearSearch(short n, short target, short m, short end)
+			throws InvalidModulusException, IllegalArgumentException {
+		return MathUtil.discreteLogLinearSearch(n, target, m, (short) 1, end);
+	}
+
+	/**
+	 * Perform a linear search for <code>x</code> such that
+	 * <code>n<sup>x</sup> (mod m) == target</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param target
+	 *            the given target
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>MathUtil.discreteLogLinearSearch(n, target, m, (short) (m - 1))</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
 	 */
 	public static Short discreteLogLinearSearch(short n, short target, short m) throws InvalidModulusException {
-		return MathUtil.discreteLogLinearSearch(n, target, m, (short) 1, (short) (m - 1));
+		return MathUtil.discreteLogLinearSearch(n, target, m, (short) (m - 1));
 	}
 
 	/**
@@ -3608,7 +3815,10 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogLinearSearch(n, target, m, (byte) 1, (byte) (m - 1))</code>.
+	 * Perform a linear search for <code>x</code> such that
+	 * <code>n<sup>x</sup> (mod m) == target</code>. Note that even if the result is not
+	 * <code>null</code>, it is still not guaranteed to be in <code>[1, end)</code>. The purpose of
+	 * <code>end</code> is to bound the linear search for <code>x</code> in the general case.
 	 * 
 	 * @param n
 	 *            the given number
@@ -3619,19 +3829,47 @@ public class MathUtil {
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
-	 *         <code>x</code> exists and <code>null</code> otherwise.
+	 * @param end
+	 *            the given end power
+	 * 
+	 * @return <code>MathUtil.discreteLogLinearSearch(n, target, m, (byte) 1, end)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>end < 1</code>
+	 */
+	public static Byte discreteLogLinearSearch(byte n, byte target, byte m, byte end)
+			throws InvalidModulusException, IllegalArgumentException {
+		return MathUtil.discreteLogLinearSearch(n, target, m, (byte) 1, end);
+	}
+
+	/**
+	 * Perform a linear search for <code>x</code> such that
+	 * <code>n<sup>x</sup> (mod m) == target</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param target
+	 *            the given target
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>MathUtil.discreteLogLinearSearch(n, target, m, (byte) (m - 1))</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
 	 */
 	public static Byte discreteLogLinearSearch(byte n, byte target, byte m) throws InvalidModulusException {
-		return MathUtil.discreteLogLinearSearch(n, target, m, (byte) 1, (byte) (m - 1));
+		return MathUtil.discreteLogLinearSearch(n, target, m, (byte) (m - 1));
 	}
 
 	/**
 	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using Shanks'
-	 * Babystep-Giantstep algorithm. <br>
+	 * Babystep-Giantstep Algorithm. <br>
 	 * Note that this function does not check for the special cases
 	 * <code>n == 0, &plusmn;1, target (mod m)</code>, or <code>target == 1</code> and so it will still
 	 * take <code>O(bound)</code> steps even though the answer can be trivially determined in
@@ -3828,7 +4066,7 @@ public class MathUtil {
 
 	/**
 	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using Shanks'
-	 * Babystep-Giantstep algorithm.
+	 * Babystep-Giantstep Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -3914,7 +4152,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, generateBoth, true)</code>.
+	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using Shanks'
+	 * Babystep-Giantstep Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -3935,8 +4174,7 @@ public class MathUtil {
 	 *            simultaneously instead of fully generating the babylist first and then generating the
 	 *            giantlist in-place
 	 * 
-	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
-	 *         <code>x</code> exists and <code>null</code> otherwise.
+	 * @return <code>MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, generateBoth, true)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
@@ -3956,7 +4194,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, true)</code>.
+	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using Shanks'
+	 * Babystep-Giantstep Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -3972,8 +4211,7 @@ public class MathUtil {
 	 *            multiplicative order of <code>n</code> in <code>mod m</code> is &le;
 	 *            <code>upperOrder</code>)
 	 * 
-	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
-	 *         <code>x</code> exists and <code>null</code> otherwise.
+	 * @return <code>MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, true)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
@@ -3993,7 +4231,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogBabyGiant(n, target, m, m - 1L)</code>.
+	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using Shanks'
+	 * Babystep-Giantstep Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -4004,8 +4243,7 @@ public class MathUtil {
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
-	 *         <code>x</code> exists and <code>null</code> otherwise.
+	 * @return <code>MathUtil.discreteLogBabyGiant(n, target, m, m - 1L)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
@@ -4023,7 +4261,7 @@ public class MathUtil {
 
 	/**
 	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using Shanks'
-	 * Babystep-Giantstep algorithm.
+	 * Babystep-Giantstep Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -4068,7 +4306,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, generateBoth, true)</code>.
+	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using Shanks'
+	 * Babystep-Giantstep Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -4089,8 +4328,7 @@ public class MathUtil {
 	 *            simultaneously instead of fully generating the babylist first and then generating the
 	 *            giantlist in-place
 	 * 
-	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
-	 *         <code>x</code> exists and <code>null</code> otherwise.
+	 * @return <code>MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, generateBoth, true)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
@@ -4107,7 +4345,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, true)</code>.
+	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using Shanks'
+	 * Babystep-Giantstep Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -4123,8 +4362,7 @@ public class MathUtil {
 	 *            multiplicative order of <code>n</code> in <code>mod m</code> is &le;
 	 *            <code>upperOrder</code>)
 	 * 
-	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
-	 *         <code>x</code> exists and <code>null</code> otherwise.
+	 * @return <code>MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, true)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
@@ -4141,7 +4379,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogBabyGiant(n, target, m, m - 1)</code>.
+	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using Shanks'
+	 * Babystep-Giantstep Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -4152,8 +4391,7 @@ public class MathUtil {
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
-	 *         <code>x</code> exists and <code>null</code> otherwise.
+	 * @return <code>MathUtil.discreteLogBabyGiant(n, target, m, m - 1)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
@@ -4168,7 +4406,7 @@ public class MathUtil {
 
 	/**
 	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using Shanks'
-	 * Babystep-Giantstep algorithm.
+	 * Babystep-Giantstep Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -4213,7 +4451,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, generateBoth, true)</code>.
+	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using Shanks'
+	 * Babystep-Giantstep Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -4234,8 +4473,7 @@ public class MathUtil {
 	 *            simultaneously instead of fully generating the babylist first and then generating the
 	 *            giantlist in-place
 	 * 
-	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
-	 *         <code>x</code> exists and <code>null</code> otherwise.
+	 * @return <code>MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, generateBoth, true)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
@@ -4252,7 +4490,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, true)</code>.
+	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using Shanks'
+	 * Babystep-Giantstep Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -4268,8 +4507,7 @@ public class MathUtil {
 	 *            multiplicative order of <code>n</code> in <code>mod m</code> is &le;
 	 *            <code>upperOrder</code>)
 	 * 
-	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
-	 *         <code>x</code> exists and <code>null</code> otherwise.
+	 * @return <code>MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, true)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
@@ -4286,7 +4524,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogBabyGiant(n, target, m, (short) (m - 1))</code>.
+	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using Shanks'
+	 * Babystep-Giantstep Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -4297,8 +4536,7 @@ public class MathUtil {
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
-	 *         <code>x</code> exists and <code>null</code> otherwise.
+	 * @return <code>MathUtil.discreteLogBabyGiant(n, target, m, (short) (m - 1))</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
@@ -4313,7 +4551,7 @@ public class MathUtil {
 
 	/**
 	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using Shanks'
-	 * Babystep-Giantstep algorithm.
+	 * Babystep-Giantstep Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -4358,7 +4596,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, generateBoth, true)</code>.
+	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using Shanks'
+	 * Babystep-Giantstep Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -4379,8 +4618,7 @@ public class MathUtil {
 	 *            simultaneously instead of fully generating the babylist first and then generating the
 	 *            giantlist in-place
 	 * 
-	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
-	 *         <code>x</code> exists and <code>null</code> otherwise.
+	 * @return <code>MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, generateBoth, true)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
@@ -4397,7 +4635,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, true)</code>.
+	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using Shanks'
+	 * Babystep-Giantstep Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -4413,8 +4652,7 @@ public class MathUtil {
 	 *            multiplicative order of <code>n</code> in <code>mod m</code> is &le;
 	 *            <code>upperOrder</code>)
 	 * 
-	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
-	 *         <code>x</code> exists and <code>null</code> otherwise.
+	 * @return <code>MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, true)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
@@ -4431,7 +4669,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogBabyGiant(n, target, m, (byte) (m - 1))</code>.
+	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using Shanks'
+	 * Babystep-Giantstep Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -4442,8 +4681,7 @@ public class MathUtil {
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
-	 *         <code>x</code> exists and <code>null</code> otherwise.
+	 * @return <code>MathUtil.discreteLogBabyGiant(n, target, m, (byte) (m - 1))</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
@@ -4458,7 +4696,7 @@ public class MathUtil {
 
 	/**
 	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using the
-	 * Pohlig-Hellman algorithm. <br>
+	 * Pohlig-Hellman Algorithm. <br>
 	 * Precondition: <code>m > 2</code> <br>
 	 * Precondition: <code>(0 <= n) && (n <= m - 1)</code> <br>
 	 * Precondition: <code>(0 <= target) && (target <= m - 1)</code> <br>
@@ -4488,7 +4726,7 @@ public class MathUtil {
 	 * 
 	 * @param linearSearchIfNotBabyGiant
 	 *            specifies whether a Linear-Search for <code>x</code> should be used when Shanks'
-	 *            Babystep-Giantstep algorithm cannot be used
+	 *            Babystep-Giantstep Algorithm cannot be used
 	 * 
 	 * @param simple
 	 *            specifies whether the simple version of the algorithm should be used (i.e., specifies
@@ -4499,12 +4737,12 @@ public class MathUtil {
 	 * @param generateBothBabyGiant
 	 *            specifies whether both the babylist and the giantlist should be generated and stored
 	 *            simultaneously instead of fully generating the babylist first and then generating the
-	 *            giantlist in-place when using Shanks' Babystep-Giantstep algorithm
+	 *            giantlist in-place when using Shanks' Babystep-Giantstep Algorithm
 	 * 
 	 * @param hashBabyGiant
 	 *            specifies whether the data structure used to store the lists, should be a
 	 *            <code>HashMap</code> instead of a <code>TreeMap</code> when using Shanks'
-	 *            Babystep-Giantstep algorithm
+	 *            Babystep-Giantstep Algorithm
 	 * 
 	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
 	 *         <code>x</code> exists and <code>null</code> otherwise.
@@ -4630,7 +4868,7 @@ public class MathUtil {
 		 * having it evaluate the linearSearch boolean in every iteration for efficiency purposes.
 		 */
 		if (linearSearch) { // i.e., ((bound > Integer.MAX_VALUE) || (gcd(nu, m) != 1)) && linearSearchIfNotBabyGiant
-			// Algorithm is from https://en.wikipedia.org/wiki/Pohlig%E2%80%93Hellman_algorithm.
+			// The algorithm is from https://en.wikipedia.org/wiki/Pohlig%E2%80%93Hellman_algorithm.
 			long x = 0L;
 			Long d_k = null;
 			for (long k = 0L, target_k = 0L, p_to_k = 1L; k != e; ++k, p_to_k *= p) {
@@ -4679,7 +4917,7 @@ public class MathUtil {
 			return x;
 		}
 		// i.e., (bound <= Integer.MAX_VALUE) && (gcd(nu, m) == 1)
-		// Algorithm is from https://en.wikipedia.org/wiki/Pohlig%E2%80%93Hellman_algorithm.
+		// The algorithm is from https://en.wikipedia.org/wiki/Pohlig%E2%80%93Hellman_algorithm.
 		long x = 0L;
 		Long d_k = null;
 		for (long k = 0L, target_k = 0L, p_to_k = 1L; k != e; ++k, p_to_k *= p) {
@@ -4731,7 +4969,7 @@ public class MathUtil {
 
 	/**
 	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using the
-	 * Pohlig-Hellman algorithm. <br>
+	 * Pohlig-Hellman Algorithm. <br>
 	 * Note that this function does not check for the special cases
 	 * <code>n == 0, &plusmn;1, target (mod m)</code>, or <code>target == 1</code> and so it will still
 	 * take <code>O(linearSearchIfNotBabyGiant ? upperOrder : sqrt(upperOrder))</code> steps even though
@@ -4785,7 +5023,7 @@ public class MathUtil {
 	 * 
 	 * @param linearSearchIfNotBabyGiant
 	 *            specifies whether a Linear-Search for <code>x</code> should be used when Shanks'
-	 *            Babystep-Giantstep algorithm cannot be used
+	 *            Babystep-Giantstep Algorithm cannot be used
 	 * 
 	 * @param simple
 	 *            specifies whether the simple version of the algorithm should be used (i.e., solving
@@ -4800,12 +5038,12 @@ public class MathUtil {
 	 * @param generateBothBabyGiant
 	 *            specifies whether both the babylist and the giantlist should be generated and stored
 	 *            simultaneously instead of fully generating the babylist first and then generating the
-	 *            giantlist in-place when using Shanks' Babystep-Giantstep algorithm
+	 *            giantlist in-place when using Shanks' Babystep-Giantstep Algorithm
 	 * 
 	 * @param hashBabyGiant
 	 *            specifies whether the data structure used to store the lists, should be a
 	 *            <code>HashMap</code> instead of a <code>TreeMap</code> when using Shanks'
-	 *            Babystep-Giantstep algorithm
+	 *            Babystep-Giantstep Algorithm
 	 * 
 	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
 	 *         <code>x</code> exists and <code>null</code> otherwise.
@@ -4935,7 +5173,7 @@ public class MathUtil {
 
 	/**
 	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using the
-	 * Pohlig-Hellman algorithm.
+	 * Pohlig-Hellman Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -4953,7 +5191,7 @@ public class MathUtil {
 	 * 
 	 * @param linearSearchIfNotBabyGiant
 	 *            specifies whether a Linear-Search for <code>x</code> should be used when Shanks'
-	 *            Babystep-Giantstep algorithm cannot be used
+	 *            Babystep-Giantstep Algorithm cannot be used
 	 * 
 	 * @param simple
 	 *            specifies whether the simple version of the algorithm should be used (i.e., solving
@@ -4969,12 +5207,12 @@ public class MathUtil {
 	 * @param generateBothBabyGiant
 	 *            specifies whether both the babylist and the giantlist should be generated and stored
 	 *            simultaneously instead of fully generating the babylist first and then generating the
-	 *            giantlist in-place when using Shanks' Babystep-Giantstep algorithm
+	 *            giantlist in-place when using Shanks' Babystep-Giantstep Algorithm
 	 * 
 	 * @param hashBabyGiant
 	 *            specifies whether the data structure used to store the lists, should be a
 	 *            <code>HashMap</code> instead of a <code>TreeMap</code> when using Shanks'
-	 *            Babystep-Giantstep algorithm
+	 *            Babystep-Giantstep Algorithm
 	 * 
 	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
 	 *         <code>x</code> exists and <code>null</code> otherwise.
@@ -5030,13 +5268,14 @@ public class MathUtil {
 		// upperOrder != 1
 		// i.e., (2 <= upperOrder) && (upperOrder <= m - 1)
 
-		// Factor upperOrder and then perform the Pohlig-Hellman algorithm.
+		// Factor upperOrder and then perform the Pohlig-Hellman Algorithm.
 		return MathUtil.discreteLogPohligHellmanFixedInput(n, target, m, upperOrder, linearSearchIfNotBabyGiant, simple,
 				NumUtil.factorSqrt(upperOrder, hashFactor, false), generateBothBabyGiant, hashBabyGiant);
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, simple, hashFactor, generateBothBabyGiant, true)</code>.
+	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using the
+	 * Pohlig-Hellman Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -5054,7 +5293,7 @@ public class MathUtil {
 	 * 
 	 * @param linearSearchIfNotBabyGiant
 	 *            specifies whether a Linear-Search for <code>x</code> should be used when Shanks'
-	 *            Babystep-Giantstep algorithm cannot be used
+	 *            Babystep-Giantstep Algorithm cannot be used
 	 * 
 	 * @param simple
 	 *            specifies whether the simple version of the algorithm should be used (i.e., solving
@@ -5070,10 +5309,9 @@ public class MathUtil {
 	 * @param generateBothBabyGiant
 	 *            specifies whether both the babylist and the giantlist should be generated and stored
 	 *            simultaneously instead of fully generating the babylist first and then generating the
-	 *            giantlist in-place when using Shanks' Babystep-Giantstep algorithm
+	 *            giantlist in-place when using Shanks' Babystep-Giantstep Algorithm
 	 * 
-	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
-	 *         <code>x</code> exists and <code>null</code> otherwise.
+	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, simple, hashFactor, generateBothBabyGiant, true)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
@@ -5098,7 +5336,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, simple, hashFactor, true)</code>.
+	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using the
+	 * Pohlig-Hellman Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -5116,7 +5355,7 @@ public class MathUtil {
 	 * 
 	 * @param linearSearchIfNotBabyGiant
 	 *            specifies whether a Linear-Search for <code>x</code> should be used when Shanks'
-	 *            Babystep-Giantstep algorithm cannot be used
+	 *            Babystep-Giantstep Algorithm cannot be used
 	 * 
 	 * @param simple
 	 *            specifies whether the simple version of the algorithm should be used (i.e., solving
@@ -5129,8 +5368,7 @@ public class MathUtil {
 	 *            <code>HashMap</code> instead of a <code>TreeMap</code> when factoring
 	 *            <code>upperOrder</code>
 	 * 
-	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
-	 *         <code>x</code> exists and <code>null</code> otherwise.
+	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, simple, hashFactor, true)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
@@ -5155,7 +5393,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, simple, false)</code>.
+	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using the
+	 * Pohlig-Hellman Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -5173,7 +5412,7 @@ public class MathUtil {
 	 * 
 	 * @param linearSearchIfNotBabyGiant
 	 *            specifies whether a Linear-Search for <code>x</code> should be used when Shanks'
-	 *            Babystep-Giantstep algorithm cannot be used
+	 *            Babystep-Giantstep Algorithm cannot be used
 	 * 
 	 * @param simple
 	 *            specifies whether the simple version of the algorithm should be used (i.e., solving
@@ -5181,8 +5420,7 @@ public class MathUtil {
 	 *            directly by elementary methods where <code>p<sub>i</sub></code> is a prime factor of
 	 *            <code>upperOrder</code> with power <code>e<sub>i</sub></code>)
 	 * 
-	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
-	 *         <code>x</code> exists and <code>null</code> otherwise.
+	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, simple, false)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
@@ -5206,7 +5444,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, false)</code>.
+	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using the
+	 * Pohlig-Hellman Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -5224,10 +5463,9 @@ public class MathUtil {
 	 * 
 	 * @param linearSearchIfNotBabyGiant
 	 *            specifies whether a Linear-Search for <code>x</code> should be used when Shanks'
-	 *            Babystep-Giantstep algorithm cannot be used
+	 *            Babystep-Giantstep Algorithm cannot be used
 	 * 
-	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
-	 *         <code>x</code> exists and <code>null</code> otherwise.
+	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, false)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
@@ -5250,7 +5488,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, false)</code>.
+	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using the
+	 * Pohlig-Hellman Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -5266,8 +5505,7 @@ public class MathUtil {
 	 *            multiplicative order of <code>n</code> in <code>mod m</code> is &le;
 	 *            <code>upperOrder</code>)
 	 * 
-	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
-	 *         <code>x</code> exists and <code>null</code> otherwise.
+	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, false)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
@@ -5288,7 +5526,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogPohligHellman(n, target, m, m - 1L)</code>.
+	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using the
+	 * Pohlig-Hellman Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -5299,8 +5538,7 @@ public class MathUtil {
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
-	 *         <code>x</code> exists and <code>null</code> otherwise.
+	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, m - 1L)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
@@ -5318,7 +5556,7 @@ public class MathUtil {
 
 	/**
 	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using the
-	 * Pohlig-Hellman algorithm.
+	 * Pohlig-Hellman Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -5336,7 +5574,7 @@ public class MathUtil {
 	 * 
 	 * @param linearSearchIfNotBabyGiant
 	 *            specifies whether a Linear-Search for <code>x</code> should be used when Shanks'
-	 *            Babystep-Giantstep algorithm cannot be used
+	 *            Babystep-Giantstep Algorithm cannot be used
 	 * 
 	 * @param simple
 	 *            specifies whether the simple version of the algorithm should be used (i.e., solving
@@ -5352,12 +5590,12 @@ public class MathUtil {
 	 * @param generateBothBabyGiant
 	 *            specifies whether both the babylist and the giantlist should be generated and stored
 	 *            simultaneously instead of fully generating the babylist first and then generating the
-	 *            giantlist in-place when using Shanks' Babystep-Giantstep algorithm
+	 *            giantlist in-place when using Shanks' Babystep-Giantstep Algorithm
 	 * 
 	 * @param hashBabyGiant
 	 *            specifies whether the data structure used to store the lists, should be a
 	 *            <code>HashMap</code> instead of a <code>TreeMap</code> when using Shanks'
-	 *            Babystep-Giantstep algorithm
+	 *            Babystep-Giantstep Algorithm
 	 * 
 	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
 	 *         <code>x</code> exists and <code>null</code> otherwise.
@@ -5381,7 +5619,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, simple, hashFactor, generateBothBabyGiant, true)</code>.
+	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using the
+	 * Pohlig-Hellman Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -5399,7 +5638,7 @@ public class MathUtil {
 	 * 
 	 * @param linearSearchIfNotBabyGiant
 	 *            specifies whether a Linear-Search for <code>x</code> should be used when Shanks'
-	 *            Babystep-Giantstep algorithm cannot be used
+	 *            Babystep-Giantstep Algorithm cannot be used
 	 * 
 	 * @param simple
 	 *            specifies whether the simple version of the algorithm should be used (i.e., solving
@@ -5415,10 +5654,9 @@ public class MathUtil {
 	 * @param generateBothBabyGiant
 	 *            specifies whether both the babylist and the giantlist should be generated and stored
 	 *            simultaneously instead of fully generating the babylist first and then generating the
-	 *            giantlist in-place when using Shanks' Babystep-Giantstep algorithm
+	 *            giantlist in-place when using Shanks' Babystep-Giantstep Algorithm
 	 * 
-	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
-	 *         <code>x</code> exists and <code>null</code> otherwise.
+	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, simple, hashFactor, generateBothBabyGiant, true)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
@@ -5438,7 +5676,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, simple, hashFactor, true)</code>.
+	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using the
+	 * Pohlig-Hellman Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -5456,7 +5695,7 @@ public class MathUtil {
 	 * 
 	 * @param linearSearchIfNotBabyGiant
 	 *            specifies whether a Linear-Search for <code>x</code> should be used when Shanks'
-	 *            Babystep-Giantstep algorithm cannot be used
+	 *            Babystep-Giantstep Algorithm cannot be used
 	 * 
 	 * @param simple
 	 *            specifies whether the simple version of the algorithm should be used (i.e., solving
@@ -5469,8 +5708,7 @@ public class MathUtil {
 	 *            <code>HashMap</code> instead of a <code>TreeMap</code> when factoring
 	 *            <code>upperOrder</code>
 	 * 
-	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
-	 *         <code>x</code> exists and <code>null</code> otherwise.
+	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, simple, hashFactor, true)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
@@ -5490,7 +5728,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, simple, false)</code>.
+	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using the
+	 * Pohlig-Hellman Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -5508,7 +5747,7 @@ public class MathUtil {
 	 * 
 	 * @param linearSearchIfNotBabyGiant
 	 *            specifies whether a Linear-Search for <code>x</code> should be used when Shanks'
-	 *            Babystep-Giantstep algorithm cannot be used
+	 *            Babystep-Giantstep Algorithm cannot be used
 	 * 
 	 * @param simple
 	 *            specifies whether the simple version of the algorithm should be used (i.e., solving
@@ -5516,8 +5755,7 @@ public class MathUtil {
 	 *            directly by elementary methods where <code>p<sub>i</sub></code> is a prime factor of
 	 *            <code>upperOrder</code> with power <code>e<sub>i</sub></code>)
 	 * 
-	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
-	 *         <code>x</code> exists and <code>null</code> otherwise.
+	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, simple, false)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
@@ -5536,7 +5774,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, false)</code>.
+	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using the
+	 * Pohlig-Hellman Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -5554,10 +5793,9 @@ public class MathUtil {
 	 * 
 	 * @param linearSearchIfNotBabyGiant
 	 *            specifies whether a Linear-Search for <code>x</code> should be used when Shanks'
-	 *            Babystep-Giantstep algorithm cannot be used
+	 *            Babystep-Giantstep Algorithm cannot be used
 	 * 
-	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
-	 *         <code>x</code> exists and <code>null</code> otherwise.
+	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, false)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
@@ -5576,7 +5814,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, false)</code>.
+	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using the
+	 * Pohlig-Hellman Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -5592,8 +5831,7 @@ public class MathUtil {
 	 *            multiplicative order of <code>n</code> in <code>mod m</code> is &le;
 	 *            <code>upperOrder</code>)
 	 * 
-	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
-	 *         <code>x</code> exists and <code>null</code> otherwise.
+	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, false)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
@@ -5611,7 +5849,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogPohligHellman(n, target, m, m - 1)</code>.
+	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using the
+	 * Pohlig-Hellman Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -5622,8 +5861,7 @@ public class MathUtil {
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
-	 *         <code>x</code> exists and <code>null</code> otherwise.
+	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, m - 1)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
@@ -5638,7 +5876,7 @@ public class MathUtil {
 
 	/**
 	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using the
-	 * Pohlig-Hellman algorithm.
+	 * Pohlig-Hellman Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -5656,7 +5894,7 @@ public class MathUtil {
 	 * 
 	 * @param linearSearchIfNotBabyGiant
 	 *            specifies whether a Linear-Search for <code>x</code> should be used when Shanks'
-	 *            Babystep-Giantstep algorithm cannot be used
+	 *            Babystep-Giantstep Algorithm cannot be used
 	 * 
 	 * @param simple
 	 *            specifies whether the simple version of the algorithm should be used (i.e., solving
@@ -5672,12 +5910,12 @@ public class MathUtil {
 	 * @param generateBothBabyGiant
 	 *            specifies whether both the babylist and the giantlist should be generated and stored
 	 *            simultaneously instead of fully generating the babylist first and then generating the
-	 *            giantlist in-place when using Shanks' Babystep-Giantstep algorithm
+	 *            giantlist in-place when using Shanks' Babystep-Giantstep Algorithm
 	 * 
 	 * @param hashBabyGiant
 	 *            specifies whether the data structure used to store the lists, should be a
 	 *            <code>HashMap</code> instead of a <code>TreeMap</code> when using Shanks'
-	 *            Babystep-Giantstep algorithm
+	 *            Babystep-Giantstep Algorithm
 	 * 
 	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
 	 *         <code>x</code> exists and <code>null</code> otherwise.
@@ -5701,7 +5939,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, simple, hashFactor, generateBothBabyGiant, true)</code>.
+	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using the
+	 * Pohlig-Hellman Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -5719,7 +5958,7 @@ public class MathUtil {
 	 * 
 	 * @param linearSearchIfNotBabyGiant
 	 *            specifies whether a Linear-Search for <code>x</code> should be used when Shanks'
-	 *            Babystep-Giantstep algorithm cannot be used
+	 *            Babystep-Giantstep Algorithm cannot be used
 	 * 
 	 * @param simple
 	 *            specifies whether the simple version of the algorithm should be used (i.e., solving
@@ -5735,10 +5974,9 @@ public class MathUtil {
 	 * @param generateBothBabyGiant
 	 *            specifies whether both the babylist and the giantlist should be generated and stored
 	 *            simultaneously instead of fully generating the babylist first and then generating the
-	 *            giantlist in-place when using Shanks' Babystep-Giantstep algorithm
+	 *            giantlist in-place when using Shanks' Babystep-Giantstep Algorithm
 	 * 
-	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
-	 *         <code>x</code> exists and <code>null</code> otherwise.
+	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, simple, hashFactor, generateBothBabyGiant, true)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
@@ -5758,7 +5996,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, simple, hashFactor, true)</code>.
+	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using the
+	 * Pohlig-Hellman Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -5776,7 +6015,7 @@ public class MathUtil {
 	 * 
 	 * @param linearSearchIfNotBabyGiant
 	 *            specifies whether a Linear-Search for <code>x</code> should be used when Shanks'
-	 *            Babystep-Giantstep algorithm cannot be used
+	 *            Babystep-Giantstep Algorithm cannot be used
 	 * 
 	 * @param simple
 	 *            specifies whether the simple version of the algorithm should be used (i.e., solving
@@ -5789,8 +6028,7 @@ public class MathUtil {
 	 *            <code>HashMap</code> instead of a <code>TreeMap</code> when factoring
 	 *            <code>upperOrder</code>
 	 * 
-	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
-	 *         <code>x</code> exists and <code>null</code> otherwise.
+	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, simple, hashFactor, true)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
@@ -5810,7 +6048,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, simple, false)</code>.
+	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using the
+	 * Pohlig-Hellman Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -5828,7 +6067,7 @@ public class MathUtil {
 	 * 
 	 * @param linearSearchIfNotBabyGiant
 	 *            specifies whether a Linear-Search for <code>x</code> should be used when Shanks'
-	 *            Babystep-Giantstep algorithm cannot be used
+	 *            Babystep-Giantstep Algorithm cannot be used
 	 * 
 	 * @param simple
 	 *            specifies whether the simple version of the algorithm should be used (i.e., solving
@@ -5836,8 +6075,7 @@ public class MathUtil {
 	 *            directly by elementary methods where <code>p<sub>i</sub></code> is a prime factor of
 	 *            <code>upperOrder</code> with power <code>e<sub>i</sub></code>)
 	 * 
-	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
-	 *         <code>x</code> exists and <code>null</code> otherwise.
+	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, simple, false)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
@@ -5856,7 +6094,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, false)</code>.
+	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using the
+	 * Pohlig-Hellman Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -5874,10 +6113,9 @@ public class MathUtil {
 	 * 
 	 * @param linearSearchIfNotBabyGiant
 	 *            specifies whether a Linear-Search for <code>x</code> should be used when Shanks'
-	 *            Babystep-Giantstep algorithm cannot be used
+	 *            Babystep-Giantstep Algorithm cannot be used
 	 * 
-	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
-	 *         <code>x</code> exists and <code>null</code> otherwise.
+	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, false)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
@@ -5896,7 +6134,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, false)</code>.
+	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using the
+	 * Pohlig-Hellman Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -5912,8 +6151,7 @@ public class MathUtil {
 	 *            multiplicative order of <code>n</code> in <code>mod m</code> is &le;
 	 *            <code>upperOrder</code>)
 	 * 
-	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
-	 *         <code>x</code> exists and <code>null</code> otherwise.
+	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, false)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
@@ -5931,7 +6169,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogPohligHellman(n, target, m, (short) (m - 1))</code>.
+	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using the
+	 * Pohlig-Hellman Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -5942,8 +6181,7 @@ public class MathUtil {
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
-	 *         <code>x</code> exists and <code>null</code> otherwise.
+	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, (short) (m - 1))</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
@@ -5958,7 +6196,7 @@ public class MathUtil {
 
 	/**
 	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using the
-	 * Pohlig-Hellman algorithm.
+	 * Pohlig-Hellman Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -5976,7 +6214,7 @@ public class MathUtil {
 	 * 
 	 * @param linearSearchIfNotBabyGiant
 	 *            specifies whether a Linear-Search for <code>x</code> should be used when Shanks'
-	 *            Babystep-Giantstep algorithm cannot be used
+	 *            Babystep-Giantstep Algorithm cannot be used
 	 * 
 	 * @param simple
 	 *            specifies whether the simple version of the algorithm should be used (i.e., solving
@@ -5992,12 +6230,12 @@ public class MathUtil {
 	 * @param generateBothBabyGiant
 	 *            specifies whether both the babylist and the giantlist should be generated and stored
 	 *            simultaneously instead of fully generating the babylist first and then generating the
-	 *            giantlist in-place when using Shanks' Babystep-Giantstep algorithm
+	 *            giantlist in-place when using Shanks' Babystep-Giantstep Algorithm
 	 * 
 	 * @param hashBabyGiant
 	 *            specifies whether the data structure used to store the lists, should be a
 	 *            <code>HashMap</code> instead of a <code>TreeMap</code> when using Shanks'
-	 *            Babystep-Giantstep algorithm
+	 *            Babystep-Giantstep Algorithm
 	 * 
 	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
 	 *         <code>x</code> exists and <code>null</code> otherwise.
@@ -6021,7 +6259,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, simple, hashFactor, generateBothBabyGiant, true)</code>.
+	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using the
+	 * Pohlig-Hellman Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -6039,7 +6278,7 @@ public class MathUtil {
 	 * 
 	 * @param linearSearchIfNotBabyGiant
 	 *            specifies whether a Linear-Search for <code>x</code> should be used when Shanks'
-	 *            Babystep-Giantstep algorithm cannot be used
+	 *            Babystep-Giantstep Algorithm cannot be used
 	 * 
 	 * @param simple
 	 *            specifies whether the simple version of the algorithm should be used (i.e., solving
@@ -6055,10 +6294,9 @@ public class MathUtil {
 	 * @param generateBothBabyGiant
 	 *            specifies whether both the babylist and the giantlist should be generated and stored
 	 *            simultaneously instead of fully generating the babylist first and then generating the
-	 *            giantlist in-place when using Shanks' Babystep-Giantstep algorithm
+	 *            giantlist in-place when using Shanks' Babystep-Giantstep Algorithm
 	 * 
-	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
-	 *         <code>x</code> exists and <code>null</code> otherwise.
+	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, simple, hashFactor, generateBothBabyGiant, true)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
@@ -6078,7 +6316,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, simple, hashFactor, true)</code>.
+	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using the
+	 * Pohlig-Hellman Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -6096,7 +6335,7 @@ public class MathUtil {
 	 * 
 	 * @param linearSearchIfNotBabyGiant
 	 *            specifies whether a Linear-Search for <code>x</code> should be used when Shanks'
-	 *            Babystep-Giantstep algorithm cannot be used
+	 *            Babystep-Giantstep Algorithm cannot be used
 	 * 
 	 * @param simple
 	 *            specifies whether the simple version of the algorithm should be used (i.e., solving
@@ -6109,8 +6348,7 @@ public class MathUtil {
 	 *            <code>HashMap</code> instead of a <code>TreeMap</code> when factoring
 	 *            <code>upperOrder</code>
 	 * 
-	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
-	 *         <code>x</code> exists and <code>null</code> otherwise.
+	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, simple, hashFactor, true)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
@@ -6130,7 +6368,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, simple, false)</code>.
+	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using the
+	 * Pohlig-Hellman Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -6148,7 +6387,7 @@ public class MathUtil {
 	 * 
 	 * @param linearSearchIfNotBabyGiant
 	 *            specifies whether a Linear-Search for <code>x</code> should be used when Shanks'
-	 *            Babystep-Giantstep algorithm cannot be used
+	 *            Babystep-Giantstep Algorithm cannot be used
 	 * 
 	 * @param simple
 	 *            specifies whether the simple version of the algorithm should be used (i.e., solving
@@ -6156,8 +6395,7 @@ public class MathUtil {
 	 *            directly by elementary methods where <code>p<sub>i</sub></code> is a prime factor of
 	 *            <code>upperOrder</code> with power <code>e<sub>i</sub></code>)
 	 * 
-	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
-	 *         <code>x</code> exists and <code>null</code> otherwise.
+	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, simple, false)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
@@ -6176,7 +6414,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, false)</code>.
+	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using the
+	 * Pohlig-Hellman Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -6194,10 +6433,9 @@ public class MathUtil {
 	 * 
 	 * @param linearSearchIfNotBabyGiant
 	 *            specifies whether a Linear-Search for <code>x</code> should be used when Shanks'
-	 *            Babystep-Giantstep algorithm cannot be used
+	 *            Babystep-Giantstep Algorithm cannot be used
 	 * 
-	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
-	 *         <code>x</code> exists and <code>null</code> otherwise.
+	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, false)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
@@ -6216,7 +6454,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, false)</code>.
+	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using the
+	 * Pohlig-Hellman Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -6232,8 +6471,7 @@ public class MathUtil {
 	 *            multiplicative order of <code>n</code> in <code>mod m</code> is &le;
 	 *            <code>upperOrder</code>)
 	 * 
-	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
-	 *         <code>x</code> exists and <code>null</code> otherwise.
+	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, false)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
@@ -6251,7 +6489,8 @@ public class MathUtil {
 	}
 
 	/**
-	 * <code>MathUtil.discreteLogPohligHellman(n, target, m, (byte) (m - 1))</code>.
+	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using the
+	 * Pohlig-Hellman Algorithm.
 	 * 
 	 * @param n
 	 *            the given number
@@ -6262,8 +6501,7 @@ public class MathUtil {
 	 * @param m
 	 *            the given modulus
 	 * 
-	 * @return <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> if such an
-	 *         <code>x</code> exists and <code>null</code> otherwise.
+	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, (byte) (m - 1))</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>

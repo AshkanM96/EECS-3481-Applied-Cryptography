@@ -847,11 +847,79 @@ public class BigIntUtil {
 		// i.e., (1 < n) && (n < m - 1) && (m > 3)
 
 		// Fill and return the resulting BigInteger array.
-		BigInteger n_to_i = n.modPow(begin, m);
-		for (int i = 0; i != length; ++i, n_to_i = n_to_i.multiply(n).mod(m)) {
-			result[i] = n_to_i;
+		try {
+			BigInteger n_to_i = n.modPow(begin, m);
+			for (int i = 0; i != length; ++i, n_to_i = n_to_i.multiply(n).mod(m)) {
+				result[i] = n_to_i;
+			}
+			return result;
+		} catch (ArithmeticException ex) {
+			throw new UndefinedInverseException();
 		}
-		return result;
+	}
+
+	/**
+	 * Note that this function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in
+	 * math. <br>
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>Result.length == end</code> <br>
+	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>i</sup> (mod m))</code>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param end
+	 *            the given end power
+	 * 
+	 * @return The resulting BigInteger array.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>(n == null) || (m == null) || (end == null)</code>
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>end < 0</code>
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>end > Integer.MAX_VALUE</code>
+	 */
+	public static BigInteger[] modPowers(BigInteger n, BigInteger m, BigInteger end)
+			throws NullPointerException, InvalidModulusException, IllegalArgumentException, ArithmeticException {
+		return BigIntUtil.modPowers(n, m, BigInteger.ZERO, end);
+	}
+
+	/**
+	 * Note that this function defines <code>0<sup>0</sup> == 0</code> even though it is undefined in
+	 * math. <br>
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>Result.length == m</code> <br>
+	 * Postcondition: <code>(valid i) implies (Result[i] == n<sup>i</sup> (mod m))</code>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return The resulting BigInteger array.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>(n == null) || (m == null)</code>
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 * 
+	 * @throws ArithmeticException
+	 *             If <code>m > Integer.MAX_VALUE</code>
+	 */
+	public static BigInteger[] modPowers(BigInteger n, BigInteger m)
+			throws NullPointerException, InvalidModulusException, ArithmeticException {
+		return BigIntUtil.modPowers(n, m, m);
 	}
 
 	/**

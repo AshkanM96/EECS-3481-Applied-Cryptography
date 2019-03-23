@@ -13,7 +13,10 @@ import java.util.TreeMap;
  */
 public class NumUtil {
 	/**
-	 * No dependencies.
+	 * Dependencies: <code>
+	 * 		1. util.MathUtil
+	 * 		2. util.InvalidModulusException
+	 * </code>
 	 */
 
 	/**
@@ -3195,6 +3198,495 @@ public class NumUtil {
 	 */
 	public static Map<Byte, Byte> factorSqrt(byte n) {
 		return NumUtil.factorSqrt(n, false);
+	}
+
+	/**
+	 * Perform Pollard's <code>p - 1</code> Algorithm on all integers <code>k</code> in
+	 * <code>[begin, end)</code> (i.e., check for a non-trivial divisor of <code>n</code> by checking
+	 * <code>gcd(base<sup>k!</sup> - 1 (mod n), n)</code> for integer <code>k</code> in
+	 * <code>[begin, end)</code>) in <code>O((end - begin) * lg(n)) time</code>. <br>
+	 * Precondition: <code>n > 4</code> <br>
+	 * Precondition: <code>(n % 2 != 0) && (n % 3 != 0)</code> <br>
+	 * Precondition: <code>gcd(base, n) == 1</code> <br>
+	 * Precondition: <code>(0 <= begin) && (begin < end)</code> <br>
+	 * Precondition: <code>(0 < |base_to_begin_factorial|) && (|base_to_begin_factorial| < n)</code>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param begin
+	 *            the given begin power
+	 * 
+	 * @param end
+	 *            the given end power
+	 * 
+	 * @param base_to_begin_factorial
+	 *            <code>B</code> where <code>B (mod n) == base<sup>begin!</sup> (mod n)</code>
+	 * 
+	 * @return A non-trivial divisor of <code>n</code> or <code>null</code> if no such divisor can be
+	 *         found using Pollard's <code>p - 1</code> Algorithm.
+	 */
+	protected static Long divisorPMinusOneFixedInput(long n, long begin, long end, long base_to_begin_factorial) {
+		/**
+		 * No need to do <code>long d = (base_to_begin_factorial - 1L) % n;</code> since by the precondition
+		 * on <code>base_to_begin_factorial</code>, we know that
+		 * <code>(-n + 1 <= base_to_begin_factorial <= n - 1)</code>. Therefore,
+		 * <code>(-n <= base_to_begin_factorial - 1 <= n - 2)</code> and so if <code>d < 0</code>, then
+		 * <code>(-n <= base_to_begin_factorial - 1 <= -1)</code> which means that
+		 * <code>(0 <= base_to_begin_factorial - 1 + n <= n - 1)</code> as required.
+		 */
+		long d = base_to_begin_factorial - 1L;
+		// Fix d to be in [0, n - 1] \cap \doubleZ.
+		if (d < 0L) {
+			d += n;
+		}
+		// Check for a non-trivial divisor of n.
+		long gcd = MathUtil.gcdFixedInput(d, n);
+		if (gcd != 1L) {
+			return gcd;
+		}
+
+		// Iteratively compute base to the power of i! in mod n and check for a non-trivial divisor of n.
+		for (long i = begin + 1L, base_to_i_factorial = MathUtil.modMinFixedInput(base_to_begin_factorial,
+				n); i != end; ++i) {
+			// Update base_to_i_factorial.
+			base_to_i_factorial = MathUtil.modPowFixedInput(base_to_i_factorial, i, n);
+
+			// Fix d to be in [0, n - 1] \cap \doubleZ.
+			if ((d = base_to_i_factorial - 1L) < 0L) {
+				d += n;
+			}
+			// Check for a non-trivial divisor of n.
+			gcd = MathUtil.gcdFixedInput(d, n);
+			if (gcd != 1L) {
+				return gcd;
+			}
+		}
+		/*
+		 * No value of base_to_i_factorial for i in [begin, end) \cap \doubleZ resulted in a non-trivial
+		 * divisor of n.
+		 */
+		return null;
+	}
+
+	/**
+	 * Perform Pollard's <code>p - 1</code> Algorithm on all integers <code>k</code> in
+	 * <code>[begin, end)</code> (i.e., check for a non-trivial divisor of <code>n</code> by checking
+	 * <code>gcd(base<sup>k!</sup> - 1 (mod n), n)</code> for integer <code>k</code> in
+	 * <code>[begin, end)</code>) in <code>O(end * lg(n)) time</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param base
+	 *            the given base
+	 * 
+	 * @param begin
+	 *            the given begin power
+	 * 
+	 * @param end
+	 *            the given end power
+	 * 
+	 * @return A non-trivial divisor of <code>n</code> or <code>null</code> if no such divisor can be
+	 *         found using Pollard's <code>p - 1</code> Algorithm.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>n < 1</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(begin > end) || (begin < 0)
+	 *             || (base == 0 (mod n)) || (base == 1 (mod n)) || (base == -1 (mod n))</code>
+	 */
+	public static Long divisorPMinusOne(long n, long base, long begin, long end)
+			throws InvalidModulusException, IllegalArgumentException {
+		if (n < 1L) {
+			throw new InvalidModulusException();
+		} else if ((begin > end) || (begin < 0L)) {
+			throw new IllegalArgumentException();
+		}
+		// (n >= 1) && (begin <= end) && (begin >= 0)
+		// i.e., (n > 0) && (0 <= begin) && (begin <= end)
+
+		// Handle the <code>n == 1</code> case.
+		if (n == 1L) {
+			return 1L;
+		}
+		// n != 1
+		// i.e., n >= 2
+
+		/**
+		 * <pre>
+		 * <code>
+		 * Any integer n, is one of 0, 1, 2, 3, 4, or 5 (mod 6).
+		 * However, if n is greater than 3, then it can only be a prime if it is 1 or 5 (mod 6) since otherwise
+		 * it would be divisible by 2 or 3 (or both in the case of 0 (mod 6)).
+		 * </code>
+		 * </pre>
+		 * 
+		 * Don't do <code>(n &= 1L) == 0L</code> since we need the value of <code>n</code> to remain
+		 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
+		 * will mutate <code>n</code>.
+		 */
+		// Check if 2 is a factor of n.
+		if ((n & 1L) == 0L) { // i.e., n % 2 == 0
+			return 2L;
+		} else if (n % 3L == 0L) {
+			return 3L;
+		}
+		// (n % 2 != 0) && (n % 3 != 0)
+		// i.e., (n > 4) && (n % 2 != 0) && (n % 3 != 0)
+
+		// Fix base to be in [0, n - 1] \cap \doubleZ and handle the invalid-base special cases.
+		if ((base %= n) < 0L) {
+			base += n;
+		}
+		if ((base < 2L) || (base == n - 1L)) { // i.e., (base == 0) || (base == 1) || (base == -1 (mod n))
+			throw new IllegalArgumentException();
+		}
+		// (2 <= base) && (base <= n - 2)
+		// i.e., (1 < base) && (base < n - 1)
+
+		// Check whether base and n have any common divisors by checking the gcd.
+		if (base > 3L) { // i.e., (base != 2) && (base != 3)
+			final long gcd = MathUtil.gcdFixedInput(base, n);
+			if (gcd != 1L) {
+				return gcd;
+			}
+		}
+		// gcd(base, n) == 1
+
+		// Handle the <code>begin == end</code> case.
+		if (begin == end) {
+			return null;
+		}
+		// begin != end
+		// i.e., begin < end
+
+		// Compute <code>base<sup>begin!</sup> (mod n)</code>.
+		long base_to_begin_factorial = base;
+		if (begin > 1L) { // i.e., begin! > 1
+			// Fix base_to_begin_factorial to be in [-n / 2, n / 2] \cap \doubleZ.
+			base_to_begin_factorial = MathUtil.modMinFixedInput(base_to_begin_factorial, n);
+			final long maxI = begin + 1L; // maxI >= 3
+			for (long i = 2L; i != maxI; ++i) {
+				base_to_begin_factorial = MathUtil.modPowFixedInput(base_to_begin_factorial, i, n);
+			}
+		}
+		return NumUtil.divisorPMinusOneFixedInput(n, begin, end, base_to_begin_factorial);
+	}
+
+	/**
+	 * Perform Pollard's <code>p - 1</code> Algorithm on all integers <code>k</code> in
+	 * <code>[0, end)</code> (i.e., check for a non-trivial divisor of <code>n</code> by checking
+	 * <code>gcd(base<sup>k!</sup> - 1 (mod n), n)</code> for integer <code>k</code> in
+	 * <code>[0, end)</code>) in <code>O(end * lg(n)) time</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param base
+	 *            the given base
+	 * 
+	 * @param end
+	 *            the given end power
+	 * 
+	 * @return <code>NumUtil.divisorPMinusOne(n, base, 0L, end)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>n < 1</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(end < 0)
+	 *             || (base == 0 (mod n)) || (base == 1 (mod n)) || (base == -1 (mod n))</code>
+	 */
+	public static Long divisorPMinusOne(long n, long base, long end)
+			throws InvalidModulusException, IllegalArgumentException {
+		return NumUtil.divisorPMinusOne(n, base, 0L, end);
+	}
+
+	/**
+	 * Perform Pollard's <code>p - 1</code> Algorithm on all integers <code>k</code> in
+	 * <code>[0, end)</code> (i.e., check for a non-trivial divisor of <code>n</code> by checking
+	 * <code>gcd(2<sup>k!</sup> - 1 (mod n), n)</code> for integer <code>k</code> in
+	 * <code>[0, end)</code>) in <code>O(end * lg(n)) time</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param end
+	 *            the given end power
+	 * 
+	 * @return <code>NumUtil.divisorPMinusOne(n, 2L, end)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>n < 1</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>end < 0</code>
+	 */
+	public static Long divisorPMinusOne(long n, long end) throws InvalidModulusException, IllegalArgumentException {
+		return NumUtil.divisorPMinusOne(n, 2L, end);
+	}
+
+	/**
+	 * Perform Pollard's <code>p - 1</code> Algorithm on all integers <code>k</code> in
+	 * <code>[begin, end)</code> (i.e., check for a non-trivial divisor of <code>n</code> by checking
+	 * <code>gcd(base<sup>k!</sup> - 1 (mod n), n)</code> for integer <code>k</code> in
+	 * <code>[begin, end)</code>) in <code>O(end * lg(n)) time</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param base
+	 *            the given base
+	 * 
+	 * @param begin
+	 *            the given begin power
+	 * 
+	 * @param end
+	 *            the given end power
+	 * 
+	 * @return A non-trivial divisor of <code>n</code> or <code>null</code> if no such divisor can be
+	 *         found using Pollard's <code>p - 1</code> Algorithm.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>n < 1</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(begin > end) || (begin < 0)
+	 *             || (base == 0 (mod n)) || (base == 1 (mod n)) || (base == -1 (mod n))</code>
+	 */
+	public static Integer divisorPMinusOne(int n, int base, int begin, int end)
+			throws InvalidModulusException, IllegalArgumentException {
+		final Long result = NumUtil.divisorPMinusOne((long) n, (long) base, (long) begin, (long) end);
+		return ((result == null) ? null : result.intValue());
+	}
+
+	/**
+	 * Perform Pollard's <code>p - 1</code> Algorithm on all integers <code>k</code> in
+	 * <code>[0, end)</code> (i.e., check for a non-trivial divisor of <code>n</code> by checking
+	 * <code>gcd(base<sup>k!</sup> - 1 (mod n), n)</code> for integer <code>k</code> in
+	 * <code>[0, end)</code>) in <code>O(end * lg(n)) time</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param base
+	 *            the given base
+	 * 
+	 * @param end
+	 *            the given end power
+	 * 
+	 * @return <code>NumUtil.divisorPMinusOne(n, base, 0, end)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>n < 1</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(end < 0)
+	 *             || (base == 0 (mod n)) || (base == 1 (mod n)) || (base == -1 (mod n))</code>
+	 */
+	public static Integer divisorPMinusOne(int n, int base, int end)
+			throws InvalidModulusException, IllegalArgumentException {
+		return NumUtil.divisorPMinusOne(n, base, 0, end);
+	}
+
+	/**
+	 * Perform Pollard's <code>p - 1</code> Algorithm on all integers <code>k</code> in
+	 * <code>[0, end)</code> (i.e., check for a non-trivial divisor of <code>n</code> by checking
+	 * <code>gcd(2<sup>k!</sup> - 1 (mod n), n)</code> for integer <code>k</code> in
+	 * <code>[0, end)</code>) in <code>O(end * lg(n)) time</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param end
+	 *            the given end power
+	 * 
+	 * @return <code>NumUtil.divisorPMinusOne(n, 2, end)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>n < 1</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>end < 0</code>
+	 */
+	public static Integer divisorPMinusOne(int n, int end) throws InvalidModulusException, IllegalArgumentException {
+		return NumUtil.divisorPMinusOne(n, 2, end);
+	}
+
+	/**
+	 * Perform Pollard's <code>p - 1</code> Algorithm on all integers <code>k</code> in
+	 * <code>[begin, end)</code> (i.e., check for a non-trivial divisor of <code>n</code> by checking
+	 * <code>gcd(base<sup>k!</sup> - 1 (mod n), n)</code> for integer <code>k</code> in
+	 * <code>[begin, end)</code>) in <code>O(end * lg(n)) time</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param base
+	 *            the given base
+	 * 
+	 * @param begin
+	 *            the given begin power
+	 * 
+	 * @param end
+	 *            the given end power
+	 * 
+	 * @return A non-trivial divisor of <code>n</code> or <code>null</code> if no such divisor can be
+	 *         found using Pollard's <code>p - 1</code> Algorithm.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>n < 1</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(begin > end) || (begin < 0)
+	 *             || (base == 0 (mod n)) || (base == 1 (mod n)) || (base == -1 (mod n))</code>
+	 */
+	public static Short divisorPMinusOne(short n, short base, short begin, short end)
+			throws InvalidModulusException, IllegalArgumentException {
+		final Long result = NumUtil.divisorPMinusOne((long) n, (long) base, (long) begin, (long) end);
+		return ((result == null) ? null : result.shortValue());
+	}
+
+	/**
+	 * Perform Pollard's <code>p - 1</code> Algorithm on all integers <code>k</code> in
+	 * <code>[0, end)</code> (i.e., check for a non-trivial divisor of <code>n</code> by checking
+	 * <code>gcd(base<sup>k!</sup> - 1 (mod n), n)</code> for integer <code>k</code> in
+	 * <code>[0, end)</code>) in <code>O(end * lg(n)) time</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param base
+	 *            the given base
+	 * 
+	 * @param end
+	 *            the given end power
+	 * 
+	 * @return <code>NumUtil.divisorPMinusOne(n, base, (short) 0, end)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>n < 1</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(end < 0)
+	 *             || (base == 0 (mod n)) || (base == 1 (mod n)) || (base == -1 (mod n))</code>
+	 */
+	public static Short divisorPMinusOne(short n, short base, short end)
+			throws InvalidModulusException, IllegalArgumentException {
+		return NumUtil.divisorPMinusOne(n, base, (short) 0, end);
+	}
+
+	/**
+	 * Perform Pollard's <code>p - 1</code> Algorithm on all integers <code>k</code> in
+	 * <code>[0, end)</code> (i.e., check for a non-trivial divisor of <code>n</code> by checking
+	 * <code>gcd(2<sup>k!</sup> - 1 (mod n), n)</code> for integer <code>k</code> in
+	 * <code>[0, end)</code>) in <code>O(end * lg(n)) time</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param end
+	 *            the given end power
+	 * 
+	 * @return <code>NumUtil.divisorPMinusOne(n, (short) 2, end)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>n < 1</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>end < 0</code>
+	 */
+	public static Short divisorPMinusOne(short n, short end) throws InvalidModulusException, IllegalArgumentException {
+		return NumUtil.divisorPMinusOne(n, (short) 2, end);
+	}
+
+	/**
+	 * Perform Pollard's <code>p - 1</code> Algorithm on all integers <code>k</code> in
+	 * <code>[begin, end)</code> (i.e., check for a non-trivial divisor of <code>n</code> by checking
+	 * <code>gcd(base<sup>k!</sup> - 1 (mod n), n)</code> for integer <code>k</code> in
+	 * <code>[begin, end)</code>) in <code>O(end * lg(n)) time</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param base
+	 *            the given base
+	 * 
+	 * @param begin
+	 *            the given begin power
+	 * 
+	 * @param end
+	 *            the given end power
+	 * 
+	 * @return A non-trivial divisor of <code>n</code> or <code>null</code> if no such divisor can be
+	 *         found using Pollard's <code>p - 1</code> Algorithm.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>n < 1</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(begin > end) || (begin < 0)
+	 *             || (base == 0 (mod n)) || (base == 1 (mod n)) || (base == -1 (mod n))</code>
+	 */
+	public static Byte divisorPMinusOne(byte n, byte base, byte begin, byte end)
+			throws InvalidModulusException, IllegalArgumentException {
+		final Long result = NumUtil.divisorPMinusOne((long) n, (long) base, (long) begin, (long) end);
+		return ((result == null) ? null : result.byteValue());
+	}
+
+	/**
+	 * Perform Pollard's <code>p - 1</code> Algorithm on all integers <code>k</code> in
+	 * <code>[0, end)</code> (i.e., check for a non-trivial divisor of <code>n</code> by checking
+	 * <code>gcd(base<sup>k!</sup> - 1 (mod n), n)</code> for integer <code>k</code> in
+	 * <code>[0, end)</code>) in <code>O(end * lg(n)) time</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param base
+	 *            the given base
+	 * 
+	 * @param end
+	 *            the given end power
+	 * 
+	 * @return <code>NumUtil.divisorPMinusOne(n, base, (byte) 0, end)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>n < 1</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(end < 0)
+	 *             || (base == 0 (mod n)) || (base == 1 (mod n)) || (base == -1 (mod n))</code>
+	 */
+	public static Byte divisorPMinusOne(byte n, byte base, byte end)
+			throws InvalidModulusException, IllegalArgumentException {
+		return NumUtil.divisorPMinusOne(n, base, (byte) 0, end);
+	}
+
+	/**
+	 * Perform Pollard's <code>p - 1</code> Algorithm on all integers <code>k</code> in
+	 * <code>[0, end)</code> (i.e., check for a non-trivial divisor of <code>n</code> by checking
+	 * <code>gcd(2<sup>k!</sup> - 1 (mod n), n)</code> for integer <code>k</code> in
+	 * <code>[0, end)</code>) in <code>O(end * lg(n)) time</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param end
+	 *            the given end power
+	 * 
+	 * @return <code>NumUtil.divisorPMinusOne(n, (byte) 2, end)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>n < 1</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>end < 0</code>
+	 */
+	public static Byte divisorPMinusOne(byte n, byte end) throws InvalidModulusException, IllegalArgumentException {
+		return NumUtil.divisorPMinusOne(n, (byte) 2, end);
 	}
 
 	/**

@@ -259,7 +259,7 @@ public class MillerRabinBottomUp {
 			System.out.println("gcd(n, " + b + ") == " + gcd + " != 1.");
 			System.out.println("Therefore, " + b + " is a witness of n's compositeness.\n");
 		}
-		return new TestResultMillerRabinBottomUp(this.n, false, b, gcd);
+		return new TestResultMillerRabinBottomUp(this.n, false, b, gcd, this.n.divide(gcd));
 	}
 
 	/**
@@ -377,27 +377,7 @@ public class MillerRabinBottomUp {
 		}
 
 		/**
-		 * <code>this(n, isInconclusive, witness, superFactor1, null)</code>.
-		 * 
-		 * @param n
-		 *            the given number
-		 * 
-		 * @param isInconclusive
-		 *            indicates whether the test was inconclusive
-		 * 
-		 * @param witness
-		 *            the given potential witness
-		 * 
-		 * @param superFactor1
-		 *            the first given super factor
-		 */
-		public TestResultMillerRabinBottomUp(BigInteger n, boolean isInconclusive, BigInteger witness,
-				BigInteger superFactor1) {
-			this(n, isInconclusive, witness, superFactor1, null);
-		}
-
-		/**
-		 * <code>this(n, isInconclusive, witness, null)</code>.
+		 * <code>this(n, isInconclusive, witness, null, null)</code>.
 		 * 
 		 * @param n
 		 *            the given number
@@ -409,7 +389,7 @@ public class MillerRabinBottomUp {
 		 *            the given potential witness
 		 */
 		public TestResultMillerRabinBottomUp(BigInteger n, boolean isInconclusive, BigInteger witness) {
-			this(n, isInconclusive, witness, null);
+			this(n, isInconclusive, witness, null, null);
 		}
 
 		/**
