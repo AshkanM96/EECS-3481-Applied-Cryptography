@@ -50,9 +50,6 @@ public class B2Q1 {
 	 * Number of times to flip one bit in plaintext and compute ciphertext.
 	 */
 	private static final int MAX_RUNS = 100;
-	static {
-		assert (B2Q1.MAX_RUNS >= 2);
-	}
 
 	/**
 	 * Prevent instantiation.
