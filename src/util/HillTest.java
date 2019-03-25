@@ -253,7 +253,7 @@ public class HillTest {
 				"ALL".toCharArray(), "SAY".toCharArray(), "JOB".toCharArray(), "ZIP".toCharArray(), "JAW".toCharArray(),
 				"JOY".toCharArray(), "MAX".toCharArray(), "MIN".toCharArray() };
 		final int numTexts = plaintexts.length;
-		assertTrue("numTexts lower bound", numTexts >= 10);
+		assertTrue("numTexts lower bound", 10 <= numTexts);
 		final char[][] expectedCiphertexts = { "XVM".toCharArray(), "JTW".toCharArray(), "CFB".toCharArray(),
 				"JYY".toCharArray(), "WSM".toCharArray(), "YTP".toCharArray(), "ORJ".toCharArray(), "RIV".toCharArray(),
 				"RSR".toCharArray(), "FXM".toCharArray(), "FZG".toCharArray() };
@@ -305,7 +305,7 @@ public class HillTest {
 				"SAY".getBytes(), "JOB".getBytes(), "ZIP".getBytes(), "JAW".getBytes(), "JOY".getBytes(),
 				"MAX".getBytes(), "MIN".getBytes() };
 		final int numTexts = plaintexts.length;
-		assertTrue("numTexts lower bound", numTexts >= 10);
+		assertTrue("numTexts lower bound", 10 <= numTexts);
 		final byte[][] expectedCiphertexts = { "XVM".getBytes(), "JTW".getBytes(), "CFB".getBytes(), "JYY".getBytes(),
 				"WSM".getBytes(), "YTP".getBytes(), "ORJ".getBytes(), "RIV".getBytes(), "RSR".getBytes(),
 				"FXM".getBytes(), "FZG".getBytes() };
@@ -357,7 +357,7 @@ public class HillTest {
 				"JYY".toCharArray(), "WSM".toCharArray(), "YTP".toCharArray(), "ORJ".toCharArray(), "RIV".toCharArray(),
 				"RSR".toCharArray(), "FXM".toCharArray(), "FZG".toCharArray() };
 		final int numTexts = ciphertexts.length;
-		assertTrue("numTexts lower bound", numTexts >= 10);
+		assertTrue("numTexts lower bound", 10 <= numTexts);
 		final char[][] expectedPlaintexts = { "GET".toCharArray(), "SET".toCharArray(), "LET".toCharArray(),
 				"ALL".toCharArray(), "SAY".toCharArray(), "JOB".toCharArray(), "ZIP".toCharArray(), "JAW".toCharArray(),
 				"JOY".toCharArray(), "MAX".toCharArray(), "MIN".toCharArray() };
@@ -409,7 +409,7 @@ public class HillTest {
 				"WSM".getBytes(), "YTP".getBytes(), "ORJ".getBytes(), "RIV".getBytes(), "RSR".getBytes(),
 				"FXM".getBytes(), "FZG".getBytes() };
 		final int numTexts = ciphertexts.length;
-		assertTrue("numTexts lower bound", numTexts >= 10);
+		assertTrue("numTexts lower bound", 10 <= numTexts);
 		final byte[][] expectedPlaintexts = { "GET".getBytes(), "SET".getBytes(), "LET".getBytes(), "ALL".getBytes(),
 				"SAY".getBytes(), "JOB".getBytes(), "ZIP".getBytes(), "JAW".getBytes(), "JOY".getBytes(),
 				"MAX".getBytes(), "MIN".getBytes() };

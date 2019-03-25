@@ -71,7 +71,7 @@ public class CryptoTools {
 	 * @return <code>CryptoTools.ENGLISH_LETTER_PROBABILITY[i]</code>.
 	 * 
 	 * @throws IndexOutOfBoundsException
-	 *             If <code>(i < 0) || (i >= CryptoTools.ENGLISH_LETTER_PROBABILITY.length)</code>
+	 *             If <code>(i < 0) || (CryptoTools.ENGLISH_LETTER_PROBABILITY.length <= i)</code>
 	 */
 	public static double english(int i) throws IndexOutOfBoundsException {
 		return CryptoTools.ENGLISH_LETTER_PROBABILITY[i];

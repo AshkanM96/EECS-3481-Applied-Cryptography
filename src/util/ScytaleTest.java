@@ -91,7 +91,7 @@ public class ScytaleTest {
 				"ALL".toCharArray(), "SAY".toCharArray(), "JOB".toCharArray(), "ZIP".toCharArray(), "JAW".toCharArray(),
 				"JOY".toCharArray(), "MAX".toCharArray(), "MIN".toCharArray() };
 		final int numTexts = plaintexts.length;
-		assertTrue("numTexts lower bound", numTexts >= 10);
+		assertTrue("numTexts lower bound", 10 <= numTexts);
 		final char[][] expectedCiphertexts = { "GTE".toCharArray(), "STE".toCharArray(), "LTE".toCharArray(),
 				"ALL".toCharArray(), "SYA".toCharArray(), "JBO".toCharArray(), "ZPI".toCharArray(), "JWA".toCharArray(),
 				"JYO".toCharArray(), "MXA".toCharArray(), "MNI".toCharArray() };
@@ -143,7 +143,7 @@ public class ScytaleTest {
 				"SAY".getBytes(), "JOB".getBytes(), "ZIP".getBytes(), "JAW".getBytes(), "JOY".getBytes(),
 				"MAX".getBytes(), "MIN".getBytes() };
 		final int numTexts = plaintexts.length;
-		assertTrue("numTexts lower bound", numTexts >= 10);
+		assertTrue("numTexts lower bound", 10 <= numTexts);
 		final byte[][] expectedCiphertexts = { "GTE".getBytes(), "STE".getBytes(), "LTE".getBytes(), "ALL".getBytes(),
 				"SYA".getBytes(), "JBO".getBytes(), "ZPI".getBytes(), "JWA".getBytes(), "JYO".getBytes(),
 				"MXA".getBytes(), "MNI".getBytes() };
@@ -237,7 +237,7 @@ public class ScytaleTest {
 				"QUIZ".toCharArray(), "JUMP".toCharArray(), "MAZE".toCharArray(), "GAZE".toCharArray(),
 				"JAVA".toCharArray(), "CAMP".toCharArray(), "BIND".toCharArray(), "HELP".toCharArray() };
 		final int numTexts = plaintexts.length;
-		assertTrue("numTexts lower bound", numTexts >= 10);
+		assertTrue("numTexts lower bound", 10 <= numTexts);
 		final char[][] expectedCiphertexts = { "ALBE".toCharArray(), "JKOE".toCharArray(), "JZAZ".toCharArray(),
 				"QIUZ".toCharArray(), "JMUP".toCharArray(), "MZAE".toCharArray(), "GZAE".toCharArray(),
 				"JVAA".toCharArray(), "CMAP".toCharArray(), "BNID".toCharArray(), "HLEP".toCharArray() };
@@ -285,7 +285,7 @@ public class ScytaleTest {
 				"JUMP".getBytes(), "MAZE".getBytes(), "GAZE".getBytes(), "JAVA".getBytes(), "CAMP".getBytes(),
 				"BIND".getBytes(), "HELP".getBytes() };
 		final int numTexts = plaintexts.length;
-		assertTrue("numTexts lower bound", numTexts >= 10);
+		assertTrue("numTexts lower bound", 10 <= numTexts);
 		final byte[][] expectedCiphertexts = { "ALBE".getBytes(), "JKOE".getBytes(), "JZAZ".getBytes(),
 				"QIUZ".getBytes(), "JMUP".getBytes(), "MZAE".getBytes(), "GZAE".getBytes(), "JVAA".getBytes(),
 				"CMAP".getBytes(), "BNID".getBytes(), "HLEP".getBytes() };

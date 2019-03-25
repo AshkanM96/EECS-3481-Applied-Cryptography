@@ -129,17 +129,17 @@ public class NumUtil {
 	 *            any number of long primitives
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(n >= 0) || ((valid i) implies (args[i] >= 0))</code>
+	 *             If <code>(0 <= n) || ((valid i) implies (0 <= args[i]))</code>
 	 * 
 	 * @throws NullPointerException
 	 *             If <code>args == null</code>
 	 */
 	public static void ensureNegative(long n, long... args) throws IllegalArgumentException, NullPointerException {
-		if (n >= 0L) {
+		if (-1L < n) { // i.e., 0 <= n
 			throw new IllegalArgumentException();
 		}
 		for (int i = 0; i != args.length; ++i) {
-			if (args[i] >= 0L) {
+			if (-1L < args[i]) { // i.e., 0 <= args[i]
 				throw new IllegalArgumentException();
 			}
 		}
@@ -153,17 +153,17 @@ public class NumUtil {
 	 *            any number of int primitives
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(n >= 0) || ((valid i) implies (args[i] >= 0))</code>
+	 *             If <code>(0 <= n) || ((valid i) implies (0 <= args[i]))</code>
 	 * 
 	 * @throws NullPointerException
 	 *             If <code>args == null</code>
 	 */
 	public static void ensureNegative(int n, int... args) throws IllegalArgumentException, NullPointerException {
-		if (n >= 0) {
+		if (-1 < n) { // i.e., 0 <= n
 			throw new IllegalArgumentException();
 		}
 		for (int i = 0; i != args.length; ++i) {
-			if (args[i] >= 0) {
+			if (-1 < args[i]) { // i.e., 0 <= args[i]
 				throw new IllegalArgumentException();
 			}
 		}
@@ -177,17 +177,17 @@ public class NumUtil {
 	 *            any number of short primitives
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(n >= 0) || ((valid i) implies (args[i] >= 0))</code>
+	 *             If <code>(0 <= n) || ((valid i) implies (0 <= args[i]))</code>
 	 * 
 	 * @throws NullPointerException
 	 *             If <code>args == null</code>
 	 */
 	public static void ensureNegative(short n, short... args) throws IllegalArgumentException, NullPointerException {
-		if (n >= 0) {
+		if (-1 < n) { // i.e., 0 <= n
 			throw new IllegalArgumentException();
 		}
 		for (int i = 0; i != args.length; ++i) {
-			if (args[i] >= 0) {
+			if (-1 < args[i]) { // i.e., 0 <= args[i]
 				throw new IllegalArgumentException();
 			}
 		}
@@ -201,17 +201,17 @@ public class NumUtil {
 	 *            any number of byte primitives
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(n >= 0) || ((valid i) implies (args[i] >= 0))</code>
+	 *             If <code>(0 <= n) || ((valid i) implies (0 <= args[i]))</code>
 	 * 
 	 * @throws NullPointerException
 	 *             If <code>args == null</code>
 	 */
 	public static void ensureNegative(byte n, byte... args) throws IllegalArgumentException, NullPointerException {
-		if (n >= 0) {
+		if (-1 < n) { // i.e., 0 <= n
 			throw new IllegalArgumentException();
 		}
 		for (int i = 0; i != args.length; ++i) {
-			if (args[i] >= 0) {
+			if (-1 < args[i]) { // i.e., 0 <= args[i]
 				throw new IllegalArgumentException();
 			}
 		}
@@ -519,11 +519,11 @@ public class NumUtil {
 	 *             If <code>args == null</code>
 	 */
 	public static void ensurePositive(long n, long... args) throws IllegalArgumentException, NullPointerException {
-		if (n <= 0L) {
+		if (n < 1L) { // i.e., n <= 0
 			throw new IllegalArgumentException();
 		}
 		for (int i = 0; i != args.length; ++i) {
-			if (args[i] <= 0L) {
+			if (args[i] < 1L) { // i.e., args[i] <= 0
 				throw new IllegalArgumentException();
 			}
 		}
@@ -543,11 +543,11 @@ public class NumUtil {
 	 *             If <code>args == null</code>
 	 */
 	public static void ensurePositive(int n, int... args) throws IllegalArgumentException, NullPointerException {
-		if (n <= 0) {
+		if (n < 1) { // i.e., n <= 0
 			throw new IllegalArgumentException();
 		}
 		for (int i = 0; i != args.length; ++i) {
-			if (args[i] <= 0) {
+			if (args[i] < 1) { // i.e., args[i] <= 0
 				throw new IllegalArgumentException();
 			}
 		}
@@ -567,11 +567,11 @@ public class NumUtil {
 	 *             If <code>args == null</code>
 	 */
 	public static void ensurePositive(short n, short... args) throws IllegalArgumentException, NullPointerException {
-		if (n <= 0) {
+		if (n < 1) { // i.e., n <= 0
 			throw new IllegalArgumentException();
 		}
 		for (int i = 0; i != args.length; ++i) {
-			if (args[i] <= 0) {
+			if (args[i] < 1) { // i.e., args[i] <= 0
 				throw new IllegalArgumentException();
 			}
 		}
@@ -591,11 +591,11 @@ public class NumUtil {
 	 *             If <code>args == null</code>
 	 */
 	public static void ensurePositive(byte n, byte... args) throws IllegalArgumentException, NullPointerException {
-		if (n <= 0) {
+		if (n < 1) { // i.e., n <= 0
 			throw new IllegalArgumentException();
 		}
 		for (int i = 0; i != args.length; ++i) {
-			if (args[i] <= 0) {
+			if (args[i] < 1) { // i.e., args[i] <= 0
 				throw new IllegalArgumentException();
 			}
 		}
@@ -609,17 +609,17 @@ public class NumUtil {
 	 *            any number of long primitives
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(n > 0) || ((valid i) implies (args[i] > 0))</code>
+	 *             If <code>(0 < n) || ((valid i) implies (0 < args[i]))</code>
 	 * 
 	 * @throws NullPointerException
 	 *             If <code>args == null</code>
 	 */
 	public static void ensureNonPositive(long n, long... args) throws IllegalArgumentException, NullPointerException {
-		if (n > 0L) {
+		if (0L < n) {
 			throw new IllegalArgumentException();
 		}
 		for (int i = 0; i != args.length; ++i) {
-			if (args[i] > 0L) {
+			if (0L < args[i]) {
 				throw new IllegalArgumentException();
 			}
 		}
@@ -633,17 +633,17 @@ public class NumUtil {
 	 *            any number of int primitives
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(n > 0) || ((valid i) implies (args[i] > 0))</code>
+	 *             If <code>(0 < n) || ((valid i) implies (0 < args[i]))</code>
 	 * 
 	 * @throws NullPointerException
 	 *             If <code>args == null</code>
 	 */
 	public static void ensureNonPositive(int n, int... args) throws IllegalArgumentException, NullPointerException {
-		if (n > 0) {
+		if (0 < n) {
 			throw new IllegalArgumentException();
 		}
 		for (int i = 0; i != args.length; ++i) {
-			if (args[i] > 0) {
+			if (0 < args[i]) {
 				throw new IllegalArgumentException();
 			}
 		}
@@ -657,17 +657,17 @@ public class NumUtil {
 	 *            any number of short primitives
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(n > 0) || ((valid i) implies (args[i] > 0))</code>
+	 *             If <code>(0 < n) || ((valid i) implies (0 < args[i]))</code>
 	 * 
 	 * @throws NullPointerException
 	 *             If <code>args == null</code>
 	 */
 	public static void ensureNonPositive(short n, short... args) throws IllegalArgumentException, NullPointerException {
-		if (n > 0) {
+		if (0 < n) {
 			throw new IllegalArgumentException();
 		}
 		for (int i = 0; i != args.length; ++i) {
-			if (args[i] > 0) {
+			if (0 < args[i]) {
 				throw new IllegalArgumentException();
 			}
 		}
@@ -681,17 +681,17 @@ public class NumUtil {
 	 *            any number of byte primitives
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(n > 0) || ((valid i) implies (args[i] > 0))</code>
+	 *             If <code>(0 < n) || ((valid i) implies (0 < args[i]))</code>
 	 * 
 	 * @throws NullPointerException
 	 *             If <code>args == null</code>
 	 */
 	public static void ensureNonPositive(byte n, byte... args) throws IllegalArgumentException, NullPointerException {
-		if (n > 0) {
+		if (0 < n) {
 			throw new IllegalArgumentException();
 		}
 		for (int i = 0; i != args.length; ++i) {
-			if (args[i] > 0) {
+			if (0 < args[i]) {
 				throw new IllegalArgumentException();
 			}
 		}
@@ -899,7 +899,7 @@ public class NumUtil {
 
 	/**
 	 * Runtime is in <code>O(sqrt(n))</code>. <br>
-	 * Precondition: <code>n > 3</code> <br>
+	 * Precondition: <code>3 < n</code> <br>
 	 * Precondition: <code>(n % 2 != 0) && (n % 3 != 0)</code>
 	 * 
 	 * @param n
@@ -925,8 +925,8 @@ public class NumUtil {
 		 * <code>O(sqrt(n) / 3)</code> instead of <code>O(sqrt(n))</code>).
 		 */
 		// Applying Math.floor before casting to long is unnecessary and it causes a large slow down.
-		final long bound = ((long) Math.sqrt(n)) + 1L; // bound >= 3
-		final long maxI = bound + 1L; // maxI >= 4
+		final long bound = ((long) Math.sqrt(n)) + 1L; // 3 <= bound
+		final long maxI = bound + 1L; // 4 <= maxI
 		for (long i = 5L; i < maxI; i += 4L) {
 			/**
 			 * It's fine to do <code>i += 2</code> instead of <code>i + 2</code> since we don't need the value
@@ -1067,10 +1067,10 @@ public class NumUtil {
 	 * @return The first prime greater than <code>n</code>.
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>n >= NumUtil.LARGEST_PRIME_LONG</code>
+	 *             If <code>NumUtil.LARGEST_PRIME_LONG <= n</code>
 	 */
 	public static long primeAfter(long n) throws IllegalArgumentException {
-		if (n >= NumUtil.LARGEST_PRIME_LONG) {
+		if (NumUtil.LARGEST_PRIME_LONG <= n) {
 			throw new IllegalArgumentException();
 		}
 		// n < NumUtil.LARGEST_PRIME_LONG
@@ -1078,7 +1078,7 @@ public class NumUtil {
 		if (n < 4L) { // i.e., (n < 2) || (n == 2) || (n == 3)
 			return ((n < 2L) ? 2L : ((n == 2L) ? 3L : 5L));
 		}
-		// n >= 4
+		// 4 <= n
 
 		/**
 		 * <pre>
@@ -1100,25 +1100,25 @@ public class NumUtil {
 			if (NumUtil.isPrimeSqrtFixedInput(p)) {
 				return p;
 			}
-			// n >= 24
+			// 24 <= n
 
 			// Update n to be the first integer which is 5 (mod 6) and greater than the original value of n.
-			n += 5L; // n >= 29
+			n += 5L; // 29 <= n
 		} else if (mod6 == 5L) { // i.e., n == 5, 11, 17, 23, ...
 			// Since n is 5 (mod 6), check if n + 2 is a prime separately.
 			final long p = n + 2L;
 			if (NumUtil.isPrimeSqrtFixedInput(p)) {
 				return p;
 			}
-			// n >= 23
+			// 23 <= n
 
 			// Update n to be the first integer which is 5 (mod 6) and greater than the original value of n.
-			n += 6L; // n >= 29
+			n += 6L; // 29 <= n
 		} else { // i.e., (mod6 == 1) || (mod6 == 2) || (mod6 == 3) || (mod6 == 4)
 			// Update n to be the first integer which is 5 (mod 6) and greater than the original value of n.
-			n += 5L - mod6; // n >= 5
+			n += 5L - mod6; // 5 <= n
 		}
-		// (n % 6 == 5) && (n >= 5)
+		// (n % 6 == 5) && (5 <= n)
 		for (/* Already initialized. */; true; n += 4L) {
 			/**
 			 * It's fine to do <code>n += 2</code> instead of <code>n + 2</code> since we don't need the value
@@ -1146,10 +1146,10 @@ public class NumUtil {
 	 * @return The first prime greater than <code>n</code>.
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>n >= NumUtil.LARGEST_PRIME_INT</code>
+	 *             If <code>NumUtil.LARGEST_PRIME_INT <= n</code>
 	 */
 	public static int primeAfter(int n) throws IllegalArgumentException {
-		if (n >= NumUtil.LARGEST_PRIME_INT) {
+		if (NumUtil.LARGEST_PRIME_INT <= n) {
 			throw new IllegalArgumentException();
 		}
 		// n < NumUtil.LARGEST_PRIME_INT
@@ -1163,10 +1163,10 @@ public class NumUtil {
 	 * @return The first prime greater than <code>n</code>.
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>n >= NumUtil.LARGEST_PRIME_SHORT</code>
+	 *             If <code>NumUtil.LARGEST_PRIME_SHORT <= n</code>
 	 */
 	public static short primeAfter(short n) throws IllegalArgumentException {
-		if (n >= NumUtil.LARGEST_PRIME_SHORT) {
+		if (NumUtil.LARGEST_PRIME_SHORT <= n) {
 			throw new IllegalArgumentException();
 		}
 		// n < NumUtil.LARGEST_PRIME_SHORT
@@ -1180,10 +1180,10 @@ public class NumUtil {
 	 * @return The first prime greater than <code>n</code>.
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>n >= NumUtil.LARGEST_PRIME_BYTE</code>
+	 *             If <code>NumUtil.LARGEST_PRIME_BYTE <= n</code>
 	 */
 	public static byte primeAfter(byte n) throws IllegalArgumentException {
-		if (n >= NumUtil.LARGEST_PRIME_BYTE) {
+		if (NumUtil.LARGEST_PRIME_BYTE <= n) {
 			throw new IllegalArgumentException();
 		}
 		// n < NumUtil.LARGEST_PRIME_BYTE
@@ -1205,11 +1205,11 @@ public class NumUtil {
 				// The first prime is 2.
 				throw new IllegalArgumentException();
 			}
-			// n >= 3
+			// 3 <= n
 			// i.e., n == 3
 			return 2L;
 		}
-		// n >= 4
+		// 4 <= n
 
 		/**
 		 * <pre>
@@ -1231,30 +1231,30 @@ public class NumUtil {
 			if (NumUtil.isPrimeSqrtFixedInput(p)) {
 				return p;
 			}
-			// n >= 36
+			// 36 <= n
 
 			// Update n to be the first integer which is 1 (mod 6) and smaller than the original value of n.
-			n -= 5L; // n >= 31
+			n -= 5L; // 31 <= n
 		} else if (mod6 == 1L) { // i.e., n == 7, 13, 19, 25, 31, 37, ...
 			// Since n is 1 (mod 6), check if n - 2 is a prime separately.
 			final long p = n - 2L;
 			if (NumUtil.isPrimeSqrtFixedInput(p)) {
 				return p;
 			}
-			// n >= 37
+			// 37 <= n
 
 			// Update n to be the first integer which is 1 (mod 6) and smaller than the original value of n.
-			n -= 6L; // n >= 31
+			n -= 6L; // 31 <= n
 		} else { // i.e., (mod6 == 2) || (mod6 == 3) || (mod6 == 4) || (mod6 == 5)
 			if (n == mod6) { // i.e., (n == 4) || (n == 5)
 				return 3L;
 			}
-			// n >= 8
+			// 8 <= n
 
 			// Update n to be the first integer which is 1 (mod 6) and smaller than the original value of n.
-			n += 1L - mod6; // n >= 7
+			n += 1L - mod6; // 7 <= n
 		}
-		// (n % 6 == 1) && (n >= 7)
+		// (n % 6 == 1) && (7 <= n)
 		for (/* Already initialized. */; true; n -= 4L) {
 			/**
 			 * It's fine to do <code>n -= 2</code> instead of <code>n - 2</code> since we don't need the value
@@ -1316,7 +1316,7 @@ public class NumUtil {
 
 	/**
 	 * Runtime is in <code>O(sqrt(n))</code>. <br>
-	 * Precondition: <code>n > 7</code> <br>
+	 * Precondition: <code>7 < n</code> <br>
 	 * Precondition: <code>n % 12 == 11</code>
 	 * 
 	 * @param n
@@ -1327,7 +1327,7 @@ public class NumUtil {
 	protected static boolean isSafePrimeSqrtFixedInput(long n) {
 		// A safe prime is a prime that is one more than a multiple of 2.
 		if (NumUtil.isPrimeSqrtFixedInput(n)) { // i.e., n is a prime greater than 7.
-			final long N = (n - 1L) / 2L; // n >= 11 so N >= 5
+			final long N = (n - 1L) / 2L; // 11 <= n so 5 <= N
 			if (((N & 1L) == 0L) || (N % 3L == 0L)) {
 				// N is an integer greater than 4 and is divisible by 2 or 3 (or both).
 				return false;
@@ -1468,10 +1468,10 @@ public class NumUtil {
 	 * @return The first safe prime greater than <code>n</code>.
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>n >= NumUtil.LARGEST_SAFE_PRIME_LONG</code>
+	 *             If <code>NumUtil.LARGEST_SAFE_PRIME_LONG <= n</code>
 	 */
 	public static long safePrimeAfter(long n) throws IllegalArgumentException {
-		if (n >= NumUtil.LARGEST_SAFE_PRIME_LONG) {
+		if (NumUtil.LARGEST_SAFE_PRIME_LONG <= n) {
 			throw new IllegalArgumentException();
 		}
 		// n < NumUtil.LARGEST_SAFE_PRIME_LONG
@@ -1479,7 +1479,7 @@ public class NumUtil {
 		if (n < 8L) { // i.e., (n < 5) || (n == 5) || (n == 6) || (n == 7)
 			return ((n < 5L) ? 5L : ((n < 7L) ? 7L : 11L));
 		}
-		// n >= 8
+		// 8 <= n
 
 		/**
 		 * <pre>
@@ -1498,12 +1498,12 @@ public class NumUtil {
 		final long mod12 = n % 12L;
 		if (mod12 == 11L) { // i.e., n == 11, ...
 			// Update n to be the first integer which is 11 (mod 12) and greater than the original value of n.
-			n += 12L; // n >= 23
+			n += 12L; // 23 <= n
 		} else { // i.e., (0 <= mod12) && (mod12 <= 10)
 			// Update n to be the first integer which is 11 (mod 12) and greater than the original value of n.
-			n += 11L - mod12; // n >= 23
+			n += 11L - mod12; // 23 <= n
 		}
-		// (n % 12 == 11) && (n >= 23)
+		// (n % 12 == 11) && (23 <= n)
 		for (/* Already initialized. */; true; n += 12L) {
 			// Check if n (i.e., 11 (mod 12)) is a safe prime.
 			if (NumUtil.isSafePrimeSqrtFixedInput(n)) {
@@ -1520,10 +1520,10 @@ public class NumUtil {
 	 * @return The first safe prime greater than <code>n</code>.
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>n >= NumUtil.LARGEST_SAFE_PRIME_INT</code>
+	 *             If <code>NumUtil.LARGEST_SAFE_PRIME_INT <= n</code>
 	 */
 	public static int safePrimeAfter(int n) throws IllegalArgumentException {
-		if (n >= NumUtil.LARGEST_SAFE_PRIME_INT) {
+		if (NumUtil.LARGEST_SAFE_PRIME_INT <= n) {
 			throw new IllegalArgumentException();
 		}
 		// n < NumUtil.LARGEST_SAFE_PRIME_INT
@@ -1537,10 +1537,10 @@ public class NumUtil {
 	 * @return The first safe prime greater than <code>n</code>.
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>n >= NumUtil.LARGEST_SAFE_PRIME_SHORT</code>
+	 *             If <code>NumUtil.LARGEST_SAFE_PRIME_SHORT <= n</code>
 	 */
 	public static short safePrimeAfter(short n) throws IllegalArgumentException {
-		if (n >= NumUtil.LARGEST_SAFE_PRIME_SHORT) {
+		if (NumUtil.LARGEST_SAFE_PRIME_SHORT <= n) {
 			throw new IllegalArgumentException();
 		}
 		// n < NumUtil.LARGEST_SAFE_PRIME_SHORT
@@ -1554,10 +1554,10 @@ public class NumUtil {
 	 * @return The first safe prime greater than <code>n</code>.
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>n >= NumUtil.LARGEST_SAFE_PRIME_BYTE</code>
+	 *             If <code>NumUtil.LARGEST_SAFE_PRIME_BYTE <= n</code>
 	 */
 	public static byte safePrimeAfter(byte n) throws IllegalArgumentException {
-		if (n >= NumUtil.LARGEST_SAFE_PRIME_BYTE) {
+		if (NumUtil.LARGEST_SAFE_PRIME_BYTE <= n) {
 			throw new IllegalArgumentException();
 		}
 		// n < NumUtil.LARGEST_SAFE_PRIME_BYTE
@@ -1579,11 +1579,11 @@ public class NumUtil {
 				// The first safe prime is 5.
 				throw new IllegalArgumentException();
 			}
-			// n >= 6
+			// 6 <= n
 			// i.e., (n == 6) || (n == 7)
 			return 5L;
 		}
-		// n >= 8
+		// 8 <= n
 
 		/**
 		 * <pre>
@@ -1604,20 +1604,20 @@ public class NumUtil {
 			if (n == 11L) {
 				return 7L;
 			}
-			// n >= 23
+			// 23 <= n
 
 			// Update n to be the first integer which is 11 (mod 12) and smaller than the original value of n.
-			n -= 12L; // n >= 11
+			n -= 12L; // 11 <= n
 		} else { // i.e., (0 <= mod12) && (mod12 <= 10)
 			if (n < 13L) { // i.e., ((8 <= n) && (n <= 10)) || (n == 12)
 				return ((n == 12L) ? 11L : 7L);
 			}
-			// n >= 13
+			// 13 <= n
 
 			// Update n to be the first integer which is 11 (mod 12) and smaller than the original value of n.
-			n -= 1L + mod12; // n >= 11
+			n -= 1L + mod12; // 11 <= n
 		}
-		// (n % 12 == 11) && (n >= 11)
+		// (n % 12 == 11) && (11 <= n)
 		for (/* Already initialized. */; true; n -= 12L) {
 			// Check if n (i.e., 11 (mod 12)) is a safe prime.
 			if (NumUtil.isSafePrimeSqrtFixedInput(n)) {
@@ -1667,7 +1667,7 @@ public class NumUtil {
 	}
 
 	/**
-	 * Precondition: <code>(result != null) && (result.size() >= 1)</code>
+	 * Precondition: <code>(result != null) && (1 <= result.size())</code>
 	 * 
 	 * @param result
 	 *            the map produced by <code>NumUtil.factorSqrt(long, boolean, boolean)</code> to be
@@ -1689,7 +1689,7 @@ public class NumUtil {
 			negative = true;
 			System.out.print(" * ");
 		}
-		// Even if a -1 factor was removed, we know that result.size() >= 1 at this point.
+		// Even if a -1 factor was removed, we know that 1 <= result.size() at this point.
 
 		/*
 		 * There is no ordering in a HashMap so just iterate through it and print all of the factors.
@@ -1727,10 +1727,10 @@ public class NumUtil {
 			final Map.Entry<Long, Byte> first = ((TreeMap<Long, Byte>) result).firstEntry();
 			System.out.print("(" + first.getKey() + ")^" + first.getValue());
 		} else { // result.size() != 1
-			// i.e., result.size() >= 2
+			// i.e., 2 <= result.size()
 			final Map.Entry<Long, Byte> first = ((TreeMap<Long, Byte>) result).pollFirstEntry();
 			System.out.print("(" + first.getKey() + ")^" + first.getValue());
-			// result.size() >= 1
+			// 1 <= result.size()
 			final Iterator<Map.Entry<Long, Byte>> it = result.entrySet().iterator();
 			for (Map.Entry<Long, Byte> entry = null; it.hasNext(); /* Update inside. */) {
 				entry = it.next();
@@ -1754,7 +1754,7 @@ public class NumUtil {
 	 * Postcondition: <code>(n == -1) implies (Result.size() == 1)</code> <br>
 	 * Postcondition: <code>(n < 0) implies ((Result.get(-1L) != null) && (Result.get(-1L) == 1))</code>
 	 * <br>
-	 * Postcondition: <code>(n >= 0) implies (Result.get(-1L) == null)</code> <br>
+	 * Postcondition: <code>(0 <= n) implies (Result.get(-1L) == null)</code> <br>
 	 * Postcondition:
 	 * 
 	 * <pre>
@@ -1815,14 +1815,14 @@ public class NumUtil {
 				return result;
 			}
 			// n != Long.MIN_VALUE
-			// i.e., n > 0
+			// i.e., 0 < n
 		} else {
 			// Only print if requested.
 			if (print) {
 				System.out.print(n + " = ");
 			}
 		}
-		// n >= 0
+		// 0 <= n
 
 		// Handle the simple special case.
 		if (n < 2L) { // i.e., (n == 0) || (n == 1)
@@ -1832,7 +1832,7 @@ public class NumUtil {
 			}
 			return result;
 		}
-		// n >= 2
+		// 2 <= n
 
 		/**
 		 * <pre>
@@ -1897,8 +1897,8 @@ public class NumUtil {
 		 * still being considered.
 		 */
 		// Applying Math.floor before casting to long is unnecessary and it causes a large slow down.
-		final long bound = ((long) Math.sqrt(n)) + 1L; // bound >= 2
-		final long maxI = bound + 1L; // maxI >= 3
+		final long bound = ((long) Math.sqrt(n)) + 1L; // 2 <= bound
+		final long maxI = bound + 1L; // 3 <= maxI
 		for (long i = 5L; i < maxI; i += 4L) {
 			// Check if i (i.e., -1 (mod 6)) is a factor of n.
 			if (n % i == 0L) {
@@ -1963,7 +1963,7 @@ public class NumUtil {
 	 * Postcondition: <code>(n == -1) implies (Result.size() == 1)</code> <br>
 	 * Postcondition: <code>(n < 0) implies ((Result.get(-1L) != null) && (Result.get(-1L) == 1))</code>
 	 * <br>
-	 * Postcondition: <code>(n >= 0) implies (Result.get(-1L) == null)</code> <br>
+	 * Postcondition: <code>(0 <= n) implies (Result.get(-1L) == null)</code> <br>
 	 * Postcondition:
 	 * 
 	 * <pre>
@@ -2011,7 +2011,7 @@ public class NumUtil {
 	 * Postcondition: <code>(n == -1) implies (Result.size() == 1)</code> <br>
 	 * Postcondition: <code>(n < 0) implies ((Result.get(-1L) != null) && (Result.get(-1L) == 1))</code>
 	 * <br>
-	 * Postcondition: <code>(n >= 0) implies (Result.get(-1L) == null)</code> <br>
+	 * Postcondition: <code>(0 <= n) implies (Result.get(-1L) == null)</code> <br>
 	 * Postcondition:
 	 * 
 	 * <pre>
@@ -2049,7 +2049,7 @@ public class NumUtil {
 	}
 
 	/**
-	 * Precondition: <code>(result != null) && (result.size() >= 1)</code>
+	 * Precondition: <code>(result != null) && (1 <= result.size())</code>
 	 * 
 	 * @param result
 	 *            the map produced by <code>NumUtil.factorSqrt(int, boolean, boolean)</code> to be
@@ -2071,7 +2071,7 @@ public class NumUtil {
 			negative = true;
 			System.out.print(" * ");
 		}
-		// Even if a -1 factor was removed, we know that result.size() >= 1 at this point.
+		// Even if a -1 factor was removed, we know that 1 <= result.size() at this point.
 
 		/*
 		 * There is no ordering in a HashMap so just iterate through it and print all of the factors.
@@ -2109,10 +2109,10 @@ public class NumUtil {
 			final Map.Entry<Integer, Byte> first = ((TreeMap<Integer, Byte>) result).firstEntry();
 			System.out.print("(" + first.getKey() + ")^" + first.getValue());
 		} else { // result.size() != 1
-			// i.e., result.size() >= 2
+			// i.e., 2 <= result.size()
 			final Map.Entry<Integer, Byte> first = ((TreeMap<Integer, Byte>) result).pollFirstEntry();
 			System.out.print("(" + first.getKey() + ")^" + first.getValue());
-			// result.size() >= 1
+			// 1 <= result.size()
 			final Iterator<Map.Entry<Integer, Byte>> it = result.entrySet().iterator();
 			for (Map.Entry<Integer, Byte> entry = null; it.hasNext(); /* Update inside. */) {
 				entry = it.next();
@@ -2136,7 +2136,7 @@ public class NumUtil {
 	 * Postcondition: <code>(n == -1) implies (Result.size() == 1)</code> <br>
 	 * Postcondition: <code>(n < 0) implies ((Result.get(-1) != null) && (Result.get(-1) == 1))</code>
 	 * <br>
-	 * Postcondition: <code>(n >= 0) implies (Result.get(-1) == null)</code> <br>
+	 * Postcondition: <code>(0 <= n) implies (Result.get(-1) == null)</code> <br>
 	 * Postcondition:
 	 * 
 	 * <pre>
@@ -2197,14 +2197,14 @@ public class NumUtil {
 				return result;
 			}
 			// n != Integer.MIN_VALUE
-			// i.e., n > 0
+			// i.e., 0 < n
 		} else {
 			// Only print if requested.
 			if (print) {
 				System.out.print(n + " = ");
 			}
 		}
-		// n >= 0
+		// 0 <= n
 
 		// Handle the simple special case.
 		if (n < 2) { // i.e., (n == 0) || (n == 1)
@@ -2214,7 +2214,7 @@ public class NumUtil {
 			}
 			return result;
 		}
-		// n >= 2
+		// 2 <= n
 
 		/**
 		 * <pre>
@@ -2279,8 +2279,8 @@ public class NumUtil {
 		 * still being considered.
 		 */
 		// Applying Math.floor before casting to int is unnecessary and it causes a large slow down.
-		final int bound = ((int) Math.sqrt(n)) + 1; // bound >= 2
-		final int maxI = bound + 1; // maxI >= 3
+		final int bound = ((int) Math.sqrt(n)) + 1; // 2 <= bound
+		final int maxI = bound + 1; // 3 <= maxI
 		for (int i = 5; i < maxI; i += 4) {
 			// Check if i (i.e., -1 (mod 6)) is a factor of n.
 			if (n % i == 0) {
@@ -2345,7 +2345,7 @@ public class NumUtil {
 	 * Postcondition: <code>(n == -1) implies (Result.size() == 1)</code> <br>
 	 * Postcondition: <code>(n < 0) implies ((Result.get(-1) != null) && (Result.get(-1) == 1))</code>
 	 * <br>
-	 * Postcondition: <code>(n >= 0) implies (Result.get(-1) == null)</code> <br>
+	 * Postcondition: <code>(0 <= n) implies (Result.get(-1) == null)</code> <br>
 	 * Postcondition:
 	 * 
 	 * <pre>
@@ -2393,7 +2393,7 @@ public class NumUtil {
 	 * Postcondition: <code>(n == -1) implies (Result.size() == 1)</code> <br>
 	 * Postcondition: <code>(n < 0) implies ((Result.get(-1) != null) && (Result.get(-1) == 1))</code>
 	 * <br>
-	 * Postcondition: <code>(n >= 0) implies (Result.get(-1) == null)</code> <br>
+	 * Postcondition: <code>(0 <= n) implies (Result.get(-1) == null)</code> <br>
 	 * Postcondition:
 	 * 
 	 * <pre>
@@ -2431,7 +2431,7 @@ public class NumUtil {
 	}
 
 	/**
-	 * Precondition: <code>(result != null) && (result.size() >= 1)</code>
+	 * Precondition: <code>(result != null) && (1 <= result.size())</code>
 	 * 
 	 * @param result
 	 *            the map produced by <code>NumUtil.factorSqrt(short, boolean, boolean)</code> to be
@@ -2453,7 +2453,7 @@ public class NumUtil {
 			negative = true;
 			System.out.print(" * ");
 		}
-		// Even if a -1 factor was removed, we know that result.size() >= 1 at this point.
+		// Even if a -1 factor was removed, we know that 1 <= result.size() at this point.
 
 		/*
 		 * There is no ordering in a HashMap so just iterate through it and print all of the factors.
@@ -2491,10 +2491,10 @@ public class NumUtil {
 			final Map.Entry<Short, Byte> first = ((TreeMap<Short, Byte>) result).firstEntry();
 			System.out.print("(" + first.getKey() + ")^" + first.getValue());
 		} else { // result.size() != 1
-			// i.e., result.size() >= 2
+			// i.e., 2 <= result.size()
 			final Map.Entry<Short, Byte> first = ((TreeMap<Short, Byte>) result).pollFirstEntry();
 			System.out.print("(" + first.getKey() + ")^" + first.getValue());
-			// result.size() >= 1
+			// 1 <= result.size()
 			final Iterator<Map.Entry<Short, Byte>> it = result.entrySet().iterator();
 			for (Map.Entry<Short, Byte> entry = null; it.hasNext(); /* Update inside. */) {
 				entry = it.next();
@@ -2519,7 +2519,7 @@ public class NumUtil {
 	 * Postcondition:
 	 * <code>(n < 0) implies ((Result.get((short) -1) != null) && (Result.get((short) -1) == 1))</code>
 	 * <br>
-	 * Postcondition: <code>(n >= 0) implies (Result.get((short) -1) == null)</code> <br>
+	 * Postcondition: <code>(0 <= n) implies (Result.get((short) -1) == null)</code> <br>
 	 * Postcondition:
 	 * 
 	 * <pre>
@@ -2580,14 +2580,14 @@ public class NumUtil {
 				return result;
 			}
 			// n != Short.MIN_VALUE
-			// i.e., n > 0
+			// i.e., 0 < n
 		} else {
 			// Only print if requested.
 			if (print) {
 				System.out.print(n + " = ");
 			}
 		}
-		// n >= 0
+		// 0 <= n
 
 		// Handle the simple special case.
 		if (n < 2) { // i.e., (n == 0) || (n == 1)
@@ -2597,7 +2597,7 @@ public class NumUtil {
 			}
 			return result;
 		}
-		// n >= 2
+		// 2 <= n
 
 		/**
 		 * <pre>
@@ -2662,8 +2662,8 @@ public class NumUtil {
 		 * still being considered.
 		 */
 		// Applying Math.floor before casting to short is unnecessary and it causes a large slow down.
-		final short bound = (short) (((short) Math.sqrt(n)) + 1); // bound >= 2
-		final short maxI = (short) (bound + 1); // maxI >= 3
+		final short bound = (short) (((short) Math.sqrt(n)) + 1); // 2 <= bound
+		final short maxI = (short) (bound + 1); // 3 <= maxI
 		for (short i = 5; i < maxI; i += 4) {
 			// Check if i (i.e., -1 (mod 6)) is a factor of n.
 			if (n % i == 0) {
@@ -2729,7 +2729,7 @@ public class NumUtil {
 	 * Postcondition:
 	 * <code>(n < 0) implies ((Result.get((short) -1) != null) && (Result.get((short) -1) == 1))</code>
 	 * <br>
-	 * Postcondition: <code>(n >= 0) implies (Result.get((short) -1) == null)</code> <br>
+	 * Postcondition: <code>(0 <= n) implies (Result.get((short) -1) == null)</code> <br>
 	 * Postcondition:
 	 * 
 	 * <pre>
@@ -2778,7 +2778,7 @@ public class NumUtil {
 	 * Postcondition:
 	 * <code>(n < 0) implies ((Result.get((short) -1) != null) && (Result.get((short) -1) == 1))</code>
 	 * <br>
-	 * Postcondition: <code>(n >= 0) implies (Result.get((short) -1) == null)</code> <br>
+	 * Postcondition: <code>(0 <= n) implies (Result.get((short) -1) == null)</code> <br>
 	 * Postcondition:
 	 * 
 	 * <pre>
@@ -2816,7 +2816,7 @@ public class NumUtil {
 	}
 
 	/**
-	 * Precondition: <code>(result != null) && (result.size() >= 1)</code>
+	 * Precondition: <code>(result != null) && (1 <= result.size())</code>
 	 * 
 	 * @param result
 	 *            the map produced by <code>NumUtil.factorSqrt(byte, boolean, boolean)</code> to be
@@ -2838,7 +2838,7 @@ public class NumUtil {
 			negative = true;
 			System.out.print(" * ");
 		}
-		// Even if a -1 factor was removed, we know that result.size() >= 1 at this point.
+		// Even if a -1 factor was removed, we know that 1 <= result.size() at this point.
 
 		/*
 		 * There is no ordering in a HashMap so just iterate through it and print all of the factors.
@@ -2876,10 +2876,10 @@ public class NumUtil {
 			final Map.Entry<Byte, Byte> first = ((TreeMap<Byte, Byte>) result).firstEntry();
 			System.out.print("(" + first.getKey() + ")^" + first.getValue());
 		} else { // result.size() != 1
-			// i.e., result.size() >= 2
+			// i.e., 2 <= result.size()
 			final Map.Entry<Byte, Byte> first = ((TreeMap<Byte, Byte>) result).pollFirstEntry();
 			System.out.print("(" + first.getKey() + ")^" + first.getValue());
-			// result.size() >= 1
+			// 1 <= result.size()
 			final Iterator<Map.Entry<Byte, Byte>> it = result.entrySet().iterator();
 			for (Map.Entry<Byte, Byte> entry = null; it.hasNext(); /* Update inside. */) {
 				entry = it.next();
@@ -2904,7 +2904,7 @@ public class NumUtil {
 	 * Postcondition:
 	 * <code>(n < 0) implies ((Result.get((byte) -1) != null) && (Result.get((byte) -1) == 1))</code>
 	 * <br>
-	 * Postcondition: <code>(n >= 0) implies (Result.get((byte) -1) == null)</code> <br>
+	 * Postcondition: <code>(0 <= n) implies (Result.get((byte) -1) == null)</code> <br>
 	 * Postcondition:
 	 * 
 	 * <pre>
@@ -2965,14 +2965,14 @@ public class NumUtil {
 				return result;
 			}
 			// n != Byte.MIN_VALUE
-			// i.e., n > 0
+			// i.e., 0 < n
 		} else {
 			// Only print if requested.
 			if (print) {
 				System.out.print(n + " = ");
 			}
 		}
-		// n >= 0
+		// 0 <= n
 
 		// Handle the simple special case.
 		if (n < 2) { // i.e., (n == 0) || (n == 1)
@@ -2982,7 +2982,7 @@ public class NumUtil {
 			}
 			return result;
 		}
-		// n >= 2
+		// 2 <= n
 
 		/**
 		 * <pre>
@@ -3047,8 +3047,8 @@ public class NumUtil {
 		 * still being considered.
 		 */
 		// Applying Math.floor before casting to short is unnecessary and it causes a large slow down.
-		final byte bound = (byte) (((byte) Math.sqrt(n)) + 1); // bound >= 2
-		final byte maxI = (byte) (bound + 1); // maxI >= 3
+		final byte bound = (byte) (((byte) Math.sqrt(n)) + 1); // 2 <= bound
+		final byte maxI = (byte) (bound + 1); // 3 <= maxI
 		for (byte i = 5; i < maxI; i += 4) {
 			// Check if i (i.e., -1 (mod 6)) is a factor of n.
 			if (n % i == 0) {
@@ -3114,7 +3114,7 @@ public class NumUtil {
 	 * Postcondition:
 	 * <code>(n < 0) implies ((Result.get((byte) -1) != null) && (Result.get((byte) -1) == 1))</code>
 	 * <br>
-	 * Postcondition: <code>(n >= 0) implies (Result.get((byte) -1) == null)</code> <br>
+	 * Postcondition: <code>(0 <= n) implies (Result.get((byte) -1) == null)</code> <br>
 	 * Postcondition:
 	 * 
 	 * <pre>
@@ -3163,7 +3163,7 @@ public class NumUtil {
 	 * Postcondition:
 	 * <code>(n < 0) implies ((Result.get((byte) -1) != null) && (Result.get((byte) -1) == 1))</code>
 	 * <br>
-	 * Postcondition: <code>(n >= 0) implies (Result.get((byte) -1) == null)</code> <br>
+	 * Postcondition: <code>(0 <= n) implies (Result.get((byte) -1) == null)</code> <br>
 	 * Postcondition:
 	 * 
 	 * <pre>
@@ -3205,7 +3205,7 @@ public class NumUtil {
 	 * <code>[begin, end)</code> (i.e., check for a non-trivial divisor of <code>n</code> by checking
 	 * <code>gcd(base<sup>k!</sup> - 1 (mod n), n)</code> for integer <code>k</code> in
 	 * <code>[begin, end)</code>) in <code>O((end - begin) * lg(n)) time</code>. <br>
-	 * Precondition: <code>n > 4</code> <br>
+	 * Precondition: <code>4 < n</code> <br>
 	 * Precondition: <code>(n % 2 != 0) && (n % 3 != 0)</code> <br>
 	 * Precondition: <code>gcd(base, n) == 1</code> <br>
 	 * Precondition: <code>(0 <= begin) && (begin < end)</code> <br>
@@ -3304,15 +3304,15 @@ public class NumUtil {
 		} else if ((end < begin) || (begin < 0L)) {
 			throw new IllegalArgumentException();
 		}
-		// (n >= 1) && (begin <= end) && (begin >= 0)
-		// i.e., (n > 0) && (0 <= begin) && (begin <= end)
+		// (1 <= n) && (begin <= end) && (0 <= begin)
+		// i.e., (0 < n) && (0 <= begin) && (begin <= end)
 
 		// Handle the <code>n == 1</code> case.
 		if (n == 1L) {
 			return 1L;
 		}
 		// n != 1
-		// i.e., n >= 2
+		// i.e., 2 <= n
 
 		/**
 		 * <pre>
@@ -3334,7 +3334,7 @@ public class NumUtil {
 			return 3L;
 		}
 		// (n % 2 != 0) && (n % 3 != 0)
-		// i.e., (n > 4) && (n % 2 != 0) && (n % 3 != 0)
+		// i.e., (4 < n) && (n % 2 != 0) && (n % 3 != 0)
 
 		// Fix base to be in [0, n - 1] \cap \doubleZ and handle the invalid-base special cases.
 		if ((base %= n) < 0L) {
@@ -3367,7 +3367,7 @@ public class NumUtil {
 		if (1L < begin) { // i.e., 1 < begin!
 			// Fix base_to_begin_factorial to be in [-n / 2, n / 2] \cap \doubleZ.
 			base_to_begin_factorial = MathUtil.modMinFixedInput(base_to_begin_factorial, n);
-			final long maxI = begin + 1L; // maxI >= 3
+			final long maxI = begin + 1L; // 3 <= maxI
 			for (long i = 2L; i != maxI; ++i) {
 				base_to_begin_factorial = MathUtil.modPowFixedInput(base_to_begin_factorial, i, n);
 			}
@@ -3713,7 +3713,7 @@ public class NumUtil {
 			 */
 			return ((n < 1L) ? 0L : ((n == 1L) ? 1L : (--n)));
 		}
-		// n >= 4
+		// 4 <= n
 
 		/**
 		 * <pre>
@@ -3780,8 +3780,8 @@ public class NumUtil {
 		 * still being considered.
 		 */
 		// Applying Math.floor before casting to long is unnecessary and it causes a large slow down.
-		final long bound = ((long) Math.sqrt(n)) + 1L; // bound >= 3
-		final long maxI = bound + 1L; // maxI >= 4
+		final long bound = ((long) Math.sqrt(n)) + 1L; // 3 <= bound
+		final long maxI = bound + 1L; // 4 <= maxI
 		for (long i = 5L; i < maxI; i += 4L) {
 			// Check if i (i.e., -1 (mod 6)) is a factor of n.
 			if (n % i == 0L) {

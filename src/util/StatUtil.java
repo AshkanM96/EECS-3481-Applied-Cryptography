@@ -48,7 +48,7 @@ public class StatUtil {
 
 	/**
 	 * Linearly compute <code>n factorial</code> (i.e., <code>n!</code>). <br>
-	 * Precondition: <code>(n != null) && (n >= 0)</code>
+	 * Precondition: <code>(n != null) && (0 <= n)</code>
 	 * 
 	 * @param n
 	 *            the given number
@@ -60,12 +60,12 @@ public class StatUtil {
 			return BigInteger.ONE;
 		}
 		// n != 0
-		// i.e., n >= 1
+		// i.e., 1 <= n
 
 		// Compute n! in the loop and then return it.
 		BigInteger result = BigInteger.ONE;
 		for (BigInteger i = BigInteger.ONE; !i.equals(n); /* Update inside. */) {
-			// i! = i * (i - 1)! for all i >= 1
+			// i! = i * (i - 1)! for all 1 <= i
 			i = i.add(BigInteger.ONE);
 			result = result.multiply(i);
 		}
@@ -90,13 +90,13 @@ public class StatUtil {
 		if (n.signum() == -1) { // i.e., n < 0
 			throw new IllegalArgumentException();
 		}
-		// n >= 0
+		// 0 <= n
 		return StatUtil.factorialLinearFixedInput(n);
 	}
 
 	/**
 	 * Linearly compute <code>n factorial</code> (i.e., <code>n!</code>). <br>
-	 * Precondition: <code>n >= 0</code>
+	 * Precondition: <code>0 <= n</code>
 	 * 
 	 * @param n
 	 *            the given number
@@ -108,12 +108,12 @@ public class StatUtil {
 			return BigInteger.ONE;
 		}
 		// n != 0
-		// i.e., n >= 1
+		// i.e., 1 <= n
 
 		// Compute n! in the loop and then return it.
 		BigInteger result = BigInteger.ONE;
 		for (long i = 1L; i != n; /* Update inside. */) {
-			// i! = i * (i - 1)! for all i >= 1
+			// i! = i * (i - 1)! for all 1 <= i
 			/**
 			 * Note that <code>BigInteger.valueOf(long)</code> calls are much cheaper than performing arithmetic
 			 * operations on a <code>BigInteger</code> since those are fully general operations for potentially
@@ -143,7 +143,7 @@ public class StatUtil {
 		if (n < 0L) {
 			throw new IllegalArgumentException();
 		}
-		// n >= 0
+		// 0 <= n
 		return StatUtil.factorialLinearFixedInput(n);
 	}
 
@@ -151,7 +151,7 @@ public class StatUtil {
 	 * Recursively retrieve/compute_and_store <code>n factorial</code> (i.e., <code>n!</code>). <br>
 	 * Precondition: <code>StatUtil.factorials != null</code> <br>
 	 * Precondition: <code>StatUtil.factorials.get(0) == BigInteger.ONE</code> <br>
-	 * Precondition: <code>n >= 0</code>
+	 * Precondition: <code>0 <= n</code>
 	 * 
 	 * @param n
 	 *            the given number
@@ -161,10 +161,10 @@ public class StatUtil {
 	protected static BigInteger factorialMapFixedInput(int n) {
 		BigInteger result = StatUtil.factorials.get(n);
 		if (result == null) { // i.e., n != 0
-			// i.e., n >= 1
+			// i.e., 1 <= n
 
 			// Recursively retrieve/compute_and_store (n - 1)! then compute n! from it.
-			// n! = n * (n - 1)! for all n >= 1
+			// n! = n * (n - 1)! for all 1 <= n
 			// Recurse first then construct BigInteger object for optimization.
 			result = StatUtil.factorialMapFixedInput(n - 1).multiply(BigInteger.valueOf(n));
 
@@ -192,7 +192,7 @@ public class StatUtil {
 			// (0! == 1) && (1! == 1)
 			return BigInteger.ONE;
 		}
-		// n >= 2
+		// 2 <= n
 
 		// Initialize StatUtil.factorials if needed. Executed at most once.
 		if (StatUtil.factorials == null) {
@@ -207,7 +207,7 @@ public class StatUtil {
 
 	/**
 	 * Linearly compute <code>n subfactorial</code> (i.e., <code>!n</code>). <br>
-	 * Precondition: <code>(n != null) && (n >= 0)</code>
+	 * Precondition: <code>(n != null) && (0 <= n)</code>
 	 * 
 	 * @param n
 	 *            the given number
@@ -219,12 +219,12 @@ public class StatUtil {
 			return BigInteger.ONE;
 		}
 		// n != 0
-		// i.e., n >= 1
+		// i.e., 1 <= n
 
 		// Compute !n in the loop and then return it.
 		BigInteger result = BigInteger.ZERO;
 		for (BigInteger i = BigInteger.ONE; !i.equals(n); /* Update inside. */) {
-			// !i = i * !(i - 1) + (-1)^i for all i >= 1
+			// !i = i * !(i - 1) + (-1)^i for all 1 <= i
 			result = result.multiply(i = i.add(BigInteger.ONE));
 			result = i.testBit(0) ? result.subtract(BigInteger.ONE) : result.add(BigInteger.ONE);
 		}
@@ -249,13 +249,13 @@ public class StatUtil {
 		if (n.signum() == -1) { // i.e., n < 0
 			throw new IllegalArgumentException();
 		}
-		// n >= 0
+		// 0 <= n
 		return StatUtil.subfactorialLinearFixedInput(n);
 	}
 
 	/**
 	 * Linearly compute <code>n subfactorial</code> (i.e., <code>!n</code>). <br>
-	 * Precondition: <code>n >= 0</code>
+	 * Precondition: <code>0 <= n</code>
 	 * 
 	 * @param n
 	 *            the given number
@@ -267,12 +267,12 @@ public class StatUtil {
 			return BigInteger.ONE;
 		}
 		// n != 0
-		// i.e., n >= 1
+		// i.e., 1 <= n
 
 		// Compute !n in the loop and then return it.
 		BigInteger result = BigInteger.ZERO;
 		for (long i = 1L; i != n; /* Update inside. */) {
-			// !i = i * !(i - 1) + (-1)^i for all i >= 1
+			// !i = i * !(i - 1) + (-1)^i for all 1 <= i
 			/**
 			 * Note that <code>BigInteger.valueOf(long)</code> calls are much cheaper than performing arithmetic
 			 * operations on a <code>BigInteger</code> since those are fully general operations for potentially
@@ -308,7 +308,7 @@ public class StatUtil {
 		if (n < 0L) {
 			throw new IllegalArgumentException();
 		}
-		// n >= 0
+		// 0 <= n
 		return StatUtil.subfactorialLinearFixedInput(n);
 	}
 
@@ -316,7 +316,7 @@ public class StatUtil {
 	 * Recursively retrieve/compute_and_store <code>n subfactorial</code> (i.e., <code>!n</code>). <br>
 	 * Precondition: <code>StatUtil.subfactorials != null</code> <br>
 	 * Precondition: <code>StatUtil.subfactorials.get(0) == BigInteger.ONE</code> <br>
-	 * Precondition: <code>n >= 0</code>
+	 * Precondition: <code>0 <= n</code>
 	 * 
 	 * @param n
 	 *            the given number
@@ -326,10 +326,10 @@ public class StatUtil {
 	protected static BigInteger subfactorialMapFixedInput(int n) {
 		BigInteger result = StatUtil.subfactorials.get(n);
 		if (result == null) { // i.e., n != 0
-			// i.e., n >= 1
+			// i.e., 1 <= n
 
 			// Recursively retrieve/compute_and_store !(n - 1) then compute !n from it.
-			// !n = n * !(n - 1) + (-1)^n for all n >= 1
+			// !n = n * !(n - 1) + (-1)^n for all 1 <= n
 			// Recurse first then construct BigInteger object for optimization.
 			result = StatUtil.subfactorialMapFixedInput(n - 1).multiply(BigInteger.valueOf(n));
 			/**
@@ -364,7 +364,7 @@ public class StatUtil {
 			// The following valueOf call just retrieves BigInteger.ONE or BigInteger.ZERO.
 			return BigInteger.valueOf(1L - n);
 		}
-		// n >= 2
+		// 2 <= n
 
 		// Initialize StatUtil.subfactorials if needed. Executed at most once.
 		if (StatUtil.subfactorials == null) {
@@ -379,7 +379,7 @@ public class StatUtil {
 
 	/**
 	 * Linearly compute <code>nPr</code>. <br>
-	 * Precondition: <code>(n != null) && (n >= 0)</code> <br>
+	 * Precondition: <code>(n != null) && (0 <= n)</code> <br>
 	 * Precondition: <code>(r != null) && (0 <= r) && (r <= n)</code>
 	 * 
 	 * @param n
@@ -421,14 +421,14 @@ public class StatUtil {
 		if ((n.signum() == -1) || (r.signum() == -1)) { // i.e., (n < 0) || (r < 0)
 			throw new IllegalArgumentException();
 		}
-		// (n >= 0) && (r >= 0)
+		// (0 <= n) && (0 <= r)
 
 		final int n_cmp_r = n.compareTo(r);
 		if (n_cmp_r < 0) { // i.e., n < r
 			throw new IllegalArgumentException();
 		}
-		// n_cmp_r >= 0
-		// i.e., n >= r
+		// 0 <= n_cmp_r
+		// i.e., r <= n
 
 		if (r.signum() == 0) { // i.e., r == 0
 			/*
@@ -438,13 +438,13 @@ public class StatUtil {
 			return BigInteger.ONE;
 		}
 		// r != 0
-		// i.e., r >= 1
+		// i.e., 1 <= r
 		return StatUtil.nPrLinearFixedInput(n, r);
 	}
 
 	/**
 	 * Linearly compute <code>nPr</code>. <br>
-	 * Precondition: <code>n >= 0</code> <br>
+	 * Precondition: <code>0 <= n</code> <br>
 	 * Precondition: <code>(0 <= r) && (r <= n)</code>
 	 * 
 	 * @param n
@@ -497,12 +497,12 @@ public class StatUtil {
 		if ((n < 0L) || (r < 0L)) {
 			throw new IllegalArgumentException();
 		}
-		// (n >= 0) && (r >= 0)
+		// (0 <= n) && (0 <= r)
 
 		if (n < r) {
 			throw new IllegalArgumentException();
 		}
-		// n >= r
+		// r <= n
 
 		if (r == 0L) {
 			/*
@@ -512,13 +512,13 @@ public class StatUtil {
 			return BigInteger.ONE;
 		}
 		// r != 0
-		// i.e., r >= 1
+		// i.e., 1 <= r
 		return StatUtil.nPrLinearFixedInput(n, r);
 	}
 
 	/**
 	 * Linearly compute <code>nCr</code>. <br>
-	 * Precondition: <code>(n != null) && (n >= 0)</code> <br>
+	 * Precondition: <code>(n != null) && (0 <= n)</code> <br>
 	 * Precondition: <code>(r != null) && (1 <= r) && (r <= n / 2)</code>
 	 * 
 	 * @param n
@@ -561,7 +561,7 @@ public class StatUtil {
 		if ((n.signum() == -1) || (r.signum() == -1)) { // i.e., (n < 0) || (r < 0)
 			throw new IllegalArgumentException();
 		}
-		// (n >= 0) && (r >= 0)
+		// (0 <= n) && (0 <= r)
 
 		final int n_cmp_r = n.compareTo(r);
 		if (n_cmp_r < 0) { // i.e., n < r
@@ -574,8 +574,8 @@ public class StatUtil {
 			 */
 			return BigInteger.ONE;
 		}
-		// n_cmp_r > 0
-		// i.e., n > r
+		// 0 < n_cmp_r
+		// i.e., r < n
 
 		// nCr == nC(n - r)
 		final BigInteger n_r = n.subtract(r);
@@ -596,13 +596,13 @@ public class StatUtil {
 			return n;
 		}
 		// (r != 0) && (r != 1)
-		// i.e., r >= 2
+		// i.e., 2 <= r
 		return StatUtil.nCrLinearFixedInput(n, r);
 	}
 
 	/**
 	 * Linearly compute <code>nCr</code>. <br>
-	 * Precondition: <code>n >= 0</code> <br>
+	 * Precondition: <code>0 <= n</code> <br>
 	 * Precondition: <code>(1 <= r) && (r <= n / 2)</code>
 	 * 
 	 * @param n
@@ -655,7 +655,7 @@ public class StatUtil {
 		if ((n < 0L) || (r < 0L)) {
 			throw new IllegalArgumentException();
 		}
-		// (n >= 0) && (r >= 0)
+		// (0 <= n) && (0 <= r)
 
 		if (n < r) {
 			throw new IllegalArgumentException();
@@ -667,7 +667,7 @@ public class StatUtil {
 			 */
 			return BigInteger.ONE;
 		}
-		// n > r
+		// r < n
 
 		// nCr == nC(n - r)
 		final long n_r = n - r;
@@ -688,13 +688,13 @@ public class StatUtil {
 			return BigInteger.valueOf(n);
 		}
 		// (r != 0) && (r != 1)
-		// i.e., r >= 2
+		// i.e., 2 <= r
 		return StatUtil.nCrLinearFixedInput(n, r);
 	}
 
 	/**
 	 * Linearly compute <code>S2(n, r)</code>. <br>
-	 * Precondition: <code>n >= 1</code> <br>
+	 * Precondition: <code>1 <= n</code> <br>
 	 * Precondition: <code>(2 <= r) && (r <= n - 1)</code>
 	 * 
 	 * @param n
@@ -748,7 +748,7 @@ public class StatUtil {
 		if ((n < 0) || (r < 0)) {
 			throw new IllegalArgumentException();
 		}
-		// (n >= 0) && (r >= 0)
+		// (0 <= n) && (0 <= r)
 
 		if (n < r) {
 			throw new IllegalArgumentException();
@@ -759,15 +759,15 @@ public class StatUtil {
 			// S2(n, 0) for n != 0 is 0
 			return BigInteger.ZERO;
 		}
-		// (n > r) && (n != 0) && (r != 0) && (r != 1)
-		// i.e., (n - 1 >= r) && (n >= 1) && (r >= 2)
+		// (r < n) && (n != 0) && (r != 0) && (r != 1)
+		// i.e., (1 <= n) && (2 <= r) && (r <= n - 1)
 		return StatUtil.stirling2LinearFixedInput(n, r);
 	}
 
 	/**
-	 * Precondition: <code>d >= 2</code> <br>
+	 * Precondition: <code>2 <= d</code> <br>
 	 * Precondition: <code>(0 <= n) && (n <= d - 1)</code> <br>
-	 * Precondition: <code>scale >= 0</code>
+	 * Precondition: <code>0 <= scale</code>
 	 * 
 	 * @param d
 	 *            the given number of days
@@ -787,7 +787,7 @@ public class StatUtil {
 		// Probability of no collision is: <code>dPn / (d^n)</code>
 		final BigInteger numerator = StatUtil.nPrLinearFixedInput(d, n);
 		final BigDecimal denominator = BigDecimal.valueOf(d).pow(n);
-		// Probability of >= 1 collision is: <code>1 - probability of no collision</code>
+		// Probability of at least one collision is: <code>1 - probability of no collision</code>
 		final BigDecimal result = BigDecimal.ONE
 				.subtract(new BigDecimal(numerator).divide(denominator, scale, BigDecimal.ROUND_HALF_UP));
 		return (outOf100 ? result.multiply(StatUtil.HUNDRED_ZERO_SCALE) : result);
@@ -813,21 +813,21 @@ public class StatUtil {
 		if ((d < 1) || (n < 0) || (scale < 0)) {
 			throw new IllegalArgumentException();
 		}
-		// (d >= 1) && (n >= 0) && (scale >= 0)
+		// (1 <= d) && (0 <= n) && (0 <= scale)
 
 		// Handle the simple special cases.
 		if (n < 2) {
-			// Probability of >= 1 collision with <= 1 people is: <code>0</code>
+			// Probability of at least one collision with <= 1 people is: <code>0</code>
 			return BigDecimal.ZERO;
 		} else if (d <= n) {
 			/**
-			 * Probability of >= 1 collision with d or more people is:
+			 * Probability of at least one collision with d or more people is:
 			 * <code>1 by the Pigeon Hole Principle</code>
 			 */
 			return (outOf100 ? StatUtil.HUNDRED_ZERO_SCALE : BigDecimal.ONE);
 		}
 		// (1 < n) && (n < d)
-		// i.e., (1 < n) && (n < d) && (d >= 2)
+		// i.e., (1 < n) && (n < d) && (2 <= d)
 		return StatUtil.birthday1LinearFixedInput(d, n, scale, outOf100);
 	}
 
@@ -861,10 +861,10 @@ public class StatUtil {
 	}
 
 	/**
-	 * Precondition: <code>d >= 2</code> <br>
-	 * Precondition: <code>(n >= 1) && (m >= 1)</code> <br>
+	 * Precondition: <code>2 <= d</code> <br>
+	 * Precondition: <code>(1 <= n) && (1 <= m)</code> <br>
 	 * Precondition: <code>m + n <= d</code> <br>
-	 * Precondition: <code>scale >= 0</code>
+	 * Precondition: <code>0 <= scale</code>
 	 * 
 	 * @param d
 	 *            the given number of days
@@ -918,7 +918,7 @@ public class StatUtil {
 				numerator = numerator.add(tmp);
 			}
 		}
-		// Probability of >= 1 collision is: <code>1 - probability of no collision</code>
+		// Probability of at least one collision is: <code>1 - probability of no collision</code>
 		final BigDecimal result = BigDecimal.ONE
 				.subtract(new BigDecimal(numerator).divide(denominator, scale, BigDecimal.ROUND_HALF_UP));
 		return (outOf100 ? result.multiply(StatUtil.HUNDRED_ZERO_SCALE) : result);
@@ -945,22 +945,25 @@ public class StatUtil {
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(d < 1) || (m < 0) || (n < 0) || (scale < 0)
-	 *             || ((m < d) && (n < d) && (d < m + n))</code>
+	 *             || ((m < d) && (n < d) && (d < (((long) m) + n)))</code>
 	 */
 	public static BigDecimal birthday2Linear(int d, int m, int n, int scale, boolean outOf100)
 			throws IllegalArgumentException {
 		if ((d < 1) || (m < 0) || (n < 0) || (scale < 0)) {
 			throw new IllegalArgumentException();
 		}
-		// (d >= 1) && (m >= 0) && (n >= 0) && (scale >= 0)
+		// (1 <= d) && (0 <= m) && (0 <= n) && (0 <= scale)
 
 		// Handle the simple special cases.
 		if ((m == 0) || (n == 0)) {
-			// Probability of >= 1 collision with 0 people of at least one of the types is: <code>0</code>
+			/*
+			 * Probability of at least one collision with 0 people of at least one of the types is:
+			 * <code>0</code>
+			 */
 			return BigDecimal.ZERO;
 		} else if ((d <= m) && (d <= n)) {
 			/**
-			 * Probability of >= 1 collision with d or more people in each type, is:
+			 * Probability of at least one collision with d or more people in each type, is:
 			 * <code>1 by the Pigeon Hole Principle</code>
 			 */
 			return (outOf100 ? StatUtil.HUNDRED_ZERO_SCALE : BigDecimal.ONE);
@@ -968,11 +971,11 @@ public class StatUtil {
 		// (m != 0) && (n != 0) && (m < d) && (n < d)
 		// i.e., (1 <= m) && (1 <= n) && (m < d) && (n < d)
 
-		if (d < ((long) m) + n) {
+		if (d < (((long) m) + n)) {
 			throw new IllegalArgumentException();
 		}
 		// m + n <= d
-		// i.e., (m + n <= d) && (d >= 2)
+		// i.e., (m + n <= d) && (2 <= d)
 		return StatUtil.birthday2LinearFixedInput(d, m, n, scale, outOf100);
 	}
 
@@ -994,7 +997,7 @@ public class StatUtil {
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(d < 1) || (m < 0) || (n < 0) || (scale < 0)
-	 *             || ((m < d) && (n < d) && (d < m + n))</code>
+	 *             || ((m < d) && (n < d) && (d < (((long) m) + n)))</code>
 	 */
 	public static BigDecimal birthday2Linear(int d, int m, int n, int scale) throws IllegalArgumentException {
 		return StatUtil.birthday2Linear(d, m, n, scale, true);
@@ -1015,7 +1018,7 @@ public class StatUtil {
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(d < 1) || (m < 0) || (n < 0)
-	 *             || ((m < d) && (n < d) && (d < m + n))</code>
+	 *             || ((m < d) && (n < d) && (d < (((long) m) + n)))</code>
 	 */
 	public static BigDecimal birthday2Linear(int d, int m, int n) throws IllegalArgumentException {
 		return StatUtil.birthday2Linear(d, m, n, StatUtil.DEFAULT_SCALE);
@@ -1023,7 +1026,7 @@ public class StatUtil {
 
 	/**
 	 * Linearly compute the <code>n<sup>th</sup></code> fibonacci number. <br>
-	 * Precondition: <code>(n != null) && (n >= 0)</code>
+	 * Precondition: <code>(n != null) && (0 <= n)</code>
 	 * 
 	 * @param n
 	 *            the given number
@@ -1035,12 +1038,12 @@ public class StatUtil {
 			return BigInteger.ZERO;
 		}
 		// n != 0
-		// i.e., n >= 1
+		// i.e., 1 <= n
 
 		// Compute Fn in the loop and then return it.
 		BigInteger Fi_1 = BigInteger.ZERO, Fi = BigInteger.ONE, Fip1 = BigInteger.ONE;
 		for (BigInteger i = BigInteger.ONE; !i.equals(n); i = i.add(BigInteger.ONE)) {
-			// Fi = Fi_1 + Fi_2 for all i >= 2
+			// Fi = Fi_1 + Fi_2 for all 2 <= i
 			Fip1 = Fi.add(Fi_1);
 			Fi_1 = Fi;
 			Fi = Fip1;
@@ -1060,13 +1063,13 @@ public class StatUtil {
 		if (n.signum() == -1) { // i.e., n < 0
 			throw new IllegalArgumentException();
 		}
-		// n >= 0
+		// 0 <= n
 		return StatUtil.fibonacciLinearFixedInput(n);
 	}
 
 	/**
 	 * Linearly compute the <code>n<sup>th</sup></code> fibonacci number. <br>
-	 * Precondition: <code>n >= 0</code>
+	 * Precondition: <code>0 <= n</code>
 	 * 
 	 * @param n
 	 *            the given number
@@ -1078,7 +1081,7 @@ public class StatUtil {
 			return BigInteger.ZERO;
 		}
 		// n != 0
-		// i.e., n >= 1
+		// i.e., 1 <= n
 
 		/**
 		 * Don't delegate to <code>StatUtil.fibonacciLinearFixedInput(BigInteger)</code> since arithmetic
@@ -1089,7 +1092,7 @@ public class StatUtil {
 		// Compute Fn in the loop and then return it.
 		BigInteger Fi_1 = BigInteger.ZERO, Fi = BigInteger.ONE, Fip1 = BigInteger.ONE;
 		for (long i = 1L; i != n; ++i) {
-			// Fi = Fi_1 + Fi_2 for all i >= 2
+			// Fi = Fi_1 + Fi_2 for all 2 <= i
 			Fip1 = Fi.add(Fi_1);
 			Fi_1 = Fi;
 			Fi = Fip1;
@@ -1112,7 +1115,7 @@ public class StatUtil {
 		if (n < 0L) {
 			throw new IllegalArgumentException();
 		}
-		// n >= 0
+		// 0 <= n
 		return StatUtil.fibonacciLinearFixedInput(n);
 	}
 
@@ -1121,7 +1124,7 @@ public class StatUtil {
 	 * Precondition: <code>StatUtil.fibonaccis != null</code> <br>
 	 * Precondition: <code>StatUtil.fibonaccis.get(0) == BigInteger.ZERO</code> <br>
 	 * Precondition: <code>StatUtil.fibonaccis.get(1) == BigInteger.ONE</code> <br>
-	 * Precondition: <code>n >= 0</code>
+	 * Precondition: <code>0 <= n</code>
 	 * 
 	 * @param n
 	 *            the given number
@@ -1131,11 +1134,11 @@ public class StatUtil {
 	protected static BigInteger fibonacciMapFixedInput(int n) {
 		BigInteger result = StatUtil.fibonaccis.get(n);
 		if (result == null) { // i.e., (n != 0) && (n != 1)
-			// i.e., n >= 2
+			// i.e., 2 <= n
 
 			// Recursively retrieve/compute_and_store Fn_1 then compute Fn from it.
 			// Note that by recursing on n - 1, we also recursively compute (and store) Fn_2 if needed.
-			// Fn = Fn_1 + Fn_2 for all n >= 2
+			// Fn = Fn_1 + Fn_2 for all 2 <= n
 			result = StatUtil.fibonacciMapFixedInput(n - 1).add(StatUtil.fibonaccis.get(n - 2));
 
 			// Store Fn so that it is not recomputed later.
@@ -1163,7 +1166,7 @@ public class StatUtil {
 			// The following valueOf call just retrieves BigInteger.ZERO or BigInteger.ONE.
 			return BigInteger.valueOf(n);
 		}
-		// n >= 2
+		// 2 <= n
 
 		// Initialize StatUtil.fibonaccis if needed. Executed at most once.
 		if (StatUtil.fibonaccis == null) {

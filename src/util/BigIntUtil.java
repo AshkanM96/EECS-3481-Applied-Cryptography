@@ -115,15 +115,15 @@ public class BigIntUtil {
 	 *             <code>(n == null) || (args == null) || ((valid i) implies (args[i] == null))</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(n >= 0) || ((valid i) implies (args[i] >= 0))</code>
+	 *             If <code>(0 <= n) || ((valid i) implies (0 <= args[i]))</code>
 	 */
 	public static void ensureNegative(BigInteger n, BigInteger... args)
 			throws NullPointerException, IllegalArgumentException {
-		if (n.signum() != -1) { // i.e., n >= 0
+		if (n.signum() != -1) { // i.e., 0 <= n
 			throw new IllegalArgumentException();
 		}
 		for (int i = 0; i != args.length; ++i) {
-			if (args[i].signum() != -1) { // i.e., args[i] >= 0
+			if (args[i].signum() != -1) { // i.e., 0 <= args[i]
 				throw new IllegalArgumentException();
 			}
 		}
@@ -230,7 +230,7 @@ public class BigIntUtil {
 	 *             If <code>n == null</code>
 	 */
 	public static boolean isPositive(BigInteger n) throws NullPointerException {
-		return (n.signum() == 1); // i.e., n > 0
+		return (n.signum() == 1); // i.e., 0 < n
 	}
 
 	/**
@@ -271,15 +271,15 @@ public class BigIntUtil {
 	 *             <code>(n == null) || (args == null) || ((valid i) implies (args[i] == null))</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(n > 0) || ((valid i) implies (args[i] > 0))</code>
+	 *             If <code>(0 < n) || ((valid i) implies (0 < args[i]))</code>
 	 */
 	public static void ensureNonPositive(BigInteger n, BigInteger... args)
 			throws NullPointerException, IllegalArgumentException {
-		if (n.signum() == 1) { // i.e., n > 0
+		if (n.signum() == 1) { // i.e., 0 < n
 			throw new IllegalArgumentException();
 		}
 		for (int i = 0; i != args.length; ++i) {
-			if (args[i].signum() == 1) { // i.e., args[i] > 0
+			if (args[i].signum() == 1) { // i.e., 0 < args[i]
 				throw new IllegalArgumentException();
 			}
 		}
@@ -387,7 +387,7 @@ public class BigIntUtil {
 		}
 		// (a != 0) && (b != 0)
 
-		// The algorithm only works for a > 0 and b > 0 so compute and save absolute values.
+		// The algorithm only works for 0 < a and 0 < b so compute and save absolute values.
 		BigInteger abs_a = a, abs_b = b;
 		if (sign_a == -1) { // i.e., a < 0
 			abs_a = a.negate();
@@ -453,7 +453,7 @@ public class BigIntUtil {
 		if (sign_b == -1) { // i.e., b < 0
 			b = b.negate();
 		}
-		// (a > 0) && (b > 0)
+		// (0 < a) && (0 < b)
 
 		// lcm(a, b) == (a * b) / gcd(a, b)
 		return a.divide(a.gcd(b)).multiply(b);
@@ -523,7 +523,7 @@ public class BigIntUtil {
 		} else if ((m1.signum() != 1) || (m2.signum() != 1)) { // i.e., (m1 <= 0) || (m2 <= 0)
 			throw new InvalidModulusException();
 		}
-		// (m1 > 0) && (m2 > 0)
+		// (0 < m1) && (0 < m2)
 
 		// Find integers x and y such that x * m1 + y * m2 == gcd(m1, m2).
 		final BigInteger[] x_y_gcd = BigIntUtil.gcdExtended(m1, m2);
@@ -792,7 +792,7 @@ public class BigIntUtil {
 		} else if (m.signum() != 1) { // i.e., m <= 0
 			throw new InvalidModulusException();
 		}
-		// m > 0
+		// 0 < m
 
 		// Compute the resulting array length.
 		final int length = BigIntUtil.powersLength(begin, end);
@@ -805,7 +805,7 @@ public class BigIntUtil {
 			return result;
 		}
 		// length != 0
-		// i.e., length > 0
+		// i.e., 0 < length
 
 		// Fix n to be in [0, m - 1] \cap \doubleZ.
 		n = n.mod(m);
@@ -819,7 +819,7 @@ public class BigIntUtil {
 			if (begin.signum() == -1) { // i.e., begin < 0
 				throw new UndefinedInverseException();
 			}
-			// begin >= 0
+			// 0 <= begin
 			Arrays.fill(result, BigInteger.ZERO);
 			return result;
 		} else if (n.equals(BigInteger.ONE)) { // i.e., n == 1 (mod m)
@@ -830,8 +830,8 @@ public class BigIntUtil {
 			Arrays.fill(result, BigInteger.ONE);
 			return result;
 		}
-		// n >= 2
-		// i.e., (1 < n) && (n <= m - 1) && (m > 2)
+		// 2 <= n
+		// i.e., (1 < n) && (n <= m - 1) && (2 < m)
 		if (n.add(BigInteger.ONE).equals(m)) { // i.e., n == -1 (mod m)
 			/*
 			 * This case is only an optimization since -1 to any even power is 1 and otherwise is -1. So the
@@ -844,7 +844,7 @@ public class BigIntUtil {
 			return result;
 		}
 		// n != m - 1
-		// i.e., (1 < n) && (n < m - 1) && (m > 3)
+		// i.e., (1 < n) && (n < m - 1) && (3 < m)
 
 		// Fill and return the resulting BigInteger array.
 		try {
@@ -944,7 +944,7 @@ public class BigIntUtil {
 		if (certainty <= 0) {
 			return true;
 		}
-		// certainty > 0
+		// 0 < certainty
 		// i.e., -certainty < 0
 
 		// Check if n and (n - 1) / 2 are both prime.

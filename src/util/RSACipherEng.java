@@ -146,9 +146,9 @@ public class RSACipherEng {
 		if (e.signum() != 1) { // i.e., e <= 0
 			throw new IllegalArgumentException();
 		}
-		// e > 0
+		// 0 < e
 		final BigInteger phi = RSAUtil.phi(p, q);
-		// (p > 1) && (q > 1)
+		// (1 < p) && (1 < q)
 
 		// The following is meant to be an assignment of this.engine, this.opmode, and this.padding.
 		this.engine = CipherEngUtil.getEngine(RSAUtil.ALGORITHM, this.opmode = opmode, this.padding = padding);
@@ -212,7 +212,7 @@ public class RSACipherEng {
 		if ((phi.signum() != 1) || (n.signum() != 1) || (e.signum() != 1)) { // i.e., (phi <= 0) || (n <= 0) || (e <= 0)
 			throw new IllegalArgumentException();
 		}
-		// (phi > 0) && (n > 0) && (e > 0)
+		// (0 < phi) && (0 < n) && (0 < e)
 
 		// The following is meant to be an assignment of this.engine, this.opmode, and this.padding.
 		this.engine = CipherEngUtil.getEngine(RSAUtil.ALGORITHM, this.opmode = opmode, this.padding = padding);
@@ -270,7 +270,7 @@ public class RSACipherEng {
 		if ((n.signum() != 1) || (e.signum() != 1) || (d.signum() != 1)) { // i.e., (n <= 0) || (e <= 0) || (d <= 0)
 			throw new IllegalArgumentException();
 		}
-		// (n > 0) && (e > 0) && (d > 0)
+		// (0 < n) && (0 < e) && (0 < d)
 
 		// The following is meant to be an assignment of this.engine, this.opmode, and this.padding.
 		this.engine = CipherEngUtil.getEngine(RSAUtil.ALGORITHM, this.opmode = opmode, this.padding = padding);

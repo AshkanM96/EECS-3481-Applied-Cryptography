@@ -336,7 +336,7 @@ public class MathUtil {
 		}
 		// (a != 0) && (b != 0)
 
-		// The algorithm only works for a > 0 and b > 0 so compute and save absolute values and signs.
+		// The algorithm only works for 0 < a and 0 < b so compute and save absolute values and signs.
 		long abs_a = a, abs_b = b;
 		int sign_a = 1;
 		if (a < 0L) {
@@ -526,11 +526,11 @@ public class MathUtil {
 		if (a < 0L) {
 			a *= -1L;
 		}
-		// (a > 0) || (a == Long.MIN_VALUE)
+		// (0 < a) || (a == Long.MIN_VALUE)
 		if (b < 0L) {
 			b *= -1L;
 		}
-		// (b > 0) || (b == Long.MIN_VALUE)
+		// (0 < b) || (b == Long.MIN_VALUE)
 
 		// lcm(a, b) == (a * b) / gcd(a, b)
 		/**
@@ -671,11 +671,11 @@ public class MathUtil {
 		if (a < 0L) {
 			a *= -1L;
 		}
-		// a > 0
+		// 0 < a
 		if (b < 0L) {
 			b *= -1L;
 		}
-		// b > 0
+		// 0 < b
 
 		// lcm(a, b) == (a * b) / gcd(a, b)
 		/**
@@ -826,7 +826,7 @@ public class MathUtil {
 			// n != 0
 			return 0L; // floor(1 / n) == 0
 		}
-		// p >= 0
+		// 0 <= p
 
 		if (n == 0L) {
 			if (p == 0L) {
@@ -945,7 +945,7 @@ public class MathUtil {
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>((p == 0) && (n == 0))
-	 *             || ((Long.MAX_VALUE < n<sup>p</sup>) || (n<sup>p</sup> < Long.MIN_VALUE))</code>
+	 *             || (Long.MAX_VALUE < n<sup>p</sup>) || (n<sup>p</sup> < Long.MIN_VALUE)</code>
 	 */
 	public static long powExact(long n, byte p) throws UndefinedInverseException, ArithmeticException {
 		if (p < 0L) {
@@ -955,11 +955,11 @@ public class MathUtil {
 			// n != 0
 			return 0L; // floor(1 / n) == 0
 		}
-		// p >= 0
+		// 0 <= p
 
 		if (n == 0L) {
 			if (p == 0) {
-				throw new IllegalArgumentException();
+				throw new ArithmeticException();
 			}
 			return 0L;
 		} else if (n == 1L) {
@@ -1002,7 +1002,7 @@ public class MathUtil {
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>((p == 0) && (n == 0))
-	 *             || ((Integer.MAX_VALUE < n<sup>p</sup>) || (n<sup>p</sup> < Integer.MIN_VALUE))</code>
+	 *             || (Integer.MAX_VALUE < n<sup>p</sup>) || (n<sup>p</sup> < Integer.MIN_VALUE)</code>
 	 */
 	public static int powExact(int n, byte p) throws UndefinedInverseException, ArithmeticException {
 		final long result = MathUtil.powExact((long) n, p);
@@ -1029,7 +1029,7 @@ public class MathUtil {
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>((p == 0) && (n == 0))
-	 *             || ((Short.MAX_VALUE < n<sup>p</sup>) || (n<sup>p</sup> < Short.MIN_VALUE))</code>
+	 *             || (Short.MAX_VALUE < n<sup>p</sup>) || (n<sup>p</sup> < Short.MIN_VALUE)</code>
 	 */
 	public static short powExact(short n, byte p) throws UndefinedInverseException, ArithmeticException {
 		final long result = MathUtil.powExact((long) n, p);
@@ -1056,7 +1056,7 @@ public class MathUtil {
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>((p == 0) && (n == 0))
-	 *             || ((Byte.MAX_VALUE < n<sup>p</sup>) || (n<sup>p</sup> < Byte.MIN_VALUE))</code>
+	 *             || (Byte.MAX_VALUE < n<sup>p</sup>) || (n<sup>p</sup> < Byte.MIN_VALUE)</code>
 	 */
 	public static byte powExact(byte n, byte p) throws UndefinedInverseException, ArithmeticException {
 		final long result = MathUtil.powExact((long) n, p);
@@ -1068,7 +1068,7 @@ public class MathUtil {
 	}
 
 	/**
-	 * Precondition: <code>m > 0</code>
+	 * Precondition: <code>0 < m</code>
 	 * 
 	 * @param n
 	 *            the given number
@@ -1098,8 +1098,8 @@ public class MathUtil {
 		if (m < 1L) {
 			throw new InvalidModulusException();
 		}
-		// m >= 1
-		// i.e., m > 0
+		// 1 <= m
+		// i.e., 0 < m
 		return MathUtil.modFixedInput(n, m);
 	}
 
@@ -1119,8 +1119,8 @@ public class MathUtil {
 		if (m < 1) {
 			throw new InvalidModulusException();
 		}
-		// m >= 1
-		// i.e., m > 0
+		// 1 <= m
+		// i.e., 0 < m
 		return ((int) MathUtil.modFixedInput(n, m));
 	}
 
@@ -1140,8 +1140,8 @@ public class MathUtil {
 		if (m < 1) {
 			throw new InvalidModulusException();
 		}
-		// m >= 1
-		// i.e., m > 0
+		// 1 <= m
+		// i.e., 0 < m
 		return ((short) MathUtil.modFixedInput(n, m));
 	}
 
@@ -1161,13 +1161,13 @@ public class MathUtil {
 		if (m < 1) {
 			throw new InvalidModulusException();
 		}
-		// m >= 1
-		// i.e., m > 0
+		// 1 <= m
+		// i.e., 0 < m
 		return ((byte) MathUtil.modFixedInput(n, m));
 	}
 
 	/**
-	 * Precondition: <code>m > 1</code> <br>
+	 * Precondition: <code>1 < m</code> <br>
 	 * Precondition: <code>(1 <= n) && (n <= m - 1)</code>
 	 * 
 	 * @param n
@@ -1223,8 +1223,8 @@ public class MathUtil {
 		if (m < 2L) {
 			throw new InvalidModulusException();
 		}
-		// m >= 2
-		// i.e., m > 1
+		// 2 <= m
+		// i.e., 1 < m
 
 		// Fix n to be in [0, m - 1] \cap \doubleZ and handle the <code>n == 0</code> case.
 		if ((n %= m) < 0L) {
@@ -1257,8 +1257,8 @@ public class MathUtil {
 		if (m < 2) {
 			throw new InvalidModulusException();
 		}
-		// m >= 2
-		// i.e., m > 1
+		// 2 <= m
+		// i.e., 1 < m
 
 		// Fix n to be in [0, m - 1] \cap \doubleZ and handle the <code>n == 0</code> case.
 		if ((n %= m) < 0) {
@@ -1291,8 +1291,8 @@ public class MathUtil {
 		if (m < 2) {
 			throw new InvalidModulusException();
 		}
-		// m >= 2
-		// i.e., m > 1
+		// 2 <= m
+		// i.e., 1 < m
 
 		// Fix n to be in [0, m - 1] \cap \doubleZ and handle the <code>n == 0</code> case.
 		if ((n %= m) < 0) {
@@ -1325,8 +1325,8 @@ public class MathUtil {
 		if (m < 2) {
 			throw new InvalidModulusException();
 		}
-		// m >= 2
-		// i.e., m > 1
+		// 2 <= m
+		// i.e., 1 < m
 
 		// Fix n to be in [0, m - 1] \cap \doubleZ and handle the <code>n == 0</code> case.
 		if ((n %= m) < 0) {
@@ -1341,7 +1341,7 @@ public class MathUtil {
 	}
 
 	/**
-	 * Precondition: <code>m > 0</code> <br>
+	 * Precondition: <code>0 < m</code> <br>
 	 * Precondition: <code>|n| < m</code> <br>
 	 * Postcondition: <code>|Result| <= (m / 2)</code>
 	 * 
@@ -1367,7 +1367,7 @@ public class MathUtil {
 			final long other = n + m, abs_n = -n;
 			return ((abs_n < other) ? n : other);
 		}
-		// n >= 0
+		// 0 <= n
 		/**
 		 * By the precondition on <code>n</code>, we know that <code>(0 <= n <= m - 1)</code>. Therefore,
 		 * <code>(-m <= other <= -1)</code> and so <code>other < 0</code> but <code>-other</code> will not
@@ -1399,8 +1399,8 @@ public class MathUtil {
 		if (m < 1L) {
 			throw new InvalidModulusException();
 		}
-		// m >= 1
-		// i.e., m > 0
+		// 1 <= m
+		// i.e., 0 < m
 		return MathUtil.modMinFixedInput(n %= m, m);
 	}
 
@@ -1422,8 +1422,8 @@ public class MathUtil {
 		if (m < 1) {
 			throw new InvalidModulusException();
 		}
-		// m >= 1
-		// i.e., m > 0
+		// 1 <= m
+		// i.e., 0 < m
 		return ((int) MathUtil.modMinFixedInput(n %= m, m));
 	}
 
@@ -1445,8 +1445,8 @@ public class MathUtil {
 		if (m < 1) {
 			throw new InvalidModulusException();
 		}
-		// m >= 1
-		// i.e., m > 0
+		// 1 <= m
+		// i.e., 0 < m
 		return ((short) MathUtil.modMinFixedInput(n %= m, m));
 	}
 
@@ -1468,13 +1468,13 @@ public class MathUtil {
 		if (m < 1) {
 			throw new InvalidModulusException();
 		}
-		// m >= 1
-		// i.e., m > 0
+		// 1 <= m
+		// i.e., 0 < m
 		return ((byte) MathUtil.modMinFixedInput(n %= m, m));
 	}
 
 	/**
-	 * Precondition: <code>m > 0</code> <br>
+	 * Precondition: <code>0 < m</code> <br>
 	 * Precondition: <code>|a| <= (m / 2)</code> <br>
 	 * Precondition: <code>|b| <= (m / 2)</code> <br>
 	 * Postcondition: <code>|Result| <= (m / 2)</code>
@@ -1513,8 +1513,8 @@ public class MathUtil {
 		if (m < 1L) {
 			throw new InvalidModulusException();
 		}
-		// m >= 1
-		// i.e., m > 0
+		// 1 <= m
+		// i.e., 0 < m
 		a = MathUtil.modMinFixedInput(a %= m, m);
 		b = MathUtil.modMinFixedInput(b %= m, m);
 		return (((a = (a += b) % m) < 0L) ? (a += m) : a);
@@ -1539,8 +1539,8 @@ public class MathUtil {
 		if (m < 1) {
 			throw new InvalidModulusException();
 		}
-		// m >= 1
-		// i.e., m > 0
+		// 1 <= m
+		// i.e., 0 < m
 		a = (int) MathUtil.modMinFixedInput(a %= m, m);
 		b = (int) MathUtil.modMinFixedInput(b %= m, m);
 		return (((a = (a += b) % m) < 0) ? (a += m) : a);
@@ -1565,8 +1565,8 @@ public class MathUtil {
 		if (m < 1) {
 			throw new InvalidModulusException();
 		}
-		// m >= 1
-		// i.e., m > 0
+		// 1 <= m
+		// i.e., 0 < m
 		a = (short) MathUtil.modMinFixedInput(a %= m, m);
 		b = (short) MathUtil.modMinFixedInput(b %= m, m);
 		return (((a = (short) ((a += b) % m)) < 0) ? (a += m) : a);
@@ -1591,15 +1591,15 @@ public class MathUtil {
 		if (m < 1) {
 			throw new InvalidModulusException();
 		}
-		// m >= 1
-		// i.e., m > 0
+		// 1 <= m
+		// i.e., 0 < m
 		a = (byte) MathUtil.modMinFixedInput(a %= m, m);
 		b = (byte) MathUtil.modMinFixedInput(b %= m, m);
 		return (((a = (byte) ((a += b) % m)) < 0) ? (a += m) : a);
 	}
 
 	/**
-	 * Precondition: <code>m > 0</code> <br>
+	 * Precondition: <code>0 < m</code> <br>
 	 * Precondition: <code>|a| <= (m / 2)</code> <br>
 	 * Precondition: <code>|b| <= (m / 2)</code> <br>
 	 * Postcondition: <code>|Result| <= (m / 2)</code>
@@ -1638,8 +1638,8 @@ public class MathUtil {
 		if (m < 1L) {
 			throw new InvalidModulusException();
 		}
-		// m >= 1
-		// i.e., m > 0
+		// 1 <= m
+		// i.e., 0 < m
 		a = MathUtil.modMinFixedInput(a %= m, m);
 		b = MathUtil.modMinFixedInput(b %= m, m);
 		return (((a = (a -= b) % m) < 0L) ? (a += m) : a);
@@ -1664,8 +1664,8 @@ public class MathUtil {
 		if (m < 1) {
 			throw new InvalidModulusException();
 		}
-		// m >= 1
-		// i.e., m > 0
+		// 1 <= m
+		// i.e., 0 < m
 		a = (int) MathUtil.modMinFixedInput(a %= m, m);
 		b = (int) MathUtil.modMinFixedInput(b %= m, m);
 		return (((a = (a -= b) % m) < 0) ? (a += m) : a);
@@ -1690,8 +1690,8 @@ public class MathUtil {
 		if (m < 1) {
 			throw new InvalidModulusException();
 		}
-		// m >= 1
-		// i.e., m > 0
+		// 1 <= m
+		// i.e., 0 < m
 		a = (short) MathUtil.modMinFixedInput(a %= m, m);
 		b = (short) MathUtil.modMinFixedInput(b %= m, m);
 		return (((a = (short) ((a -= b) % m)) < 0) ? (a += m) : a);
@@ -1716,8 +1716,8 @@ public class MathUtil {
 		if (m < 1) {
 			throw new InvalidModulusException();
 		}
-		// m >= 1
-		// i.e., m > 0
+		// 1 <= m
+		// i.e., 0 < m
 		a = (byte) MathUtil.modMinFixedInput(a %= m, m);
 		b = (byte) MathUtil.modMinFixedInput(b %= m, m);
 		return (((a = (byte) ((a -= b) % m)) < 0) ? (a += m) : a);
@@ -1728,7 +1728,7 @@ public class MathUtil {
 	 * <code>Math.multiplyExact</code> in <code>O(1) time</code>. If an overflow occurs during the
 	 * multiplication, then perform <code>O(lg(min(a (mod m), b (mod m))))</code> many additions in
 	 * <code>mod m</code> in <code>O(lg(min(a (mod m), b (mod m)))) time</code>. <br>
-	 * Precondition: <code>m > 0</code> <br>
+	 * Precondition: <code>0 < m</code> <br>
 	 * Precondition: <code>|a| <= (m / 2)</code> <br>
 	 * Precondition: <code>|b| <= (m / 2)</code> <br>
 	 * Postcondition: <code>|Result| <= (m / 2)</code>
@@ -1748,7 +1748,6 @@ public class MathUtil {
 		try {
 			return MathUtil.modMinFixedInput(Math.multiplyExact(a, b) % m, m);
 		} catch (ArithmeticException ex) {
-			// a * b >= Long.MAX_VALUE
 		}
 		// (a != 0) && (b != 0)
 
@@ -1761,7 +1760,7 @@ public class MathUtil {
 		 * <code>2 <= m <= Long.MAX_VALUE</code>, then every value in the result set is a valid
 		 * <code>long</code> and so no overflows. The algorithm's runtime is in <code>O(lg(min))</code>.
 		 */
-		// The algorithm only works for min >= 0.
+		// The algorithm only works for 0 <= min.
 
 		// Assume a (mod m) is smaller than b (mod m).
 		/**
@@ -1817,8 +1816,8 @@ public class MathUtil {
 		if (m < 1L) {
 			throw new InvalidModulusException();
 		}
-		// m >= 1
-		// i.e., m > 0
+		// 1 <= m
+		// i.e., 0 < m
 		long result = MathUtil.modMultFixedInput(MathUtil.modMinFixedInput(a %= m, m),
 				MathUtil.modMinFixedInput(b %= m, m), m);
 		return ((result < 0L) ? (result += m) : result);
@@ -1843,8 +1842,8 @@ public class MathUtil {
 		if (m < 1) {
 			throw new InvalidModulusException();
 		}
-		// m >= 1
-		// i.e., m > 0
+		// 1 <= m
+		// i.e., 0 < m
 		int result = (int) MathUtil.modMultFixedInput(MathUtil.modMinFixedInput(a %= m, m),
 				MathUtil.modMinFixedInput(b %= m, m), m);
 		return ((result < 0) ? (result += m) : result);
@@ -1869,8 +1868,8 @@ public class MathUtil {
 		if (m < 1) {
 			throw new InvalidModulusException();
 		}
-		// m >= 1
-		// i.e., m > 0
+		// 1 <= m
+		// i.e., 0 < m
 		short result = (short) MathUtil.modMultFixedInput(MathUtil.modMinFixedInput(a %= m, m),
 				MathUtil.modMinFixedInput(b %= m, m), m);
 		return ((result < 0) ? (result += m) : result);
@@ -1895,8 +1894,8 @@ public class MathUtil {
 		if (m < 1) {
 			throw new InvalidModulusException();
 		}
-		// m >= 1
-		// i.e., m > 0
+		// 1 <= m
+		// i.e., 0 < m
 		byte result = (byte) MathUtil.modMultFixedInput(MathUtil.modMinFixedInput(a %= m, m),
 				MathUtil.modMinFixedInput(b %= m, m), m);
 		return ((result < 0) ? (result += m) : result);
@@ -1955,8 +1954,8 @@ public class MathUtil {
 		if ((m1 < 1L) || (m2 < 1L)) {
 			throw new InvalidModulusException();
 		}
-		// (m1 >= 1) && (m2 >= 1)
-		// i.e., (m1 > 0) && (m2 > 0)
+		// (1 <= m1) && (1 <= m2)
+		// i.e., (0 < m1) && (0 < m2)
 
 		// Find integers x and y such that x * m1 + y * m2 == gcd(m1, m2).
 		final long[] x_y_gcd = MathUtil.gcdExtendedFixedInput(m1, m2);
@@ -2355,9 +2354,9 @@ public class MathUtil {
 	 * cases, is that this function is specified as protected and is only called by other public
 	 * functions which do handle those special cases themselves (in their own unique ways) and so
 	 * checking for the special cases here, would only serve to decrease the overall runtime. <br>
-	 * Precondition: <code>m > 1</code> <br>
+	 * Precondition: <code>1 < m</code> <br>
 	 * Precondition: <code>0 < |n| < m</code> <br>
-	 * Precondition: <code>p >= 0</code> <br>
+	 * Precondition: <code>0 <= p</code> <br>
 	 * Postcondition: <code>|Result| <= (m / 2)</code>
 	 * 
 	 * @param n
@@ -2421,7 +2420,7 @@ public class MathUtil {
 			if (m < 1L) {
 				throw new InvalidModulusException();
 			}
-			// m >= 1
+			// 1 <= m
 			// i.e., m == 1
 			// i.e., n == 0 (mod m)
 			if (p < 0L) {
@@ -2431,7 +2430,8 @@ public class MathUtil {
 			}
 			return 0L;
 		}
-		// m >= 2
+		// 2 <= m
+		// i.e., 1 < m
 
 		// Fix n to be in [0, m - 1] \cap \doubleZ and handle the simple special cases.
 		if ((n %= m) < 0L) {
@@ -2451,8 +2451,8 @@ public class MathUtil {
 			// 1 to any power is 1.
 			return 1L;
 		}
-		// n >= 2
-		// i.e., (1 < n) && (n <= m - 1) && (m > 2)
+		// 2 <= n
+		// i.e., (1 < n) && (n <= m - 1) && (2 < m)
 		if (n == m - 1L) { // i.e., n == -1 (mod m)
 			/**
 			 * <code>-1<sup>p</sup> (mod m)</code> is: <br>
@@ -2467,11 +2467,11 @@ public class MathUtil {
 			return (((p &= 1L) == 0L) ? 1L : n);
 		}
 		// n != m - 1
-		// i.e., (1 < n) && (n < m - 1) && (m > 3)
+		// i.e., (1 < n) && (n < m - 1) && (3 < m)
 
 		/**
 		 * <code>n<sup>p</sup> (mod m)</code> is: <br>
-		 * <code>n<sup>|p|</sup> (mod m)</code> if <code>p > 0</code> <br>
+		 * <code>n<sup>|p|</sup> (mod m)</code> if <code>0 < p</code> <br>
 		 * <code>1</code> if <code>p == 0</code> <br>
 		 * <code>(n<sup>-1</sup> (mod m))<sup>|p|</sup> (mod m)</code> if <code>p < 0</code>
 		 */
@@ -2494,7 +2494,7 @@ public class MathUtil {
 			return ((result < 0L) ? (result += m) : result);
 		}
 		// p != Long.MIN_VALUE
-		// i.e., -p > 0
+		// i.e., 0 < -p
 		/**
 		 * It's fine to do <code>p *= -1</code> instead of <code>-1 * p</code> since we don't need the value
 		 * of <code>p</code> to remain unchanged. Note that the difference is the <code>*=</code> instead of
@@ -2618,8 +2618,13 @@ public class MathUtil {
 		}
 		// begin < end
 
-		if (-1L < begin) { // i.e., begin >= 0
+		if (-1L < begin) { // i.e., 0 <= begin
 			// 0 <= begin < end so end - begin will not overflow a long.
+			/**
+			 * It's fine to do <code>end -= begin</code> instead of <code>end - begin</code> since we don't need
+			 * the value of <code>end</code> to remain unchanged. Note that the difference is the
+			 * <code>-=</code> instead of the <code>-</code> which will mutate <code>end</code>.
+			 */
 			end -= begin;
 			if (Integer.MAX_VALUE < end) {
 				throw new ArithmeticException();
@@ -2649,7 +2654,7 @@ public class MathUtil {
 			return ((int) ((end += Long.MAX_VALUE) + 1L));
 		}
 		// begin != Long.MIN_VALUE
-		// i.e., -begin > 0
+		// i.e., 0 < -begin
 		return ((int) (end -= begin));
 	}
 
@@ -2691,8 +2696,8 @@ public class MathUtil {
 		if (m < 1L) {
 			throw new InvalidModulusException();
 		}
-		// m >= 1
-		// i.e., m > 0
+		// 1 <= m
+		// i.e., 0 < m
 
 		// Compute the resulting array length.
 		final int length = MathUtil.powersLength(begin, end);
@@ -2705,7 +2710,7 @@ public class MathUtil {
 			return result;
 		}
 		// length != 0
-		// i.e., length > 0
+		// i.e., 0 < length
 
 		// Fix n to be in [0, m - 1] \cap \doubleZ.
 		if ((n %= m) < 0L) {
@@ -2722,7 +2727,7 @@ public class MathUtil {
 				if (begin < 0L) {
 					throw new UndefinedInverseException();
 				}
-				// begin >= 0
+				// 0 <= begin
 				return result;
 			}
 			// n != 0
@@ -2734,8 +2739,8 @@ public class MathUtil {
 			Arrays.fill(result, 1L);
 			return result;
 		}
-		// n >= 2
-		// i.e., (1 < n) && (n <= m - 1) && (m > 2)
+		// 2 <= n
+		// i.e., (1 < n) && (n <= m - 1) && (2 < m)
 		if (n == m - 1L) { // i.e., n == -1 (mod m)
 			/*
 			 * This case is only an optimization since -1 to any even power is 1 and otherwise is -1. So the
@@ -2753,7 +2758,7 @@ public class MathUtil {
 			return result;
 		}
 		// n != m - 1
-		// i.e., (1 < n) && (n < m - 1) && (m > 3)
+		// i.e., (1 < n) && (n < m - 1) && (3 < m)
 
 		// Fix n to be in [-m / 2, m / 2] \cap \doubleZ.
 		n = MathUtil.modMinFixedInput(n, m);
@@ -2867,8 +2872,8 @@ public class MathUtil {
 		if (m < 1) {
 			throw new InvalidModulusException();
 		}
-		// m >= 1
-		// i.e., m > 0
+		// 1 <= m
+		// i.e., 0 < m
 
 		// Compute the resulting array length.
 		final int length = MathUtil.powersLength(begin, end);
@@ -2881,7 +2886,7 @@ public class MathUtil {
 			return result;
 		}
 		// length != 0
-		// i.e., length > 0
+		// i.e., 0 < length
 
 		// Fix n to be in [0, m - 1] \cap \doubleZ.
 		if ((n %= m) < 0) {
@@ -2898,7 +2903,7 @@ public class MathUtil {
 				if (begin < 0) {
 					throw new UndefinedInverseException();
 				}
-				// begin >= 0
+				// 0 <= begin
 				return result;
 			}
 			// n != 0
@@ -2910,8 +2915,8 @@ public class MathUtil {
 			Arrays.fill(result, 1);
 			return result;
 		}
-		// n >= 2
-		// i.e., (1 < n) && (n <= m - 1) && (m > 2)
+		// 2 <= n
+		// i.e., (1 < n) && (n <= m - 1) && (2 < m)
 		if (n == m - 1) { // i.e., n == -1 (mod m)
 			/*
 			 * This case is only an optimization since -1 to any even power is 1 and otherwise is -1. So the
@@ -2929,7 +2934,7 @@ public class MathUtil {
 			return result;
 		}
 		// n != m - 1
-		// i.e., (1 < n) && (n < m - 1) && (m > 3)
+		// i.e., (1 < n) && (n < m - 1) && (3 < m)
 
 		// Fix n to be in [-m / 2, m / 2] \cap \doubleZ.
 		n = (int) MathUtil.modMinFixedInput(n, m);
@@ -3033,8 +3038,8 @@ public class MathUtil {
 		if (m < 1) {
 			throw new InvalidModulusException();
 		}
-		// m >= 1
-		// i.e., m > 0
+		// 1 <= m
+		// i.e., 0 < m
 
 		// Compute the resulting array length.
 		final int length = MathUtil.powersLength(begin, end);
@@ -3047,7 +3052,7 @@ public class MathUtil {
 			return result;
 		}
 		// length != 0
-		// i.e., length > 0
+		// i.e., 0 < length
 
 		// Fix n to be in [0, m - 1] \cap \doubleZ.
 		if ((n %= m) < 0) {
@@ -3064,7 +3069,7 @@ public class MathUtil {
 				if (begin < 0) {
 					throw new UndefinedInverseException();
 				}
-				// begin >= 0
+				// 0 <= begin
 				return result;
 			}
 			// n != 0
@@ -3076,8 +3081,8 @@ public class MathUtil {
 			Arrays.fill(result, (short) 1);
 			return result;
 		}
-		// n >= 2
-		// i.e., (1 < n) && (n <= m - 1) && (m > 2)
+		// 2 <= n
+		// i.e., (1 < n) && (n <= m - 1) && (2 < m)
 		if (n == m - 1) { // i.e., n == -1 (mod m)
 			/*
 			 * This case is only an optimization since -1 to any even power is 1 and otherwise is -1. So the
@@ -3095,7 +3100,7 @@ public class MathUtil {
 			return result;
 		}
 		// n != m - 1
-		// i.e., (1 < n) && (n < m - 1) && (m > 3)
+		// i.e., (1 < n) && (n < m - 1) && (3 < m)
 
 		// Fix n to be in [-m / 2, m / 2] \cap \doubleZ.
 		n = (short) MathUtil.modMinFixedInput(n, m);
@@ -3200,8 +3205,8 @@ public class MathUtil {
 		if (m < 1) {
 			throw new InvalidModulusException();
 		}
-		// m >= 1
-		// i.e., m > 0
+		// 1 <= m
+		// i.e., 0 < m
 
 		// Compute the resulting array length.
 		final int length = MathUtil.powersLength(begin, end);
@@ -3214,7 +3219,7 @@ public class MathUtil {
 			return result;
 		}
 		// length != 0
-		// i.e., length > 0
+		// i.e., 0 < length
 
 		// Fix n to be in [0, m - 1] \cap \doubleZ.
 		if ((n %= m) < 0) {
@@ -3231,7 +3236,7 @@ public class MathUtil {
 				if (begin < 0) {
 					throw new UndefinedInverseException();
 				}
-				// begin >= 0
+				// 0 <= begin
 				return result;
 			}
 			// n != 0
@@ -3243,8 +3248,8 @@ public class MathUtil {
 			Arrays.fill(result, (byte) 1);
 			return result;
 		}
-		// n >= 2
-		// i.e., (1 < n) && (n <= m - 1) && (m > 2)
+		// 2 <= n
+		// i.e., (1 < n) && (n <= m - 1) && (2 < m)
 		if (n == m - 1) { // i.e., n == -1 (mod m)
 			/*
 			 * This case is only an optimization since -1 to any even power is 1 and otherwise is -1. So the
@@ -3262,7 +3267,7 @@ public class MathUtil {
 			return result;
 		}
 		// n != m - 1
-		// i.e., (1 < n) && (n < m - 1) && (m > 3)
+		// i.e., (1 < n) && (n < m - 1) && (3 < m)
 
 		// Fix n to be in [-m / 2, m / 2] \cap \doubleZ.
 		n = (byte) MathUtil.modMinFixedInput(n, m);
@@ -3337,11 +3342,11 @@ public class MathUtil {
 	 * 2. <code>(n == 0) || (n == 1)</code> <br>
 	 * 3. <code>target == 1</code> <br>
 	 * 4. <code>n == m - 1</code> <br>
-	 * Precondition: <code>m > 0</code> <br>
+	 * Precondition: <code>0 < m</code> <br>
 	 * Precondition: <code>(0 <= n) && (n <= m - 1)</code> <br>
 	 * Precondition: <code>(0 <= target) && (target <= m - 1)</code> <br>
 	 * Postcondition:
-	 * <code>((Result != null) && (Result == -1)) implies ((m > 3) && (1 < n) && (n < m - 1) && (target != 1) && (n != target))</code>
+	 * <code>((Result != null) && (Result == -1)) implies ((3 < m) && (1 < n) && (n < m - 1) && (target != 1) && (n != target))</code>
 	 * 
 	 * @param n
 	 *            the given number
@@ -3367,8 +3372,8 @@ public class MathUtil {
 			// i.e., ((n == 0) && (target != 0)) || ((n == 1) && (target != 1))
 			return null;
 		}
-		// n >= 2
-		// i.e., (1 < n) && (n <= m - 1) && (m > 2)
+		// 2 <= n
+		// i.e., (1 < n) && (n <= m - 1) && (2 < m)
 
 		if (target == 1L) {
 			// n to the power of 0 is 1 except when n is 0 which we know isn't the case.
@@ -3385,7 +3390,7 @@ public class MathUtil {
 			return null;
 		}
 		// n != m - 1
-		// i.e., (1 < n) && (n < m - 1) && (m > 3)
+		// i.e., (1 < n) && (n < m - 1) && (3 < m)
 
 		// Cannot determine the answer since it is non-trivial.
 		return -1L;
@@ -3402,7 +3407,7 @@ public class MathUtil {
 	 * that this function is specified as protected and is only called by other public functions which
 	 * do handle those special cases themselves (in their own unique ways) and so checking for the
 	 * special cases here, would only serve to decrease the overall runtime. <br>
-	 * Precondition: <code>m > 2</code> <br>
+	 * Precondition: <code>2 < m</code> <br>
 	 * Precondition: <code>(1 < n) && (n < m - 1)</code> <br>
 	 * Precondition: <code>(0 <= target) && (target <= m - 1)</code> <br>
 	 * Precondition: <code>begin < end</code>
@@ -3504,8 +3509,8 @@ public class MathUtil {
 		} else if (end < begin) {
 			throw new IllegalArgumentException();
 		}
-		// (m >= 1) && (begin <= end)
-		// i.e., (m > 0) && (begin <= end)
+		// (1 <= m) && (begin <= end)
+		// i.e., (0 < m) && (begin <= end)
 
 		// Fix n to be in [0, m - 1] \cap \doubleZ.
 		if ((n %= m) < 0L) {
@@ -3523,7 +3528,7 @@ public class MathUtil {
 		} else if (result != -1L) { // i.e., result is trivial.
 			return result;
 		}
-		// (m > 3) && (1 < n) && (n < m - 1) && (target != 1) && (n != target)
+		// (3 < m) && (1 < n) && (n < m - 1) && (target != 1) && (n != target)
 		if (begin == end) {
 			return null;
 		}
@@ -3879,7 +3884,7 @@ public class MathUtil {
 	 * that this function is specified as protected and is only called by other public functions which
 	 * do handle those special cases themselves (in their own unique ways) and so checking for the
 	 * special cases here, would only serve to decrease the overall runtime. <br>
-	 * Precondition: <code>m > 2</code> <br>
+	 * Precondition: <code>2 < m</code> <br>
 	 * Precondition: <code>(1 < n) && (n < m - 1)</code> <br>
 	 * Precondition: <code>(0 <= target) && (target <= m - 1)</code> <br>
 	 * Precondition: <code>(2 <= bound) && (bound <= Integer.MAX_VALUE)</code>
@@ -4115,8 +4120,8 @@ public class MathUtil {
 		} else if ((upperOrder < 1L) || (m - 1L < upperOrder)) {
 			throw new IllegalArgumentException();
 		}
-		// (m >= 1) && (1 <= upperOrder) && (upperOrder <= m - 1)
-		// i.e., (m > 0) && (1 <= upperOrder) && (upperOrder <= m - 1)
+		// (1 <= m) && (1 <= upperOrder) && (upperOrder <= m - 1)
+		// i.e., (0 < m) && (1 <= upperOrder) && (upperOrder <= m - 1)
 
 		// Fix n to be in [0, m - 1] \cap \doubleZ.
 		if ((n %= m) < 0L) {
@@ -4134,7 +4139,7 @@ public class MathUtil {
 		} else if (result != -1L) { // i.e., result is trivial.
 			return result;
 		}
-		// (m > 3) && (1 < n) && (n < m - 1) && (target != 1) && (n != target)
+		// (3 < m) && (1 < n) && (n < m - 1) && (target != 1) && (n != target)
 		if (upperOrder == 1L) {
 			// upperOrder == 1 implies that n == 1 but we know that this isn't the case.
 			return null;
@@ -4143,7 +4148,7 @@ public class MathUtil {
 		// i.e., (2 <= upperOrder) && (upperOrder <= m - 1)
 
 		// Applying Math.floor before casting to long is unnecessary and it causes a large slow down.
-		final long bound = ((long) Math.sqrt(upperOrder)) + 1L; // bound >= 2
+		final long bound = ((long) Math.sqrt(upperOrder)) + 1L; // 2 <= bound
 		if (Integer.MAX_VALUE < bound) {
 			throw new ArithmeticException();
 		}
@@ -4698,7 +4703,7 @@ public class MathUtil {
 	/**
 	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using the
 	 * Pohlig-Hellman Algorithm. <br>
-	 * Precondition: <code>m > 2</code> <br>
+	 * Precondition: <code>2 < m</code> <br>
 	 * Precondition: <code>(0 <= n) && (n <= m - 1)</code> <br>
 	 * Precondition: <code>(0 <= target) && (target <= m - 1)</code> <br>
 	 * Precondition: <code>NumUtil.isPrimeSqrt(p)</code> <br>
@@ -4772,7 +4777,7 @@ public class MathUtil {
 		} else if (result != -1L) { // i.e., result is trivial.
 			return result;
 		}
-		// (m > 3) && (1 < n) && (n < m - 1) && (target != 1) && (n != target)
+		// (3 < m) && (1 < n) && (n < m - 1) && (target != 1) && (n != target)
 		boolean linearSearch = false; // linear search flag
 
 		if (simple) {
@@ -4783,7 +4788,7 @@ public class MathUtil {
 			long n_inverse = 0L;
 
 			// Applying Math.floor before casting to long is unnecessary and it causes a large slow down.
-			final long bound = ((long) Math.sqrt(p_to_e)) + 1L; // bound >= 2
+			final long bound = ((long) Math.sqrt(p_to_e)) + 1L; // 2 <= bound
 			if (Integer.MAX_VALUE < bound) {
 				if (linearSearchIfNotBabyGiant) {
 					// Set the linear search flag denoting the fact that we have to use Linear-Search.
@@ -4835,7 +4840,7 @@ public class MathUtil {
 		// (0 <= nu) && (nu <= m - 1)
 
 		// Applying Math.floor before casting to long is unnecessary and it causes a large slow down.
-		final long bound = ((long) Math.sqrt(p)) + 1L; // bound >= 2
+		final long bound = ((long) Math.sqrt(p)) + 1L; // 2 <= bound
 		if (Integer.MAX_VALUE < bound) {
 			if (linearSearchIfNotBabyGiant) {
 				// Set the linear search flag denoting the fact that we have to use Linear-Search.
@@ -4868,7 +4873,7 @@ public class MathUtil {
 		 * In the implementation, we have chosen to duplicate the entire loop instead of writing it once and
 		 * having it evaluate the linearSearch boolean in every iteration for efficiency purposes.
 		 */
-		if (linearSearch) { // i.e., ((bound > Integer.MAX_VALUE) || (gcd(nu, m) != 1)) && linearSearchIfNotBabyGiant
+		if (linearSearch) { // i.e., ((Integer.MAX_VALUE < bound) || (gcd(nu, m) != 1)) && linearSearchIfNotBabyGiant
 			// The algorithm is from https://en.wikipedia.org/wiki/Pohlig%E2%80%93Hellman_algorithm.
 			long x = 0L;
 			Long d_k = null;
@@ -4892,7 +4897,7 @@ public class MathUtil {
 				if (d_k == null) {
 					return null;
 				} else if (d_k == -1L) { // i.e., d_k is non-trivial.
-					// i.e., (m > 3) && (1 < nu) && (nu < m - 1) && (target_k != 1) && (nu != target_k)
+					// i.e., (3 < m) && (1 < nu) && (nu < m - 1) && (target_k != 1) && (nu != target_k)
 
 					// Runtime is in <code>O(p)</code>.
 					d_k = MathUtil.discreteLogLinearSearchFixedInput(nu, target_k, m, 1L, p, nu);
@@ -4941,7 +4946,7 @@ public class MathUtil {
 			if (d_k == null) {
 				return null;
 			} else if (d_k == -1L) { // i.e., d_k is non-trivial.
-				// i.e., (m > 3) && (1 < nu) && (nu < m - 1) && (target_k != 1) && (nu != target_k)
+				// i.e., (3 < m) && (1 < nu) && (nu < m - 1) && (target_k != 1) && (nu != target_k)
 
 				// Runtime is in <code>O(sqrt(p))</code>.
 				d_k = MathUtil.discreteLogBabyGiantFixedInput(nu, target_k, m, bound, generateBothBabyGiant,
@@ -4980,7 +4985,7 @@ public class MathUtil {
 	 * only called by other public functions which do handle those special cases themselves (in their
 	 * own unique ways) and so checking for the special cases here, would only serve to decrease the
 	 * overall runtime. <br>
-	 * Precondition: <code>m > 2</code> <br>
+	 * Precondition: <code>2 < m</code> <br>
 	 * Precondition: <code>(1 < n) && (n < m - 1)</code> <br>
 	 * Precondition: <code>(0 <= target) && (target <= m - 1)</code> <br>
 	 * Precondition: <code>(2 <= upperOrder) && (upperOrder <= m - 1)</code> <br>
@@ -5068,7 +5073,7 @@ public class MathUtil {
 			long n_inverse = 0L;
 
 			// Applying Math.floor before casting to long is unnecessary and it causes a large slow down.
-			final long bound = ((long) Math.sqrt(upperOrder)) + 1L; // bound >= 2
+			final long bound = ((long) Math.sqrt(upperOrder)) + 1L; // 2 <= bound
 			if (Integer.MAX_VALUE < bound) {
 				if (linearSearchIfNotBabyGiant) {
 					// Set the linear search flag denoting the fact that we have to use Linear-Search.
@@ -5242,8 +5247,8 @@ public class MathUtil {
 		} else if ((upperOrder < 1L) || (m - 1L < upperOrder)) {
 			throw new IllegalArgumentException();
 		}
-		// (m >= 1) && (1 <= upperOrder) && (upperOrder <= m - 1)
-		// i.e., (m > 0) && (1 <= upperOrder) && (upperOrder <= m - 1)
+		// (1 <= m) && (1 <= upperOrder) && (upperOrder <= m - 1)
+		// i.e., (0 < m) && (1 <= upperOrder) && (upperOrder <= m - 1)
 
 		// Fix n to be in [0, m - 1] \cap \doubleZ.
 		if ((n %= m) < 0L) {
@@ -5261,7 +5266,7 @@ public class MathUtil {
 		} else if (result != -1L) { // i.e., result is trivial.
 			return result;
 		}
-		// (m > 3) && (1 < n) && (n < m - 1) && (target != 1) && (n != target)
+		// (3 < m) && (1 < n) && (n < m - 1) && (target != 1) && (n != target)
 		if (upperOrder == 1L) {
 			// upperOrder == 1 implies that n == 1 but we know that this isn't the case.
 			return null;

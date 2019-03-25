@@ -102,7 +102,7 @@ public class RSA {
 		if ((p.signum() != 1) || (q.signum() != 1) || (e.signum() != 1)) { // i.e., (p <= 0) || (q <= 0) || (e <= 0)
 			throw new IllegalArgumentException();
 		}
-		// (p > 0) && (q > 0) && (e > 0)
+		// (0 < p) && (0 < q) && (0 < e)
 
 		// Set p, q, and e.
 		this.p = p;
@@ -161,7 +161,7 @@ public class RSA {
 		if ((phi.signum() != 1) || (n.signum() != 1) || (e.signum() != 1)) { // i.e., (phi <= 0) || (n <= 0) || (e <= 0)
 			throw new IllegalArgumentException();
 		}
-		// (phi > 0) && (n > 0) && (e > 0)
+		// (0 < phi) && (0 < n) && (0 < e)
 
 		// Set p, q, dP, dQ, and qInv.
 		this.p = this.q = this.dP = this.dQ = this.qInv = null;
@@ -194,7 +194,7 @@ public class RSA {
 		if ((n.signum() != 1) || (e.signum() != 1) || (d.signum() != 1)) { // i.e., (n <= 0) || (e <= 0) || (d <= 0)
 			throw new IllegalArgumentException();
 		}
-		// (n > 0) && (e > 0) && (d > 0)
+		// (0 < n) && (0 < e) && (0 < d)
 
 		// Set p, q, dP, dQ, and qInv.
 		this.p = this.q = this.dP = this.dQ = this.qInv = null;
@@ -358,7 +358,7 @@ public class RSA {
 		if (m.signum() != 1) { // i.e, m <= 0
 			throw new IllegalArgumentException();
 		}
-		// m > 0
+		// 0 < m
 
 		/*
 		 * Apply the public key since it should be small enough that will not merit using the Chinese

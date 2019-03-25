@@ -110,7 +110,7 @@ public class VigenereTest {
 			final char[][] plaintexts = { "PLAINTEXTNUMBERONE".toCharArray(), "PLAINTEXTNUMBERTWO".toCharArray(),
 					"PLAINTEXTNUMBERTHREE".toCharArray() };
 			final int numTexts = plaintexts.length;
-			assertTrue("numTexts lower bound", numTexts >= 1);
+			assertTrue("numTexts lower bound", 1 <= numTexts);
 			final char[][] expectedCiphertexts = { "ZPYEBKHHXLQASHBSLA".toCharArray(),
 					"DCDSRRALKQEQZAFKZY".toCharArray(), "TJWWEWOBRJIDEOVRDFVH".toCharArray() };
 			assertTrue("Correct numTexts", numTexts == expectedCiphertexts.length);
@@ -140,7 +140,7 @@ public class VigenereTest {
 			final char[][] plaintexts = { "PLAINTEXTNUMBERONE".toCharArray(), "PLAINTEXTNUMBERTWO".toCharArray(),
 					"PLAINTEXTNUMBERTHREE".toCharArray() };
 			final int numTexts = plaintexts.length;
-			assertTrue("numTexts lower bound", numTexts >= 1);
+			assertTrue("numTexts lower bound", 1 <= numTexts);
 			final char[][] expectedCiphertexts = { "ZPYEBKHHXLQASHBSLA".toCharArray(),
 					"ZPYEBKHHXLQASHBXUK".toCharArray(), "ZPYEBKHHXLQASHBXFNSV".toCharArray() };
 			assertTrue("Correct numTexts", numTexts == expectedCiphertexts.length);
@@ -189,7 +189,7 @@ public class VigenereTest {
 			final byte[][] plaintexts = { "PLAINTEXTNUMBERONE".getBytes(), "PLAINTEXTNUMBERTWO".getBytes(),
 					"PLAINTEXTNUMBERTHREE".getBytes() };
 			final int numTexts = plaintexts.length;
-			assertTrue("numTexts lower bound", numTexts >= 1);
+			assertTrue("numTexts lower bound", 1 <= numTexts);
 			final byte[][] expectedCiphertexts = { "ZPYEBKHHXLQASHBSLA".getBytes(), "DCDSRRALKQEQZAFKZY".getBytes(),
 					"TJWWEWOBRJIDEOVRDFVH".getBytes() };
 			assertTrue("Correct numTexts", numTexts == expectedCiphertexts.length);
@@ -219,7 +219,7 @@ public class VigenereTest {
 			final byte[][] plaintexts = { "PLAINTEXTNUMBERONE".getBytes(), "PLAINTEXTNUMBERTWO".getBytes(),
 					"PLAINTEXTNUMBERTHREE".getBytes() };
 			final int numTexts = plaintexts.length;
-			assertTrue("numTexts lower bound", numTexts >= 1);
+			assertTrue("numTexts lower bound", 1 <= numTexts);
 			final byte[][] expectedCiphertexts = { "ZPYEBKHHXLQASHBSLA".getBytes(), "ZPYEBKHHXLQASHBXUK".getBytes(),
 					"ZPYEBKHHXLQASHBXFNSV".getBytes() };
 			assertTrue("Correct numTexts", numTexts == expectedCiphertexts.length);

@@ -134,7 +134,7 @@ public class Affine {
 	 * @return <code>Affine.VALID_ALPHA_VALUES[i]</code>.
 	 * 
 	 * @throws IndexOutOfBoundsException
-	 *             If <code>(i < 0) || (i >= Affine.VALID_ALPHA_VALUES.length)</code>
+	 *             If <code>(i < 0) || (Affine.VALID_ALPHA_VALUES.length <= i)</code>
 	 */
 	public static int validAlphaValues(int i) throws IndexOutOfBoundsException {
 		return Affine.VALID_ALPHA_VALUES[i];
@@ -148,10 +148,10 @@ public class Affine {
 	 * @param alpha
 	 *            the given alpha
 	 * 
-	 * @return <code>Arrays.binarySearch(Affine.VALID_ALPHA_VALUES, alpha) >= 0</code>.
+	 * @return <code>0 <= Arrays.binarySearch(Affine.VALID_ALPHA_VALUES, alpha)</code>.
 	 */
 	public static boolean isValidAlpha(int alpha) {
-		return (Arrays.binarySearch(Affine.VALID_ALPHA_VALUES, alpha) >= 0);
+		return (0 <= Arrays.binarySearch(Affine.VALID_ALPHA_VALUES, alpha));
 	}
 
 	/**

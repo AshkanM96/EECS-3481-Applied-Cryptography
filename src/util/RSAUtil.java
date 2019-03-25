@@ -145,7 +145,7 @@ public class RSAUtil {
 		// Check to see if privateKey is an RSAPrivateKey.
 		if (privateKey instanceof RSAPrivateKey) {
 			final RSAPrivateKey rsaPrivateKey = (RSAPrivateKey) privateKey;
-			// n is the same and so no need to set it again.
+			assert (n.equals(rsaPrivateKey.getModulus()));
 			d = rsaPrivateKey.getPrivateExponent();
 		} else {
 			throw new IllegalArgumentException();
@@ -192,16 +192,16 @@ public class RSAUtil {
 		if ((p.signum() != 1) || (q.signum() != 1)) { // i.e., (p <= 0) || (q <= 0)
 			throw new IllegalArgumentException();
 		}
-		// (p > 0) && (q > 0)
+		// (0 < p) && (0 < q)
 
 		// Save p - 1 and ensure that it is positive.
 		final BigInteger p_minus_1 = p.subtract(BigInteger.ONE);
-		if (p_minus_1.signum() != 1) {
+		if (p_minus_1.signum() != 1) { // i.e., (p - 1 <= 0)
 			throw new IllegalArgumentException();
 		}
 		// Save q - 1 and ensure that it is positive.
 		final BigInteger q_minus_1 = q.subtract(BigInteger.ONE);
-		if (q_minus_1.signum() != 1) {
+		if (q_minus_1.signum() != 1) { // i.e., (q - 1 <= 0)
 			throw new IllegalArgumentException();
 		}
 
@@ -232,7 +232,7 @@ public class RSAUtil {
 		if ((phi.signum() != 1) || (k.signum() != 1)) { // i.e., (phi <= 0) || (k <= 0)
 			throw new IllegalArgumentException();
 		}
-		// (phi > 0) && (k > 0)
+		// (0 < phi) && (0 < k)
 
 		// Return the unknown key which is the modular inverse of the known key.
 		return k.modInverse(phi);
@@ -242,7 +242,9 @@ public class RSAUtil {
 	 * Postcondition: <code>Result != null</code> <br>
 	 * Postcondition: <code>Result.length == 3</code> <br>
 	 * Postcondition: <code>Result[0] == <sup>n</sup>&frasl;<sub>primeFactor</sub></code> <br>
-	 * Postcondition: <code>Result[1] == phi(n) == (primeFactor - 1) * (Result[0] - 1)</code> <br>
+	 * Postcondition:
+	 * <code>Result[1] == phi(n) == (primeFactor - 1) * ((<sup>n</sup>&frasl;<sub>primeFactor</sub>) - 1)</code>
+	 * <br>
 	 * Postcondition: <code>Result[2] == k<sup>-1</sup> (mod phi(n))</code>
 	 * 
 	 * @param primeFactor
@@ -272,13 +274,13 @@ public class RSAUtil {
 			// i.e., (primeFactor <= 0) || (n <= 0) || (k <= 0)
 			throw new IllegalArgumentException();
 		}
-		// (primeFactor > 0) && (n > 0) && (k > 0)
+		// (0 < primeFactor) && (0 < n) && (0 < k)
 
 		// Compute the other prime factor of n through division.
 		final BigInteger[] result = n.divideAndRemainder(primeFactor);
 		final BigInteger otherPrimeFactor = result[0];
-		// result[1] == (n % primeFactor) != 0 means that primeFactor is not actually a factor of n.
 		if (result[1].signum() != 0) {
+			// result[1] == (n % primeFactor) != 0 means that primeFactor is not actually a factor of n.
 			throw new IllegalArgumentException();
 		}
 

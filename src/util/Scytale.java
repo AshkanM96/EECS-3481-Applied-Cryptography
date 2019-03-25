@@ -202,7 +202,7 @@ public class Scytale implements Iterable<Integer> {
 	 */
 	public MatrixInt key(int[][] key) throws NullPointerException, IllegalArgumentException {
 		final MatrixInt tmp = new MatrixInt(key);
-		if (!tmp.isSquare()) {
+		if (tmp.numRows != tmp.numCols) { // i.e., !tmp.isSquare()
 			throw new IllegalArgumentException();
 		}
 
@@ -253,7 +253,7 @@ public class Scytale implements Iterable<Integer> {
 	 *             If <code>!key.isSquare()</code>
 	 */
 	public MatrixInt key(MatrixInt key) throws NullPointerException, IllegalArgumentException {
-		if (!key.isSquare()) {
+		if (key.numRows != key.numCols) { // i.e., !key.isSquare()
 			throw new IllegalArgumentException();
 		}
 
@@ -275,7 +275,7 @@ public class Scytale implements Iterable<Integer> {
 	 * 
 	 * @throws IndexOutOfBoundsException
 	 *             If
-	 *             <code>(row < 0) || (row >= this.keySide()) || (col < 0) || (col >= this.keySide())</code>
+	 *             <code>(row < 0) || (this.keySide() <= row) || (col < 0) || (this.keySide() <= col)</code>
 	 */
 	public int get(int row, int col) throws IndexOutOfBoundsException {
 		return this.key.get(row, col);
@@ -295,7 +295,7 @@ public class Scytale implements Iterable<Integer> {
 	 * 
 	 * @throws IndexOutOfBoundsException
 	 *             If
-	 *             <code>(row < 0) || (row >= this.numRows) || (col < 0) || (col >= this.numCols)</code>
+	 *             <code>(row < 0) || (this.keySide() <= row) || (col < 0) || (this.keySide() <= col)</code>
 	 */
 	public void set(int row, int col, int entry) throws IndexOutOfBoundsException {
 		this.key.set(row, col, (int) MathUtil.modFixedInput(entry, Scytale.MODULUS));
@@ -500,7 +500,7 @@ public class Scytale implements Iterable<Integer> {
 	 * @return The resulting char array.
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(numCols <= 0) || (numCols > data.length)</code>
+	 *             If <code>(numCols < 1) || (data.length < numCols)</code>
 	 */
 	protected static char[] placeFixedInput(char[] data, int numCols) throws IllegalArgumentException {
 		if (data.length <= 1) {
@@ -516,14 +516,16 @@ public class Scytale implements Iterable<Integer> {
 
 		final char[] result = new char[data.length];
 		final MatrixInt transpose = matrix.transpose();
-		// transpose_it does not need to mutate transpose but
-		// allowing mutation, means direct pointer copy of matrix
-		// and so more time efficient.
+		/*
+		 * transpose_it does not need to mutate transpose but allowing mutation, means direct pointer copy
+		 * of matrix and so its more time efficient.
+		 */
 		final MatrixInt.MatrixIntIterator transpose_it = transpose.iterator(true);
 		for (int i = 0, entry = 0; i != result.length; /* Update inside. */) {
-			// No need to check transpose_it.hasNext(), since transpose_it size
-			// (i.e., matrix size) is greater than or equal to data.length
-			// (i.e., result.length).
+			/*
+			 * No need to check transpose_it.hasNext(), since transpose_it size (i.e., matrix size) is greater
+			 * than or equal to data.length (i.e., result.length).
+			 */
 			entry = transpose_it.next();
 			if (entry != 0) {
 				// Only non-zero entries originated from data.
@@ -553,11 +555,11 @@ public class Scytale implements Iterable<Integer> {
 	 *             If <code>data == null</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(numCols <= 0) || (numCols > CryptoTools.clean(data).length)</code>
+	 *             If <code>(numCols < 1) || (CryptoTools.clean(data).length < numCols)</code>
 	 */
 	public static char[] place(char[] data, int numCols) throws NullPointerException, IllegalArgumentException {
 		// Even though the following is a repeated check, it'll save a cleaning.
-		if (numCols <= 0) {
+		if (numCols < 1) {
 			throw new IllegalArgumentException();
 		}
 		return Scytale.placeFixedInput(CryptoTools.clean(data), numCols);
@@ -581,7 +583,7 @@ public class Scytale implements Iterable<Integer> {
 	 * @return The resulting byte array.
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(numCols <= 0) || (numCols > data.length)</code>
+	 *             If <code>(numCols < 1) || (data.length < numCols)</code>
 	 */
 	protected static byte[] placeFixedInput(byte[] data, int numCols) throws IllegalArgumentException {
 		if (data.length <= 1) {
@@ -597,14 +599,16 @@ public class Scytale implements Iterable<Integer> {
 
 		final byte[] result = new byte[data.length];
 		final MatrixInt transpose = matrix.transpose();
-		// transpose_it does not need to mutate transpose but
-		// allowing mutation, means direct pointer copy of matrix
-		// and so more time efficient.
+		/*
+		 * transpose_it does not need to mutate transpose but allowing mutation, means direct pointer copy
+		 * of matrix and so its more time efficient.
+		 */
 		final MatrixInt.MatrixIntIterator transpose_it = transpose.iterator(true);
 		for (int i = 0, entry = 0; i != result.length; /* Update inside. */) {
-			// No need to check transpose_it.hasNext(), since transpose_it size
-			// (i.e., matrix size) is greater than or equal to data.length
-			// (i.e., result.length).
+			/*
+			 * No need to check transpose_it.hasNext(), since transpose_it size (i.e., matrix size) is greater
+			 * than or equal to data.length (i.e., result.length).
+			 */
 			entry = transpose_it.next();
 			if (entry != 0) {
 				// Only non-zero entries originated from data.
@@ -634,11 +638,11 @@ public class Scytale implements Iterable<Integer> {
 	 *             If <code>data == null</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(numCols <= 0) || (numCols > CryptoTools.clean(data).length)</code>
+	 *             If <code>(numCols < 1) || (CryptoTools.clean(data).length < numCols)</code>
 	 */
 	public static byte[] place(byte[] data, int numCols) throws NullPointerException, IllegalArgumentException {
 		// Even though the following is a repeated check, it'll save a cleaning.
-		if (numCols <= 0) {
+		if (numCols < 1) {
 			throw new IllegalArgumentException();
 		}
 		return Scytale.placeFixedInput(CryptoTools.clean(data), numCols);

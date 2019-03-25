@@ -45,7 +45,7 @@ public class Vigenere implements Iterable<Character> {
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(CryptoTools.clean(keyWord).length == 0)
-	 *             || (index < 0) || (index >= CryptoTools.clean(keyWord).length)</code>
+	 *             || (index < 0) || (CryptoTools.clean(keyWord).length <= index)</code>
 	 */
 	public Vigenere(char[] keyWord, int index) throws NullPointerException, IllegalArgumentException {
 		this.key(keyWord);
@@ -179,7 +179,7 @@ public class Vigenere implements Iterable<Character> {
 	 * @return <code>this.key[i]</code>.
 	 * 
 	 * @throws IndexOutOfBoundsException
-	 *             If <code>(i < 0) || (i >= this.key.length)</code>
+	 *             If <code>(i < 0) || (this.key.length <= i)</code>
 	 */
 	public char key(int i) throws IndexOutOfBoundsException {
 		return this.key[i];
@@ -195,7 +195,7 @@ public class Vigenere implements Iterable<Character> {
 	 *            the given character
 	 * 
 	 * @throws IndexOutOfBoundsException
-	 *             If <code>(i < 0) || (i >= this.key.length)</code>
+	 *             If <code>(i < 0) || (this.key.length <= i)</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>!CryptoTools.isUpperEnglish(c)</code>
@@ -211,7 +211,7 @@ public class Vigenere implements Iterable<Character> {
 	 * @return <code>this.key[i] + 'A'</code>.
 	 * 
 	 * @throws IndexOutOfBoundsException
-	 *             If <code>(i < 0) || (i >= this.key.length)</code>
+	 *             If <code>(i < 0) || (this.key.length <= i)</code>
 	 */
 	public char keyWord(int i) throws IndexOutOfBoundsException {
 		return ((char) (this.key[i] + 'A'));
@@ -550,7 +550,7 @@ public class Vigenere implements Iterable<Character> {
 	 *             If <code>CryptoTools.clean(keyWord).length == 0</code>
 	 * 
 	 * @throws IndexOutOfBoundsException
-	 *             If <code>(index < 0) || (index >= CryptoTools.clean(keyWord).length)</code>
+	 *             If <code>(index < 0) || (CryptoTools.clean(keyWord).length <= index)</code>
 	 */
 	public static char[] decrypt(char[] keyWord, char[] c, int index)
 			throws NullPointerException, IllegalArgumentException, IndexOutOfBoundsException {
@@ -673,7 +673,7 @@ public class Vigenere implements Iterable<Character> {
 	 *             If <code>CryptoTools.clean(keyWord).length == 0</code>
 	 * 
 	 * @throws IndexOutOfBoundsException
-	 *             If <code>(index < 0) || (index >= CryptoTools.clean(keyWord).length)</code>
+	 *             If <code>(index < 0) || (CryptoTools.clean(keyWord).length <= index)</code>
 	 */
 	public static byte[] decrypt(char[] keyWord, byte[] c, int index)
 			throws NullPointerException, IllegalArgumentException, IndexOutOfBoundsException {

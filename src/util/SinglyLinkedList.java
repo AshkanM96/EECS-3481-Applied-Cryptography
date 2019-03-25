@@ -135,7 +135,7 @@ public class SinglyLinkedList<T> implements Iterable<T> {
 	 *             If <code>a == null</code>
 	 * 
 	 * @throws IndexOutOfBoundsException
-	 *             If <code>(beginIndex < 0) || (beginIndex >= this.size)</code>
+	 *             If <code>(beginIndex < 0) || (this.size <= beginIndex)</code>
 	 */
 	public void toArray(T[] a, long beginIndex) throws NullPointerException, IndexOutOfBoundsException {
 		this.toArray(a, beginIndex, this.size);

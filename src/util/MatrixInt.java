@@ -53,13 +53,13 @@ public class MatrixInt implements Iterable<Integer> {
 	 *            the given integer
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(numRows <= 0) || (numCols <= 0)</code>
+	 *             If <code>(numRows < 1) || (numCols < 1)</code>
 	 */
 	public MatrixInt(int numRows, int numCols, int n) throws IllegalArgumentException {
 		if ((numRows < 1) || (numCols < 1)) {
 			throw new IllegalArgumentException();
 		}
-		// (numRows >= 1) && (numCols >= 1)
+		// (1 <= numRows) && (1 <= numCols)
 
 		// Set this.
 		this.data = new int[this.numRows = numRows][this.numCols = numCols];
@@ -81,7 +81,7 @@ public class MatrixInt implements Iterable<Integer> {
 	 *            the given number of columns
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(numRows <= 0) || (numCols <= 0)</code>
+	 *             If <code>(numRows < 1) || (numCols < 1)</code>
 	 */
 	public MatrixInt(int numRows, int numCols) throws IllegalArgumentException {
 		this(numRows, numCols, 0);
@@ -193,7 +193,7 @@ public class MatrixInt implements Iterable<Integer> {
 	 * @return <code>new MatrixInt(1, numCols)</code>.
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>numCols <= 0</code>
+	 *             If <code>numCols < 1</code>
 	 */
 	public static MatrixInt row(int numCols) throws IllegalArgumentException {
 		return new MatrixInt(1, numCols);
@@ -231,7 +231,7 @@ public class MatrixInt implements Iterable<Integer> {
 	 * @return <code>new MatrixInt(numRows, 1)</code>.
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>numRows <= 0</code>
+	 *             If <code>numRows < 1</code>
 	 */
 	public static MatrixInt column(int numRows) throws IllegalArgumentException {
 		return new MatrixInt(numRows, 1);
@@ -279,7 +279,7 @@ public class MatrixInt implements Iterable<Integer> {
 	 * @return <code>new MatrixInt(side, side)</code>.
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>side <= 0</code>
+	 *             If <code>side < 1</code>
 	 */
 	public static MatrixInt square(int side) throws IllegalArgumentException {
 		return new MatrixInt(side, side);
@@ -295,7 +295,7 @@ public class MatrixInt implements Iterable<Integer> {
 	 * @return The resulting MatrixInt object.
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>side <= 0</code>
+	 *             If <code>side < 1</code>
 	 */
 	public static MatrixInt identity(int side) throws IllegalArgumentException {
 		// Identity matrix has ones on the main diagonal and zeroes everywhere else.
@@ -351,7 +351,7 @@ public class MatrixInt implements Iterable<Integer> {
 	 * @return <code>Math.multiplyExact(this.numRows, this.numCols)</code>.
 	 * 
 	 * @throws ArithmeticException
-	 *             If <code>(((long) this.numRows) * this.numCols) > Integer.MAX_VALUE</code>
+	 *             If <code>Integer.MAX_VALUE < (((long) this.numRows) * this.numCols)</code>
 	 */
 	public int sizeExact() throws ArithmeticException {
 		return Math.multiplyExact(this.numRows, this.numCols);
@@ -361,7 +361,7 @@ public class MatrixInt implements Iterable<Integer> {
 	 * Compute the unknown matrix dimension given the size and one of the dimensions. <br>
 	 * Note that if the given size is not divisible by the given dimension, then the result will be the
 	 * smallest value such that a matrix with those dimensions can store as many entries as the given
-	 * size (i.e., <code>(((long) Result) * dim) >= size</code>).
+	 * size (i.e., <code>size <= (((long) Result) * dim)</code>).
 	 * 
 	 * @param size
 	 *            the given size of the matrix
@@ -372,7 +372,7 @@ public class MatrixInt implements Iterable<Integer> {
 	 * @return The unknown matrix dimension.
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(size <= 0) || (dim <= 0) || (size < dim)</code>
+	 *             If <code>(size < 1) || (dim < 1) || (size < dim)</code>
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>Integer.MAX_VALUE < ((long) Math.ceil(((double) size) / dim))</code>
@@ -383,7 +383,7 @@ public class MatrixInt implements Iterable<Integer> {
 		} else if ((dim < 1) || (size < dim)) {
 			throw new IllegalArgumentException();
 		}
-		// (size >= 1) && (1 <= dim) && (dim <= size)
+		// (1 <= size) && (1 <= dim) && (dim <= size)
 
 		final long result = (long) Math.ceil(((double) size) / dim);
 		if (Integer.MAX_VALUE < result) {
@@ -443,7 +443,7 @@ public class MatrixInt implements Iterable<Integer> {
 	 * 
 	 * @throws IndexOutOfBoundsException
 	 *             If
-	 *             <code>(rowNum < 0) || (rowNum >= this.numRows) || (colNum < 0) || (colNum >= this.numCols)</code>
+	 *             <code>(rowNum < 0) || (this.numRows <= rowNum) || (colNum < 0) || (this.numCols <= colNum)</code>
 	 */
 	public int get(int rowNum, int colNum) throws IndexOutOfBoundsException {
 		return this.data[rowNum][colNum];
@@ -463,7 +463,7 @@ public class MatrixInt implements Iterable<Integer> {
 	 * 
 	 * @throws IndexOutOfBoundsException
 	 *             If
-	 *             <code>(rowNum < 0) || (rowNum >= this.numRows) || (colNum < 0) || (colNum >= this.numCols)</code>
+	 *             <code>(rowNum < 0) || (this.numRows <= rowNum) || (colNum < 0) || (this.numCols <= colNum)</code>
 	 */
 	public void set(int rowNum, int colNum, int entry) throws IndexOutOfBoundsException {
 		this.data[rowNum][colNum] = entry;
@@ -517,7 +517,7 @@ public class MatrixInt implements Iterable<Integer> {
 	 */
 	public boolean isIdentity() {
 		// Identity matrix is a square.
-		if (!this.isSquare()) {
+		if (this.numRows != this.numCols) { // i.e., !this.isSquare()
 			return false;
 		}
 
@@ -552,7 +552,7 @@ public class MatrixInt implements Iterable<Integer> {
 	 */
 	public boolean isTranspositionRow() {
 		// Row transposition matrix is a square.
-		if (!this.isSquare()) {
+		if (this.numRows != this.numCols) { // i.e., !this.isSquare()
 			return false;
 		}
 
@@ -607,7 +607,7 @@ public class MatrixInt implements Iterable<Integer> {
 	 */
 	public boolean isTranspositionCol(boolean iterateColByCol) {
 		// Column transposition matrix is a square.
-		if (!this.isSquare()) {
+		if (this.numRows != this.numCols) { // i.e., !this.isSquare()
 			return false;
 		}
 
@@ -823,7 +823,7 @@ public class MatrixInt implements Iterable<Integer> {
 	}
 
 	/**
-	 * <code>operator*(MatrixInt, MatrixInt)</code>. Run time is
+	 * <code>operator*(MatrixInt, MatrixInt)</code>. Runtime is in
 	 * <code>Big-Theta(lhs.numRows * rhs.numCols * lhs.numCols)</code>.
 	 * 
 	 * @param lhs
@@ -950,14 +950,14 @@ public class MatrixInt implements Iterable<Integer> {
 	 * @return <code>this</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>n <= 0</code>
+	 *             If <code>n < 1</code>
 	 */
 	public MatrixInt modEquals(int n) throws InvalidModulusException {
 		if (n < 1) {
 			throw new InvalidModulusException();
 		}
-		// n >= 1
-		// i.e., n > 0
+		// 1 <= n
+		// i.e., 0 < n
 
 		int[] row = null;
 		for (int rowNum = 0; rowNum != this.numRows; ++rowNum) {
@@ -978,15 +978,15 @@ public class MatrixInt implements Iterable<Integer> {
 	 * @return <code>new MatrixInt(this).modEquals(n)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>n <= 0</code>
+	 *             If <code>n < 1</code>
 	 */
 	public MatrixInt mod(int n) throws InvalidModulusException {
 		// Even though the following is a repeated check, it'll save a copy construction.
 		if (n < 1) {
 			throw new InvalidModulusException();
 		}
-		// n >= 1
-		// i.e., n > 0
+		// 1 <= n
+		// i.e., 0 < n
 		return new MatrixInt(this).modEquals(n);
 	}
 
@@ -1012,7 +1012,7 @@ public class MatrixInt implements Iterable<Integer> {
 	 *             If <code>!this.isSquare()</code>
 	 */
 	public long trace() throws IllegalStateException {
-		if (!this.isSquare()) {
+		if (this.numRows != this.numCols) { // i.e., !this.isSquare()
 			throw new IllegalStateException();
 		}
 
@@ -1052,12 +1052,13 @@ public class MatrixInt implements Iterable<Integer> {
 			throw new IndexOutOfBoundsException();
 		}
 
-		// Special cases.
+		// Handle the special cases.
 		if (excludingRow == this.numRows) {
 			if (excludingCol == this.numCols) {
 				// Special case denoting no row exclusion and no column exclusion.
 				return new MatrixInt(this);
-			} // excludingCol != this.numCols
+			}
+			// excludingCol != this.numCols
 
 			// Special case denoting no row exclusion.
 			final MatrixInt result = new MatrixInt(this.numRows, this.numCols - 1);
@@ -1094,10 +1095,13 @@ public class MatrixInt implements Iterable<Integer> {
 				}
 			}
 			return result;
-		} // (excludingRow != this.numRows) && (excludingCol != this.numCols)
+		}
+		// (excludingRow != this.numRows) && (excludingCol != this.numCols)
 
-		// General case denoting excluding row indexed by excludingRow
-		// and excluding column indexed by excludingCol.
+		/*
+		 * General case denoting excluding row indexed by excludingRow and excluding column indexed by
+		 * excludingCol.
+		 */
 		final MatrixInt result = new MatrixInt(this.numRows - 1, this.numCols - 1);
 		int[] row = null, result_row = null;
 		for (int rowNum = 0, result_rowNum = -1; rowNum != this.numRows; ++rowNum) {
@@ -1159,14 +1163,14 @@ public class MatrixInt implements Iterable<Integer> {
 	 *             If <code>!this.isSquare()</code>
 	 */
 	public int determinant() throws IllegalStateException {
-		if (!this.isSquare()) {
+		if (this.numRows != this.numCols) { // i.e., !this.isSquare()
 			throw new IllegalStateException();
 		}
 		return ((this.numRows == 1) ? this.data[0][0] : MatrixInt.determinantHelper(this.numRows, this.data));
 	}
 
 	/**
-	 * Precondition: <code>side > 1</code> <br>
+	 * Precondition: <code>1 < side</code> <br>
 	 * Precondition: <code>data != null</code> <br>
 	 * Precondition: <code>data.length == side</code> <br>
 	 * Precondition: <code>(valid i) implies (data[i].length == side)</code>
@@ -1214,7 +1218,7 @@ public class MatrixInt implements Iterable<Integer> {
 	 *             If <code>!this.isSquare()</code>
 	 */
 	public MatrixInt minors() throws IllegalStateException {
-		if (!this.isSquare()) {
+		if (this.numRows != this.numCols) { // i.e., !this.isSquare()
 			throw new IllegalStateException();
 		}
 
@@ -1236,7 +1240,7 @@ public class MatrixInt implements Iterable<Integer> {
 	 *             If <code>!this.isSquare()</code>
 	 */
 	public MatrixInt cofactor() throws IllegalStateException {
-		if (!this.isSquare()) {
+		if (this.numRows != this.numCols) { // i.e., !this.isSquare()
 			throw new IllegalStateException();
 		}
 
@@ -1261,7 +1265,7 @@ public class MatrixInt implements Iterable<Integer> {
 	public MatrixInt adjugate() throws IllegalStateException {
 		// return this.cofactor().transpose();
 
-		if (!this.isSquare()) {
+		if (this.numRows != this.numCols) { // i.e., !this.isSquare()
 			throw new IllegalStateException();
 		}
 
@@ -1281,7 +1285,7 @@ public class MatrixInt implements Iterable<Integer> {
 	 * @return <code>this.isSquare() && (this.determinant() != 0)</code>.
 	 */
 	public boolean isInvertible() {
-		return (this.isSquare() && (this.determinant() != 0));
+		return ((this.numRows == this.numCols) && (this.determinant() != 0));
 	}
 
 	/**
@@ -1325,15 +1329,15 @@ public class MatrixInt implements Iterable<Integer> {
 	 * @return <code>this.isSquare() && (MathUtil.gcd(this.determinant(), m) == 1)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m <= 0</code>
+	 *             If <code>m < 1</code>
 	 */
 	public boolean isInvertibleMod(int m) throws InvalidModulusException {
 		if (m < 1) {
 			throw new InvalidModulusException();
 		}
-		// m >= 1
-		// i.e., m > 0
-		return (this.isSquare() && (MathUtil.gcdFixedInput(this.determinant(), m) == 1L));
+		// 1 <= m
+		// i.e., 0 < m
+		return ((this.numRows == this.numCols) && (MathUtil.gcdFixedInput(this.determinant(), m) == 1L));
 	}
 
 	/**
@@ -1349,7 +1353,7 @@ public class MatrixInt implements Iterable<Integer> {
 	 * @return The resulting InverseInfo object.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m <= 1</code>
+	 *             If <code>m < 2</code>
 	 * 
 	 * @throws IllegalStateException
 	 *             If <code>!this.isSquare()</code>
@@ -1359,8 +1363,8 @@ public class MatrixInt implements Iterable<Integer> {
 		if (m < 2) {
 			throw new InvalidModulusException();
 		}
-		// m >= 2
-		// i.e., m > 1
+		// 2 <= m
+		// i.e., 1 < m
 
 		final int determinant = this.determinant();
 		try {
@@ -1398,7 +1402,7 @@ public class MatrixInt implements Iterable<Integer> {
 	 * @return The inverse of <code>this</code> using <code>(mod m)</code> arithmetic.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m <= 1</code>
+	 *             If <code>m < 2</code>
 	 * 
 	 * @throws IllegalStateException
 	 *             If <code>!this.isInvertibleMod(m)</code>

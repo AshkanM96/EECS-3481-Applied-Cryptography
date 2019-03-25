@@ -202,7 +202,7 @@ public class Hill implements Iterable<Integer> {
 	 */
 	public MatrixInt key(int[][] key) throws NullPointerException, IllegalArgumentException {
 		final MatrixInt tmp = new MatrixInt(key);
-		if (!tmp.isSquare()) {
+		if (tmp.numRows != tmp.numCols) { // i.e., !tmp.isSquare()
 			throw new IllegalArgumentException();
 		}
 
@@ -253,7 +253,7 @@ public class Hill implements Iterable<Integer> {
 	 *             If <code>!key.isSquare()</code>
 	 */
 	public MatrixInt key(MatrixInt key) throws NullPointerException, IllegalArgumentException {
-		if (!key.isSquare()) {
+		if (key.numRows != key.numCols) { // i.e., !key.isSquare()
 			throw new IllegalArgumentException();
 		}
 
@@ -275,7 +275,7 @@ public class Hill implements Iterable<Integer> {
 	 * 
 	 * @throws IndexOutOfBoundsException
 	 *             If
-	 *             <code>(row < 0) || (row >= this.keySide()) || (col < 0) || (col >= this.keySide())</code>
+	 *             <code>(row < 0) || (this.keySide() <= row) || (col < 0) || (this.keySide() <= col)</code>
 	 */
 	public int get(int row, int col) throws IndexOutOfBoundsException {
 		return this.key.get(row, col);
@@ -295,7 +295,7 @@ public class Hill implements Iterable<Integer> {
 	 * 
 	 * @throws IndexOutOfBoundsException
 	 *             If
-	 *             <code>(row < 0) || (row >= this.numRows) || (col < 0) || (col >= this.numCols)</code>
+	 *             <code>(row < 0) || (this.keySide() <= row) || (col < 0) || (this.keySide() <= col)</code>
 	 */
 	public void set(int row, int col, int entry) throws IndexOutOfBoundsException {
 		this.key.set(row, col, (int) MathUtil.modFixedInput(entry, CryptoTools.ENGLISH_ALPHABET_SIZE));
