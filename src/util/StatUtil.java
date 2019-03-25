@@ -531,9 +531,9 @@ public class StatUtil {
 	 */
 	protected static BigInteger nCrLinearFixedInput(BigInteger n, BigInteger r) {
 		BigInteger numerator = n, denominator = r;
-		for (BigInteger i = BigInteger.ONE, n_i = n.subtract(BigInteger.ONE); !i.equals(r); i = i
-				.add(BigInteger.ONE), n_i = n_i.subtract(BigInteger.ONE)) {
-			numerator = numerator.multiply(n_i);
+		for (BigInteger i = BigInteger.ONE, n_minus_i = n.subtract(BigInteger.ONE); !i.equals(r); i = i
+				.add(BigInteger.ONE), n_minus_i = n_minus_i.subtract(BigInteger.ONE)) {
+			numerator = numerator.multiply(n_minus_i);
 			denominator = denominator.multiply(i);
 		}
 		return numerator.divide(denominator);
@@ -569,7 +569,7 @@ public class StatUtil {
 		} else if (n_cmp_r == 0) { // i.e., n == r
 			/**
 			 * This case is only an optimization since nCn == 1. The following code will handle it after setting
-			 * <code>r == n_r == n - n == 0</code> but we might as well handle it earlier and save some
+			 * <code>r == n_minus_r == n - n == 0</code> but we might as well handle it earlier and save some
 			 * computations.
 			 */
 			return BigInteger.ONE;
@@ -578,9 +578,9 @@ public class StatUtil {
 		// i.e., r < n
 
 		// nCr == nC(n - r)
-		final BigInteger n_r = n.subtract(r);
-		if (n_r.compareTo(r) < 0) { // i.e., n_r < r
-			r = n_r;
+		final BigInteger n_minus_r = n.subtract(r);
+		if (n_minus_r.compareTo(r) < 0) { // i.e., n - r < r
+			r = n_minus_r;
 		}
 		// r == min(original r, n - original r)
 		// i.e., r <= n / 2
@@ -662,7 +662,7 @@ public class StatUtil {
 		} else if (n == r) {
 			/**
 			 * This case is only an optimization since nCn == 1. The following code will handle it after setting
-			 * <code>r == n_r == n - n == 0</code> but we might as well handle it earlier and save some
+			 * <code>r == n_minus_r == n - n == 0</code> but we might as well handle it earlier and save some
 			 * computations.
 			 */
 			return BigInteger.ONE;
@@ -670,9 +670,9 @@ public class StatUtil {
 		// r < n
 
 		// nCr == nC(n - r)
-		final long n_r = n - r;
-		if (n_r < r) {
-			r = n_r;
+		final long n_minus_r = n - r;
+		if (n_minus_r < r) { // i.e., n - r < r
+			r = n_minus_r;
 		}
 		// r == Math.min(original r, n - original r)
 		// i.e., r <= n / 2
@@ -707,9 +707,9 @@ public class StatUtil {
 	 */
 	protected static BigInteger stirling2LinearFixedInput(int n, int r) {
 		// S2(n, r) = (sum (-1)^i rCi (r - i)^n from i = 0 to i = r) / r!
-		BigInteger numerator = BigInteger.ZERO, denominator = BigInteger.ONE;
+		BigInteger numerator = BigInteger.valueOf(r).pow(n), denominator = BigInteger.ONE;
 		BigInteger tmp = null;
-		for (int i = 0; i <= r; ++i) {
+		for (int i = 1; i <= r; ++i) {
 			/**
 			 * Note that <code>BigInteger.valueOf(long)</code> calls are much cheaper than performing arithmetic
 			 * operations on a <code>BigInteger</code> since those are fully general operations for potentially
@@ -726,9 +726,7 @@ public class StatUtil {
 			 * will mutate <code>i</code>.
 			 */
 			numerator = ((i & 1) != 0) ? numerator.subtract(tmp) : numerator.add(tmp);
-			if (i != 0) {
-				denominator = denominator.multiply(BigInteger.valueOf(i));
-			}
+			denominator = denominator.multiply(BigInteger.valueOf(i));
 		}
 		return numerator.divide(denominator);
 	}
@@ -1041,14 +1039,14 @@ public class StatUtil {
 		// i.e., 1 <= n
 
 		// Compute Fn in the loop and then return it.
-		BigInteger Fi_1 = BigInteger.ZERO, Fi = BigInteger.ONE, Fip1 = BigInteger.ONE;
+		BigInteger Fi_minus_1 = BigInteger.ZERO, Fi = BigInteger.ONE, Fi_plus_1 = BigInteger.ONE;
 		for (BigInteger i = BigInteger.ONE; !i.equals(n); i = i.add(BigInteger.ONE)) {
-			// Fi = Fi_1 + Fi_2 for all 2 <= i
-			Fip1 = Fi.add(Fi_1);
-			Fi_1 = Fi;
-			Fi = Fip1;
+			// Fi_plus_1 = Fi + Fi_minus_1 for all 1 <= i
+			Fi_plus_1 = Fi.add(Fi_minus_1);
+			Fi_minus_1 = Fi;
+			Fi = Fi_plus_1;
 		}
-		return Fip1;
+		return Fi_plus_1;
 	}
 
 	/**
@@ -1090,14 +1088,14 @@ public class StatUtil {
 		 */
 
 		// Compute Fn in the loop and then return it.
-		BigInteger Fi_1 = BigInteger.ZERO, Fi = BigInteger.ONE, Fip1 = BigInteger.ONE;
+		BigInteger Fi_minus_1 = BigInteger.ZERO, Fi = BigInteger.ONE, Fi_plus_1 = BigInteger.ONE;
 		for (long i = 1L; i != n; ++i) {
-			// Fi = Fi_1 + Fi_2 for all 2 <= i
-			Fip1 = Fi.add(Fi_1);
-			Fi_1 = Fi;
-			Fi = Fip1;
+			// Fi_plus_1 = Fi + Fi_minus_1 for all 1 <= i
+			Fi_plus_1 = Fi.add(Fi_minus_1);
+			Fi_minus_1 = Fi;
+			Fi = Fi_plus_1;
 		}
-		return Fip1;
+		return Fi_plus_1;
 	}
 
 	/**
@@ -1136,9 +1134,9 @@ public class StatUtil {
 		if (result == null) { // i.e., (n != 0) && (n != 1)
 			// i.e., 2 <= n
 
-			// Recursively retrieve/compute_and_store Fn_1 then compute Fn from it.
-			// Note that by recursing on n - 1, we also recursively compute (and store) Fn_2 if needed.
-			// Fn = Fn_1 + Fn_2 for all 2 <= n
+			// Recursively retrieve/compute_and_store Fn_minus_1 then compute Fn from it.
+			// Note that by recursing on n - 1, we also recursively compute (and store) Fn_minus_2 if needed.
+			// Fn = Fn_minus_1 + Fn_minus_2 for all 2 <= n
 			result = StatUtil.fibonacciMapFixedInput(n - 1).add(StatUtil.fibonaccis.get(n - 2));
 
 			// Store Fn so that it is not recomputed later.
