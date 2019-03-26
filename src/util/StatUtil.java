@@ -741,6 +741,9 @@ public class StatUtil {
 	 *            the given sample size
 	 * 
 	 * @return <code>S2(n, r)</code>.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(n < 0) || (r < 0) || (n < r)</code>
 	 */
 	public static BigInteger stirling2Linear(int n, int r) throws IllegalArgumentException {
 		if ((n < 0) || (r < 0)) {
@@ -805,6 +808,9 @@ public class StatUtil {
 	 *            specifies whether the result should be out of 100
 	 * 
 	 * @return The probability of at least one shared birthday between the two people.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(d < 1) || (n < 0) || (scale < 0)</code>
 	 */
 	public static BigDecimal birthday1Linear(int d, int n, int scale, boolean outOf100)
 			throws IllegalArgumentException {
@@ -839,7 +845,10 @@ public class StatUtil {
 	 * @param scale
 	 *            the given scale which will only be used when the probability is not an exact integer
 	 * 
-	 * @return The probability of at least one shared birthday between the two people.
+	 * @return <code>StatUtil.birthday1Linear(d, n, scale, true)</code>.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(d < 1) || (n < 0) || (scale < 0)</code>
 	 */
 	public static BigDecimal birthday1Linear(int d, int n, int scale) throws IllegalArgumentException {
 		return StatUtil.birthday1Linear(d, n, scale, true);
@@ -852,7 +861,10 @@ public class StatUtil {
 	 * @param n
 	 *            the given number of people
 	 * 
-	 * @return The probability of at least one shared birthday between the two people.
+	 * @return <code>StatUtil.birthday1Linear(d, n, StatUtil.DEFAULT_SCALE)</code>.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(d < 1) || (n < 0) || (scale < 0)</code>
 	 */
 	public static BigDecimal birthday1Linear(int d, int n) throws IllegalArgumentException {
 		return StatUtil.birthday1Linear(d, n, StatUtil.DEFAULT_SCALE);
@@ -861,7 +873,7 @@ public class StatUtil {
 	/**
 	 * Precondition: <code>2 <= d</code> <br>
 	 * Precondition: <code>(1 <= n) && (1 <= m)</code> <br>
-	 * Precondition: <code>m + n <= d</code> <br>
+	 * Precondition: <code>Math.addExact(m, n) <= d</code> <br>
 	 * Precondition: <code>0 <= scale</code>
 	 * 
 	 * @param d
@@ -1056,8 +1068,11 @@ public class StatUtil {
 	 *            the given number
 	 * 
 	 * @return The <code>n<sup>th</sup></code> fibonacci number.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>n < 0</code>
 	 */
-	public static BigInteger fibonacciLinear(BigInteger n) {
+	public static BigInteger fibonacciLinear(BigInteger n) throws IllegalArgumentException {
 		if (n.signum() == -1) { // i.e., n < 0
 			throw new IllegalArgumentException();
 		}

@@ -559,10 +559,10 @@ public class AlgebraUtil {
 			if (MathUtil.modPowFixedInput(n, phiM / it.next(), m) == 1L) {
 				/**
 				 * Note that <code>MathUtil.modMinFixedInput</code> (and as a result
-				 * <code>MathUtil.modPowFixedInput</code>) return <code>1</code> instead of <code>m - 1</code> for
-				 * all <code>m</code> (including <code>m == 2</code>) so the check is fine and we do not need to fix
-				 * the result of <code>MathUtil.modPowFixedInput</code> to be in
-				 * <code>[0, m - 1] \cap \doubleZ</code> by adding <code>m</code> to it if it's negative.
+				 * <code>MathUtil.modPowFixedInput</code>) return <code>1</code> instead of <code>1 - m</code> for
+				 * all <code>1 < m</code> so the check is fine and we do not need to fix the result of
+				 * <code>MathUtil.modPowFixedInput</code> to be in <code>[0, m - 1] \cap \doubleZ</code> by adding
+				 * <code>m</code> to it if it's negative.
 				 */
 				return false;
 			}

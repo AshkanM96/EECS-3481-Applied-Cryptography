@@ -102,11 +102,11 @@ public class MillerRabinBottomUp {
 
 	/**
 	 * Perform Miller-Rabin's compositeness test on <code>this.n</code> with the given base. <br>
-	 * Precondition: <code>b != null</code> <br>
-	 * Precondition: <code>(1 < b) && (b < this.n_minus_1)</code> <br>
-	 * Precondition: <code>gcd(this.n, b) == 1</code>
+	 * Precondition: <code>base != null</code> <br>
+	 * Precondition: <code>(1 < base) && (base < this.n_minus_1)</code> <br>
+	 * Precondition: <code>gcd(this.n, base) == 1</code>
 	 * 
-	 * @param b
+	 * @param base
 	 *            the given base
 	 * 
 	 * @param print
@@ -115,8 +115,8 @@ public class MillerRabinBottomUp {
 	 * 
 	 * @return The resulting TestResultMillerRabinBottomUp object.
 	 */
-	protected TestResultMillerRabinBottomUp testCoprimeFixedInput(BigInteger b, boolean print) {
-		BigInteger r = b.modPow(this.max_odd_factor, this.n);
+	protected TestResultMillerRabinBottomUp testCoprimeFixedInput(BigInteger base, boolean print) {
+		BigInteger r = base.modPow(this.max_odd_factor, this.n);
 		// Only print if requested.
 		if (print) {
 			System.out.println("r_" + this.max_power_of_2 + " == " + r + ", exp_" + this.max_power_of_2 + " == "
@@ -131,9 +131,9 @@ public class MillerRabinBottomUp {
 			// Only print if requested.
 			if (print) {
 				System.out.println(
-						"\nTest is inconclusive with base " + b + " since the final remainder is 1 (mod n).\n");
+						"\nTest is inconclusive with base " + base + " since the final remainder is 1 (mod n).\n");
 			}
-			return new TestResultMillerRabinBottomUp(this.n, true, b);
+			return new TestResultMillerRabinBottomUp(this.n, true, base);
 		}
 
 		BigInteger prev_r = null;
@@ -145,9 +145,9 @@ public class MillerRabinBottomUp {
 				// Only print if requested.
 				if (print) {
 					System.out.println(
-							"\nTest is inconclusive with base " + b + " since the final remainder is -1 (mod n).\n");
+							"\nTest is inconclusive with base " + base + " since the final remainder is -1 (mod n).\n");
 				}
-				return new TestResultMillerRabinBottomUp(this.n, true, b);
+				return new TestResultMillerRabinBottomUp(this.n, true, base);
 			}
 
 			prev_r = r; // Save the previous remainder for the Square-Root test.
@@ -167,9 +167,9 @@ public class MillerRabinBottomUp {
 				if (print) {
 					System.out.println("\ngcd(n, " + prev_r + " - 1) == " + superFactor1);
 					System.out.println("and\ngcd(n, " + prev_r + " + 1) == " + superFactor2);
-					System.out.println("\n" + b + " is a witness of n's compositeness.\n");
+					System.out.println("\n" + base + " is a witness of n's compositeness.\n");
 				}
-				return new TestResultMillerRabinBottomUp(this.n, false, b, superFactor1, superFactor2);
+				return new TestResultMillerRabinBottomUp(this.n, false, base, superFactor1, superFactor2);
 			}
 		} while (--i != -1);
 		/*
@@ -178,15 +178,15 @@ public class MillerRabinBottomUp {
 		 */
 		// Only print if requested.
 		if (print) {
-			System.out.println("\n" + b + " is a witness of n's compositeness by Fermat's test.\n");
+			System.out.println("\n" + base + " is a witness of n's compositeness by Fermat's test.\n");
 		}
-		return new TestResultMillerRabinBottomUp(this.n, false, b);
+		return new TestResultMillerRabinBottomUp(this.n, false, base);
 	}
 
 	/**
 	 * Perform Miller-Rabin's compositeness test on <code>this.n</code> with the given base.
 	 * 
-	 * @param b
+	 * @param base
 	 *            the given base
 	 * 
 	 * @param print
@@ -196,49 +196,49 @@ public class MillerRabinBottomUp {
 	 * @return The resulting TestResultMillerRabinBottomUp object.
 	 * 
 	 * @throws NullPointerException
-	 *             If <code>b == null</code>
+	 *             If <code>base == null</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(b <= 1) || (this.n_minus_1 <= b) || (gcd(this.n, b) != 1)</code>
+	 *             If <code>(base <= 1) || (this.n_minus_1 <= base) || (gcd(this.n, base) != 1)</code>
 	 */
-	public TestResultMillerRabinBottomUp testCoprime(BigInteger b, boolean print)
+	public TestResultMillerRabinBottomUp testCoprime(BigInteger base, boolean print)
 			throws IllegalArgumentException, NullPointerException {
-		if (b.compareTo(BigInteger.ONE) <= 0) { // i.e., b <= 1
+		if (base.compareTo(BigInteger.ONE) <= 0) { // i.e., base <= 1
 			throw new IllegalArgumentException();
-		} else if (this.n_minus_1.compareTo(b) <= 0) { // i.e., this.n_minus_1 <= b
+		} else if (this.n_minus_1.compareTo(base) <= 0) { // i.e., this.n_minus_1 <= base
 			throw new IllegalArgumentException();
-		} else if (!this.n.gcd(b).equals(BigInteger.ONE)) { // i.e., gcd(this.n, b) != 1
+		} else if (!this.n.gcd(base).equals(BigInteger.ONE)) { // i.e., gcd(this.n, base) != 1
 			throw new IllegalArgumentException();
 		}
-		// (1 < b) && (b < this.n_minus_1) && (gcd(this.n, b) == 1)
-		return this.testCoprimeFixedInput(b, print);
+		// (1 < base) && (base < this.n_minus_1) && (gcd(this.n, base) == 1)
+		return this.testCoprimeFixedInput(base, print);
 	}
 
 	/**
 	 * Perform Miller-Rabin's compositeness test on <code>this.n</code> with the given base.
 	 * 
-	 * @param b
+	 * @param base
 	 *            the given base
 	 * 
-	 * @return <code>this.testCoprime(b, false)</code>.
+	 * @return <code>this.testCoprime(base, false)</code>.
 	 * 
 	 * @throws NullPointerException
-	 *             If <code>b == null</code>
+	 *             If <code>base == null</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(b <= 1) || (this.n_minus_1 <= b) || (gcd(this.n, b) != 1)</code>
+	 *             If <code>(base <= 1) || (this.n_minus_1 <= base) || (gcd(this.n, base) != 1)</code>
 	 */
-	public TestResultMillerRabinBottomUp testCoprime(BigInteger b)
+	public TestResultMillerRabinBottomUp testCoprime(BigInteger base)
 			throws IllegalArgumentException, NullPointerException {
-		return this.testCoprime(b, false);
+		return this.testCoprime(base, false);
 	}
 
 	/**
 	 * Perform Miller-Rabin's compositeness test on <code>this.n</code> with the given base. <br>
-	 * Precondition: <code>b != null</code> <br>
-	 * Precondition: <code>(1 < b) && (b < this.n_minus_1)</code> <br>
+	 * Precondition: <code>base != null</code> <br>
+	 * Precondition: <code>(1 < base) && (base < this.n_minus_1)</code> <br>
 	 * 
-	 * @param b
+	 * @param base
 	 *            the given base
 	 * 
 	 * @param print
@@ -247,25 +247,25 @@ public class MillerRabinBottomUp {
 	 * 
 	 * @return The resulting TestResultMillerRabinBottomUp object.
 	 */
-	protected TestResultMillerRabinBottomUp testFixedInput(BigInteger b, boolean print) {
-		final BigInteger gcd = this.n.gcd(b);
-		if (gcd.equals(BigInteger.ONE)) { // i.e., gcd(this.n, b) == 1
-			return this.testCoprimeFixedInput(b, print);
+	protected TestResultMillerRabinBottomUp testFixedInput(BigInteger base, boolean print) {
+		final BigInteger gcd = this.n.gcd(base);
+		if (gcd.equals(BigInteger.ONE)) { // i.e., gcd(this.n, base) == 1
+			return this.testCoprimeFixedInput(base, print);
 		}
-		// gcd(this.n, b) != 1
+		// gcd(this.n, base) != 1
 
 		// Only print if requested.
 		if (print) {
-			System.out.println("gcd(n, " + b + ") == " + gcd + " != 1.");
-			System.out.println("Therefore, " + b + " is a witness of n's compositeness.\n");
+			System.out.println("gcd(n, " + base + ") == " + gcd + " != 1.");
+			System.out.println("Therefore, " + base + " is a witness of n's compositeness.\n");
 		}
-		return new TestResultMillerRabinBottomUp(this.n, false, b, gcd, this.n.divide(gcd));
+		return new TestResultMillerRabinBottomUp(this.n, false, base, gcd, this.n.divide(gcd));
 	}
 
 	/**
 	 * Perform Miller-Rabin's compositeness test on <code>this.n</code> with the given base.
 	 * 
-	 * @param b
+	 * @param base
 	 *            the given base
 	 * 
 	 * @param print
@@ -275,38 +275,38 @@ public class MillerRabinBottomUp {
 	 * @return The resulting TestResultMillerRabinBottomUp object.
 	 * 
 	 * @throws NullPointerException
-	 *             If <code>b == null</code>
+	 *             If <code>base == null</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(b <= 1) || (this.n_minus_1 <= b)</code>
+	 *             If <code>(base <= 1) || (this.n_minus_1 <= base)</code>
 	 */
-	public TestResultMillerRabinBottomUp test(BigInteger b, boolean print)
+	public TestResultMillerRabinBottomUp test(BigInteger base, boolean print)
 			throws NullPointerException, IllegalArgumentException {
-		if (b.compareTo(BigInteger.ONE) <= 0) { // i.e., b <= 1
+		if (base.compareTo(BigInteger.ONE) <= 0) { // i.e., base <= 1
 			throw new IllegalArgumentException();
-		} else if (this.n_minus_1.compareTo(b) <= 0) { // i.e., this.n_minus_1 <= b
+		} else if (this.n_minus_1.compareTo(base) <= 0) { // i.e., this.n_minus_1 <= base
 			throw new IllegalArgumentException();
 		}
-		// (1 < b) && (b < this.n_minus_1)
-		return this.testFixedInput(b, print);
+		// (1 < base) && (base < this.n_minus_1)
+		return this.testFixedInput(base, print);
 	}
 
 	/**
 	 * Perform Miller-Rabin's compositeness test on <code>this.n</code> with the given base.
 	 * 
-	 * @param b
+	 * @param base
 	 *            the given base
 	 * 
-	 * @return <code>this.test(b, false)</code>.
+	 * @return <code>this.test(base, false)</code>.
 	 * 
 	 * @throws NullPointerException
-	 *             If <code>b == null</code>
+	 *             If <code>base == null</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(b <= 1) || (this.n_minus_1 <= b)</code>
+	 *             If <code>(base <= 1) || (this.n_minus_1 <= base)</code>
 	 */
-	public TestResultMillerRabinBottomUp test(BigInteger b) throws NullPointerException, IllegalArgumentException {
-		return this.test(b, false);
+	public TestResultMillerRabinBottomUp test(BigInteger base) throws NullPointerException, IllegalArgumentException {
+		return this.test(base, false);
 	}
 
 	// --------------------------------------------------

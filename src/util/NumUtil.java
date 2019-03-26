@@ -3235,14 +3235,21 @@ public class NumUtil {
 		 * <code>(-n <= base_to_begin_factorial - 1 <= -1)</code> which means that
 		 * <code>(0 <= base_to_begin_factorial - 1 + n <= n - 1)</code> as required.
 		 */
-		final long n_minus_1 = n - 1L;
 		long d = base_to_begin_factorial - 1L, gcd = 0L;
 		// Fix d to be in [0, n - 1] \cap \doubleZ.
 		if (d < 0L) {
 			d += n;
 		}
+		/**
+		 * <code>d</code> cannot be <code>n - 1</code> at this point since that can only happen if
+		 * <code>base_to_begin_factorial == 0</code> which can never happen due to the preconditions on
+		 * <code>base</code> and <code>base_to_begin_factorial</code> (i.e., <code>gcd(base, n) == 1</code>
+		 * and <code>(0 < |base_to_begin_factorial|) && (|base_to_begin_factorial| < n)</code> which means
+		 * that <code>base</code> is an element of <code>(\doubleZ / n \doubleZ)*</code> and so all of its
+		 * powers are non-zero).
+		 */
 		// Check for a non-trivial divisor of n.
-		if ((1L < d) && (d != n_minus_1)) { // i.e., (d != 0) && (d != 1) && (d != n - 1)
+		if (1L < d) { // i.e., (d != 0) && (d != 1)
 			// i.e., gcd(d, n) is non-trivial.
 			if ((gcd = MathUtil.gcdFixedInput(d, n)) != 1L) {
 				return gcd;
@@ -3256,21 +3263,37 @@ public class NumUtil {
 			if ((base_to_i_factorial = MathUtil.modPowFixedInput(base_to_i_factorial, i, n)) == 1L) {
 				/**
 				 * Note that <code>MathUtil.modMinFixedInput</code> (and as a result
-				 * <code>MathUtil.modPowFixedInput</code>) return <code>1</code> instead of <code>n - 1</code> for
-				 * all <code>n</code> (including <code>n == 2</code>) so the check is fine and we do not need to fix
-				 * the result of <code>MathUtil.modPowFixedInput</code> to be in
-				 * <code>[0, n - 1] \cap \doubleZ</code> by adding <code>n</code> to it if it's negative.
+				 * <code>MathUtil.modPowFixedInput</code>) return <code>1</code> instead of <code>1 - n</code> for
+				 * all <code>1 < n</code> so the check is fine and we do not need to fix the result of
+				 * <code>MathUtil.modPowFixedInput</code> to be in <code>[0, n - 1] \cap \doubleZ</code> by adding
+				 * <code>n</code> to it if it's negative.
 				 */
 				break;
 			}
 			// base_to_i_factorial != 1
+			/**
+			 * We can also handle <code>base_to_i_factorial == -1L (i.e., -1 (mod n))</code> here, but it will
+			 * automatically be handled by the above check after at most 2 iterations of the loop (since either
+			 * <code>i + 1</code> or <code>i + 2</code> is even at which point <code>base_to_i_factorial</code>
+			 * will become <code>1</code>). Therefore, not checking the <code>-1</code> case here, will cause
+			 * slightly more work to be done while checking it will add an extra check to every iteration of the
+			 * loop.
+			 */
 
 			// Fix d to be in [1, n - 1] \cap \doubleZ.
 			if ((d = base_to_i_factorial - 1L) < 0L) {
 				d += n;
 			}
+			/**
+			 * <code>d</code> cannot be <code>n - 1</code> at this point since that can only happen if
+			 * <code>base_to_i_factorial == 0</code> which can never happen due to the preconditions on
+			 * <code>base</code> and <code>base_to_begin_factorial</code> (i.e., <code>gcd(base, n) == 1</code>
+			 * and <code>(0 < |base_to_begin_factorial|) && (|base_to_begin_factorial| < n)</code> which means
+			 * that <code>base</code> is an element of <code>(\doubleZ / n \doubleZ)*</code> and so all of its
+			 * powers are non-zero).
+			 */
 			// Check for a non-trivial divisor of n.
-			if ((d != 1L) && (d != n_minus_1)) { // i.e., (d != 1) && (d != n - 1)
+			if (d != 1L) { // i.e., d != 1
 				// i.e., gcd(d, n) is non-trivial.
 				if ((gcd = MathUtil.gcdFixedInput(d, n)) != 1L) {
 					return gcd;
@@ -3388,13 +3411,21 @@ public class NumUtil {
 				if ((base_to_begin_factorial = MathUtil.modPowFixedInput(base_to_begin_factorial, i, n)) == 1L) {
 					/**
 					 * Note that <code>MathUtil.modMinFixedInput</code> (and as a result
-					 * <code>MathUtil.modPowFixedInput</code>) return <code>1</code> instead of <code>n - 1</code> for
-					 * all <code>n</code> (including <code>n == 2</code>) so the check is fine and we do not need to fix
-					 * the result of <code>MathUtil.modPowFixedInput</code> to be in
-					 * <code>[0, n - 1] \cap \doubleZ</code> by adding <code>n</code> to it if it's negative.
+					 * <code>MathUtil.modPowFixedInput</code>) return <code>1</code> instead of <code>1 - n</code> for
+					 * all <code>1 < n</code> so the check is fine and we do not need to fix the result of
+					 * <code>MathUtil.modPowFixedInput</code> to be in <code>[0, n - 1] \cap \doubleZ</code> by adding
+					 * <code>n</code> to it if it's negative.
 					 */
 					return null;
 				}
+				/**
+				 * We can also handle <code>base_to_begin_factorial == -1L (i.e., -1 (mod n))</code> here, but it
+				 * will automatically be handled by the above check after at most 2 iterations of the loop (since
+				 * either <code>i + 1</code> or <code>i + 2</code> is even at which point
+				 * <code>base_to_begin_factorial</code> will become <code>1</code>). Therefore, not checking the
+				 * <code>-1</code> case here, will cause slightly more work to be done while checking it will add an
+				 * extra check to every iteration of the loop.
+				 */
 			}
 		}
 		return NumUtil.divisorPMinusOneFixedInput(n, begin, end, base_to_begin_factorial);

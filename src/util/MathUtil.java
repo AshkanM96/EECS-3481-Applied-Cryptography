@@ -1365,7 +1365,7 @@ public class MathUtil {
 			 * remain unchanged.
 			 */
 			final long other = n + m, abs_n = -n;
-			return ((abs_n < other) ? n : other);
+			return ((other < abs_n) ? other : n);
 		}
 		// 0 <= n
 		/**
@@ -2607,13 +2607,9 @@ public class MathUtil {
 	 *             If <code>Integer.MAX_VALUE < (end - begin)</code>
 	 */
 	protected static int powersLength(long begin, long end) throws IllegalArgumentException, ArithmeticException {
-		// Validate begin and end.
 		if (end < begin) {
 			throw new IllegalArgumentException();
-		}
-		// begin <= end
-
-		if (begin == end) {
+		} else if (begin == end) {
 			return 0;
 		}
 		// begin < end
@@ -3407,7 +3403,7 @@ public class MathUtil {
 	 * that this function is specified as protected and is only called by other public functions which
 	 * do handle those special cases themselves (in their own unique ways) and so checking for the
 	 * special cases here, would only serve to decrease the overall runtime. <br>
-	 * Precondition: <code>2 < m</code> <br>
+	 * Precondition: <code>3 < m</code> <br>
 	 * Precondition: <code>(1 < n) && (n < m - 1)</code> <br>
 	 * Precondition: <code>(0 <= target) && (target <= m - 1)</code> <br>
 	 * Precondition: <code>begin < end</code>
@@ -3442,7 +3438,7 @@ public class MathUtil {
 		// Fix n_to_begin to be in [-m / 2, m / 2] \cap \doubleZ.
 		n_to_begin = MathUtil.modMinFixedInput(n_to_begin, m);
 
-		// Iteratively compute n to the power of (i + begin) in mod m and compare the result to target.
+		// Iteratively compute n to the power of i in mod m and compare the result to target.
 		if (n_to_begin == target) {
 			return begin;
 		}
@@ -3504,13 +3500,19 @@ public class MathUtil {
 	 */
 	public static Long discreteLogLinearSearch(long n, long target, long m, long begin, long end)
 			throws InvalidModulusException, IllegalArgumentException, UndefinedInverseException {
-		if (m < 1L) {
-			throw new InvalidModulusException();
+		if (m < 2L) { // i.e., (m < 1) || (m == 1)
+			if (m < 1L) {
+				throw new InvalidModulusException();
+			}
+			// 1 <= m
+			// i.e., m == 1
+			// i.e., (n == 0 (mod m)) && (target == 0 (mod m))
+			return 1L;
 		} else if (end < begin) {
 			throw new IllegalArgumentException();
 		}
-		// (1 <= m) && (begin <= end)
-		// i.e., (0 < m) && (begin <= end)
+		// (2 <= m) && (begin <= end)
+		// i.e., (1 < m) && (begin <= end)
 
 		// Fix n to be in [0, m - 1] \cap \doubleZ.
 		if ((n %= m) < 0L) {
@@ -3884,7 +3886,7 @@ public class MathUtil {
 	 * that this function is specified as protected and is only called by other public functions which
 	 * do handle those special cases themselves (in their own unique ways) and so checking for the
 	 * special cases here, would only serve to decrease the overall runtime. <br>
-	 * Precondition: <code>2 < m</code> <br>
+	 * Precondition: <code>3 < m</code> <br>
 	 * Precondition: <code>(1 < n) && (n < m - 1)</code> <br>
 	 * Precondition: <code>(0 <= target) && (target <= m - 1)</code> <br>
 	 * Precondition: <code>(2 <= bound) && (bound <= Integer.MAX_VALUE)</code>
@@ -4703,7 +4705,7 @@ public class MathUtil {
 	/**
 	 * Compute <code>x</code> such that <code>n<sup>x</sup> (mod m) == target</code> using the
 	 * Pohlig-Hellman Algorithm. <br>
-	 * Precondition: <code>2 < m</code> <br>
+	 * Precondition: <code>3 < m</code> <br>
 	 * Precondition: <code>(0 <= n) && (n <= m - 1)</code> <br>
 	 * Precondition: <code>(0 <= target) && (target <= m - 1)</code> <br>
 	 * Precondition: <code>NumUtil.isPrimeSqrt(p)</code> <br>
@@ -4985,7 +4987,7 @@ public class MathUtil {
 	 * only called by other public functions which do handle those special cases themselves (in their
 	 * own unique ways) and so checking for the special cases here, would only serve to decrease the
 	 * overall runtime. <br>
-	 * Precondition: <code>2 < m</code> <br>
+	 * Precondition: <code>3 < m</code> <br>
 	 * Precondition: <code>(1 < n) && (n < m - 1)</code> <br>
 	 * Precondition: <code>(0 <= target) && (target <= m - 1)</code> <br>
 	 * Precondition: <code>(2 <= upperOrder) && (upperOrder <= m - 1)</code> <br>
