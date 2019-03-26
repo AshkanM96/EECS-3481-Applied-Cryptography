@@ -20,7 +20,7 @@ public class StatUtil {
 	public static final BigDecimal HUNDRED_ZERO_SCALE = BigDecimal.valueOf(100L);
 
 	/**
-	 * Default scale to be used for BigDecimal operations.
+	 * The default scale to be used for BigDecimal operations.
 	 */
 	public static final int DEFAULT_SCALE = 20;
 

@@ -115,6 +115,16 @@ public class NumUtil {
 	public static final BigInteger SMALLEST_SAFE_PRIME_NOT_LONG = new BigInteger("9223372036854778487");
 
 	/**
+	 * The default <code>base</code> argument for Pollard's <code>p - 1</code> Algorithm.
+	 */
+	public static final byte P_MINUS_ONE_DEFAULT_BASE = 2;
+
+	/**
+	 * The default <code>end</code> argument for Pollard's <code>p - 1</code> Algorithm.
+	 */
+	public static final byte P_MINUS_ONE_DEFAULT_END = 100;
+
+	/**
 	 * Prevent instantiation.
 	 */
 	private NumUtil() {
@@ -3463,8 +3473,8 @@ public class NumUtil {
 	/**
 	 * Perform Pollard's <code>p - 1</code> Algorithm on all integers <code>k</code> in
 	 * <code>[0, end)</code> (i.e., check for a non-trivial divisor of <code>n</code> by checking
-	 * <code>gcd(2<sup>k!</sup> - 1 (mod n), n)</code> for integer <code>k</code> in
-	 * <code>[0, end)</code>) in <code>O(end * lg(n)) time</code>.
+	 * <code>gcd(NumUtil.P_MINUS_ONE_DEFAULT_BASE<sup>k!</sup> - 1 (mod n), n)</code> for integer
+	 * <code>k</code> in <code>[0, end)</code>) in <code>O(end * lg(n)) time</code>.
 	 * 
 	 * @param n
 	 *            the given number
@@ -3472,7 +3482,7 @@ public class NumUtil {
 	 * @param end
 	 *            the given end power
 	 * 
-	 * @return <code>NumUtil.divisorPMinusOne(n, 2L, end)</code>.
+	 * @return <code>NumUtil.divisorPMinusOne(n, NumUtil.P_MINUS_ONE_DEFAULT_BASE, end)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>n < 1</code>
@@ -3481,7 +3491,27 @@ public class NumUtil {
 	 *             If <code>end < 0</code>
 	 */
 	public static Long divisorPMinusOne(long n, long end) throws InvalidModulusException, IllegalArgumentException {
-		return NumUtil.divisorPMinusOne(n, 2L, end);
+		return NumUtil.divisorPMinusOne(n, NumUtil.P_MINUS_ONE_DEFAULT_BASE, end);
+	}
+
+	/**
+	 * Perform Pollard's <code>p - 1</code> Algorithm on all integers <code>k</code> in
+	 * <code>[0, NumUtil.P_MINUS_ONE_DEFAULT_END)</code> (i.e., check for a non-trivial divisor of
+	 * <code>n</code> by checking
+	 * <code>gcd(NumUtil.P_MINUS_ONE_DEFAULT_BASE<sup>k!</sup> - 1 (mod n), n)</code> for integer
+	 * <code>k</code> in <code>[0, NumUtil.P_MINUS_ONE_DEFAULT_END)</code>) in
+	 * <code>O(NumUtil.P_MINUS_ONE_DEFAULT_END * lg(n)) time</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return <code>NumUtil.divisorPMinusOne(n, NumUtil.P_MINUS_ONE_DEFAULT_END)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>n < 1</code>
+	 */
+	public static Long divisorPMinusOne(long n) throws InvalidModulusException {
+		return NumUtil.divisorPMinusOne(n, NumUtil.P_MINUS_ONE_DEFAULT_END);
 	}
 
 	/**
@@ -3550,8 +3580,8 @@ public class NumUtil {
 	/**
 	 * Perform Pollard's <code>p - 1</code> Algorithm on all integers <code>k</code> in
 	 * <code>[0, end)</code> (i.e., check for a non-trivial divisor of <code>n</code> by checking
-	 * <code>gcd(2<sup>k!</sup> - 1 (mod n), n)</code> for integer <code>k</code> in
-	 * <code>[0, end)</code>) in <code>O(end * lg(n)) time</code>.
+	 * <code>gcd(NumUtil.P_MINUS_ONE_DEFAULT_BASE<sup>k!</sup> - 1 (mod n), n)</code> for integer
+	 * <code>k</code> in <code>[0, end)</code>) in <code>O(end * lg(n)) time</code>.
 	 * 
 	 * @param n
 	 *            the given number
@@ -3559,7 +3589,7 @@ public class NumUtil {
 	 * @param end
 	 *            the given end power
 	 * 
-	 * @return <code>NumUtil.divisorPMinusOne(n, 2, end)</code>.
+	 * @return <code>NumUtil.divisorPMinusOne(n, NumUtil.P_MINUS_ONE_DEFAULT_BASE, end)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>n < 1</code>
@@ -3568,7 +3598,27 @@ public class NumUtil {
 	 *             If <code>end < 0</code>
 	 */
 	public static Integer divisorPMinusOne(int n, int end) throws InvalidModulusException, IllegalArgumentException {
-		return NumUtil.divisorPMinusOne(n, 2, end);
+		return NumUtil.divisorPMinusOne(n, NumUtil.P_MINUS_ONE_DEFAULT_BASE, end);
+	}
+
+	/**
+	 * Perform Pollard's <code>p - 1</code> Algorithm on all integers <code>k</code> in
+	 * <code>[0, NumUtil.P_MINUS_ONE_DEFAULT_END)</code> (i.e., check for a non-trivial divisor of
+	 * <code>n</code> by checking
+	 * <code>gcd(NumUtil.P_MINUS_ONE_DEFAULT_BASE<sup>k!</sup> - 1 (mod n), n)</code> for integer
+	 * <code>k</code> in <code>[0, NumUtil.P_MINUS_ONE_DEFAULT_END)</code>) in
+	 * <code>O(NumUtil.P_MINUS_ONE_DEFAULT_END * lg(n)) time</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return <code>NumUtil.divisorPMinusOne(n, NumUtil.P_MINUS_ONE_DEFAULT_END)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>n < 1</code>
+	 */
+	public static Integer divisorPMinusOne(int n) throws InvalidModulusException {
+		return NumUtil.divisorPMinusOne(n, NumUtil.P_MINUS_ONE_DEFAULT_END);
 	}
 
 	/**
@@ -3637,8 +3687,8 @@ public class NumUtil {
 	/**
 	 * Perform Pollard's <code>p - 1</code> Algorithm on all integers <code>k</code> in
 	 * <code>[0, end)</code> (i.e., check for a non-trivial divisor of <code>n</code> by checking
-	 * <code>gcd(2<sup>k!</sup> - 1 (mod n), n)</code> for integer <code>k</code> in
-	 * <code>[0, end)</code>) in <code>O(end * lg(n)) time</code>.
+	 * <code>gcd(NumUtil.P_MINUS_ONE_DEFAULT_BASE<sup>k!</sup> - 1 (mod n), n)</code> for integer
+	 * <code>k</code> in <code>[0, end)</code>) in <code>O(end * lg(n)) time</code>.
 	 * 
 	 * @param n
 	 *            the given number
@@ -3646,7 +3696,7 @@ public class NumUtil {
 	 * @param end
 	 *            the given end power
 	 * 
-	 * @return <code>NumUtil.divisorPMinusOne(n, (short) 2, end)</code>.
+	 * @return <code>NumUtil.divisorPMinusOne(n, NumUtil.P_MINUS_ONE_DEFAULT_BASE, end)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>n < 1</code>
@@ -3655,7 +3705,27 @@ public class NumUtil {
 	 *             If <code>end < 0</code>
 	 */
 	public static Short divisorPMinusOne(short n, short end) throws InvalidModulusException, IllegalArgumentException {
-		return NumUtil.divisorPMinusOne(n, (short) 2, end);
+		return NumUtil.divisorPMinusOne(n, NumUtil.P_MINUS_ONE_DEFAULT_BASE, end);
+	}
+
+	/**
+	 * Perform Pollard's <code>p - 1</code> Algorithm on all integers <code>k</code> in
+	 * <code>[0, NumUtil.P_MINUS_ONE_DEFAULT_END)</code> (i.e., check for a non-trivial divisor of
+	 * <code>n</code> by checking
+	 * <code>gcd(NumUtil.P_MINUS_ONE_DEFAULT_BASE<sup>k!</sup> - 1 (mod n), n)</code> for integer
+	 * <code>k</code> in <code>[0, NumUtil.P_MINUS_ONE_DEFAULT_END)</code>) in
+	 * <code>O(NumUtil.P_MINUS_ONE_DEFAULT_END * lg(n)) time</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return <code>NumUtil.divisorPMinusOne(n, NumUtil.P_MINUS_ONE_DEFAULT_END)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>n < 1</code>
+	 */
+	public static Short divisorPMinusOne(short n) throws InvalidModulusException, IllegalArgumentException {
+		return NumUtil.divisorPMinusOne(n, NumUtil.P_MINUS_ONE_DEFAULT_END);
 	}
 
 	/**
@@ -3724,8 +3794,8 @@ public class NumUtil {
 	/**
 	 * Perform Pollard's <code>p - 1</code> Algorithm on all integers <code>k</code> in
 	 * <code>[0, end)</code> (i.e., check for a non-trivial divisor of <code>n</code> by checking
-	 * <code>gcd(2<sup>k!</sup> - 1 (mod n), n)</code> for integer <code>k</code> in
-	 * <code>[0, end)</code>) in <code>O(end * lg(n)) time</code>.
+	 * <code>gcd(NumUtil.P_MINUS_ONE_DEFAULT_BASE<sup>k!</sup> - 1 (mod n), n)</code> for integer
+	 * <code>k</code> in <code>[0, end)</code>) in <code>O(end * lg(n)) time</code>.
 	 * 
 	 * @param n
 	 *            the given number
@@ -3733,7 +3803,7 @@ public class NumUtil {
 	 * @param end
 	 *            the given end power
 	 * 
-	 * @return <code>NumUtil.divisorPMinusOne(n, (byte) 2, end)</code>.
+	 * @return <code>NumUtil.divisorPMinusOne(n, NumUtil.P_MINUS_ONE_DEFAULT_BASE, end)</code>.
 	 * 
 	 * @throws InvalidModulusException
 	 *             If <code>n < 1</code>
@@ -3742,7 +3812,27 @@ public class NumUtil {
 	 *             If <code>end < 0</code>
 	 */
 	public static Byte divisorPMinusOne(byte n, byte end) throws InvalidModulusException, IllegalArgumentException {
-		return NumUtil.divisorPMinusOne(n, (byte) 2, end);
+		return NumUtil.divisorPMinusOne(n, NumUtil.P_MINUS_ONE_DEFAULT_BASE, end);
+	}
+
+	/**
+	 * Perform Pollard's <code>p - 1</code> Algorithm on all integers <code>k</code> in
+	 * <code>[0, NumUtil.P_MINUS_ONE_DEFAULT_END)</code> (i.e., check for a non-trivial divisor of
+	 * <code>n</code> by checking
+	 * <code>gcd(NumUtil.P_MINUS_ONE_DEFAULT_BASE<sup>k!</sup> - 1 (mod n), n)</code> for integer
+	 * <code>k</code> in <code>[0, NumUtil.P_MINUS_ONE_DEFAULT_END)</code>) in
+	 * <code>O(NumUtil.P_MINUS_ONE_DEFAULT_END * lg(n)) time</code>.
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return <code>NumUtil.divisorPMinusOne(n, NumUtil.P_MINUS_ONE_DEFAULT_END)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>n < 1</code>
+	 */
+	public static Byte divisorPMinusOne(byte n) throws InvalidModulusException {
+		return NumUtil.divisorPMinusOne(n, NumUtil.P_MINUS_ONE_DEFAULT_END);
 	}
 
 	/**
