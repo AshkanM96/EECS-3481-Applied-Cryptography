@@ -1760,7 +1760,7 @@ public class NumUtil {
 	/**
 	 * Runtime is in <code>O(sqrt(n) + time for Result.size() many put operations)</code>. <br>
 	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if (Result.isEmpty())</code> <br>
+	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if Result.isEmpty()</code> <br>
 	 * Postcondition: <code>(n == -1) implies (Result.size() == 1)</code> <br>
 	 * Postcondition: <code>(n < 0) implies ((Result.get(-1L) != null) && (Result.get(-1L) == 1))</code>
 	 * <br>
@@ -1969,7 +1969,7 @@ public class NumUtil {
 	/**
 	 * Runtime is in <code>O(sqrt(n) + time for Result.size() many put operations)</code>. <br>
 	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if (Result.isEmpty())</code> <br>
+	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if Result.isEmpty()</code> <br>
 	 * Postcondition: <code>(n == -1) implies (Result.size() == 1)</code> <br>
 	 * Postcondition: <code>(n < 0) implies ((Result.get(-1L) != null) && (Result.get(-1L) == 1))</code>
 	 * <br>
@@ -2017,7 +2017,7 @@ public class NumUtil {
 	/**
 	 * Runtime is in <code>O(sqrt(n) + time for Result.size() many put operations)</code>. <br>
 	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if (Result.isEmpty())</code> <br>
+	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if Result.isEmpty()</code> <br>
 	 * Postcondition: <code>(n == -1) implies (Result.size() == 1)</code> <br>
 	 * Postcondition: <code>(n < 0) implies ((Result.get(-1L) != null) && (Result.get(-1L) == 1))</code>
 	 * <br>
@@ -2142,7 +2142,7 @@ public class NumUtil {
 	/**
 	 * Runtime is in <code>O(sqrt(n) + time for Result.size() many put operations)</code>. <br>
 	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if (Result.isEmpty())</code> <br>
+	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if Result.isEmpty()</code> <br>
 	 * Postcondition: <code>(n == -1) implies (Result.size() == 1)</code> <br>
 	 * Postcondition: <code>(n < 0) implies ((Result.get(-1) != null) && (Result.get(-1) == 1))</code>
 	 * <br>
@@ -2351,7 +2351,7 @@ public class NumUtil {
 	/**
 	 * Runtime is in <code>O(sqrt(n) + time for Result.size() many put operations)</code>. <br>
 	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if (Result.isEmpty())</code> <br>
+	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if Result.isEmpty()</code> <br>
 	 * Postcondition: <code>(n == -1) implies (Result.size() == 1)</code> <br>
 	 * Postcondition: <code>(n < 0) implies ((Result.get(-1) != null) && (Result.get(-1) == 1))</code>
 	 * <br>
@@ -2399,7 +2399,7 @@ public class NumUtil {
 	/**
 	 * Runtime is in <code>O(sqrt(n) + time for Result.size() many put operations)</code>. <br>
 	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if (Result.isEmpty())</code> <br>
+	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if Result.isEmpty()</code> <br>
 	 * Postcondition: <code>(n == -1) implies (Result.size() == 1)</code> <br>
 	 * Postcondition: <code>(n < 0) implies ((Result.get(-1) != null) && (Result.get(-1) == 1))</code>
 	 * <br>
@@ -2524,7 +2524,7 @@ public class NumUtil {
 	/**
 	 * Runtime is in <code>O(sqrt(n) + time for Result.size() many put operations)</code>. <br>
 	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if (Result.isEmpty())</code> <br>
+	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if Result.isEmpty()</code> <br>
 	 * Postcondition: <code>(n == -1) implies (Result.size() == 1)</code> <br>
 	 * Postcondition:
 	 * <code>(n < 0) implies ((Result.get((short) -1) != null) && (Result.get((short) -1) == 1))</code>
@@ -2734,7 +2734,7 @@ public class NumUtil {
 	/**
 	 * Runtime is in <code>O(sqrt(n) + time for Result.size() many put operations)</code>. <br>
 	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if (Result.isEmpty())</code> <br>
+	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if Result.isEmpty()</code> <br>
 	 * Postcondition: <code>(n == -1) implies (Result.size() == 1)</code> <br>
 	 * Postcondition:
 	 * <code>(n < 0) implies ((Result.get((short) -1) != null) && (Result.get((short) -1) == 1))</code>
@@ -2783,7 +2783,7 @@ public class NumUtil {
 	/**
 	 * Runtime is in <code>O(sqrt(n) + time for Result.size() many put operations)</code>. <br>
 	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if (Result.isEmpty())</code> <br>
+	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if Result.isEmpty()</code> <br>
 	 * Postcondition: <code>(n == -1) implies (Result.size() == 1)</code> <br>
 	 * Postcondition:
 	 * <code>(n < 0) implies ((Result.get((short) -1) != null) && (Result.get((short) -1) == 1))</code>
@@ -2909,7 +2909,7 @@ public class NumUtil {
 	/**
 	 * Runtime is in <code>O(sqrt(n) + time for Result.size() many put operations)</code>. <br>
 	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if (Result.isEmpty())</code> <br>
+	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if Result.isEmpty()</code> <br>
 	 * Postcondition: <code>(n == -1) implies (Result.size() == 1)</code> <br>
 	 * Postcondition:
 	 * <code>(n < 0) implies ((Result.get((byte) -1) != null) && (Result.get((byte) -1) == 1))</code>
@@ -3119,7 +3119,7 @@ public class NumUtil {
 	/**
 	 * Runtime is in <code>O(sqrt(n) + time for Result.size() many put operations)</code>. <br>
 	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if (Result.isEmpty())</code> <br>
+	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if Result.isEmpty()</code> <br>
 	 * Postcondition: <code>(n == -1) implies (Result.size() == 1)</code> <br>
 	 * Postcondition:
 	 * <code>(n < 0) implies ((Result.get((byte) -1) != null) && (Result.get((byte) -1) == 1))</code>
@@ -3168,7 +3168,7 @@ public class NumUtil {
 	/**
 	 * Runtime is in <code>O(sqrt(n) + time for Result.size() many put operations)</code>. <br>
 	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if (Result.isEmpty())</code> <br>
+	 * Postcondition: <code>((n == 0) || (n == 1)) if and only if Result.isEmpty()</code> <br>
 	 * Postcondition: <code>(n == -1) implies (Result.size() == 1)</code> <br>
 	 * Postcondition:
 	 * <code>(n < 0) implies ((Result.get((byte) -1) != null) && (Result.get((byte) -1) == 1))</code>

@@ -2935,7 +2935,7 @@ public class MathUtil {
 		// Fix n to be in [-m / 2, m / 2] \cap \doubleZ.
 		n = (int) MathUtil.modMinFixedInput(n, m);
 
-		// Fill and return the resulting int array.
+		// Fill and return the resulting integer array.
 		int n_to_i = (begin == 0) ? 1 : (int) MathUtil.modPow((long) n, (long) begin, (long) m);
 		for (int i = 0; i != length; ++i, n_to_i = (int) MathUtil.modMultFixedInput(n_to_i, n, m)) {
 			/**
