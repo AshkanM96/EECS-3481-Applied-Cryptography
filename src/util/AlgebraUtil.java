@@ -976,6 +976,231 @@ public class AlgebraUtil {
 	 *            specifies whether the factoring of <code>m</code> and <code>phi(m)</code> should be
 	 *            printed to the standard output stream
 	 * 
+	 * @return The resulting long array.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 * 
+	 * @throws OutOfMemoryError
+	 *             If <code>Integer.MAX_VALUE < phi(phi(m))</code>
+	 */
+	public static long[] primitiveRoots(long m, boolean hash, boolean print)
+			throws InvalidModulusException, OutOfMemoryError {
+		if (m < 7L) { // i.e., (m < 1) || (m == 1) || (m == 2) || (m == 3) || (m == 4) || (m == 5) || (m == 6)
+			if (m < 1L) {
+				throw new InvalidModulusException();
+			} else if (m == 1L) {
+				return new long[] {}; // There are no primitive roots mod 1.
+			}
+			// 1 < m
+			// i.e., (m == 2) || (m == 3) || (m == 4) || (m == 5) || (m == 6)
+			if (m == 5L) {
+				return new long[] { 2L, 3L }; // Only primitive roots mod 5, are 2 and 3.
+			}
+			// m != 5
+			// i.e., (m == 2) || (m == 3) || (m == 4) || (m == 6)
+			/**
+			 * It's fine to do <code>--m</code> instead of <code>m - 1</code> since we don't need the value of
+			 * <code>m</code> to remain unchanged.
+			 */
+			return new long[] { --m }; // Only primitive root mod m, is m - 1 for m in { 2, 3, 4, 6 }.
+		}
+		// 7 <= m
+
+		/**
+		 * There is a primitive root mod <code>m</code>, if and only if <code>m</code> factors into
+		 * <code>p<sup>e</sup></code> or <code>2 * p<sup>e</sup></code> where <code>p</code> is an odd prime
+		 * number and <code>e</code> is a natural number. Therefore, make sure that <code>2</code> divides
+		 * <code>m</code> at most once.
+		 */
+		long mOddFactor = m;
+		if ((mOddFactor & 1L) == 0L) { // i.e., MathUtil.isEven(mOddFactor)
+			/**
+			 * Don't do <code>(mOddFactor &= 1L) == 0L</code> since we need the value of <code>mOddFactor</code>
+			 * to remain unchanged. Note that the difference is the <code>&=</code> instead of the
+			 * <code>&</code> which will mutate <code>mOddFactor</code>. <br>
+			 * <br>
+			 * 
+			 * However, the following is meant to be an assignment of <code>mOddFactor</code> when we do
+			 * <code>mOddFactor /= 2L</code> instead of <code>mOddFactor / 2L</code>.
+			 */
+			if (((mOddFactor /= 2L) & 1L) == 0L) { // i.e., MathUtil.isEven(mOddFactor)
+				return new long[] {}; // There are no primitive roots mod m since m % 4 == 0.
+			}
+		}
+		// ((m % 2 != 0) && (mOddFactor == m)) || (((m / 2) % 2 != 0) && (mOddFactor == m / 2))
+
+		/**
+		 * Factor the largest odd divisor of <code>m</code> and check whether it is a prime power.
+		 */
+		final Map<Long, Byte> mOddFactors = NumUtil.factorSqrt(mOddFactor, hash, false);
+		// Only print if requested.
+		if (print) {
+			if (m == mOddFactor) {
+				System.out.print("m = " + m + " = ");
+			} else { // m != mOddFactor
+				// i.e., m == 2 * mOddFactor
+				System.out.print("m = " + m + " = 2 * ");
+			}
+			NumUtil.printFactorsLong(mOddFactors, hash);
+		}
+		if (mOddFactors.size() != 1) {
+			return new long[] {}; // There are no primitive roots mod m since mOddFactor isn't a prime power.
+		}
+
+		/**
+		 * Compute <code>phi(m)</code> and then factor it. <br>
+		 * <br>
+		 * 
+		 * At this point, we know that one of the following is true: <br>
+		 * Case I: <code>m == mOddFactor</code> <br>
+		 * Therefore, <code>phi(m) == phi(mOddFactor)</code> <br>
+		 * Case II: <code>m == 2 * mOddFactor</code> <br>
+		 * Therefore, <code>phi(m) == phi(2) * phi(mOddFactor) == 1 * phi(mOddFactor)</code> <br>
+		 * <br>
+		 * 
+		 * However, we also know that <code>mOddFactor == p<sup>e</sup></code> and so we can conclude that
+		 * <code>phi(m) == phi(mOddFactor) == mOddFactor * (1 - <sup>1</sup>&frasl;<sub>p</sub>)</code>.
+		 */
+		final long p = mOddFactors.entrySet().iterator().next().getKey();
+		final long phiM = mOddFactor - (mOddFactor / p);
+		final Map<Long, Byte> phiMFactors = NumUtil.factorSqrt(phiM, hash, false);
+		// Only print if requested.
+		if (print) {
+			System.out.print("phi(m) = " + phiM + " = ");
+			NumUtil.printFactorsLong(phiMFactors, hash);
+		}
+		final Set<Long> phiMFactorsKeySet = phiMFactors.keySet();
+
+		/**
+		 * Compute <code>phi(phi(m))</code> which is the number of primitive roots mod <code>m</code> using
+		 * the following fact: <br>
+		 * <br>
+		 * 
+		 * We know that
+		 * <code>phi(n) = product(phi(p<sub>i</sub><sup>e<sub>i</sub></sup>) from i = 1 to i = t)</code>
+		 * where <code>p<sub>i</sub></code>'s are prime factors of <code>n</code> with natural powers
+		 * <code>e<sub>i</sub></code> and natural number <code>t</code>. After a little bit of
+		 * simplification, we can find that
+		 * <code>phi(n) = n * product((1 - <sup>1</sup>&frasl;<sub>p<sub>i</sub></sub>) from i = 1 to i = t)</code>.
+		 */
+		long phiPhiM = phiM;
+		final Iterator<Long> it = phiMFactorsKeySet.iterator();
+		do {
+			phiPhiM -= (phiPhiM / it.next());
+		} while (it.hasNext());
+
+		// Create, fill, and return the resulting long array.
+		if (Integer.MAX_VALUE < phiPhiM) {
+			throw new OutOfMemoryError();
+		}
+		// phi(phi(m)) <= Integer.MAX_VALUE
+		final long[] result = new long[(int) phiPhiM];
+		int index = 0;
+		final long maxN = m - 1L;
+		if (m == mOddFactor) { // i.e., m % 2 != 0
+			for (long n = 2L; n != maxN; ++n) {
+				if (n % p != 0L) { // i.e., gcd(n, m) == 1
+					if (AlgebraUtil.isPrimitiveRootFixedInput(n, m, phiM, phiMFactorsKeySet)) {
+						result[index++] = n;
+					}
+				}
+			}
+		} else { // i.e., m % 2 == 0
+			for (long n = 3L; n != maxN; n += 2L) {
+				if (n % p != 0L) { // i.e., gcd(n, m) == 1
+					if (AlgebraUtil.isPrimitiveRootFixedInput(n, m, phiM, phiMFactorsKeySet)) {
+						result[index++] = n;
+					}
+				}
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>(m == 1) implies (Result.length == 0)</code> <br>
+	 * Postcondition: <code>(m == 2) implies ((Result.length == 1) && (Result[0] == 1))</code> <br>
+	 * Postcondition: <code>(m == 4) implies ((Result.length == 1) && (Result[0] == 3))</code> <br>
+	 * Postcondition: <code>(m % 4 == 0) implies ((m != 4) if and only if (Result.length == 0))</code>
+	 * <br>
+	 * Postcondition:
+	 * <code>((m != 2) && (m % 4 != 0)) implies ((NumUtil.factorSqrt((m % 2 == 0) ? (m / 2) : m).size() == 1) if and only if (Result.length != 0))</code>
+	 * <br>
+	 * Postcondition: <code>(valid i) implies (Result[i] is a primitive root mod m)</code>
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param hash
+	 *            specifies whether the data structure used to store the factors, should be a
+	 *            <code>HashMap</code> instead of a <code>TreeMap</code> when factoring <code>m</code>
+	 *            and <code>phi(m)</code>
+	 * 
+	 * @return <code>AlgebraUtil.primitiveRoots(m, hash, false)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 * 
+	 * @throws OutOfMemoryError
+	 *             If <code>Integer.MAX_VALUE < phi(phi(m))</code>
+	 */
+	public static long[] primitiveRoots(long m, boolean hash) throws InvalidModulusException, OutOfMemoryError {
+		return AlgebraUtil.primitiveRoots(m, hash, false);
+	}
+
+	/**
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>(m == 1) implies (Result.length == 0)</code> <br>
+	 * Postcondition: <code>(m == 2) implies ((Result.length == 1) && (Result[0] == 1))</code> <br>
+	 * Postcondition: <code>(m == 4) implies ((Result.length == 1) && (Result[0] == 3))</code> <br>
+	 * Postcondition: <code>(m % 4 == 0) implies ((m != 4) if and only if (Result.length == 0))</code>
+	 * <br>
+	 * Postcondition:
+	 * <code>((m != 2) && (m % 4 != 0)) implies ((NumUtil.factorSqrt((m % 2 == 0) ? (m / 2) : m).size() == 1) if and only if (Result.length != 0))</code>
+	 * <br>
+	 * Postcondition: <code>(valid i) implies (Result[i] is a primitive root mod m)</code>
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>AlgebraUtil.primitiveRoots(m, false)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 * 
+	 * @throws OutOfMemoryError
+	 *             If <code>Integer.MAX_VALUE < phi(phi(m))</code>
+	 */
+	public static long[] primitiveRoots(long m) throws InvalidModulusException, OutOfMemoryError {
+		return AlgebraUtil.primitiveRoots(m, false);
+	}
+
+	/**
+	 * Postcondition: <code>Result != null</code> <br>
+	 * Postcondition: <code>(m == 1) implies (Result.length == 0)</code> <br>
+	 * Postcondition: <code>(m == 2) implies ((Result.length == 1) && (Result[0] == 1))</code> <br>
+	 * Postcondition: <code>(m == 4) implies ((Result.length == 1) && (Result[0] == 3))</code> <br>
+	 * Postcondition: <code>(m % 4 == 0) implies ((m != 4) if and only if (Result.length == 0))</code>
+	 * <br>
+	 * Postcondition:
+	 * <code>((m != 2) && (m % 4 != 0)) implies ((NumUtil.factorSqrt((m % 2 == 0) ? (m / 2) : m).size() == 1) if and only if (Result.length != 0))</code>
+	 * <br>
+	 * Postcondition: <code>(valid i) implies (Result[i] is a primitive root mod m)</code>
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param hash
+	 *            specifies whether the data structure used to store the factors, should be a
+	 *            <code>HashMap</code> instead of a <code>TreeMap</code> when factoring <code>m</code>
+	 *            and <code>phi(m)</code>
+	 * 
+	 * @param print
+	 *            specifies whether the factoring of <code>m</code> and <code>phi(m)</code> should be
+	 *            printed to the standard output stream
+	 * 
 	 * @return The resulting integer array.
 	 * 
 	 * @throws InvalidModulusException
@@ -1095,6 +1320,7 @@ public class AlgebraUtil {
 		// Create, fill, and return the resulting integer array.
 		final int[] result = new int[(int) phiPhiM];
 		int index = 0;
+		// Save m as a long to avoid the upcast in every iteration of the loop.
 		final long M = m, maxN = M - 1L;
 		if (M == mOddFactor) { // i.e., m % 2 != 0
 			for (long n = 2L; n != maxN; ++n) {
@@ -1312,6 +1538,7 @@ public class AlgebraUtil {
 		// Create, fill, and return the resulting short array.
 		final short[] result = new short[(int) phiPhiM];
 		int index = 0;
+		// Save m as a long to avoid the upcast in every iteration of the loop.
 		final long M = m, maxN = M - 1L;
 		if (M == mOddFactor) { // i.e., m % 2 != 0
 			for (long n = 2L; n != maxN; ++n) {
@@ -1529,6 +1756,7 @@ public class AlgebraUtil {
 		// Create, fill, and return the resulting byte array.
 		final byte[] result = new byte[(int) phiPhiM];
 		int index = 0;
+		// Save m as a long to avoid the upcast in every iteration of the loop.
 		final long M = m, maxN = M - 1L;
 		if (M == mOddFactor) { // i.e., m % 2 != 0
 			for (long n = 2L; n != maxN; ++n) {
