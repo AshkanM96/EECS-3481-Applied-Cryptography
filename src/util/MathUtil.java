@@ -824,7 +824,7 @@ public class MathUtil {
 				throw new UndefinedInverseException();
 			}
 			// n != 0
-			return 0L; // floor(1 / n) == 0
+			return 0L; // floor(1 / |n|) == 0
 		}
 		// 0 <= p
 
@@ -953,7 +953,7 @@ public class MathUtil {
 				throw new UndefinedInverseException();
 			}
 			// n != 0
-			return 0L; // floor(1 / n) == 0
+			return 0L; // floor(1 / |n|) == 0
 		}
 		// 0 <= p
 
@@ -1100,7 +1100,7 @@ public class MathUtil {
 		}
 		// 1 <= m
 		// i.e., 0 < m
-		return MathUtil.modFixedInput(n, m);
+		return (((n %= m) < 0L) ? (n += m) : n);
 	}
 
 	/**
@@ -1121,7 +1121,7 @@ public class MathUtil {
 		}
 		// 1 <= m
 		// i.e., 0 < m
-		return ((int) MathUtil.modFixedInput(n, m));
+		return (((n %= m) < 0) ? (n += m) : n);
 	}
 
 	/**
@@ -1142,7 +1142,7 @@ public class MathUtil {
 		}
 		// 1 <= m
 		// i.e., 0 < m
-		return ((short) MathUtil.modFixedInput(n, m));
+		return (((n %= m) < 0) ? (n += m) : n);
 	}
 
 	/**
@@ -1163,7 +1163,140 @@ public class MathUtil {
 		}
 		// 1 <= m
 		// i.e., 0 < m
-		return ((byte) MathUtil.modFixedInput(n, m));
+		return (((n %= m) < 0) ? (n += m) : n);
+	}
+
+	/**
+	 * Precondition: <code>0 < m</code> <br>
+	 * Precondition: <code>|n| < m</code> <br>
+	 * Postcondition: <code>|Result| <= (m / 2)</code>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>N</code> where <code>N (mod m) == n (mod m)</code>.
+	 */
+	protected static long modMinFixedInput(long n, long m) {
+		if (n < 0L) {
+			/**
+			 * By the precondition on <code>n</code>, we know that <code>(-m + 1 <= n <= -1)</code>. Therefore,
+			 * <code>(1 <= other <= m - 1)</code> and <code>-n</code> will not overflow since
+			 * <code>(1 <= -n <= m - 1 < m <= Long.MAX_VALUE)</code>. <br>
+			 * <br>
+			 * 
+			 * Don't do <code>n += m</code> or <code>n *= -1</code> since we need the value of <code>n</code> to
+			 * remain unchanged.
+			 */
+			final long other = n + m, abs_n = -n;
+			return ((other < abs_n) ? other : n);
+		}
+		// 0 <= n
+		/**
+		 * By the precondition on <code>n</code>, we know that <code>(0 <= n <= m - 1)</code>. Therefore,
+		 * <code>(-m <= other <= -1)</code> and so <code>other < 0</code> but <code>-other</code> will not
+		 * overflow since <code>(1 <= -other <= m <= Long.MAX_VALUE)</code>. <br>
+		 * <br>
+		 * 
+		 * Don't do <code>n -= m</code> or <code>other *= -1</code> since we need the value of
+		 * <code>n</code> and <code>other</code> to remain unchanged.
+		 */
+		final long other = n - m, abs_other = -other;
+		return ((abs_other < n) ? other : n);
+	}
+
+	/**
+	 * Postcondition: <code>|Result| <= (m / 2)</code>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>N</code> where <code>N (mod m) == n (mod m)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 */
+	public static long modMin(long n, long m) throws InvalidModulusException {
+		if (m < 1L) {
+			throw new InvalidModulusException();
+		}
+		// 1 <= m
+		// i.e., 0 < m
+		return MathUtil.modMinFixedInput(n %= m, m);
+	}
+
+	/**
+	 * Postcondition: <code>|Result| <= (m / 2)</code>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>N</code> where <code>N (mod m) == n (mod m)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 */
+	public static int modMin(int n, int m) throws InvalidModulusException {
+		if (m < 1) {
+			throw new InvalidModulusException();
+		}
+		// 1 <= m
+		// i.e., 0 < m
+		return ((int) MathUtil.modMinFixedInput(n %= m, m));
+	}
+
+	/**
+	 * Postcondition: <code>|Result| <= (m / 2)</code>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>N</code> where <code>N (mod m) == n (mod m)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 */
+	public static short modMin(short n, short m) throws InvalidModulusException {
+		if (m < 1) {
+			throw new InvalidModulusException();
+		}
+		// 1 <= m
+		// i.e., 0 < m
+		return ((short) MathUtil.modMinFixedInput(n %= m, m));
+	}
+
+	/**
+	 * Postcondition: <code>|Result| <= (m / 2)</code>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>N</code> where <code>N (mod m) == n (mod m)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 */
+	public static byte modMin(byte n, byte m) throws InvalidModulusException {
+		if (m < 1) {
+			throw new InvalidModulusException();
+		}
+		// 1 <= m
+		// i.e., 0 < m
+		return ((byte) MathUtil.modMinFixedInput(n %= m, m));
 	}
 
 	/**
@@ -1338,139 +1471,6 @@ public class MathUtil {
 		// n != 0
 		// i.e., (1 <= n) && (n <= m - 1)
 		return ((byte) MathUtil.modInverseFixedInput(n, m));
-	}
-
-	/**
-	 * Precondition: <code>0 < m</code> <br>
-	 * Precondition: <code>|n| < m</code> <br>
-	 * Postcondition: <code>|Result| <= (m / 2)</code>
-	 * 
-	 * @param n
-	 *            the given number
-	 * 
-	 * @param m
-	 *            the given modulus
-	 * 
-	 * @return <code>N</code> where <code>N (mod m) == n (mod m)</code>.
-	 */
-	protected static long modMinFixedInput(long n, long m) {
-		if (n < 0L) {
-			/**
-			 * By the precondition on <code>n</code>, we know that <code>(-m + 1 <= n <= -1)</code>. Therefore,
-			 * <code>(1 <= other <= m - 1)</code> and <code>-n</code> will not overflow since
-			 * <code>(1 <= -n <= m - 1 < m <= Long.MAX_VALUE)</code>. <br>
-			 * <br>
-			 * 
-			 * Don't do <code>n += m</code> or <code>n *= -1</code> since we need the value of <code>n</code> to
-			 * remain unchanged.
-			 */
-			final long other = n + m, abs_n = -n;
-			return ((other < abs_n) ? other : n);
-		}
-		// 0 <= n
-		/**
-		 * By the precondition on <code>n</code>, we know that <code>(0 <= n <= m - 1)</code>. Therefore,
-		 * <code>(-m <= other <= -1)</code> and so <code>other < 0</code> but <code>-other</code> will not
-		 * overflow since <code>(1 <= -other <= m <= Long.MAX_VALUE)</code>. <br>
-		 * <br>
-		 * 
-		 * Don't do <code>n -= m</code> or <code>other *= -1</code> since we need the value of
-		 * <code>n</code> and <code>other</code> to remain unchanged.
-		 */
-		final long other = n - m, abs_other = -other;
-		return ((abs_other < n) ? other : n);
-	}
-
-	/**
-	 * Postcondition: <code>|Result| <= (m / 2)</code>
-	 * 
-	 * @param n
-	 *            the given number
-	 * 
-	 * @param m
-	 *            the given modulus
-	 * 
-	 * @return <code>N</code> where <code>N (mod m) == n (mod m)</code>.
-	 * 
-	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
-	 */
-	public static long modMin(long n, long m) throws InvalidModulusException {
-		if (m < 1L) {
-			throw new InvalidModulusException();
-		}
-		// 1 <= m
-		// i.e., 0 < m
-		return MathUtil.modMinFixedInput(n %= m, m);
-	}
-
-	/**
-	 * Postcondition: <code>|Result| <= (m / 2)</code>
-	 * 
-	 * @param n
-	 *            the given number
-	 * 
-	 * @param m
-	 *            the given modulus
-	 * 
-	 * @return <code>N</code> where <code>N (mod m) == n (mod m)</code>.
-	 * 
-	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
-	 */
-	public static int modMin(int n, int m) throws InvalidModulusException {
-		if (m < 1) {
-			throw new InvalidModulusException();
-		}
-		// 1 <= m
-		// i.e., 0 < m
-		return ((int) MathUtil.modMinFixedInput(n %= m, m));
-	}
-
-	/**
-	 * Postcondition: <code>|Result| <= (m / 2)</code>
-	 * 
-	 * @param n
-	 *            the given number
-	 * 
-	 * @param m
-	 *            the given modulus
-	 * 
-	 * @return <code>N</code> where <code>N (mod m) == n (mod m)</code>.
-	 * 
-	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
-	 */
-	public static short modMin(short n, short m) throws InvalidModulusException {
-		if (m < 1) {
-			throw new InvalidModulusException();
-		}
-		// 1 <= m
-		// i.e., 0 < m
-		return ((short) MathUtil.modMinFixedInput(n %= m, m));
-	}
-
-	/**
-	 * Postcondition: <code>|Result| <= (m / 2)</code>
-	 * 
-	 * @param n
-	 *            the given number
-	 * 
-	 * @param m
-	 *            the given modulus
-	 * 
-	 * @return <code>N</code> where <code>N (mod m) == n (mod m)</code>.
-	 * 
-	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
-	 */
-	public static byte modMin(byte n, byte m) throws InvalidModulusException {
-		if (m < 1) {
-			throw new InvalidModulusException();
-		}
-		// 1 <= m
-		// i.e., 0 < m
-		return ((byte) MathUtil.modMinFixedInput(n %= m, m));
 	}
 
 	/**
