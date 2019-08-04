@@ -64,7 +64,7 @@ public class A2Q5 {
 			 * text.
 			 */
 			dotProduct = CryptoTools.getEnglishProbabilitiesDotProduct(decrytedText);
-			if (maxDotProduct < dotProduct) {
+			if (Double.compare(maxDotProduct, dotProduct) < 0) { // i.e., maxDotProduct < dotProduct
 				maxDotProduct = dotProduct;
 				probableAlpha = alpha;
 				probablePlaintext = decrytedText;

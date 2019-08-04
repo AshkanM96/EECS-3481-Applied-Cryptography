@@ -52,7 +52,7 @@ public class A2Q4 {
 		double maxDotProduct = -1.0, dotProduct = 0.0;
 		byte[] probablePlaintext = null, decrytedText = null;
 		final Affine a = new Affine(A2Q4.AFFINE_ALPHA);
-		for (int beta = Affine.MIN_BETA_VALUE; beta != Affine.MAX_CIPHER_KEY_VALUE; ++beta) {
+		for (int beta = Affine.MIN_BETA_VALUE; beta <= Affine.MAX_CIPHER_KEY_VALUE; ++beta) {
 			a.beta(beta); // Set the affine object's beta attribute.
 
 			// Decrypt the ciphertext using alpha and beta.
@@ -63,7 +63,7 @@ public class A2Q4 {
 			 * text.
 			 */
 			dotProduct = CryptoTools.getEnglishProbabilitiesDotProduct(decrytedText);
-			if (maxDotProduct < dotProduct) {
+			if (Double.compare(maxDotProduct, dotProduct) < 0) { // i.e., maxDotProduct < dotProduct
 				maxDotProduct = dotProduct;
 				probableBeta = beta;
 				probablePlaintext = decrytedText;
