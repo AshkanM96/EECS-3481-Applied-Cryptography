@@ -755,6 +755,7 @@ public class Vigenere implements Iterable<Character> {
 				System.out.println("Vigenere key length " + keyLength + " gives Index of Coincidence " + IC + ".\n");
 			}
 
+			// Check to see if the calculated Index of Coincidence falls within the English range.
 			if (CryptoTools.isEnglishIC(IC)) {
 				// Only print if requested.
 				if (print) {

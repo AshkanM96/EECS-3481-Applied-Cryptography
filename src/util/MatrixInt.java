@@ -389,6 +389,7 @@ public class MatrixInt implements Iterable<Integer> {
 		if (Integer.MAX_VALUE < result) {
 			throw new ArithmeticException();
 		}
+		// result <= Integer.MAX_VALUE
 		return ((int) result);
 	}
 

@@ -326,7 +326,7 @@ public class Caesar {
 			 * text.
 			 */
 			dotProduct = CryptoTools.getEnglishProbabilitiesDotProductFixedInput(decrytedText);
-			if (maxDotProduct < dotProduct) {
+			if (Double.compare(maxDotProduct, dotProduct) < 0) { // i.e., maxDotProduct < dotProduct
 				maxDotProduct = dotProduct;
 				probableCaesarKey = caesarKey;
 				System.arraycopy(decrytedText, 0, probablePlaintext, 0, c.length);
@@ -435,7 +435,7 @@ public class Caesar {
 		for (int i = 0; i != CryptoTools.ENGLISH_ALPHABET_SIZE; ++i) {
 			letter = (char) ('A' + i);
 			prob = 100.0 * freq[i] / c.length;
-			if (maxProb < prob) {
+			if (Double.compare(maxProb, prob) < 0) { // i.e., maxProb < prob
 				maxProb = prob;
 				maxProbLetter = letter;
 			}

@@ -737,6 +737,7 @@ public class MathUtil {
 		if (Integer.MAX_VALUE < result) {
 			throw new ArithmeticException();
 		}
+		// result <= Integer.MAX_VALUE
 		return ((int) result);
 	}
 
@@ -766,6 +767,7 @@ public class MathUtil {
 		if (Short.MAX_VALUE < result) {
 			throw new ArithmeticException();
 		}
+		// result <= Short.MAX_VALUE
 		return ((short) result);
 	}
 
@@ -795,6 +797,7 @@ public class MathUtil {
 		if (Byte.MAX_VALUE < result) {
 			throw new ArithmeticException();
 		}
+		// result <= Byte.MAX_VALUE
 		return ((byte) result);
 	}
 
@@ -2096,6 +2099,7 @@ public class MathUtil {
 		if (Integer.MAX_VALUE < m) {
 			throw new ArithmeticException();
 		}
+		// m <= Integer.MAX_VALUE
 
 		// Return either just the answer or the answer along with all of the extra information.
 		if (justAnswer) {
@@ -2197,6 +2201,7 @@ public class MathUtil {
 		if (Short.MAX_VALUE < m) {
 			throw new ArithmeticException();
 		}
+		// m <= Short.MAX_VALUE
 
 		// Return either just the answer or the answer along with all of the extra information.
 		if (justAnswer) {
@@ -2298,6 +2303,7 @@ public class MathUtil {
 		if (Byte.MAX_VALUE < m) {
 			throw new ArithmeticException();
 		}
+		// m <= Byte.MAX_VALUE
 
 		// Return either just the answer or the answer along with all of the extra information.
 		if (justAnswer) {
@@ -2625,6 +2631,7 @@ public class MathUtil {
 			if (Integer.MAX_VALUE < end) {
 				throw new ArithmeticException();
 			}
+			// end <= Integer.MAX_VALUE
 			return ((int) end);
 		}
 		// begin <= -1

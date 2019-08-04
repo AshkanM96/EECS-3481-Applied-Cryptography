@@ -1102,7 +1102,10 @@ public class AlgebraUtil {
 			for (long n = 2L; n != maxN; ++n) {
 				if (n % p != 0L) { // i.e., gcd(n, m) == 1
 					if (AlgebraUtil.isPrimitiveRootFixedInput(n, m, phiM, phiMFactorsKeySet)) {
-						result[index++] = n;
+						result[index] = n;
+						if (++index == result.length) {
+							break;
+						}
 					}
 				}
 			}
@@ -1110,7 +1113,10 @@ public class AlgebraUtil {
 			for (long n = 3L; n != maxN; n += 2L) {
 				if (n % p != 0L) { // i.e., gcd(n, m) == 1
 					if (AlgebraUtil.isPrimitiveRootFixedInput(n, m, phiM, phiMFactorsKeySet)) {
-						result[index++] = n;
+						result[index] = n;
+						if (++index == result.length) {
+							break;
+						}
 					}
 				}
 			}
@@ -1326,7 +1332,10 @@ public class AlgebraUtil {
 			for (long n = 2L; n != maxN; ++n) {
 				if (n % p != 0L) { // i.e., gcd(n, m) == 1
 					if (AlgebraUtil.isPrimitiveRootFixedInput(n, M, phiM, phiMFactorsKeySet)) {
-						result[index++] = (int) n;
+						result[index] = (int) n;
+						if (++index == result.length) {
+							break;
+						}
 					}
 				}
 			}
@@ -1334,7 +1343,10 @@ public class AlgebraUtil {
 			for (long n = 3L; n != maxN; n += 2L) {
 				if (n % p != 0L) { // i.e., gcd(n, m) == 1
 					if (AlgebraUtil.isPrimitiveRootFixedInput(n, M, phiM, phiMFactorsKeySet)) {
-						result[index++] = (int) n;
+						result[index] = (int) n;
+						if (++index == result.length) {
+							break;
+						}
 					}
 				}
 			}
@@ -1544,7 +1556,10 @@ public class AlgebraUtil {
 			for (long n = 2L; n != maxN; ++n) {
 				if (n % p != 0L) { // i.e., gcd(n, m) == 1
 					if (AlgebraUtil.isPrimitiveRootFixedInput(n, M, phiM, phiMFactorsKeySet)) {
-						result[index++] = (short) n;
+						result[index] = (short) n;
+						if (++index == result.length) {
+							break;
+						}
 					}
 				}
 			}
@@ -1552,7 +1567,10 @@ public class AlgebraUtil {
 			for (long n = 3L; n != maxN; n += 2L) {
 				if (n % p != 0L) { // i.e., gcd(n, m) == 1
 					if (AlgebraUtil.isPrimitiveRootFixedInput(n, M, phiM, phiMFactorsKeySet)) {
-						result[index++] = (short) n;
+						result[index] = (short) n;
+						if (++index == result.length) {
+							break;
+						}
 					}
 				}
 			}
@@ -1762,7 +1780,10 @@ public class AlgebraUtil {
 			for (long n = 2L; n != maxN; ++n) {
 				if (n % p != 0L) { // i.e., gcd(n, m) == 1
 					if (AlgebraUtil.isPrimitiveRootFixedInput(n, M, phiM, phiMFactorsKeySet)) {
-						result[index++] = (byte) n;
+						result[index] = (byte) n;
+						if (++index == result.length) {
+							break;
+						}
 					}
 				}
 			}
@@ -1770,7 +1791,10 @@ public class AlgebraUtil {
 			for (long n = 3L; n != maxN; n += 2L) {
 				if (n % p != 0L) { // i.e., gcd(n, m) == 1
 					if (AlgebraUtil.isPrimitiveRootFixedInput(n, M, phiM, phiMFactorsKeySet)) {
-						result[index++] = (byte) n;
+						result[index] = (byte) n;
+						if (++index == result.length) {
+							break;
+						}
 					}
 				}
 			}

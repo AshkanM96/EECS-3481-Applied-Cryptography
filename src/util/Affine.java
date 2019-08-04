@@ -727,7 +727,7 @@ public class Affine {
 				 * text.
 				 */
 				dotProduct = CryptoTools.getEnglishProbabilitiesDotProductFixedInput(decrytedText);
-				if (maxDotProduct < dotProduct) {
+				if (Double.compare(maxDotProduct, dotProduct) < 0) { // i.e., maxDotProduct < dotProduct
 					maxDotProduct = dotProduct;
 					probableAlpha = alpha;
 					probableBeta = beta;
@@ -839,7 +839,7 @@ public class Affine {
 		 * 'E' and 'T' are respectively the most common and the 2nd most common letters in English and as
 		 * such the letter with the highest probability is probably the mapping of 'E' and the letter with
 		 * the 2nd highest probability is probably the mapping of 'T'. Save the mappings in maxProbLetter
-		 * and maxProbLetter2 so that the affine key can be found from them after the loop.
+		 * and maxProbLetter2 respectively so that the affine key can be found from them after the loop.
 		 */
 		char maxProbLetter = '\0', maxProbLetter2 = '\0', letter = '\0';
 		double maxProb = -1.0, maxProb2 = -1.0, prob = 0.0;
@@ -849,14 +849,16 @@ public class Affine {
 			letter = (char) ('A' + i);
 			prob = 100.0 * freq[i] / c.length;
 			maxProb_prob_cmp = Double.compare(maxProb, prob);
-			if (maxProb_prob_cmp < 0) {
+			if (maxProb_prob_cmp < 0) { // i.e., maxProb < prob
 				maxProb2 = maxProb;
 				maxProb = prob;
 				maxProbLetter2 = maxProbLetter;
 				maxProbLetter = letter;
-			} else if ((maxProb_prob_cmp != 0) && (maxProb2 < prob)) {
-				maxProb2 = prob;
-				maxProbLetter2 = letter;
+			} else if (maxProb_prob_cmp != 0) { // i.e., maxProb != prob
+				if (Double.compare(maxProb2, prob) < 0) { // i.e., maxProb2 < prob
+					maxProb2 = prob;
+					maxProbLetter2 = letter;
+				}
 			}
 			// Only print if requested.
 			if (print) {

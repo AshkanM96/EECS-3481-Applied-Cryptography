@@ -78,8 +78,6 @@ public class CryptoTools {
 	}
 
 	/**
-	 * Is the language with the given Index of Coincidence, English?
-	 * 
 	 * @param IC
 	 *            the given Index of Coincidence
 	 * 

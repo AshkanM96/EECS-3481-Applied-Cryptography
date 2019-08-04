@@ -1,7 +1,5 @@
 package util;
 
-import java.util.Arrays;
-
 /**
  * Utility binary methods.
  * 
@@ -172,7 +170,7 @@ public class Binary {
 	public static int countOnes(boolean[] data) throws NullPointerException {
 		int result = 0;
 		for (final boolean b : data) {
-			result += Binary.countOnes(b);
+			result += (b ? 1 : 0); // i.e., Binary.countOnes(b)
 		}
 		return result;
 	}
@@ -201,7 +199,7 @@ public class Binary {
 	 * @return The number of "off" bits (i.e., equal to 0) in the given boolean.
 	 */
 	public static int countZeroes(boolean b) {
-		return (b ? 0 : 1);
+		return (b ? 0 : 1); // i.e., 1 - Binary.countOnes(b)
 	}
 
 	/**
@@ -232,7 +230,7 @@ public class Binary {
 	public static int countZeroes(boolean[] data) throws NullPointerException {
 		int result = 0;
 		for (final boolean b : data) {
-			result += Binary.countZeroes(b);
+			result += (b ? 0 : 1); // i.e., Binary.countZeroes(b)
 		}
 		return result;
 	}
@@ -374,7 +372,11 @@ public class Binary {
 	 *             If <code>data == null</code>
 	 */
 	public static boolean[] comp(boolean[] data) throws NullPointerException {
-		return Binary.compEquals(Arrays.copyOf(data, data.length));
+		final boolean[] result = new boolean[data.length];
+		for (int i = 0; i != result.length; ++i) {
+			result[i] = !data[i];
+		}
+		return result;
 	}
 
 	/**
@@ -389,7 +391,11 @@ public class Binary {
 	 *             If <code>data == null</code>
 	 */
 	public static byte[] comp(byte[] data) throws NullPointerException {
-		return Binary.compEquals(Arrays.copyOf(data, data.length));
+		final byte[] result = new byte[data.length];
+		for (int i = 0; i != result.length; ++i) {
+			result[i] = (byte) ~data[i];
+		}
+		return result;
 	}
 
 	/**
@@ -404,7 +410,11 @@ public class Binary {
 	 *             If <code>data == null</code>
 	 */
 	public static char[] comp(char[] data) throws NullPointerException {
-		return Binary.compEquals(Arrays.copyOf(data, data.length));
+		final char[] result = new char[data.length];
+		for (int i = 0; i != result.length; ++i) {
+			result[i] = (char) ~data[i];
+		}
+		return result;
 	}
 
 	/**
@@ -419,7 +429,11 @@ public class Binary {
 	 *             If <code>data == null</code>
 	 */
 	public static short[] comp(short[] data) throws NullPointerException {
-		return Binary.compEquals(Arrays.copyOf(data, data.length));
+		final short[] result = new short[data.length];
+		for (int i = 0; i != result.length; ++i) {
+			result[i] = (short) ~data[i];
+		}
+		return result;
 	}
 
 	/**
@@ -434,7 +448,11 @@ public class Binary {
 	 *             If <code>data == null</code>
 	 */
 	public static int[] comp(int[] data) throws NullPointerException {
-		return Binary.compEquals(Arrays.copyOf(data, data.length));
+		final int[] result = new int[data.length];
+		for (int i = 0; i != result.length; ++i) {
+			result[i] = ~data[i];
+		}
+		return result;
 	}
 
 	/**
@@ -449,7 +467,11 @@ public class Binary {
 	 *             If <code>data == null</code>
 	 */
 	public static long[] comp(long[] data) throws NullPointerException {
-		return Binary.compEquals(Arrays.copyOf(data, data.length));
+		final long[] result = new long[data.length];
+		for (int i = 0; i != result.length; ++i) {
+			result[i] = ~data[i];
+		}
+		return result;
 	}
 
 	/**
@@ -639,11 +661,15 @@ public class Binary {
 	 *             If <code>lhs.length != rhs.length</code>
 	 */
 	public static boolean[] and(boolean[] lhs, boolean[] rhs) throws NullPointerException, IllegalArgumentException {
-		// Even though the following is a repeated check, it'll save a copy construction.
 		if (lhs.length != rhs.length) {
 			throw new IllegalArgumentException();
 		}
-		return Binary.andEquals(Arrays.copyOf(lhs, lhs.length), rhs);
+
+		final boolean[] result = new boolean[lhs.length];
+		for (int i = 0; i != result.length; ++i) {
+			result[i] = lhs[i] && rhs[i];
+		}
+		return result;
 	}
 
 	/**
@@ -664,11 +690,15 @@ public class Binary {
 	 *             If <code>lhs.length != rhs.length</code>
 	 */
 	public static byte[] and(byte[] lhs, byte[] rhs) throws NullPointerException, IllegalArgumentException {
-		// Even though the following is a repeated check, it'll save a copy construction.
 		if (lhs.length != rhs.length) {
 			throw new IllegalArgumentException();
 		}
-		return Binary.andEquals(Arrays.copyOf(lhs, lhs.length), rhs);
+
+		final byte[] result = new byte[lhs.length];
+		for (int i = 0; i != result.length; ++i) {
+			result[i] = (byte) (lhs[i] & rhs[i]);
+		}
+		return result;
 	}
 
 	/**
@@ -689,11 +719,15 @@ public class Binary {
 	 *             If <code>lhs.length != rhs.length</code>
 	 */
 	public static char[] and(char[] lhs, char[] rhs) throws NullPointerException, IllegalArgumentException {
-		// Even though the following is a repeated check, it'll save a copy construction.
 		if (lhs.length != rhs.length) {
 			throw new IllegalArgumentException();
 		}
-		return Binary.andEquals(Arrays.copyOf(lhs, lhs.length), rhs);
+
+		final char[] result = new char[lhs.length];
+		for (int i = 0; i != result.length; ++i) {
+			result[i] = (char) (lhs[i] & rhs[i]);
+		}
+		return result;
 	}
 
 	/**
@@ -714,11 +748,15 @@ public class Binary {
 	 *             If <code>lhs.length != rhs.length</code>
 	 */
 	public static short[] and(short[] lhs, short[] rhs) throws NullPointerException, IllegalArgumentException {
-		// Even though the following is a repeated check, it'll save a copy construction.
 		if (lhs.length != rhs.length) {
 			throw new IllegalArgumentException();
 		}
-		return Binary.andEquals(Arrays.copyOf(lhs, lhs.length), rhs);
+
+		final short[] result = new short[lhs.length];
+		for (int i = 0; i != result.length; ++i) {
+			result[i] = (short) (lhs[i] & rhs[i]);
+		}
+		return result;
 	}
 
 	/**
@@ -739,11 +777,15 @@ public class Binary {
 	 *             If <code>lhs.length != rhs.length</code>
 	 */
 	public static int[] and(int[] lhs, int[] rhs) throws NullPointerException, IllegalArgumentException {
-		// Even though the following is a repeated check, it'll save a copy construction.
 		if (lhs.length != rhs.length) {
 			throw new IllegalArgumentException();
 		}
-		return Binary.andEquals(Arrays.copyOf(lhs, lhs.length), rhs);
+
+		final int[] result = new int[lhs.length];
+		for (int i = 0; i != result.length; ++i) {
+			result[i] = lhs[i] & rhs[i];
+		}
+		return result;
 	}
 
 	/**
@@ -764,11 +806,15 @@ public class Binary {
 	 *             If <code>lhs.length != rhs.length</code>
 	 */
 	public static long[] and(long[] lhs, long[] rhs) throws NullPointerException, IllegalArgumentException {
-		// Even though the following is a repeated check, it'll save a copy construction.
 		if (lhs.length != rhs.length) {
 			throw new IllegalArgumentException();
 		}
-		return Binary.andEquals(Arrays.copyOf(lhs, lhs.length), rhs);
+
+		final long[] result = new long[lhs.length];
+		for (int i = 0; i != result.length; ++i) {
+			result[i] = lhs[i] & rhs[i];
+		}
+		return result;
 	}
 
 	/**
@@ -958,11 +1004,15 @@ public class Binary {
 	 *             If <code>lhs.length != rhs.length</code>
 	 */
 	public static boolean[] or(boolean[] lhs, boolean[] rhs) throws NullPointerException, IllegalArgumentException {
-		// Even though the following is a repeated check, it'll save a copy construction.
 		if (lhs.length != rhs.length) {
 			throw new IllegalArgumentException();
 		}
-		return Binary.orEquals(Arrays.copyOf(lhs, lhs.length), rhs);
+
+		final boolean[] result = new boolean[lhs.length];
+		for (int i = 0; i != result.length; ++i) {
+			result[i] = lhs[i] || rhs[i];
+		}
+		return result;
 	}
 
 	/**
@@ -983,11 +1033,15 @@ public class Binary {
 	 *             If <code>lhs.length != rhs.length</code>
 	 */
 	public static byte[] or(byte[] lhs, byte[] rhs) throws NullPointerException, IllegalArgumentException {
-		// Even though the following is a repeated check, it'll save a copy construction.
 		if (lhs.length != rhs.length) {
 			throw new IllegalArgumentException();
 		}
-		return Binary.orEquals(Arrays.copyOf(lhs, lhs.length), rhs);
+
+		final byte[] result = new byte[lhs.length];
+		for (int i = 0; i != result.length; ++i) {
+			result[i] = (byte) (lhs[i] | rhs[i]);
+		}
+		return result;
 	}
 
 	/**
@@ -1008,11 +1062,15 @@ public class Binary {
 	 *             If <code>lhs.length != rhs.length</code>
 	 */
 	public static char[] or(char[] lhs, char[] rhs) throws NullPointerException, IllegalArgumentException {
-		// Even though the following is a repeated check, it'll save a copy construction.
 		if (lhs.length != rhs.length) {
 			throw new IllegalArgumentException();
 		}
-		return Binary.orEquals(Arrays.copyOf(lhs, lhs.length), rhs);
+
+		final char[] result = new char[lhs.length];
+		for (int i = 0; i != result.length; ++i) {
+			result[i] = (char) (lhs[i] | rhs[i]);
+		}
+		return result;
 	}
 
 	/**
@@ -1033,11 +1091,15 @@ public class Binary {
 	 *             If <code>lhs.length != rhs.length</code>
 	 */
 	public static short[] or(short[] lhs, short[] rhs) throws NullPointerException, IllegalArgumentException {
-		// Even though the following is a repeated check, it'll save a copy construction.
 		if (lhs.length != rhs.length) {
 			throw new IllegalArgumentException();
 		}
-		return Binary.orEquals(Arrays.copyOf(lhs, lhs.length), rhs);
+
+		final short[] result = new short[lhs.length];
+		for (int i = 0; i != result.length; ++i) {
+			result[i] = (short) (lhs[i] | rhs[i]);
+		}
+		return result;
 	}
 
 	/**
@@ -1058,11 +1120,15 @@ public class Binary {
 	 *             If <code>lhs.length != rhs.length</code>
 	 */
 	public static int[] or(int[] lhs, int[] rhs) throws NullPointerException, IllegalArgumentException {
-		// Even though the following is a repeated check, it'll save a copy construction.
 		if (lhs.length != rhs.length) {
 			throw new IllegalArgumentException();
 		}
-		return Binary.orEquals(Arrays.copyOf(lhs, lhs.length), rhs);
+
+		final int[] result = new int[lhs.length];
+		for (int i = 0; i != result.length; ++i) {
+			result[i] = lhs[i] | rhs[i];
+		}
+		return result;
 	}
 
 	/**
@@ -1083,11 +1149,15 @@ public class Binary {
 	 *             If <code>lhs.length != rhs.length</code>
 	 */
 	public static long[] or(long[] lhs, long[] rhs) throws NullPointerException, IllegalArgumentException {
-		// Even though the following is a repeated check, it'll save a copy construction.
 		if (lhs.length != rhs.length) {
 			throw new IllegalArgumentException();
 		}
-		return Binary.orEquals(Arrays.copyOf(lhs, lhs.length), rhs);
+
+		final long[] result = new long[lhs.length];
+		for (int i = 0; i != result.length; ++i) {
+			result[i] = lhs[i] | rhs[i];
+		}
+		return result;
 	}
 
 	/**
@@ -1293,11 +1363,31 @@ public class Binary {
 	 *             If <code>lhs.length != rhs.length</code>
 	 */
 	public static boolean[] xor(boolean[] lhs, boolean[] rhs) throws NullPointerException, IllegalArgumentException {
-		// Even though the following is a repeated check, it'll save a copy construction.
 		if (lhs.length != rhs.length) {
 			throw new IllegalArgumentException();
 		}
-		return Binary.xorEquals(Arrays.copyOf(lhs, lhs.length), rhs);
+
+		final boolean[] result = new boolean[lhs.length];
+		for (int i = 0; i != result.length; ++i) {
+			if (lhs[i]) {
+				if (rhs[i]) {
+					// Both are true.
+					result[i] = false;
+				} else {
+					// One is true and one is false.
+					result[i] = true;
+				}
+			} else {
+				if (rhs[i]) {
+					// One is true and one is false.
+					result[i] = true;
+				} else {
+					// Both are false.
+					result[i] = false;
+				}
+			}
+		}
+		return result;
 	}
 
 	/**
@@ -1318,11 +1408,15 @@ public class Binary {
 	 *             If <code>lhs.length != rhs.length</code>
 	 */
 	public static byte[] xor(byte[] lhs, byte[] rhs) throws NullPointerException, IllegalArgumentException {
-		// Even though the following is a repeated check, it'll save a copy construction.
 		if (lhs.length != rhs.length) {
 			throw new IllegalArgumentException();
 		}
-		return Binary.xorEquals(Arrays.copyOf(lhs, lhs.length), rhs);
+
+		final byte[] result = new byte[lhs.length];
+		for (int i = 0; i != result.length; ++i) {
+			result[i] = (byte) (lhs[i] ^ rhs[i]);
+		}
+		return result;
 	}
 
 	/**
@@ -1343,11 +1437,15 @@ public class Binary {
 	 *             If <code>lhs.length != rhs.length</code>
 	 */
 	public static char[] xor(char[] lhs, char[] rhs) throws NullPointerException, IllegalArgumentException {
-		// Even though the following is a repeated check, it'll save a copy construction.
 		if (lhs.length != rhs.length) {
 			throw new IllegalArgumentException();
 		}
-		return Binary.xorEquals(Arrays.copyOf(lhs, lhs.length), rhs);
+
+		final char[] result = new char[lhs.length];
+		for (int i = 0; i != result.length; ++i) {
+			result[i] = (char) (lhs[i] ^ rhs[i]);
+		}
+		return result;
 	}
 
 	/**
@@ -1368,11 +1466,15 @@ public class Binary {
 	 *             If <code>lhs.length != rhs.length</code>
 	 */
 	public static short[] xor(short[] lhs, short[] rhs) throws NullPointerException, IllegalArgumentException {
-		// Even though the following is a repeated check, it'll save a copy construction.
 		if (lhs.length != rhs.length) {
 			throw new IllegalArgumentException();
 		}
-		return Binary.xorEquals(Arrays.copyOf(lhs, lhs.length), rhs);
+
+		final short[] result = new short[lhs.length];
+		for (int i = 0; i != result.length; ++i) {
+			result[i] = (short) (lhs[i] ^ rhs[i]);
+		}
+		return result;
 	}
 
 	/**
@@ -1393,11 +1495,15 @@ public class Binary {
 	 *             If <code>lhs.length != rhs.length</code>
 	 */
 	public static int[] xor(int[] lhs, int[] rhs) throws NullPointerException, IllegalArgumentException {
-		// Even though the following is a repeated check, it'll save a copy construction.
 		if (lhs.length != rhs.length) {
 			throw new IllegalArgumentException();
 		}
-		return Binary.xorEquals(Arrays.copyOf(lhs, lhs.length), rhs);
+
+		final int[] result = new int[lhs.length];
+		for (int i = 0; i != result.length; ++i) {
+			result[i] = lhs[i] ^ rhs[i];
+		}
+		return result;
 	}
 
 	/**
@@ -1418,10 +1524,14 @@ public class Binary {
 	 *             If <code>lhs.length != rhs.length</code>
 	 */
 	public static long[] xor(long[] lhs, long[] rhs) throws NullPointerException, IllegalArgumentException {
-		// Even though the following is a repeated check, it'll save a copy construction.
 		if (lhs.length != rhs.length) {
 			throw new IllegalArgumentException();
 		}
-		return Binary.xorEquals(Arrays.copyOf(lhs, lhs.length), rhs);
+
+		final long[] result = new long[lhs.length];
+		for (int i = 0; i != result.length; ++i) {
+			result[i] = lhs[i] ^ rhs[i];
+		}
+		return result;
 	}
 }
