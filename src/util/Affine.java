@@ -1028,7 +1028,6 @@ public class Affine {
 				}
 			}
 
-			// Set this.
 			this.alphas = alphas;
 			this.betas = betas;
 			this.plaintexts = plaintexts;
@@ -1051,8 +1050,6 @@ public class Affine {
 			if (plaintext == null) {
 				throw new NullPointerException();
 			}
-
-			// Set this.
 			this.alphas = new int[] { alpha };
 			this.betas = new int[] { beta };
 			this.plaintexts = new byte[][] { plaintext };

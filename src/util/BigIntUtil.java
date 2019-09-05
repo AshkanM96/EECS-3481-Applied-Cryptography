@@ -107,58 +107,6 @@ public class BigIntUtil {
 	 * @param n
 	 *            the given BigInteger object
 	 * 
-	 * @param args
-	 *            any number of BigInteger objects
-	 * 
-	 * @throws NullPointerException
-	 *             If
-	 *             <code>(n == null) || (args == null) || ((valid i) implies (args[i] == null))</code>
-	 * 
-	 * @throws IllegalArgumentException
-	 *             If <code>(0 <= n) || ((valid i) implies (0 <= args[i]))</code>
-	 */
-	public static void ensureNegative(BigInteger n, BigInteger... args)
-			throws NullPointerException, IllegalArgumentException {
-		if (n.signum() != -1) { // i.e., 0 <= n
-			throw new IllegalArgumentException();
-		}
-		for (int i = 0; i != args.length; ++i) {
-			if (args[i].signum() != -1) { // i.e., 0 <= args[i]
-				throw new IllegalArgumentException();
-			}
-		}
-	}
-
-	/**
-	 * @param n
-	 *            the given BigInteger object
-	 * 
-	 * @param args
-	 *            any number of BigInteger objects
-	 * 
-	 * @throws NullPointerException
-	 *             If
-	 *             <code>(n == null) || (args == null) || ((valid i) implies (args[i] == null))</code>
-	 * 
-	 * @throws IllegalArgumentException
-	 *             If <code>(n < 0) || ((valid i) implies (args[i] < 0))</code>
-	 */
-	public static void ensureNonNegative(BigInteger n, BigInteger... args)
-			throws NullPointerException, IllegalArgumentException {
-		if (n.signum() == -1) { // i.e., n < 0
-			throw new IllegalArgumentException();
-		}
-		for (int i = 0; i != args.length; ++i) {
-			if (args[i].signum() == -1) { // i.e., args[i] < 0
-				throw new IllegalArgumentException();
-			}
-		}
-	}
-
-	/**
-	 * @param n
-	 *            the given BigInteger object
-	 * 
 	 * @return <code>n.signum() == 0</code>.
 	 * 
 	 * @throws NullPointerException
@@ -166,58 +114,6 @@ public class BigIntUtil {
 	 */
 	public static boolean isZero(BigInteger n) throws NullPointerException {
 		return (n.signum() == 0); // i.e., n == 0
-	}
-
-	/**
-	 * @param n
-	 *            the given BigInteger object
-	 * 
-	 * @param args
-	 *            any number of BigInteger objects
-	 * 
-	 * @throws NullPointerException
-	 *             If
-	 *             <code>(n == null) || (args == null) || ((valid i) implies (args[i] == null))</code>
-	 * 
-	 * @throws IllegalArgumentException
-	 *             If <code>(n != 0) || ((valid i) implies (args[i] != 0))</code>
-	 */
-	public static void ensureZero(BigInteger n, BigInteger... args)
-			throws NullPointerException, IllegalArgumentException {
-		if (n.signum() != 0) { // i.e., n != 0
-			throw new IllegalArgumentException();
-		}
-		for (int i = 0; i != args.length; ++i) {
-			if (args[i].signum() != 0) { // i.e., args[i] != 0
-				throw new IllegalArgumentException();
-			}
-		}
-	}
-
-	/**
-	 * @param n
-	 *            the given BigInteger object
-	 * 
-	 * @param args
-	 *            any number of BigInteger objects
-	 * 
-	 * @throws NullPointerException
-	 *             If
-	 *             <code>(n == null) || (args == null) || ((valid i) implies (args[i] == null))</code>
-	 * 
-	 * @throws IllegalArgumentException
-	 *             If <code>(n == 0) || ((valid i) implies (args[i] == 0))</code>
-	 */
-	public static void ensureNonZero(BigInteger n, BigInteger... args)
-			throws NullPointerException, IllegalArgumentException {
-		if (n.signum() == 0) { // i.e., n == 0
-			throw new IllegalArgumentException();
-		}
-		for (int i = 0; i != args.length; ++i) {
-			if (args[i].signum() == 0) { // i.e., args[i] == 0
-				throw new IllegalArgumentException();
-			}
-		}
 	}
 
 	/**
@@ -237,58 +133,6 @@ public class BigIntUtil {
 	 * @param n
 	 *            the given BigInteger object
 	 * 
-	 * @param args
-	 *            any number of BigInteger objects
-	 * 
-	 * @throws NullPointerException
-	 *             If
-	 *             <code>(n == null) || (args == null) || ((valid i) implies (args[i] == null))</code>
-	 * 
-	 * @throws IllegalArgumentException
-	 *             If <code>(n <= 0) || ((valid i) implies (args[i] <= 0))</code>
-	 */
-	public static void ensurePositive(BigInteger n, BigInteger... args)
-			throws NullPointerException, IllegalArgumentException {
-		if (n.signum() != 1) { // i.e., n <= 0
-			throw new IllegalArgumentException();
-		}
-		for (int i = 0; i != args.length; ++i) {
-			if (args[i].signum() != 1) { // i.e., args[i] <= 0
-				throw new IllegalArgumentException();
-			}
-		}
-	}
-
-	/**
-	 * @param n
-	 *            the given BigInteger object
-	 * 
-	 * @param args
-	 *            any number of BigInteger objects
-	 * 
-	 * @throws NullPointerException
-	 *             If
-	 *             <code>(n == null) || (args == null) || ((valid i) implies (args[i] == null))</code>
-	 * 
-	 * @throws IllegalArgumentException
-	 *             If <code>(0 < n) || ((valid i) implies (0 < args[i]))</code>
-	 */
-	public static void ensureNonPositive(BigInteger n, BigInteger... args)
-			throws NullPointerException, IllegalArgumentException {
-		if (n.signum() == 1) { // i.e., 0 < n
-			throw new IllegalArgumentException();
-		}
-		for (int i = 0; i != args.length; ++i) {
-			if (args[i].signum() == 1) { // i.e., 0 < args[i]
-				throw new IllegalArgumentException();
-			}
-		}
-	}
-
-	/**
-	 * @param n
-	 *            the given BigInteger object
-	 * 
 	 * @return <code>!n.testBit(0)</code>.
 	 * 
 	 * @throws NullPointerException
@@ -296,60 +140,6 @@ public class BigIntUtil {
 	 */
 	public static boolean isEven(BigInteger n) throws NullPointerException {
 		return (!n.testBit(0));
-	}
-
-	/**
-	 * @param n
-	 *            the given BigInteger object
-	 * 
-	 * @param args
-	 *            any number of BigInteger objects
-	 * 
-	 * @throws NullPointerException
-	 *             If
-	 *             <code>(n == null) || (args == null) || ((valid i) implies (args[i] == null))</code>
-	 * 
-	 * @throws IllegalArgumentException
-	 *             If
-	 *             <code>(!BigIntUtil.isEven(n)) || ((valid i) implies (!BigIntUtil.isEven(args[i])))</code>
-	 */
-	public static void ensureEven(BigInteger n, BigInteger... args)
-			throws NullPointerException, IllegalArgumentException {
-		if (n.testBit(0)) { // i.e., !BigIntUtil.isEven(n)
-			throw new IllegalArgumentException();
-		}
-		for (int i = 0; i != args.length; ++i) {
-			if (args[i].testBit(0)) { // i.e., !BigIntUtil.isEven(args[i])
-				throw new IllegalArgumentException();
-			}
-		}
-	}
-
-	/**
-	 * @param n
-	 *            the given BigInteger object
-	 * 
-	 * @param args
-	 *            any number of BigInteger objects
-	 * 
-	 * @throws NullPointerException
-	 *             If
-	 *             <code>(n == null) || (args == null) || ((valid i) implies (args[i] == null))</code>
-	 * 
-	 * @throws IllegalArgumentException
-	 *             If
-	 *             <code>(BigIntUtil.isEven(n)) || ((valid i) implies (BigIntUtil.isEven(args[i])))</code>
-	 */
-	public static void ensureOdd(BigInteger n, BigInteger... args)
-			throws NullPointerException, IllegalArgumentException {
-		if (!n.testBit(0)) { // i.e., BigIntUtil.isEven(n)
-			throw new IllegalArgumentException();
-		}
-		for (int i = 0; i != args.length; ++i) {
-			if (!args[i].testBit(0)) { // i.e., BigIntUtil.isEven(args[i])
-				throw new IllegalArgumentException();
-			}
-		}
 	}
 
 	/**

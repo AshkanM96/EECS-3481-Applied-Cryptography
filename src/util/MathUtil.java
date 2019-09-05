@@ -22,7 +22,7 @@ public class MathUtil {
 	 */
 
 	/**
-	 * <code>ln(2)</code>.
+	 * <code>Math.log(2)</code>.
 	 */
 	public static final double LOG_2 = Math.log(2);
 

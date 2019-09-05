@@ -556,8 +556,6 @@ public class Caesar {
 			if (plaintext.length == 0) {
 				throw new ShortPlaintextException();
 			}
-
-			// Set this.
 			this.key = key;
 			this.plaintext = plaintext;
 		}

@@ -205,8 +205,6 @@ public class Scytale implements Iterable<Integer> {
 		if (tmp.numRows != tmp.numCols) { // i.e., !tmp.isSquare()
 			throw new IllegalArgumentException();
 		}
-
-		// Set this.
 		final MatrixInt oldKey = this.key;
 		this.key = tmp.modEquals(Scytale.MODULUS);
 		this.isValidKey = false;
@@ -256,8 +254,6 @@ public class Scytale implements Iterable<Integer> {
 		if (key.numRows != key.numCols) { // i.e., !key.isSquare()
 			throw new IllegalArgumentException();
 		}
-
-		// Set this.
 		final MatrixInt oldKey = this.key;
 		this.key = key.mod(Scytale.MODULUS);
 		this.isValidKey = false;

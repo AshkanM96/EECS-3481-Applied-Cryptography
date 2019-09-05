@@ -1202,8 +1202,6 @@ public class Vigenere implements Iterable<Character> {
 			} else if (plaintext.length == 0) {
 				throw new ShortPlaintextException();
 			}
-
-			// Set this.
 			this.keyWord = keyWord;
 			this.plaintext = plaintext;
 		}

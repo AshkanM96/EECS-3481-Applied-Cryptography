@@ -2,6 +2,7 @@ package util;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.function.IntBinaryOperator;
 
 /**
  * Matrix of integers.
@@ -18,6 +19,31 @@ public class MatrixInt implements Iterable<Integer> {
 	 * 		5. util.UndefinedInverseException
 	 * </code>
 	 */
+
+	/**
+	 * <code>operator +</code>
+	 */
+	protected static final IntBinaryOperator OP_ADD = (a, b) -> (a + b);
+
+	/**
+	 * <code>operator -</code>
+	 */
+	protected static final IntBinaryOperator OP_SUB = (a, b) -> (a - b);
+
+	/**
+	 * <code>operator *</code>
+	 */
+	protected static final IntBinaryOperator OP_MUL = (a, b) -> (a * b);
+
+	/**
+	 * <code>operator /</code>
+	 */
+	protected static final IntBinaryOperator OP_DIV = (a, b) -> (a / b);
+
+	/**
+	 * <code>operator %</code>
+	 */
+	protected static final IntBinaryOperator OP_MOD = (n, m) -> (((n %= m) < 0) ? (n += m) : n);
 
 	/**
 	 * int primitives are immutable. Therefore, it is "safe" to make the following final class
@@ -61,7 +87,6 @@ public class MatrixInt implements Iterable<Integer> {
 		}
 		// (1 <= numRows) && (1 <= numCols)
 
-		// Set this.
 		this.data = new int[this.numRows = numRows][this.numCols = numCols];
 		if (n != 0) {
 			// Java new automatically initializes every entry to 0
@@ -137,7 +162,6 @@ public class MatrixInt implements Iterable<Integer> {
 			}
 		}
 
-		// Set this.
 		this.data = new int[this.numRows = numRows][this.numCols = numCols];
 		for (int rowNum = 0; rowNum != this.numRows; ++rowNum) {
 			System.arraycopy(data[rowNum], 0, this.data[rowNum], 0, this.numCols);
@@ -664,6 +688,101 @@ public class MatrixInt implements Iterable<Integer> {
 	}
 
 	/**
+	 * Apply the given operator to the given inputs (i.e., lhs and rhs) and store the output in
+	 * <code>int[][] result</code>. <br>
+	 * Precondition: <code>(0 < numRows) && (0 < numCols)</code> <br>
+	 * Precondition: <code>(result != null) && (lhs != null) && (rhs != null)</code> <br>
+	 * Precondition:
+	 * <code>(result.length == numRows) && (lhs.length == numRows) && (rhs.length == numRows)</code>
+	 * <br>
+	 * Precondition:
+	 * <code>(valid i) implies ((result[i] != null) && (result[i].length == numCols))</code> <br>
+	 * Precondition: <code>(valid i) implies ((lhs[i] != null) && (lhs[i].length == numCols))</code>
+	 * <br>
+	 * Precondition: <code>(valid i) implies ((rhs[i] != null) && (rhs[i].length == numCols))</code>
+	 * <br>
+	 * Precondition: <code>int_bin_op != null</code>
+	 * 
+	 * @param numRows
+	 *            the given number of rows
+	 * 
+	 * @param numCols
+	 *            the given number of columns
+	 * 
+	 * @param result
+	 *            the given result int[][]
+	 * 
+	 * @param lhs
+	 *            the given left hand side int[][]
+	 * 
+	 * @param rhs
+	 *            the given right hand side int[][]
+	 * 
+	 * @param int_bin_op
+	 *            the given int binary operator
+	 * 
+	 * @return <code>result</code>.
+	 */
+	protected static int[][] apply(int numRows, int numCols, int[][] result, int[][] lhs, int[][] rhs,
+			IntBinaryOperator int_bin_op) {
+		int[] result_row = null, lhs_row = null, rhs_row = null;
+		for (int i = 0; i != numRows; ++i) {
+			result_row = result[i];
+			lhs_row = lhs[i];
+			rhs_row = rhs[i];
+			for (int j = 0; j != numCols; ++j) {
+				result_row[j] = int_bin_op.applyAsInt(lhs_row[j], rhs_row[j]);
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Apply the given operator to the given inputs (i.e., lhs and rhs) and store the output in
+	 * <code>int[][] result</code>. <br>
+	 * Precondition: <code>(0 < numRows) && (0 < numCols)</code> <br>
+	 * Precondition: <code>(result != null) && (lhs != null)</code> <br>
+	 * Precondition: <code>(result.length == numRows) && (lhs.length == numRows)</code> <br>
+	 * Precondition:
+	 * <code>(valid i) implies ((result[i] != null) && (result[i].length == numCols))</code> <br>
+	 * Precondition: <code>(valid i) implies ((lhs[i] != null) && (lhs[i].length == numCols))</code>
+	 * <br>
+	 * Precondition: <code>int_bin_op != null</code>
+	 * 
+	 * @param numRows
+	 *            the given number of rows
+	 * 
+	 * @param numCols
+	 *            the given number of columns
+	 * 
+	 * @param result
+	 *            the given result int[][]
+	 * 
+	 * @param lhs
+	 *            the given left hand side int[][]
+	 * 
+	 * @param rhs
+	 *            the given right hand side int
+	 * 
+	 * @param int_bin_op
+	 *            the given int binary operator
+	 * 
+	 * @return <code>result</code>.
+	 */
+	protected static int[][] apply(int numRows, int numCols, int[][] result, int[][] lhs, int rhs,
+			IntBinaryOperator int_bin_op) {
+		int[] result_row = null, lhs_row = null;
+		for (int i = 0; i != numRows; ++i) {
+			result_row = result[i];
+			lhs_row = lhs[i];
+			for (int j = 0; j != numCols; ++j) {
+				result_row[j] = int_bin_op.applyAsInt(lhs_row[j], rhs);
+			}
+		}
+		return result;
+	}
+
+	/**
 	 * <code>operator+=(MatrixInt)</code>.
 	 * 
 	 * @param other
@@ -679,14 +798,7 @@ public class MatrixInt implements Iterable<Integer> {
 	 */
 	public MatrixInt plusEquals(MatrixInt other) throws NullPointerException, IllegalArgumentException {
 		this.sameDimEnforce(other);
-		int[] row = null, other_row = null;
-		for (int rowNum = 0; rowNum != this.numRows; ++rowNum) {
-			row = this.data[rowNum];
-			other_row = other.data[rowNum];
-			for (int colNum = 0; colNum != this.numCols; ++colNum) {
-				row[colNum] += other_row[colNum];
-			}
-		}
+		MatrixInt.apply(this.numRows, this.numCols, this.data, this.data, other.data, MatrixInt.OP_ADD);
 		return this;
 	}
 
@@ -705,9 +817,10 @@ public class MatrixInt implements Iterable<Integer> {
 	 *             If <code>!this.sameDim(other)</code>
 	 */
 	public MatrixInt plus(MatrixInt other) throws NullPointerException, IllegalArgumentException {
-		// Even though the following is a repeated check, it'll save a copy construction.
 		this.sameDimEnforce(other);
-		return new MatrixInt(this).plusEquals(other);
+		final MatrixInt result = new MatrixInt(other.numRows, other.numCols);
+		MatrixInt.apply(result.numRows, result.numCols, result.data, this.data, other.data, MatrixInt.OP_ADD);
+		return result;
 	}
 
 	/**
@@ -720,13 +833,7 @@ public class MatrixInt implements Iterable<Integer> {
 	 */
 	public MatrixInt plusEquals(int n) {
 		if (n != 0) {
-			int[] row = null;
-			for (int rowNum = 0; rowNum != this.numRows; ++rowNum) {
-				row = this.data[rowNum];
-				for (int colNum = 0; colNum != this.numCols; ++colNum) {
-					row[colNum] += n;
-				}
-			}
+			MatrixInt.apply(this.numRows, this.numCols, this.data, this.data, n, MatrixInt.OP_ADD);
 		}
 		return this;
 	}
@@ -740,7 +847,13 @@ public class MatrixInt implements Iterable<Integer> {
 	 * @return <code>new MatrixInt(this).plusEquals(n)</code>.
 	 */
 	public MatrixInt plus(int n) {
-		return new MatrixInt(this).plusEquals(n);
+		if (n == 0) {
+			return new MatrixInt(this);
+		}
+		// n != 0
+		final MatrixInt result = new MatrixInt(this.numRows, this.numCols);
+		MatrixInt.apply(result.numRows, result.numCols, result.data, this.data, n, MatrixInt.OP_ADD);
+		return result;
 	}
 
 	/**
@@ -759,14 +872,7 @@ public class MatrixInt implements Iterable<Integer> {
 	 */
 	public MatrixInt minusEquals(MatrixInt other) throws NullPointerException, IllegalArgumentException {
 		this.sameDimEnforce(other);
-		int[] row = null, other_row = null;
-		for (int rowNum = 0; rowNum != this.numRows; ++rowNum) {
-			row = this.data[rowNum];
-			other_row = other.data[rowNum];
-			for (int colNum = 0; colNum != this.numCols; ++colNum) {
-				row[colNum] -= other_row[colNum];
-			}
-		}
+		MatrixInt.apply(this.numRows, this.numCols, this.data, this.data, other.data, MatrixInt.OP_SUB);
 		return this;
 	}
 
@@ -785,9 +891,10 @@ public class MatrixInt implements Iterable<Integer> {
 	 *             If <code>!this.sameDim(other)</code>
 	 */
 	public MatrixInt minus(MatrixInt other) throws NullPointerException, IllegalArgumentException {
-		// Even though the following is a repeated check, it'll save a copy construction.
 		this.sameDimEnforce(other);
-		return new MatrixInt(this).minusEquals(other);
+		final MatrixInt result = new MatrixInt(other.numRows, other.numCols);
+		MatrixInt.apply(result.numRows, result.numCols, result.data, this.data, other.data, MatrixInt.OP_SUB);
+		return result;
 	}
 
 	/**
@@ -800,13 +907,7 @@ public class MatrixInt implements Iterable<Integer> {
 	 */
 	public MatrixInt minusEquals(int n) {
 		if (n != 0) {
-			int[] row = null;
-			for (int rowNum = 0; rowNum != this.numRows; ++rowNum) {
-				row = this.data[rowNum];
-				for (int colNum = 0; colNum != this.numCols; ++colNum) {
-					row[colNum] -= n;
-				}
-			}
+			MatrixInt.apply(this.numRows, this.numCols, this.data, this.data, n, MatrixInt.OP_SUB);
 		}
 		return this;
 	}
@@ -820,7 +921,13 @@ public class MatrixInt implements Iterable<Integer> {
 	 * @return <code>new MatrixInt(this).minusEquals(n)</code>.
 	 */
 	public MatrixInt minus(int n) {
-		return new MatrixInt(this).minusEquals(n);
+		if (n == 0) {
+			return new MatrixInt(this);
+		}
+		// n != 0
+		final MatrixInt result = new MatrixInt(this.numRows, this.numCols);
+		MatrixInt.apply(result.numRows, result.numCols, result.data, this.data, n, MatrixInt.OP_SUB);
+		return result;
 	}
 
 	/**
@@ -870,13 +977,7 @@ public class MatrixInt implements Iterable<Integer> {
 	 */
 	public MatrixInt timesEquals(int n) {
 		if (n != 1) {
-			int[] row = null;
-			for (int rowNum = 0; rowNum != this.numRows; ++rowNum) {
-				row = this.data[rowNum];
-				for (int colNum = 0; colNum != this.numCols; ++colNum) {
-					row[colNum] *= n;
-				}
-			}
+			MatrixInt.apply(this.numRows, this.numCols, this.data, this.data, n, MatrixInt.OP_MUL);
 		}
 		return this;
 	}
@@ -890,7 +991,13 @@ public class MatrixInt implements Iterable<Integer> {
 	 * @return <code>new MatrixInt(this).timesEquals(n)</code>.
 	 */
 	public MatrixInt times(int n) {
-		return new MatrixInt(this).timesEquals(n);
+		if (n == 1) {
+			return new MatrixInt(this);
+		}
+		// n != 1
+		final MatrixInt result = new MatrixInt(this.numRows, this.numCols);
+		MatrixInt.apply(result.numRows, result.numCols, result.data, this.data, n, MatrixInt.OP_MUL);
+		return result;
 	}
 
 	/**
@@ -909,15 +1016,8 @@ public class MatrixInt implements Iterable<Integer> {
 			throw new ArithmeticException();
 		}
 		// n != 0
-
 		if (n != 1) {
-			int[] row = null;
-			for (int rowNum = 0; rowNum != this.numRows; ++rowNum) {
-				row = this.data[rowNum];
-				for (int colNum = 0; colNum != this.numCols; ++colNum) {
-					row[colNum] /= n;
-				}
-			}
+			MatrixInt.apply(this.numRows, this.numCols, this.data, this.data, n, MatrixInt.OP_DIV);
 		}
 		return this;
 	}
@@ -934,12 +1034,17 @@ public class MatrixInt implements Iterable<Integer> {
 	 *             If <code>n == 0</code>
 	 */
 	public MatrixInt divide(int n) throws ArithmeticException {
-		// Even though the following is a repeated check, it'll save a copy construction.
 		if (n == 0) {
 			throw new ArithmeticException();
 		}
 		// n != 0
-		return new MatrixInt(this).divideEquals(n);
+		if (n == 1) {
+			return new MatrixInt(this);
+		}
+		// n != 1
+		final MatrixInt result = new MatrixInt(this.numRows, this.numCols);
+		MatrixInt.apply(result.numRows, result.numCols, result.data, this.data, n, MatrixInt.OP_DIV);
+		return result;
 	}
 
 	/**
@@ -959,14 +1064,7 @@ public class MatrixInt implements Iterable<Integer> {
 		}
 		// 1 <= n
 		// i.e., 0 < n
-
-		int[] row = null;
-		for (int rowNum = 0; rowNum != this.numRows; ++rowNum) {
-			row = this.data[rowNum];
-			for (int colNum = 0; colNum != this.numCols; ++colNum) {
-				row[colNum] = (int) MathUtil.modFixedInput(row[colNum], n);
-			}
-		}
+		MatrixInt.apply(this.numRows, this.numCols, this.data, this.data, n, MatrixInt.OP_MOD);
 		return this;
 	}
 
