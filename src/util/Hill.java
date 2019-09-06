@@ -178,7 +178,7 @@ public class Hill implements Iterable<Integer> {
 	 *             If <code>side <= 0</code>
 	 */
 	public MatrixInt key(int side) throws IllegalArgumentException {
-		// No need to modEquals(CryptoTools.ENGLISH_ALPHABET_SIZE) this.key since this.key.isAllZero().
+		// No need to do this.key.modEquals(CryptoTools.ENGLISH_ALPHABET_SIZE) since this.key.isAllZero().
 		final MatrixInt oldKey = this.key;
 		this.key = new MatrixInt(side, side);
 		this.keyInverse = null;

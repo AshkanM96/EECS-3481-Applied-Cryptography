@@ -555,7 +555,7 @@ public class AlgebraUtil {
 		 * by removing an extra call to <code>it.hashNext()</code> by writing it as a do-while loop instead
 		 * of a for loop or a while loop.
 		 */
-		Iterator<Long> it = phiMFactorsKeySet.iterator();
+		final Iterator<Long> it = phiMFactorsKeySet.iterator();
 		do {
 			/**
 			 * We know that for <code>n</code> in <code>[2, m - 2] \cap \doubleZ</code> coprime with
@@ -641,7 +641,7 @@ public class AlgebraUtil {
 		 * <code>m</code> at most once.
 		 */
 		long mOddFactor = m;
-		if ((mOddFactor & 1L) == 0L) { // i.e., MathUtil.isEven(mOddFactor)
+		if ((mOddFactor & 1L) == 0L) { // i.e., NumUtil.isEven(mOddFactor)
 			/**
 			 * Don't do <code>(mOddFactor &= 1L) == 0L</code> since we need the value of <code>mOddFactor</code>
 			 * to remain unchanged. Note that the difference is the <code>&=</code> instead of the
@@ -651,7 +651,7 @@ public class AlgebraUtil {
 			 * However, the following is meant to be an assignment of <code>mOddFactor</code> when we do
 			 * <code>mOddFactor /= 2L</code> instead of <code>mOddFactor / 2L</code>.
 			 */
-			if (((mOddFactor /= 2L) & 1L) == 0L) { // i.e., MathUtil.isEven(mOddFactor)
+			if (((mOddFactor /= 2L) & 1L) == 0L) { // i.e., NumUtil.isEven(mOddFactor)
 				return false; // There are no primitive roots mod m since m % 4 == 0.
 			}
 		}
@@ -1014,7 +1014,7 @@ public class AlgebraUtil {
 		 * <code>m</code> at most once.
 		 */
 		long mOddFactor = m;
-		if ((mOddFactor & 1L) == 0L) { // i.e., MathUtil.isEven(mOddFactor)
+		if ((mOddFactor & 1L) == 0L) { // i.e., NumUtil.isEven(mOddFactor)
 			/**
 			 * Don't do <code>(mOddFactor &= 1L) == 0L</code> since we need the value of <code>mOddFactor</code>
 			 * to remain unchanged. Note that the difference is the <code>&=</code> instead of the
@@ -1024,7 +1024,7 @@ public class AlgebraUtil {
 			 * However, the following is meant to be an assignment of <code>mOddFactor</code> when we do
 			 * <code>mOddFactor /= 2L</code> instead of <code>mOddFactor / 2L</code>.
 			 */
-			if (((mOddFactor /= 2L) & 1L) == 0L) { // i.e., MathUtil.isEven(mOddFactor)
+			if (((mOddFactor /= 2L) & 1L) == 0L) { // i.e., NumUtil.isEven(mOddFactor)
 				return new long[] {}; // There are no primitive roots mod m since m % 4 == 0.
 			}
 		}
@@ -1079,7 +1079,7 @@ public class AlgebraUtil {
 		 * 
 		 * We know that
 		 * <code>phi(n) = product(phi(p<sub>i</sub><sup>e<sub>i</sub></sup>) from i = 1 to i = t)</code>
-		 * where <code>p<sub>i</sub></code>'s are prime factors of <code>n</code> with natural powers
+		 * where <code>p<sub>i</sub></code>'s are the prime factors of <code>n</code> with natural powers
 		 * <code>e<sub>i</sub></code> and natural number <code>t</code>. After a little bit of
 		 * simplification, we can find that
 		 * <code>phi(n) = n * product((1 - <sup>1</sup>&frasl;<sub>p<sub>i</sub></sub>) from i = 1 to i = t)</code>.
@@ -1247,7 +1247,7 @@ public class AlgebraUtil {
 		 * <code>m</code> at most once.
 		 */
 		long mOddFactor = m;
-		if ((mOddFactor & 1L) == 0L) { // i.e., MathUtil.isEven(mOddFactor)
+		if ((mOddFactor & 1L) == 0L) { // i.e., NumUtil.isEven(mOddFactor)
 			/**
 			 * Don't do <code>(mOddFactor &= 1L) == 0L</code> since we need the value of <code>mOddFactor</code>
 			 * to remain unchanged. Note that the difference is the <code>&=</code> instead of the
@@ -1257,7 +1257,7 @@ public class AlgebraUtil {
 			 * However, the following is meant to be an assignment of <code>mOddFactor</code> when we do
 			 * <code>mOddFactor /= 2L</code> instead of <code>mOddFactor / 2L</code>.
 			 */
-			if (((mOddFactor /= 2L) & 1L) == 0L) { // i.e., MathUtil.isEven(mOddFactor)
+			if (((mOddFactor /= 2L) & 1L) == 0L) { // i.e., NumUtil.isEven(mOddFactor)
 				return new int[] {}; // There are no primitive roots mod m since m % 4 == 0.
 			}
 		}
@@ -1312,7 +1312,7 @@ public class AlgebraUtil {
 		 * 
 		 * We know that
 		 * <code>phi(n) = product(phi(p<sub>i</sub><sup>e<sub>i</sub></sup>) from i = 1 to i = t)</code>
-		 * where <code>p<sub>i</sub></code>'s are prime factors of <code>n</code> with natural powers
+		 * where <code>p<sub>i</sub></code>'s are the prime factors of <code>n</code> with natural powers
 		 * <code>e<sub>i</sub></code> and natural number <code>t</code>. After a little bit of
 		 * simplification, we can find that
 		 * <code>phi(n) = n * product((1 - <sup>1</sup>&frasl;<sub>p<sub>i</sub></sub>) from i = 1 to i = t)</code>.
@@ -1471,7 +1471,7 @@ public class AlgebraUtil {
 		 * <code>m</code> at most once.
 		 */
 		long mOddFactor = m;
-		if ((mOddFactor & 1L) == 0L) { // i.e., MathUtil.isEven(mOddFactor)
+		if ((mOddFactor & 1L) == 0L) { // i.e., NumUtil.isEven(mOddFactor)
 			/**
 			 * Don't do <code>(mOddFactor &= 1L) == 0L</code> since we need the value of <code>mOddFactor</code>
 			 * to remain unchanged. Note that the difference is the <code>&=</code> instead of the
@@ -1481,7 +1481,7 @@ public class AlgebraUtil {
 			 * However, the following is meant to be an assignment of <code>mOddFactor</code> when we do
 			 * <code>mOddFactor /= 2L</code> instead of <code>mOddFactor / 2L</code>.
 			 */
-			if (((mOddFactor /= 2L) & 1L) == 0L) { // i.e., MathUtil.isEven(mOddFactor)
+			if (((mOddFactor /= 2L) & 1L) == 0L) { // i.e., NumUtil.isEven(mOddFactor)
 				return new short[] {}; // There are no primitive roots mod m since m % 4 == 0.
 			}
 		}
@@ -1536,7 +1536,7 @@ public class AlgebraUtil {
 		 * 
 		 * We know that
 		 * <code>phi(n) = product(phi(p<sub>i</sub><sup>e<sub>i</sub></sup>) from i = 1 to i = t)</code>
-		 * where <code>p<sub>i</sub></code>'s are prime factors of <code>n</code> with natural powers
+		 * where <code>p<sub>i</sub></code>'s are the prime factors of <code>n</code> with natural powers
 		 * <code>e<sub>i</sub></code> and natural number <code>t</code>. After a little bit of
 		 * simplification, we can find that
 		 * <code>phi(n) = n * product((1 - <sup>1</sup>&frasl;<sub>p<sub>i</sub></sub>) from i = 1 to i = t)</code>.
@@ -1695,7 +1695,7 @@ public class AlgebraUtil {
 		 * <code>m</code> at most once.
 		 */
 		long mOddFactor = m;
-		if ((mOddFactor & 1L) == 0L) { // i.e., MathUtil.isEven(mOddFactor)
+		if ((mOddFactor & 1L) == 0L) { // i.e., NumUtil.isEven(mOddFactor)
 			/**
 			 * Don't do <code>(mOddFactor &= 1L) == 0L</code> since we need the value of <code>mOddFactor</code>
 			 * to remain unchanged. Note that the difference is the <code>&=</code> instead of the
@@ -1705,7 +1705,7 @@ public class AlgebraUtil {
 			 * However, the following is meant to be an assignment of <code>mOddFactor</code> when we do
 			 * <code>mOddFactor /= 2L</code> instead of <code>mOddFactor / 2L</code>.
 			 */
-			if (((mOddFactor /= 2L) & 1L) == 0L) { // i.e., MathUtil.isEven(mOddFactor)
+			if (((mOddFactor /= 2L) & 1L) == 0L) { // i.e., NumUtil.isEven(mOddFactor)
 				return new byte[] {}; // There are no primitive roots mod m since m % 4 == 0.
 			}
 		}
@@ -1760,7 +1760,7 @@ public class AlgebraUtil {
 		 * 
 		 * We know that
 		 * <code>phi(n) = product(phi(p<sub>i</sub><sup>e<sub>i</sub></sup>) from i = 1 to i = t)</code>
-		 * where <code>p<sub>i</sub></code>'s are prime factors of <code>n</code> with natural powers
+		 * where <code>p<sub>i</sub></code>'s are the prime factors of <code>n</code> with natural powers
 		 * <code>e<sub>i</sub></code> and natural number <code>t</code>. After a little bit of
 		 * simplification, we can find that
 		 * <code>phi(n) = n * product((1 - <sup>1</sup>&frasl;<sub>p<sub>i</sub></sub>) from i = 1 to i = t)</code>.

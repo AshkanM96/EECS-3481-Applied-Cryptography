@@ -32,7 +32,7 @@ public class SinglyLinkedList<T> implements Iterable<T> {
 	 * Default ctor.
 	 */
 	public SinglyLinkedList() {
-		this.size = 0;
+		this.size = 0L;
 		this.header = new SLLNode<T>();
 	}
 
@@ -94,9 +94,9 @@ public class SinglyLinkedList<T> implements Iterable<T> {
 	public void toArray(T[] a, long beginIndex, long endIndex) throws NullPointerException, IndexOutOfBoundsException {
 		if (a.length == 0) {
 			return;
-		} else if ((beginIndex < 0) || (this.size <= beginIndex)) {
+		} else if ((beginIndex < 0L) || (this.size <= beginIndex)) {
 			throw new IndexOutOfBoundsException();
-		} else if ((endIndex < 0) || (this.size < endIndex)) {
+		} else if ((endIndex < 0L) || (this.size < endIndex)) {
 			throw new IndexOutOfBoundsException();
 		} else if (endIndex <= beginIndex) {
 			a[0] = null;
@@ -142,7 +142,7 @@ public class SinglyLinkedList<T> implements Iterable<T> {
 	}
 
 	/**
-	 * <code>this.toArray(a, 0)</code>.
+	 * <code>this.toArray(a, 0L)</code>.
 	 * 
 	 * @param a
 	 *            the given array
@@ -151,7 +151,7 @@ public class SinglyLinkedList<T> implements Iterable<T> {
 	 *             If <code>a == null</code>
 	 */
 	public void toArray(T[] a) throws NullPointerException {
-		this.toArray(a, 0);
+		this.toArray(a, 0L);
 	}
 
 	/**
@@ -161,7 +161,7 @@ public class SinglyLinkedList<T> implements Iterable<T> {
 	 *             If <code>this.size == 0</code>
 	 */
 	public T getFirst() throws NoSuchElementException {
-		if (this.size == 0) {
+		if (this.size == 0L) {
 			throw new NoSuchElementException();
 		}
 		return this.header.next.data;
@@ -190,9 +190,13 @@ public class SinglyLinkedList<T> implements Iterable<T> {
 	 *             If <code>other == null</code>
 	 */
 	public void addFirst(SinglyLinkedList<T> other) throws NullPointerException {
-		for (SLLNode<T> curr = this.header, other_curr = other.header.next; other_curr != null; other_curr = other_curr.next, curr = curr.next) {
+		final SLLNode<T> old_first = this.header.next;
+		SLLNode<T> curr = this.header;
+		for (SLLNode<T> other_curr = other.header.next; other_curr != null; other_curr = other_curr.next) {
 			curr.next = new SLLNode<T>(other_curr.data);
+			curr = curr.next;
 		}
+		curr.next = old_first;
 		this.size += other.size;
 	}
 
@@ -205,7 +209,7 @@ public class SinglyLinkedList<T> implements Iterable<T> {
 	 *             If <code>this.size == 0</code>
 	 */
 	public T removeFirst() throws NoSuchElementException {
-		if (this.size == 0) {
+		if (this.size == 0L) {
 			throw new NoSuchElementException();
 		}
 
@@ -241,7 +245,7 @@ public class SinglyLinkedList<T> implements Iterable<T> {
 				curr.next = null;
 			}
 		}
-		this.size = 0;
+		this.size = 0L;
 		this.header.next = null;
 	}
 
@@ -254,7 +258,7 @@ public class SinglyLinkedList<T> implements Iterable<T> {
 
 	@Override
 	public String toString() {
-		if (this.size == 0) {
+		if (this.size == 0L) {
 			return "[]";
 		}
 
@@ -478,9 +482,9 @@ public class SinglyLinkedList<T> implements Iterable<T> {
 		/**
 		 * Cannot provide a copy ctor without iterating in the other SinglyLinkedList saved in other.sll to
 		 * find the index of other.curr and then iterating in this SLLIterator to match the index.
-		 * Therefore, due to overhead of at least one iteration (in this SLLIterator) and either iteration
-		 * through other.sll or the addition of an extra index variable to the SLLIterator object
-		 * definition, the copy ctor is not included.
+		 * Therefore, due to the overhead of at least one iteration in this SLLIterator and either an
+		 * iteration through other.sll or the addition of an extra index variable to the SLLIterator object
+		 * definition, the copy ctor is not provided.
 		 */
 
 		@Override
@@ -630,7 +634,7 @@ public class SinglyLinkedList<T> implements Iterable<T> {
 
 			// Set the list attributes to reflect curr node removal.
 			this.curr = this.prev.next;
-			if (--this.sll.size == 0) {
+			if (--this.sll.size == 0L) {
 				this.begin();
 			}
 

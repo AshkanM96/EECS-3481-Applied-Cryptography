@@ -98,54 +98,6 @@ public class MathUtil {
 	}
 
 	/**
-	 * @param n
-	 *            the given number
-	 * 
-	 * @return <code>true</code> if and only if the given number is even.
-	 */
-	public static boolean isEven(long n) {
-		// Odd numbers have their lowest bit set.
-		// By using bitwise and, we can check this fact.
-		return ((n &= 1L) == 0L);
-	}
-
-	/**
-	 * @param n
-	 *            the given number
-	 * 
-	 * @return <code>true</code> if and only if the given number is even.
-	 */
-	public static boolean isEven(int n) {
-		// Odd numbers have their lowest bit set.
-		// By using bitwise and, we can check this fact.
-		return ((n &= 1) == 0);
-	}
-
-	/**
-	 * @param n
-	 *            the given number
-	 * 
-	 * @return <code>true</code> if and only if the given number is even.
-	 */
-	public static boolean isEven(short n) {
-		// Odd numbers have their lowest bit set.
-		// By using bitwise and, we can check this fact.
-		return ((n &= 1) == 0);
-	}
-
-	/**
-	 * @param n
-	 *            the given number
-	 * 
-	 * @return <code>true</code> if and only if the given number is even.
-	 */
-	public static boolean isEven(byte n) {
-		// Odd numbers have their lowest bit set.
-		// By using bitwise and, we can check this fact.
-		return ((n &= 1) == 0);
-	}
-
-	/**
 	 * Precondition: <code>!((a == Long.MIN_VALUE) && ((b == 0) || (b == Long.MIN_VALUE)))</code> <br>
 	 * Precondition: <code>!((b == Long.MIN_VALUE) && ((a == 0) || (a == Long.MIN_VALUE)))</code>
 	 * 
@@ -1789,7 +1741,7 @@ public class MathUtil {
 			 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
 			 * will mutate <code>min</code>.
 			 */
-			if ((min & 1L) != 0L) { // i.e., !MathUtil.isEven(min)
+			if ((min & 1L) != 0L) { // i.e., !NumUtil.isEven(min)
 				result = MathUtil.modMinFixedInput((result += max) % m, m);
 			}
 			// The following is meant to be an assignment of notExit and min.
@@ -2385,7 +2337,7 @@ public class MathUtil {
 			 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
 			 * will mutate <code>p</code>.
 			 */
-			if ((p & 1L) != 0L) { // i.e., !MathUtil.isEven(p)
+			if ((p & 1L) != 0L) { // i.e., !NumUtil.isEven(p)
 				result = MathUtil.modMultFixedInput(result, n_to_2_to_i, m);
 			}
 			// The following is meant to be an assignment of notExit and p.
@@ -2754,7 +2706,7 @@ public class MathUtil {
 			 * we don't need the value of <code>begin</code> to remain unchanged. Note that the difference is
 			 * the <code>&=</code> instead of the <code>&</code> which will mutate <code>begin</code>.
 			 */
-			boolean evenPow = ((begin &= 1L) == 0L); // i.e., MathUtil.isEven(begin)
+			boolean evenPow = ((begin &= 1L) == 0L); // i.e., NumUtil.isEven(begin)
 			for (int i = 0; i != length; ++i, evenPow = !evenPow) {
 				result[i] = evenPow ? 1L : n;
 			}
@@ -2930,7 +2882,7 @@ public class MathUtil {
 			 * don't need the value of <code>begin</code> to remain unchanged. Note that the difference is the
 			 * <code>&=</code> instead of the <code>&</code> which will mutate <code>begin</code>.
 			 */
-			boolean evenPow = ((begin &= 1) == 0); // i.e., MathUtil.isEven(begin)
+			boolean evenPow = ((begin &= 1) == 0); // i.e., NumUtil.isEven(begin)
 			for (int i = 0; i != length; ++i, evenPow = !evenPow) {
 				result[i] = evenPow ? 1 : n;
 			}
@@ -3096,7 +3048,7 @@ public class MathUtil {
 			 * don't need the value of <code>begin</code> to remain unchanged. Note that the difference is the
 			 * <code>&=</code> instead of the <code>&</code> which will mutate <code>begin</code>.
 			 */
-			boolean evenPow = ((begin &= 1) == 0); // i.e., MathUtil.isEven(begin)
+			boolean evenPow = ((begin &= 1) == 0); // i.e., NumUtil.isEven(begin)
 			for (int i = 0; i != length; ++i, evenPow = !evenPow) {
 				result[i] = evenPow ? 1 : n;
 			}
@@ -3263,7 +3215,7 @@ public class MathUtil {
 			 * don't need the value of <code>begin</code> to remain unchanged. Note that the difference is the
 			 * <code>&=</code> instead of the <code>&</code> which will mutate <code>begin</code>.
 			 */
-			boolean evenPow = ((begin &= 1) == 0); // i.e., MathUtil.isEven(begin)
+			boolean evenPow = ((begin &= 1) == 0); // i.e., NumUtil.isEven(begin)
 			for (int i = 0; i != length; ++i, evenPow = !evenPow) {
 				result[i] = evenPow ? 1 : n;
 			}

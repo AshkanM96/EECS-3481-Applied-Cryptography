@@ -314,7 +314,7 @@ public class Caesar {
 		 */
 		int probableCaesarKey = 0;
 		double maxDotProduct = -1.0, dotProduct = 0.0;
-		byte[] probablePlaintext = new byte[c.length], decrytedText = new byte[c.length];
+		final byte[] probablePlaintext = new byte[c.length], decrytedText = new byte[c.length];
 		for (int caesarKey = 0; caesarKey != CryptoTools.ENGLISH_ALPHABET_SIZE; ++caesarKey) {
 			// Decrypt the ciphertext using caesarKey.
 			for (int i = 0; i != c.length; ++i) {

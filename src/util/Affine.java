@@ -711,7 +711,7 @@ public class Affine {
 		 */
 		int probableAlpha = 0, probableBeta = 0;
 		double maxDotProduct = -1.0, dotProduct = 0.0;
-		byte[] probablePlaintext = new byte[c.length], decrytedText = new byte[c.length];
+		final byte[] probablePlaintext = new byte[c.length], decrytedText = new byte[c.length];
 		final Affine a = new Affine();
 		for (final int alpha : Affine.VALID_ALPHA_VALUES) {
 			a.alpha(alpha); // Set the affine object's alpha attribute.
@@ -1019,7 +1019,6 @@ public class Affine {
 			} else if (alphas.length != plaintexts.length) {
 				throw new IllegalArgumentException();
 			}
-
 			// All entries of plaintexts must have the same length.
 			final int length = plaintexts[0].length;
 			for (int i = 1; i != plaintexts.length; ++i) {
@@ -1027,7 +1026,6 @@ public class Affine {
 					throw new IllegalArgumentException();
 				}
 			}
-
 			this.alphas = alphas;
 			this.betas = betas;
 			this.plaintexts = plaintexts;

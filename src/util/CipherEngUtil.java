@@ -69,7 +69,6 @@ public class CipherEngUtil {
 		if (algo == null) {
 			throw new NullPointerException();
 		}
-
 		final StringBuilder sb = new StringBuilder();
 		sb.append(algo).append('/').append(opmode.name()).append('/').append(padding.name());
 		return sb.toString();

@@ -12,11 +12,12 @@ import java.util.function.IntBinaryOperator;
 public class MatrixInt implements Iterable<Integer> {
 	/**
 	 * Dependencies: <code>
-	 * 		1. util.MathUtil
-	 * 		2. util.ArrayUtil
-	 * 		3. util.BidirectionalIterator
-	 * 		4. util.InvalidModulusException
-	 * 		5. util.UndefinedInverseException
+	 * 		1. util.NumUtil
+	 * 		2. util.MathUtil
+	 * 		3. util.ArrayUtil
+	 * 		4. util.BidirectionalIterator
+	 * 		5. util.InvalidModulusException
+	 * 		6. util.UndefinedInverseException
 	 * </code>
 	 */
 
@@ -1080,13 +1081,14 @@ public class MatrixInt implements Iterable<Integer> {
 	 *             If <code>n < 1</code>
 	 */
 	public MatrixInt mod(int n) throws InvalidModulusException {
-		// Even though the following is a repeated check, it'll save a copy construction.
 		if (n < 1) {
 			throw new InvalidModulusException();
 		}
 		// 1 <= n
 		// i.e., 0 < n
-		return new MatrixInt(this).modEquals(n);
+		final MatrixInt result = new MatrixInt(this.numRows, this.numCols);
+		MatrixInt.apply(result.numRows, result.numCols, result.data, this.data, n, MatrixInt.OP_MOD);
+		return result;
 	}
 
 	/**
@@ -1348,7 +1350,7 @@ public class MatrixInt implements Iterable<Integer> {
 		for (int rowNum = 0; rowNum != this.numRows; ++rowNum) {
 			result_row = result.data[rowNum];
 			for (int colNum = 0; colNum != this.numCols; ++colNum) {
-				result_row[colNum] = (MathUtil.isEven(((long) rowNum) + colNum) ? 1 : -1)
+				result_row[colNum] = (NumUtil.isEven(((long) rowNum) + colNum) ? 1 : -1)
 						* this.submatrix(rowNum, colNum).determinant();
 			}
 		}
@@ -1373,7 +1375,7 @@ public class MatrixInt implements Iterable<Integer> {
 		for (int rowNum = 0; rowNum != this.numRows; ++rowNum) {
 			result_row = result.data[rowNum];
 			for (int colNum = 0; colNum != this.numCols; ++colNum) {
-				result_row[colNum] = (MathUtil.isEven(((long) colNum) + rowNum) ? 1 : -1)
+				result_row[colNum] = (NumUtil.isEven(((long) colNum) + rowNum) ? 1 : -1)
 						* this.submatrix(colNum, rowNum).determinant();
 			}
 		}

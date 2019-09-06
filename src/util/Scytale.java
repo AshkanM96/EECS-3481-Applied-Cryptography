@@ -178,7 +178,7 @@ public class Scytale implements Iterable<Integer> {
 	 *             If <code>side <= 0</code>
 	 */
 	public MatrixInt key(int side) throws IllegalArgumentException {
-		// No need to modEquals(Scytale.MODULUS) this.key since this.key.isAllZero().
+		// No need to do this.key.modEquals(Scytale.MODULUS) since this.key.isAllZero().
 		final MatrixInt oldKey = this.key;
 		this.key = new MatrixInt(side, side);
 		this.isValidKey = false;

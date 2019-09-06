@@ -30,87 +30,92 @@ public class NumUtil {
 	public static final byte SECOND_PRIME = 3;
 
 	/**
-	 * Largest prime less than or equal to Byte.MAX_VALUE which is Byte.MAX_VALUE itself.
+	 * The largest prime less than or equal to Byte.MAX_VALUE which is Byte.MAX_VALUE itself.
 	 */
 	public static final byte LARGEST_PRIME_BYTE = 127;
 
 	/**
-	 * Smallest prime greater than Byte.MAX_VALUE.
+	 * The smallest prime greater than Byte.MAX_VALUE.
 	 */
 	public static final short SMALLEST_PRIME_NOT_BYTE = 131;
 
 	/**
-	 * Largest prime less than or equal to Short.MAX_VALUE.
+	 * The largest prime less than or equal to Short.MAX_VALUE.
 	 */
 	public static final short LARGEST_PRIME_SHORT = 32749;
 
 	/**
-	 * Smallest prime greater than Short.MAX_VALUE.
+	 * The smallest prime greater than Short.MAX_VALUE.
 	 */
 	public static final int SMALLEST_PRIME_NOT_SHORT = 32771;
 
 	/**
-	 * Largest prime less than or equal to Integer.MAX_VALUE which is Integer.MAX_VALUE itself.
+	 * The largest prime less than or equal to Integer.MAX_VALUE which is Integer.MAX_VALUE itself.
 	 */
 	public static final int LARGEST_PRIME_INT = 2147483647;
 
 	/**
-	 * Smallest prime greater than Integer.MAX_VALUE.
+	 * The smallest prime greater than Integer.MAX_VALUE.
 	 */
 	public static final long SMALLEST_PRIME_NOT_INT = 2147483659L;
 
 	/**
-	 * Largest prime less than or equal to Long.MAX_VALUE.
+	 * The largest prime less than or equal to Long.MAX_VALUE.
 	 */
 	public static final long LARGEST_PRIME_LONG = 9223372036854775783L;
 
 	/**
-	 * Smallest prime greater than Long.MAX_VALUE.
+	 * The smallest prime greater than Long.MAX_VALUE.
 	 */
 	public static final BigInteger SMALLEST_PRIME_NOT_LONG = new BigInteger("9223372036854775837");
 
 	/**
-	 * The first safe prime.
+	 * The first safe prime which is also the only safe prime that is 5 (mod 12).
 	 */
 	public static final byte FIRST_SAFE_PRIME = 5;
 
 	/**
-	 * Largest safe prime less than or equal to Byte.MAX_VALUE.
+	 * The second safe prime which is also the only safe prime that is 7 (mod 12).
+	 */
+	public static final byte SECOND_SAFE_PRIME = 7;
+
+	/**
+	 * The largest safe prime less than or equal to Byte.MAX_VALUE.
 	 */
 	public static final byte LARGEST_SAFE_PRIME_BYTE = 107;
 
 	/**
-	 * Smallest safe prime greater than Byte.MAX_VALUE.
+	 * The smallest safe prime greater than Byte.MAX_VALUE.
 	 */
 	public static final short SMALLEST_SAFE_PRIME_NOT_BYTE = 167;
 
 	/**
-	 * Largest safe prime less than or equal to Short.MAX_VALUE.
+	 * The largest safe prime less than or equal to Short.MAX_VALUE.
 	 */
 	public static final short LARGEST_SAFE_PRIME_SHORT = 32603;
 
 	/**
-	 * Smallest safe prime greater than Short.MAX_VALUE.
+	 * The smallest safe prime greater than Short.MAX_VALUE.
 	 */
 	public static final int SMALLEST_SAFE_PRIME_NOT_SHORT = 32843;
 
 	/**
-	 * Largest safe prime less than or equal to Integer.MAX_VALUE.
+	 * The largest safe prime less than or equal to Integer.MAX_VALUE.
 	 */
 	public static final int LARGEST_SAFE_PRIME_INT = 2147483579;
 
 	/**
-	 * Smallest safe prime greater than Integer.MAX_VALUE.
+	 * The smallest safe prime greater than Integer.MAX_VALUE.
 	 */
 	public static final long SMALLEST_SAFE_PRIME_NOT_INT = 2147483783L;
 
 	/**
-	 * Largest safe prime less than or equal to Long.MAX_VALUE.
+	 * The largest safe prime less than or equal to Long.MAX_VALUE.
 	 */
 	public static final long LARGEST_SAFE_PRIME_LONG = 9223372036854771239L;
 
 	/**
-	 * Smallest safe prime greater than Long.MAX_VALUE.
+	 * The smallest safe prime greater than Long.MAX_VALUE.
 	 */
 	public static final BigInteger SMALLEST_SAFE_PRIME_NOT_LONG = new BigInteger("9223372036854778487");
 
@@ -129,6 +134,54 @@ public class NumUtil {
 	 */
 	private NumUtil() {
 		// Empty by design.
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return <code>true</code> if and only if the given number is even.
+	 */
+	public static boolean isEven(long n) {
+		// Odd numbers have their lowest bit set.
+		// By using bitwise and, we can check this fact.
+		return ((n &= 1L) == 0L);
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return <code>true</code> if and only if the given number is even.
+	 */
+	public static boolean isEven(int n) {
+		// Odd numbers have their lowest bit set.
+		// By using bitwise and, we can check this fact.
+		return ((n &= 1) == 0);
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return <code>true</code> if and only if the given number is even.
+	 */
+	public static boolean isEven(short n) {
+		// Odd numbers have their lowest bit set.
+		// By using bitwise and, we can check this fact.
+		return ((n &= 1) == 0);
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return <code>true</code> if and only if the given number is even.
+	 */
+	public static boolean isEven(byte n) {
+		// Odd numbers have their lowest bit set.
+		// By using bitwise and, we can check this fact.
+		return ((n &= 1) == 0);
 	}
 
 	/**
