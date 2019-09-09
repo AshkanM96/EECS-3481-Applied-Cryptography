@@ -1554,6 +1554,185 @@ public class MathUtil {
 	}
 
 	/**
+	 * Note that calling this function once, is more efficient than continually calling
+	 * <code>modAdd</code> manually on <code>n</code> and <code>args</code> since this function will
+	 * perform less checks and call less functions.
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param n
+	 *            the given long primitive
+	 * 
+	 * @param args
+	 *            any number of long primitives
+	 * 
+	 * @return <code>n + sum(args) (mod m)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static long modAdds(long m, long n, long... args) throws InvalidModulusException, NullPointerException {
+		if (m < 1L) {
+			throw new InvalidModulusException();
+		}
+		// 1 <= m
+		// i.e., 0 < m
+
+		if (args.length == 0) {
+			return (((n %= m) < 0L) ? (n += m) : n);
+		}
+		long result = MathUtil.modMinFixedInput(n %= m, m);
+		for (int i = 0; i != args.length; ++i) {
+			/**
+			 * Don't do <code>args[i] %= m</code> since we need the value of <code>args[i]</code> to remain
+			 * unchanged. Note that the difference is the <code>%=</code> instead of the <code>%</code> which
+			 * will mutate <code>args[i]</code>.
+			 */
+			result = MathUtil.modMinFixedInput((result += MathUtil.modMinFixedInput(args[i] % m, m)) % m, m);
+		}
+		return ((result < 0L) ? (result += m) : result);
+	}
+
+	/**
+	 * Note that calling this function once, is more efficient than continually calling
+	 * <code>modAdd</code> manually on <code>n</code> and <code>args</code> since this function will
+	 * perform less checks and call less functions.
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param n
+	 *            the given int primitive
+	 * 
+	 * @param args
+	 *            any number of int primitives
+	 * 
+	 * @return <code>n + sum(args) (mod m)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static int modAdds(int m, int n, int... args) throws InvalidModulusException, NullPointerException {
+		if (m < 1) {
+			throw new InvalidModulusException();
+		}
+		// 1 <= m
+		// i.e., 0 < m
+
+		if (args.length == 0) {
+			return (((n %= m) < 0) ? (n += m) : n);
+		}
+		int result = (int) MathUtil.modMinFixedInput(n %= m, m);
+		for (int i = 0; i != args.length; ++i) {
+			/**
+			 * Don't do <code>args[i] %= m</code> since we need the value of <code>args[i]</code> to remain
+			 * unchanged. Note that the difference is the <code>%=</code> instead of the <code>%</code> which
+			 * will mutate <code>args[i]</code>.
+			 */
+			result = (int) MathUtil.modMinFixedInput((result += ((int) MathUtil.modMinFixedInput(args[i] % m, m))) % m,
+					m);
+		}
+		return ((result < 0) ? (result += m) : result);
+	}
+
+	/**
+	 * Note that calling this function once, is more efficient than continually calling
+	 * <code>modAdd</code> manually on <code>n</code> and <code>args</code> since this function will
+	 * perform less checks and call less functions.
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param n
+	 *            the given short primitive
+	 * 
+	 * @param args
+	 *            any number of short primitives
+	 * 
+	 * @return <code>n + sum(args) (mod m)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static short modAdds(short m, short n, short... args) throws InvalidModulusException, NullPointerException {
+		if (m < 1) {
+			throw new InvalidModulusException();
+		}
+		// 1 <= m
+		// i.e., 0 < m
+
+		if (args.length == 0) {
+			return (((n %= m) < 0) ? (n += m) : n);
+		}
+		short result = (short) MathUtil.modMinFixedInput(n %= m, m);
+		for (int i = 0; i != args.length; ++i) {
+			/**
+			 * Don't do <code>args[i] %= m</code> since we need the value of <code>args[i]</code> to remain
+			 * unchanged. Note that the difference is the <code>%=</code> instead of the <code>%</code> which
+			 * will mutate <code>args[i]</code>.
+			 */
+			result = (short) MathUtil
+					.modMinFixedInput((result += ((short) MathUtil.modMinFixedInput(args[i] % m, m))) % m, m);
+		}
+		return ((result < 0) ? (result += m) : result);
+	}
+
+	/**
+	 * Note that calling this function once, is more efficient than continually calling
+	 * <code>modAdd</code> manually on <code>n</code> and <code>args</code> since this function will
+	 * perform less checks and call less functions.
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param n
+	 *            the given byte primitive
+	 * 
+	 * @param args
+	 *            any number of byte primitives
+	 * 
+	 * @return <code>n + sum(args) (mod m)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static byte modAdds(byte m, byte n, byte... args) throws InvalidModulusException, NullPointerException {
+		if (m < 1) {
+			throw new InvalidModulusException();
+		}
+		// 1 <= m
+		// i.e., 0 < m
+
+		if (args.length == 0) {
+			return (((n %= m) < 0) ? (n += m) : n);
+		}
+		byte result = (byte) MathUtil.modMinFixedInput(n %= m, m);
+		for (int i = 0; i != args.length; ++i) {
+			/**
+			 * Don't do <code>args[i] %= m</code> since we need the value of <code>args[i]</code> to remain
+			 * unchanged. Note that the difference is the <code>%=</code> instead of the <code>%</code> which
+			 * will mutate <code>args[i]</code>.
+			 */
+			result = (byte) MathUtil
+					.modMinFixedInput((result += ((byte) MathUtil.modMinFixedInput(args[i] % m, m))) % m, m);
+		}
+		return ((result < 0) ? (result += m) : result);
+	}
+
+	/**
 	 * Precondition: <code>0 < m</code> <br>
 	 * Precondition: <code>|a| <= (m / 2)</code> <br>
 	 * Precondition: <code>|b| <= (m / 2)</code> <br>
@@ -1676,6 +1855,185 @@ public class MathUtil {
 		a = (byte) MathUtil.modMinFixedInput(a %= m, m);
 		b = (byte) MathUtil.modMinFixedInput(b %= m, m);
 		return (((a = (byte) ((a -= b) % m)) < 0) ? (a += m) : a);
+	}
+
+	/**
+	 * Note that calling this function once, is more efficient than continually calling
+	 * <code>modSub</code> manually on <code>n</code> and <code>args</code> since this function will
+	 * perform less checks and call less functions.
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param n
+	 *            the given long primitive
+	 * 
+	 * @param args
+	 *            any number of long primitives
+	 * 
+	 * @return <code>n - sum(args) (mod m)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static long modSubs(long m, long n, long... args) throws InvalidModulusException, NullPointerException {
+		if (m < 1L) {
+			throw new InvalidModulusException();
+		}
+		// 1 <= m
+		// i.e., 0 < m
+
+		if (args.length == 0) {
+			return (((n %= m) < 0L) ? (n += m) : n);
+		}
+		long result = MathUtil.modMinFixedInput(n %= m, m);
+		for (int i = 0; i != args.length; ++i) {
+			/**
+			 * Don't do <code>args[i] %= m</code> since we need the value of <code>args[i]</code> to remain
+			 * unchanged. Note that the difference is the <code>%=</code> instead of the <code>%</code> which
+			 * will mutate <code>args[i]</code>.
+			 */
+			result = MathUtil.modMinFixedInput((result -= MathUtil.modMinFixedInput(args[i] % m, m)) % m, m);
+		}
+		return ((result < 0L) ? (result += m) : result);
+	}
+
+	/**
+	 * Note that calling this function once, is more efficient than continually calling
+	 * <code>modSub</code> manually on <code>n</code> and <code>args</code> since this function will
+	 * perform less checks and call less functions.
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param n
+	 *            the given int primitive
+	 * 
+	 * @param args
+	 *            any number of int primitives
+	 * 
+	 * @return <code>n - sum(args) (mod m)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static int modSubs(int m, int n, int... args) throws InvalidModulusException, NullPointerException {
+		if (m < 1) {
+			throw new InvalidModulusException();
+		}
+		// 1 <= m
+		// i.e., 0 < m
+
+		if (args.length == 0) {
+			return (((n %= m) < 0) ? (n += m) : n);
+		}
+		int result = (int) MathUtil.modMinFixedInput(n %= m, m);
+		for (int i = 0; i != args.length; ++i) {
+			/**
+			 * Don't do <code>args[i] %= m</code> since we need the value of <code>args[i]</code> to remain
+			 * unchanged. Note that the difference is the <code>%=</code> instead of the <code>%</code> which
+			 * will mutate <code>args[i]</code>.
+			 */
+			result = (int) MathUtil.modMinFixedInput((result -= ((int) MathUtil.modMinFixedInput(args[i] % m, m))) % m,
+					m);
+		}
+		return ((result < 0) ? (result += m) : result);
+	}
+
+	/**
+	 * Note that calling this function once, is more efficient than continually calling
+	 * <code>modSub</code> manually on <code>n</code> and <code>args</code> since this function will
+	 * perform less checks and call less functions.
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param n
+	 *            the given short primitive
+	 * 
+	 * @param args
+	 *            any number of short primitives
+	 * 
+	 * @return <code>n - sum(args) (mod m)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static short modSubs(short m, short n, short... args) throws InvalidModulusException, NullPointerException {
+		if (m < 1) {
+			throw new InvalidModulusException();
+		}
+		// 1 <= m
+		// i.e., 0 < m
+
+		if (args.length == 0) {
+			return (((n %= m) < 0) ? (n += m) : n);
+		}
+		short result = (short) MathUtil.modMinFixedInput(n %= m, m);
+		for (int i = 0; i != args.length; ++i) {
+			/**
+			 * Don't do <code>args[i] %= m</code> since we need the value of <code>args[i]</code> to remain
+			 * unchanged. Note that the difference is the <code>%=</code> instead of the <code>%</code> which
+			 * will mutate <code>args[i]</code>.
+			 */
+			result = (short) MathUtil
+					.modMinFixedInput((result -= ((short) MathUtil.modMinFixedInput(args[i] % m, m))) % m, m);
+		}
+		return ((result < 0) ? (result += m) : result);
+	}
+
+	/**
+	 * Note that calling this function once, is more efficient than continually calling
+	 * <code>modSub</code> manually on <code>n</code> and <code>args</code> since this function will
+	 * perform less checks and call less functions.
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param n
+	 *            the given byte primitive
+	 * 
+	 * @param args
+	 *            any number of byte primitives
+	 * 
+	 * @return <code>n - sum(args) (mod m)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static byte modSubs(byte m, byte n, byte... args) throws InvalidModulusException, NullPointerException {
+		if (m < 1) {
+			throw new InvalidModulusException();
+		}
+		// 1 <= m
+		// i.e., 0 < m
+
+		if (args.length == 0) {
+			return (((n %= m) < 0) ? (n += m) : n);
+		}
+		byte result = (byte) MathUtil.modMinFixedInput(n %= m, m);
+		for (int i = 0; i != args.length; ++i) {
+			/**
+			 * Don't do <code>args[i] %= m</code> since we need the value of <code>args[i]</code> to remain
+			 * unchanged. Note that the difference is the <code>%=</code> instead of the <code>%</code> which
+			 * will mutate <code>args[i]</code>.
+			 */
+			result = (byte) MathUtil
+					.modMinFixedInput((result -= ((byte) MathUtil.modMinFixedInput(args[i] % m, m))) % m, m);
+		}
+		return ((result < 0) ? (result += m) : result);
 	}
 
 	/**
@@ -1853,6 +2211,194 @@ public class MathUtil {
 		// i.e., 0 < m
 		byte result = (byte) MathUtil.modMultFixedInput(MathUtil.modMinFixedInput(a %= m, m),
 				MathUtil.modMinFixedInput(b %= m, m), m);
+		return ((result < 0) ? (result += m) : result);
+	}
+
+	/**
+	 * Note that calling this function once, is more efficient than continually calling
+	 * <code>modMult</code> manually on <code>n</code> and <code>args</code> since this function will
+	 * perform less checks and call less functions.
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param n
+	 *            the given long primitive
+	 * 
+	 * @param args
+	 *            any number of long primitives
+	 * 
+	 * @return <code>n * product(args) (mod m)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static long modMults(long m, long n, long... args) throws InvalidModulusException, NullPointerException {
+		if (m < 1L) {
+			throw new InvalidModulusException();
+		}
+		// 1 <= m
+		// i.e., 0 < m
+
+		if (args.length == 0) {
+			return (((n %= m) < 0L) ? (n += m) : n);
+		}
+		long result = MathUtil.modMinFixedInput(n %= m, m);
+		for (int i = 0; i != args.length; ++i) {
+			/**
+			 * Don't do <code>args[i] %= m</code> since we need the value of <code>args[i]</code> to remain
+			 * unchanged. Note that the difference is the <code>%=</code> instead of the <code>%</code> which
+			 * will mutate <code>args[i]</code>.
+			 */
+			result = MathUtil.modMultFixedInput(result, MathUtil.modMinFixedInput(args[i] % m, m), m);
+			if (result == 0L) { // Short circuit the multiplication.
+				return 0L;
+			}
+		}
+		return ((result < 0L) ? (result += m) : result);
+	}
+
+	/**
+	 * Note that calling this function once, is more efficient than continually calling
+	 * <code>modMult</code> manually on <code>n</code> and <code>args</code> since this function will
+	 * perform less checks and call less functions.
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param n
+	 *            the given int primitive
+	 * 
+	 * @param args
+	 *            any number of int primitives
+	 * 
+	 * @return <code>n * product(args) (mod m)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static int modMults(int m, int n, int... args) throws InvalidModulusException, NullPointerException {
+		if (m < 1) {
+			throw new InvalidModulusException();
+		}
+		// 1 <= m
+		// i.e., 0 < m
+
+		if (args.length == 0) {
+			return (((n %= m) < 0) ? (n += m) : n);
+		}
+		int result = (int) MathUtil.modMinFixedInput(n %= m, m);
+		for (int i = 0; i != args.length; ++i) {
+			/**
+			 * Don't do <code>args[i] %= m</code> since we need the value of <code>args[i]</code> to remain
+			 * unchanged. Note that the difference is the <code>%=</code> instead of the <code>%</code> which
+			 * will mutate <code>args[i]</code>.
+			 */
+			result = (int) MathUtil.modMultFixedInput(result, MathUtil.modMinFixedInput(args[i] % m, m), m);
+			if (result == 0) { // Short circuit the multiplication.
+				return 0;
+			}
+		}
+		return ((result < 0) ? (result += m) : result);
+	}
+
+	/**
+	 * Note that calling this function once, is more efficient than continually calling
+	 * <code>modMult</code> manually on <code>n</code> and <code>args</code> since this function will
+	 * perform less checks and call less functions.
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param n
+	 *            the given short primitive
+	 * 
+	 * @param args
+	 *            any number of short primitives
+	 * 
+	 * @return <code>n * product(args) (mod m)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static short modMults(short m, short n, short... args) throws InvalidModulusException, NullPointerException {
+		if (m < 1) {
+			throw new InvalidModulusException();
+		}
+		// 1 <= m
+		// i.e., 0 < m
+
+		if (args.length == 0) {
+			return (((n %= m) < 0) ? (n += m) : n);
+		}
+		short result = (short) MathUtil.modMinFixedInput(n %= m, m);
+		for (int i = 0; i != args.length; ++i) {
+			/**
+			 * Don't do <code>args[i] %= m</code> since we need the value of <code>args[i]</code> to remain
+			 * unchanged. Note that the difference is the <code>%=</code> instead of the <code>%</code> which
+			 * will mutate <code>args[i]</code>.
+			 */
+			result = (short) MathUtil.modMultFixedInput(result, MathUtil.modMinFixedInput(args[i] % m, m), m);
+			if (result == 0) { // Short circuit the multiplication.
+				return 0;
+			}
+		}
+		return ((result < 0) ? (result += m) : result);
+	}
+
+	/**
+	 * Note that calling this function once, is more efficient than continually calling
+	 * <code>modMult</code> manually on <code>n</code> and <code>args</code> since this function will
+	 * perform less checks and call less functions.
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param n
+	 *            the given byte primitive
+	 * 
+	 * @param args
+	 *            any number of byte primitives
+	 * 
+	 * @return <code>n * product(args) (mod m)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m < 1</code>
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static byte modMults(byte m, byte n, byte... args) throws InvalidModulusException, NullPointerException {
+		if (m < 1) {
+			throw new InvalidModulusException();
+		}
+		// 1 <= m
+		// i.e., 0 < m
+
+		if (args.length == 0) {
+			return (((n %= m) < 0) ? (n += m) : n);
+		}
+		byte result = (byte) MathUtil.modMinFixedInput(n %= m, m);
+		for (int i = 0; i != args.length; ++i) {
+			/**
+			 * Don't do <code>args[i] %= m</code> since we need the value of <code>args[i]</code> to remain
+			 * unchanged. Note that the difference is the <code>%=</code> instead of the <code>%</code> which
+			 * will mutate <code>args[i]</code>.
+			 */
+			result = (byte) MathUtil.modMultFixedInput(result, MathUtil.modMinFixedInput(args[i] % m, m), m);
+			if (result == 0) { // Short circuit the multiplication.
+				return 0;
+			}
+		}
 		return ((result < 0) ? (result += m) : result);
 	}
 
