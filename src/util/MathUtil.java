@@ -1496,9 +1496,8 @@ public class MathUtil {
 		}
 		// 1 <= m
 		// i.e., 0 < m
-		a = (int) MathUtil.modMinFixedInput(a %= m, m);
-		b = (int) MathUtil.modMinFixedInput(b %= m, m);
-		return (((a = (a += b) % m) < 0) ? (a += m) : a);
+		long result = ((long) a) + ((long) b);
+		return ((int) (((result %= m) < 0L) ? (result += m) : result));
 	}
 
 	/**
@@ -1516,15 +1515,15 @@ public class MathUtil {
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
 	 */
+	@SuppressWarnings("cast")
 	public static short modAdd(short a, short b, short m) throws InvalidModulusException {
 		if (m < 1) {
 			throw new InvalidModulusException();
 		}
 		// 1 <= m
 		// i.e., 0 < m
-		a = (short) MathUtil.modMinFixedInput(a %= m, m);
-		b = (short) MathUtil.modMinFixedInput(b %= m, m);
-		return (((a = (short) ((a += b) % m)) < 0) ? (a += m) : a);
+		int result = ((int) a) + ((int) b);
+		return ((short) (((result %= m) < 0) ? (result += m) : result));
 	}
 
 	/**
@@ -1542,15 +1541,15 @@ public class MathUtil {
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
 	 */
+	@SuppressWarnings("cast")
 	public static byte modAdd(byte a, byte b, byte m) throws InvalidModulusException {
 		if (m < 1) {
 			throw new InvalidModulusException();
 		}
 		// 1 <= m
 		// i.e., 0 < m
-		a = (byte) MathUtil.modMinFixedInput(a %= m, m);
-		b = (byte) MathUtil.modMinFixedInput(b %= m, m);
-		return (((a = (byte) ((a += b) % m)) < 0) ? (a += m) : a);
+		int result = ((int) a) + ((int) b);
+		return ((byte) (((result %= m) < 0) ? (result += m) : result));
 	}
 
 	/**
@@ -1619,6 +1618,7 @@ public class MathUtil {
 	 * @throws NullPointerException
 	 *             If <code>args == null</code>
 	 */
+	@SuppressWarnings("cast")
 	public static int modAdds(int m, int n, int... args) throws InvalidModulusException, NullPointerException {
 		if (m < 1) {
 			throw new InvalidModulusException();
@@ -1629,17 +1629,11 @@ public class MathUtil {
 		if (args.length == 0) {
 			return (((n %= m) < 0) ? (n += m) : n);
 		}
-		int result = (int) MathUtil.modMinFixedInput(n %= m, m);
+		long result = n;
 		for (int i = 0; i != args.length; ++i) {
-			/**
-			 * Don't do <code>args[i] %= m</code> since we need the value of <code>args[i]</code> to remain
-			 * unchanged. Note that the difference is the <code>%=</code> instead of the <code>%</code> which
-			 * will mutate <code>args[i]</code>.
-			 */
-			result = (int) MathUtil.modMinFixedInput((result += ((int) MathUtil.modMinFixedInput(args[i] % m, m))) % m,
-					m);
+			result += (long) args[i];
 		}
-		return ((result < 0) ? (result += m) : result);
+		return ((int) (((result %= m) < 0L) ? (result += m) : result));
 	}
 
 	/**
@@ -1664,6 +1658,7 @@ public class MathUtil {
 	 * @throws NullPointerException
 	 *             If <code>args == null</code>
 	 */
+	@SuppressWarnings("cast")
 	public static short modAdds(short m, short n, short... args) throws InvalidModulusException, NullPointerException {
 		if (m < 1) {
 			throw new InvalidModulusException();
@@ -1674,17 +1669,11 @@ public class MathUtil {
 		if (args.length == 0) {
 			return (((n %= m) < 0) ? (n += m) : n);
 		}
-		short result = (short) MathUtil.modMinFixedInput(n %= m, m);
+		int result = n;
 		for (int i = 0; i != args.length; ++i) {
-			/**
-			 * Don't do <code>args[i] %= m</code> since we need the value of <code>args[i]</code> to remain
-			 * unchanged. Note that the difference is the <code>%=</code> instead of the <code>%</code> which
-			 * will mutate <code>args[i]</code>.
-			 */
-			result = (short) MathUtil
-					.modMinFixedInput((result += ((short) MathUtil.modMinFixedInput(args[i] % m, m))) % m, m);
+			result += (int) args[i];
 		}
-		return ((result < 0) ? (result += m) : result);
+		return ((short) (((result %= m) < 0) ? (result += m) : result));
 	}
 
 	/**
@@ -1709,6 +1698,7 @@ public class MathUtil {
 	 * @throws NullPointerException
 	 *             If <code>args == null</code>
 	 */
+	@SuppressWarnings("cast")
 	public static byte modAdds(byte m, byte n, byte... args) throws InvalidModulusException, NullPointerException {
 		if (m < 1) {
 			throw new InvalidModulusException();
@@ -1719,17 +1709,11 @@ public class MathUtil {
 		if (args.length == 0) {
 			return (((n %= m) < 0) ? (n += m) : n);
 		}
-		byte result = (byte) MathUtil.modMinFixedInput(n %= m, m);
+		int result = n;
 		for (int i = 0; i != args.length; ++i) {
-			/**
-			 * Don't do <code>args[i] %= m</code> since we need the value of <code>args[i]</code> to remain
-			 * unchanged. Note that the difference is the <code>%=</code> instead of the <code>%</code> which
-			 * will mutate <code>args[i]</code>.
-			 */
-			result = (byte) MathUtil
-					.modMinFixedInput((result += ((byte) MathUtil.modMinFixedInput(args[i] % m, m))) % m, m);
+			result += (int) args[i];
 		}
-		return ((result < 0) ? (result += m) : result);
+		return ((byte) (((result %= m) < 0) ? (result += m) : result));
 	}
 
 	/**
@@ -1800,9 +1784,8 @@ public class MathUtil {
 		}
 		// 1 <= m
 		// i.e., 0 < m
-		a = (int) MathUtil.modMinFixedInput(a %= m, m);
-		b = (int) MathUtil.modMinFixedInput(b %= m, m);
-		return (((a = (a -= b) % m) < 0) ? (a += m) : a);
+		long result = ((long) a) - ((long) b);
+		return ((int) (((result %= m) < 0L) ? (result += m) : result));
 	}
 
 	/**
@@ -1820,15 +1803,15 @@ public class MathUtil {
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
 	 */
+	@SuppressWarnings("cast")
 	public static short modSub(short a, short b, short m) throws InvalidModulusException {
 		if (m < 1) {
 			throw new InvalidModulusException();
 		}
 		// 1 <= m
 		// i.e., 0 < m
-		a = (short) MathUtil.modMinFixedInput(a %= m, m);
-		b = (short) MathUtil.modMinFixedInput(b %= m, m);
-		return (((a = (short) ((a -= b) % m)) < 0) ? (a += m) : a);
+		int result = ((int) a) - ((int) b);
+		return ((short) (((result %= m) < 0) ? (result += m) : result));
 	}
 
 	/**
@@ -1846,15 +1829,15 @@ public class MathUtil {
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
 	 */
+	@SuppressWarnings("cast")
 	public static byte modSub(byte a, byte b, byte m) throws InvalidModulusException {
 		if (m < 1) {
 			throw new InvalidModulusException();
 		}
 		// 1 <= m
 		// i.e., 0 < m
-		a = (byte) MathUtil.modMinFixedInput(a %= m, m);
-		b = (byte) MathUtil.modMinFixedInput(b %= m, m);
-		return (((a = (byte) ((a -= b) % m)) < 0) ? (a += m) : a);
+		int result = ((int) a) - ((int) b);
+		return ((byte) (((result %= m) < 0) ? (result += m) : result));
 	}
 
 	/**
@@ -1923,6 +1906,7 @@ public class MathUtil {
 	 * @throws NullPointerException
 	 *             If <code>args == null</code>
 	 */
+	@SuppressWarnings("cast")
 	public static int modSubs(int m, int n, int... args) throws InvalidModulusException, NullPointerException {
 		if (m < 1) {
 			throw new InvalidModulusException();
@@ -1933,17 +1917,11 @@ public class MathUtil {
 		if (args.length == 0) {
 			return (((n %= m) < 0) ? (n += m) : n);
 		}
-		int result = (int) MathUtil.modMinFixedInput(n %= m, m);
+		long result = n;
 		for (int i = 0; i != args.length; ++i) {
-			/**
-			 * Don't do <code>args[i] %= m</code> since we need the value of <code>args[i]</code> to remain
-			 * unchanged. Note that the difference is the <code>%=</code> instead of the <code>%</code> which
-			 * will mutate <code>args[i]</code>.
-			 */
-			result = (int) MathUtil.modMinFixedInput((result -= ((int) MathUtil.modMinFixedInput(args[i] % m, m))) % m,
-					m);
+			result -= (long) args[i];
 		}
-		return ((result < 0) ? (result += m) : result);
+		return ((int) (((result %= m) < 0L) ? (result += m) : result));
 	}
 
 	/**
@@ -1968,6 +1946,7 @@ public class MathUtil {
 	 * @throws NullPointerException
 	 *             If <code>args == null</code>
 	 */
+	@SuppressWarnings("cast")
 	public static short modSubs(short m, short n, short... args) throws InvalidModulusException, NullPointerException {
 		if (m < 1) {
 			throw new InvalidModulusException();
@@ -1978,17 +1957,11 @@ public class MathUtil {
 		if (args.length == 0) {
 			return (((n %= m) < 0) ? (n += m) : n);
 		}
-		short result = (short) MathUtil.modMinFixedInput(n %= m, m);
+		int result = n;
 		for (int i = 0; i != args.length; ++i) {
-			/**
-			 * Don't do <code>args[i] %= m</code> since we need the value of <code>args[i]</code> to remain
-			 * unchanged. Note that the difference is the <code>%=</code> instead of the <code>%</code> which
-			 * will mutate <code>args[i]</code>.
-			 */
-			result = (short) MathUtil
-					.modMinFixedInput((result -= ((short) MathUtil.modMinFixedInput(args[i] % m, m))) % m, m);
+			result -= (int) args[i];
 		}
-		return ((result < 0) ? (result += m) : result);
+		return ((short) (((result %= m) < 0) ? (result += m) : result));
 	}
 
 	/**
@@ -2013,6 +1986,7 @@ public class MathUtil {
 	 * @throws NullPointerException
 	 *             If <code>args == null</code>
 	 */
+	@SuppressWarnings("cast")
 	public static byte modSubs(byte m, byte n, byte... args) throws InvalidModulusException, NullPointerException {
 		if (m < 1) {
 			throw new InvalidModulusException();
@@ -2023,17 +1997,11 @@ public class MathUtil {
 		if (args.length == 0) {
 			return (((n %= m) < 0) ? (n += m) : n);
 		}
-		byte result = (byte) MathUtil.modMinFixedInput(n %= m, m);
+		int result = n;
 		for (int i = 0; i != args.length; ++i) {
-			/**
-			 * Don't do <code>args[i] %= m</code> since we need the value of <code>args[i]</code> to remain
-			 * unchanged. Note that the difference is the <code>%=</code> instead of the <code>%</code> which
-			 * will mutate <code>args[i]</code>.
-			 */
-			result = (byte) MathUtil
-					.modMinFixedInput((result -= ((byte) MathUtil.modMinFixedInput(args[i] % m, m))) % m, m);
+			result -= (int) args[i];
 		}
-		return ((result < 0) ? (result += m) : result);
+		return ((byte) (((result %= m) < 0) ? (result += m) : result));
 	}
 
 	/**
@@ -2157,9 +2125,8 @@ public class MathUtil {
 		}
 		// 1 <= m
 		// i.e., 0 < m
-		int result = (int) MathUtil.modMultFixedInput(MathUtil.modMinFixedInput(a %= m, m),
-				MathUtil.modMinFixedInput(b %= m, m), m);
-		return ((result < 0) ? (result += m) : result);
+		long result = ((long) a) * ((long) b);
+		return ((int) (((result %= m) < 0L) ? (result += m) : result));
 	}
 
 	/**
@@ -2177,15 +2144,15 @@ public class MathUtil {
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
 	 */
+	@SuppressWarnings("cast")
 	public static short modMult(short a, short b, short m) throws InvalidModulusException {
 		if (m < 1) {
 			throw new InvalidModulusException();
 		}
 		// 1 <= m
 		// i.e., 0 < m
-		short result = (short) MathUtil.modMultFixedInput(MathUtil.modMinFixedInput(a %= m, m),
-				MathUtil.modMinFixedInput(b %= m, m), m);
-		return ((result < 0) ? (result += m) : result);
+		int result = ((int) a) * ((int) b);
+		return ((short) (((result %= m) < 0) ? (result += m) : result));
 	}
 
 	/**
@@ -2203,15 +2170,15 @@ public class MathUtil {
 	 * @throws InvalidModulusException
 	 *             If <code>m < 1</code>
 	 */
+	@SuppressWarnings("cast")
 	public static byte modMult(byte a, byte b, byte m) throws InvalidModulusException {
 		if (m < 1) {
 			throw new InvalidModulusException();
 		}
 		// 1 <= m
 		// i.e., 0 < m
-		byte result = (byte) MathUtil.modMultFixedInput(MathUtil.modMinFixedInput(a %= m, m),
-				MathUtil.modMinFixedInput(b %= m, m), m);
-		return ((result < 0) ? (result += m) : result);
+		int result = ((int) a) * ((int) b);
+		return ((byte) (((result %= m) < 0) ? (result += m) : result));
 	}
 
 	/**
@@ -2283,6 +2250,7 @@ public class MathUtil {
 	 * @throws NullPointerException
 	 *             If <code>args == null</code>
 	 */
+	@SuppressWarnings("cast")
 	public static int modMults(int m, int n, int... args) throws InvalidModulusException, NullPointerException {
 		if (m < 1) {
 			throw new InvalidModulusException();
@@ -2293,19 +2261,19 @@ public class MathUtil {
 		if (args.length == 0) {
 			return (((n %= m) < 0) ? (n += m) : n);
 		}
-		int result = (int) MathUtil.modMinFixedInput(n %= m, m);
+		long result = n %= m;
 		for (int i = 0; i != args.length; ++i) {
 			/**
 			 * Don't do <code>args[i] %= m</code> since we need the value of <code>args[i]</code> to remain
 			 * unchanged. Note that the difference is the <code>%=</code> instead of the <code>%</code> which
 			 * will mutate <code>args[i]</code>.
 			 */
-			result = (int) MathUtil.modMultFixedInput(result, MathUtil.modMinFixedInput(args[i] % m, m), m);
-			if (result == 0) { // Short circuit the multiplication.
+			result = (result *= ((long) (args[i] % m))) % m;
+			if (result == 0L) { // Short circuit the multiplication.
 				return 0;
 			}
 		}
-		return ((result < 0) ? (result += m) : result);
+		return ((int) (((result %= m) < 0L) ? (result += m) : result));
 	}
 
 	/**
@@ -2330,6 +2298,7 @@ public class MathUtil {
 	 * @throws NullPointerException
 	 *             If <code>args == null</code>
 	 */
+	@SuppressWarnings("cast")
 	public static short modMults(short m, short n, short... args) throws InvalidModulusException, NullPointerException {
 		if (m < 1) {
 			throw new InvalidModulusException();
@@ -2340,19 +2309,19 @@ public class MathUtil {
 		if (args.length == 0) {
 			return (((n %= m) < 0) ? (n += m) : n);
 		}
-		short result = (short) MathUtil.modMinFixedInput(n %= m, m);
+		int result = n %= m;
 		for (int i = 0; i != args.length; ++i) {
 			/**
 			 * Don't do <code>args[i] %= m</code> since we need the value of <code>args[i]</code> to remain
 			 * unchanged. Note that the difference is the <code>%=</code> instead of the <code>%</code> which
 			 * will mutate <code>args[i]</code>.
 			 */
-			result = (short) MathUtil.modMultFixedInput(result, MathUtil.modMinFixedInput(args[i] % m, m), m);
+			result = (result *= ((int) (args[i] % m))) % m;
 			if (result == 0) { // Short circuit the multiplication.
 				return 0;
 			}
 		}
-		return ((result < 0) ? (result += m) : result);
+		return ((short) (((result %= m) < 0) ? (result += m) : result));
 	}
 
 	/**
@@ -2377,6 +2346,7 @@ public class MathUtil {
 	 * @throws NullPointerException
 	 *             If <code>args == null</code>
 	 */
+	@SuppressWarnings("cast")
 	public static byte modMults(byte m, byte n, byte... args) throws InvalidModulusException, NullPointerException {
 		if (m < 1) {
 			throw new InvalidModulusException();
@@ -2387,19 +2357,19 @@ public class MathUtil {
 		if (args.length == 0) {
 			return (((n %= m) < 0) ? (n += m) : n);
 		}
-		byte result = (byte) MathUtil.modMinFixedInput(n %= m, m);
+		int result = n %= m;
 		for (int i = 0; i != args.length; ++i) {
 			/**
 			 * Don't do <code>args[i] %= m</code> since we need the value of <code>args[i]</code> to remain
 			 * unchanged. Note that the difference is the <code>%=</code> instead of the <code>%</code> which
 			 * will mutate <code>args[i]</code>.
 			 */
-			result = (byte) MathUtil.modMultFixedInput(result, MathUtil.modMinFixedInput(args[i] % m, m), m);
+			result = (result *= ((int) (args[i] % m))) % m;
 			if (result == 0) { // Short circuit the multiplication.
 				return 0;
 			}
 		}
-		return ((result < 0) ? (result += m) : result);
+		return ((byte) (((result %= m) < 0) ? (result += m) : result));
 	}
 
 	/**
