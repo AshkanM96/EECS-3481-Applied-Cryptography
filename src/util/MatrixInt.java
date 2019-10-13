@@ -569,9 +569,6 @@ public class MatrixInt implements Iterable<Integer> {
 	}
 
 	/**
-	 * A row transposition matrix, when multiplied by a row matrix, results in a new row matrix that
-	 * contains the same entries as the original with a potentially different order.
-	 * 
 	 * @return <code>true</code> if and only if <code>this</code> is a row transposition matrix (i.e., a
 	 *         square matrix that has exactly one <code>1</code> on each row and zeroes everywhere
 	 *         else).
@@ -590,7 +587,7 @@ public class MatrixInt implements Iterable<Integer> {
 			for (int colNum = 0; colNum != this.numCols; ++colNum) {
 				entry = row[colNum];
 				if (entry == 1) {
-					// Matrix has at least two 1 on row indexed by rowNum.
+					// Matrix has at least one 1 on row indexed by rowNum.
 					if (haveSeenOneOnRow) {
 						return false;
 					}
@@ -608,8 +605,6 @@ public class MatrixInt implements Iterable<Integer> {
 	}
 
 	/**
-	 * A column transposition matrix, when multiplied by a column matrix, results in a new column matrix
-	 * that contains the same entries as the original with a potentially different order. <br>
 	 * This method has two possible implementations. The caller can decide which to execute using the
 	 * boolean argument. <br>
 	 * <br>
@@ -644,7 +639,7 @@ public class MatrixInt implements Iterable<Integer> {
 				for (int rowNum = 0; rowNum != this.numRows; ++rowNum) {
 					entry = this.data[rowNum][colNum];
 					if (entry == 1) {
-						// Matrix has at least two 1 on column indexed by colNum.
+						// Matrix has at least one 1 on column indexed by colNum.
 						if (haveSeenOneOnCol) {
 							return false;
 						}
@@ -669,7 +664,7 @@ public class MatrixInt implements Iterable<Integer> {
 			for (int colNum = 0; colNum != this.numCols; ++colNum) {
 				entry = row[colNum];
 				if (entry == 1) {
-					// Matrix has at least two 1 on column indexed by colNum.
+					// Matrix has at least one 1 on column indexed by colNum.
 					if (haveSeenOneOnCol[colNum]) {
 						return false;
 					}
@@ -677,6 +672,57 @@ public class MatrixInt implements Iterable<Integer> {
 				} else if (entry != 0) {
 					return false;
 				}
+			}
+		}
+		for (int colNum = 0; colNum != this.numCols; ++colNum) {
+			// Matrix does not have any 1 on column indexed by colNum.
+			if (!haveSeenOneOnCol[colNum]) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * @return <code>true</code> if and only if <code>this</code> is a transposition matrix (i.e., a
+	 *         square matrix that has exactly one <code>1</code> on each row and each column and zeroes
+	 *         everywhere else).
+	 */
+	public boolean isTransposition() {
+		// return (this.isTranspositionRow() && this.isTranspositionCol(false));
+
+		// Transposition matrix is a square.
+		if (this.numRows != this.numCols) { // i.e., !this.isSquare()
+			return false;
+		}
+
+		// Transposition matrix has one 1 on each row and each column and zeroes everywhere else.
+		boolean haveSeenOneOnRow = false;
+		final boolean[] haveSeenOneOnCol = new boolean[this.numCols];
+		int[] row = null;
+		for (int rowNum = 0, entry = 0; rowNum != this.numRows; ++rowNum, haveSeenOneOnRow = false) {
+			row = this.data[rowNum];
+			for (int colNum = 0; colNum != this.numCols; ++colNum) {
+				entry = row[colNum];
+				if (entry == 1) {
+					// Matrix has at least one 1 on row indexed by rowNum.
+					if (haveSeenOneOnRow) {
+						return false;
+					}
+					haveSeenOneOnRow = true;
+
+					// Matrix has at least one 1 on column indexed by colNum.
+					if (haveSeenOneOnCol[colNum]) {
+						return false;
+					}
+					haveSeenOneOnCol[colNum] = true;
+				} else if (entry != 0) {
+					return false;
+				}
+			}
+			// Matrix does not have any 1 on row indexed by rowNum.
+			if (!haveSeenOneOnRow) {
+				return false;
 			}
 		}
 		for (int colNum = 0; colNum != this.numCols; ++colNum) {
@@ -1298,16 +1344,18 @@ public class MatrixInt implements Iterable<Integer> {
 		final int[][] sub = new int[side_minus_one][side_minus_one];
 		int[] row = null, sub_row = null;
 		for (int colNum = 0, sign = 1; colNum != side; ++colNum, sign *= -1 /* Alternate signs. */) {
-			for (int rowNum = 1; rowNum != side; ++rowNum) {
-				row = data[rowNum];
-				sub_row = sub[rowNum - 1];
-				for (int data_colNum = 0, sub_colNum = 0; data_colNum != side; ++data_colNum) {
-					if (data_colNum != colNum) {
-						sub_row[sub_colNum++] = row[data_colNum];
+			if (first_row[colNum] != 0) {
+				for (int rowNum = 1; rowNum != side; ++rowNum) {
+					row = data[rowNum];
+					sub_row = sub[rowNum - 1];
+					for (int data_colNum = 0, sub_colNum = 0; data_colNum != side; ++data_colNum) {
+						if (data_colNum != colNum) {
+							sub_row[sub_colNum++] = row[data_colNum];
+						}
 					}
 				}
+				result += sign * first_row[colNum] * MatrixInt.determinantHelper(side_minus_one, sub);
 			}
-			result += sign * first_row[colNum] * MatrixInt.determinantHelper(side_minus_one, sub);
 		}
 		return result;
 	}

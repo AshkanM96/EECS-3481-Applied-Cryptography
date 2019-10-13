@@ -28,7 +28,7 @@ public class Scytale implements Iterable<Integer> {
 	protected MatrixInt key;
 
 	/**
-	 * Saves <code>this.key.isTranspositionRow()</code>.
+	 * Saves <code>this.key.isTransposition()</code>.
 	 */
 	protected boolean isValidKey;
 
@@ -348,10 +348,10 @@ public class Scytale implements Iterable<Integer> {
 	/**
 	 * Check if the current cipher key is valid.
 	 * 
-	 * @return <code>this.key.isTranspositionRow()</code>.
+	 * @return <code>this.key.isTransposition()</code>.
 	 */
 	public boolean checkValidKey() {
-		return this.key.isTranspositionRow();
+		return this.key.isTransposition();
 	}
 
 	/**
@@ -379,11 +379,11 @@ public class Scytale implements Iterable<Integer> {
 	 * <code>false</code>. If that is the case, then it means that the cipher key is invalid and as such
 	 * no encryption or decryption may be performed.
 	 * 
-	 * @return <code>this.isValidKey = this.key.isTranspositionRow()</code>.
+	 * @return <code>this.isValidKey = this.key.isTransposition()</code>.
 	 */
 	public boolean prepareKey() {
 		// The following is meant to be an assignment of this.isValidKey.
-		return (this.isValidKey = this.key.isTranspositionRow());
+		return (this.isValidKey = this.key.isTransposition());
 	}
 
 	/**

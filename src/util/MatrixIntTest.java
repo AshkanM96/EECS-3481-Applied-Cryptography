@@ -172,6 +172,7 @@ public class MatrixIntTest {
 		assertTrue("isTranspositionRow", m.isTranspositionRow());
 		assertTrue("isTranspositionCol(true)", m.isTranspositionCol(true));
 		assertTrue("isTranspositionCol(false)", m.isTranspositionCol(false));
+		assertTrue("isTransposition", m.isTransposition());
 		assertTrue("isInvertible", m.isInvertible());
 		assertTrue("Correct determinant", m.determinant() == 1);
 		assertTrue("Equal data", ArrayUtil.equals(m.data, data));

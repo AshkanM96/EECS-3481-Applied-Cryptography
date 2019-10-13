@@ -248,11 +248,9 @@ public class NumUtil {
 	 * @return <code>true</code> if and only if the given number is a prime.
 	 */
 	public static boolean isPrimeSqrt(long n) {
-		if (n < 2L) {
-			// The first prime is 2.
-			return false;
-		} else if (n < 4L) { // i.e., (n == 2) || (n == 3)
-			return true;
+		if (n < 4L) {
+			// The only primes less than 4 are 2 and 3.
+			return ((n == 2L) || (n == 3L));
 		} else if (((n & 1L) == 0L) || (n % 3L == 0L)) {
 			/**
 			 * Don't do <code>(n &= 1L) == 0L</code> since we need the value of <code>n</code> to remain
@@ -275,11 +273,9 @@ public class NumUtil {
 	 * @return <code>true</code> if and only if the given number is a prime.
 	 */
 	public static boolean isPrimeSqrt(int n) {
-		if (n < 2) {
-			// The first prime is 2.
-			return false;
-		} else if (n < 4) { // i.e., (n == 2) || (n == 3)
-			return true;
+		if (n < 4) {
+			// The only primes less than 4 are 2 and 3.
+			return ((n == 2) || (n == 3));
 		} else if (((n & 1) == 0) || (n % 3 == 0)) {
 			/**
 			 * Don't do <code>(n &= 1) == 0</code> since we need the value of <code>n</code> to remain
@@ -302,11 +298,9 @@ public class NumUtil {
 	 * @return <code>true</code> if and only if the given number is a prime.
 	 */
 	public static boolean isPrimeSqrt(short n) {
-		if (n < 2) {
-			// The first prime is 2.
-			return false;
-		} else if (n < 4) { // i.e., (n == 2) || (n == 3)
-			return true;
+		if (n < 4) {
+			// The only primes less than 4 are 2 and 3.
+			return ((n == 2) || (n == 3));
 		} else if (((n & 1) == 0) || (n % 3 == 0)) {
 			/**
 			 * Don't do <code>(n &= 1) == 0</code> since we need the value of <code>n</code> to remain
@@ -329,11 +323,9 @@ public class NumUtil {
 	 * @return <code>true</code> if and only if the given number is a prime.
 	 */
 	public static boolean isPrimeSqrt(byte n) {
-		if (n < 2) {
-			// The first prime is 2.
-			return false;
-		} else if (n < 4) { // i.e., (n == 2) || (n == 3)
-			return true;
+		if (n < 4) {
+			// The only primes less than 4 are 2 and 3.
+			return ((n == 2) || (n == 3));
 		} else if (((n & 1) == 0) || (n % 3 == 0)) {
 			/**
 			 * Don't do <code>(n &= 1) == 0</code> since we need the value of <code>n</code> to remain
@@ -633,11 +625,9 @@ public class NumUtil {
 	 * @return <code>true</code> if and only if the given number is a safe prime.
 	 */
 	public static boolean isSafePrimeSqrt(long n) {
-		if (n < 5L) {
-			// The first safe prime is 5.
-			return false;
-		} else if (n < 8L) { // i.e., (n == 5) || (n == 6) || (n == 7)
-			return (n != 6L);
+		if (n < 8L) {
+			// The only safe primes less than 8 are 5 and 7.
+			return ((n == 5L) || (n == 7L));
 		} else if (n % 12L != 11L) {
 			/**
 			 * <pre>
@@ -664,11 +654,9 @@ public class NumUtil {
 	 * @return <code>true</code> if and only if the given number is a safe prime.
 	 */
 	public static boolean isSafePrimeSqrt(int n) {
-		if (n < 5) {
-			// The first safe prime is 5.
-			return false;
-		} else if (n < 8) { // i.e., (n == 5) || (n == 6) || (n == 7)
-			return (n != 6);
+		if (n < 8) {
+			// The only safe primes less than 8 are 5 and 7.
+			return ((n == 5) || (n == 7));
 		} else if (n % 12 != 11) {
 			/**
 			 * <pre>
@@ -695,11 +683,9 @@ public class NumUtil {
 	 * @return <code>true</code> if and only if the given number is a safe prime.
 	 */
 	public static boolean isSafePrimeSqrt(short n) {
-		if (n < 5) {
-			// The first safe prime is 5.
-			return false;
-		} else if (n < 8) { // i.e., (n == 5) || (n == 6) || (n == 7)
-			return (n != 6);
+		if (n < 8) {
+			// The only safe primes less than 8 are 5 and 7.
+			return ((n == 5) || (n == 7));
 		} else if (n % 12 != 11) {
 			/**
 			 * <pre>
@@ -726,11 +712,9 @@ public class NumUtil {
 	 * @return <code>true</code> if and only if the given number is a safe prime.
 	 */
 	public static boolean isSafePrimeSqrt(byte n) {
-		if (n < 5) {
-			// The first safe prime is 5.
-			return false;
-		} else if (n < 8) { // i.e., (n == 5) || (n == 6) || (n == 7)
-			return (n != 6);
+		if (n < 8) {
+			// The only safe primes less than 8 are 5 and 7.
+			return ((n == 5) || (n == 7));
 		} else if (n % 12 != 11) {
 			/**
 			 * <pre>
