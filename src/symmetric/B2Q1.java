@@ -77,7 +77,6 @@ public class B2Q1 {
 			System.out.println();
 		}
 
-		// Pseudo Random Number Generator
 		final Random prng = ThreadLocalRandom.current();
 		// A copy of plaintext which will have its (flipBitIndex + 1)^th bit flipped.
 		final byte[] flippedPlaintext = new byte[B2Q1.PLAINTEXT.length];
@@ -86,7 +85,7 @@ public class B2Q1 {
 		// Save the total number of different bits to be able to compute the average after the loop.
 		long totalDiffBitCount = 0L;
 		for (int run = 0, flipBitIndex = 0, flipByteIndex = 0, flipBitMask = 0, numDiffBits = 0; run != B2Q1.MAX_RUNS; ++run) {
-			// Generate a random integer in [0, B2Q1.PLAINTEXT.length * Binary.BITS_PER_BYTE].
+			// Generate a random index for the bit to be flipped.
 			flipBitIndex = prng.nextInt(B2Q1.PLAINTEXT.length * Binary.BITS_PER_BYTE);
 			// Compute the index in flippedPlaintext that contains the (flipBitIndex + 1)^th bit.
 			flipByteIndex = flipBitIndex / Binary.BITS_PER_BYTE;
@@ -104,17 +103,16 @@ public class B2Q1 {
 			// Xor ciphertext and flippedCiphertext, then count number of
 			// "on" bits to measure how different they are from each other.
 			numDiffBits = Binary.countOnes(Binary.xor(ciphertext, flippedCiphertext));
-
 			// Accumulate the count of the number of different bits.
 			totalDiffBitCount += numDiffBits;
 
 			// Only print if requested.
 			if (B2Q1.PRINT_RUN) {
+				System.out.println("Flipping the " + (flipBitIndex + 1) + "^th bit in the plaintext.\n");
 				System.out.println(
 						"The flipped ciphertext as a binary string is:\n" + Binary.toString(flippedCiphertext) + "\n");
 				System.out.println("The ciphertext and the flipped ciphertext differ in " + numDiffBits + " position"
-						+ (numDiffBits != 1 ? "s.\n" : ".\n"));
-				System.out.println();
+						+ (numDiffBits != 1 ? "s.\n\n" : ".\n\n"));
 			}
 		}
 		System.out.println("An average of " + (1.0 * totalDiffBitCount / B2Q1.MAX_RUNS)
