@@ -78,9 +78,9 @@ public class B2Q1 {
 		}
 
 		final Random prng = ThreadLocalRandom.current();
-		// A copy of plaintext which will have its (flipBitIndex + 1)^th bit flipped.
-		final byte[] flippedPlaintext = new byte[B2Q1.PLAINTEXT.length];
-		// Save the encrypted version of flippedPlaintext.
+		// Save the flipped byte in the plaintext to be able to restore it.
+		byte originalFlippedByte = 0;
+		// Save the encrypted version of the newly flipped plaintext (i.e., B2Q1.PLAINTEXT).
 		byte[] flippedCiphertext = null;
 		// Save the total number of different bits to be able to compute the average after the loop.
 		long totalDiffBitCount = 0L;
@@ -92,13 +92,13 @@ public class B2Q1 {
 			// Compute a bitmask used to flip the (flipBitIndex + 1)^th bit in flippedPlaintext.
 			flipBitMask = 1 << ((Binary.BITS_PER_BYTE - 1) - (flipBitIndex % Binary.BITS_PER_BYTE));
 
-			// Create a copy of plaintext which will have its (flipBitIndex + 1)^th bit flipped.
-			System.arraycopy(B2Q1.PLAINTEXT, 0, flippedPlaintext, 0, flippedPlaintext.length);
-			// Flip the (flipBitIndex + 1)^th bit in flippedPlaintext by xoring it with the bitmask.
-			flippedPlaintext[flipByteIndex] = (byte) (flippedPlaintext[flipByteIndex] ^ flipBitMask);
+			// Save the (flipByteIndex + 1)^th byte in the plaintext to be able to restore it.
+			originalFlippedByte = B2Q1.PLAINTEXT[flipByteIndex];
+			// Flip the (flipBitIndex + 1)^th bit in the plaintext by xoring it with the bitmask.
+			B2Q1.PLAINTEXT[flipByteIndex] ^= flipBitMask;
 
-			// Encrypt the flippedPlaintext using the engine to get the flippedCiphertext.
-			flippedCiphertext = engine.decrypt(flippedPlaintext);
+			// Encrypt the newly flipped plaintext using the engine to get the flippedCiphertext.
+			flippedCiphertext = engine.encrypt(B2Q1.PLAINTEXT);
 
 			// Xor ciphertext and flippedCiphertext, then count number of
 			// "on" bits to measure how different they are from each other.
@@ -114,6 +114,9 @@ public class B2Q1 {
 				System.out.println("The ciphertext and the flipped ciphertext differ in " + numDiffBits + " position"
 						+ (numDiffBits != 1 ? "s.\n\n" : ".\n\n"));
 			}
+
+			// Restore the plaintext to its original value.
+			B2Q1.PLAINTEXT[flipByteIndex] = originalFlippedByte;
 		}
 		System.out.println("An average of " + (1.0 * totalDiffBitCount / B2Q1.MAX_RUNS)
 				+ " bits in the ciphertext were changed as a result of flipping one bit in the plaintext across "
