@@ -1,3 +1,3 @@
 ## EECS-3481-Applied-Cryptography
 
-This is just a repository of cryptography libraries and use-cases written in *Java*.
+This is just a repository of cryptography utilities library and use-cases written in *Java*. It contains abstractions for all major symmetric/asymmetric encryption algorithms and all major hashing functions. Furthermore, it has a Mathematical Utilities Library containing optimized implementations of advanced mathematical functions (e.g., primitive-root finding methods, discrete log attacks such as Shanks’ Baby-Step-Giant-Step and Pohlig-Hellman’s algorithm, composite-ness tests such as Miller-Rabin’s test, factoring methods such as Pollard’s p-1 algorithm, and an entire modular arithmetic library that only uses primitive types).
