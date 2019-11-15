@@ -141,13 +141,14 @@ public class MillerRabinTopDown {
 		 * this.n is composite by Fermat's test. However, we cannot find the super factors since we cannot
 		 * perform the Square-Root test.
 		 */
-		if (!r.equals(BigInteger.ONE)) {
+		if (!r.equals(BigInteger.ONE)) { // i.e., r != 1
 			// Only print if requested.
 			if (print) {
 				System.out.println("\n" + base + " is a witness of n's compositeness by Fermat's test.\n");
 			}
 			return new TestResultMillerRabinTopDown(this.n, false, base);
 		}
+		// r == 1
 
 		/*
 		 * Move the iterator to the first position so that this.exponents_it.next() returns the first
@@ -192,7 +193,7 @@ public class MillerRabinTopDown {
 		}
 
 		// Check to see if r is -1 (mod n).
-		if (r.equals(this.n_minus_1)) {
+		if (r.equals(this.n_minus_1)) { // i.e., r == n - 1
 			// Only print if requested.
 			if (print) {
 				System.out.println(
@@ -200,6 +201,7 @@ public class MillerRabinTopDown {
 			}
 			return new TestResultMillerRabinTopDown(this.n, true, base);
 		}
+		// r != n - 1
 
 		// Apply the Square-Root test to r, 1, and this.n.
 		final BigInteger superFactor1 = this.n.gcd(r.subtract(BigInteger.ONE));

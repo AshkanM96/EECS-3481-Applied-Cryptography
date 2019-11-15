@@ -21,12 +21,12 @@ public class Affine {
 	 */
 
 	/**
-	 * <code>1</code>.
+	 * Minimum valid alpha value.
 	 */
 	public static final int MIN_ALPHA_VALUE = 1;
 
 	/**
-	 * <code>0</code>.
+	 * Minimum valid beta value.
 	 */
 	public static final int MIN_BETA_VALUE = 0;
 
@@ -38,9 +38,9 @@ public class Affine {
 	/**
 	 * An array of all valid alpha values in sorted order. The following is true for all valid
 	 * <code>i</code>: <br>
-	 * <code>(Affine.MIN_ALPHA_VALUE <= Affine.VALID_ALPHA_VALUES[i])
+	 * <code>1. (Affine.MIN_ALPHA_VALUE <= Affine.VALID_ALPHA_VALUES[i])
 	 * && (Affine.VALID_ALPHA_VALUES[i] <= Affine.MAX_CIPHER_KEY_VALUE)</code> <br>
-	 * <code>gcd(Affine.VALID_ALPHA_VALUES[i], CryptoTools.ENGLISH_ALPHABET_SIZE) == 1</code>
+	 * <code>2. gcd(Affine.VALID_ALPHA_VALUES[i], CryptoTools.ENGLISH_ALPHABET_SIZE) == 1</code>
 	 */
 	private static final int[] VALID_ALPHA_VALUES = { 1, 3, 5, 7, 9, 11, 15, 17, 19, 21, 23, 25 };
 

@@ -188,7 +188,11 @@ public class StatUtil {
 	public static BigInteger factorialMap(int n) throws IllegalArgumentException {
 		if (n < 0) {
 			throw new IllegalArgumentException();
-		} else if (n < 2) { // (n == 0) || (n == 1)
+		}
+		// 0 <= n
+
+		// Handle the simple special cases.
+		if (n < 2) { // (n == 0) || (n == 1)
 			// (0! == 1) && (1! == 1)
 			return BigInteger.ONE;
 		}
@@ -359,7 +363,11 @@ public class StatUtil {
 	public static BigInteger subfactorialMap(int n) throws IllegalArgumentException {
 		if (n < 0) {
 			throw new IllegalArgumentException();
-		} else if (n < 2) { // (n == 0) || (n == 1)
+		}
+		// 0 <= n
+
+		// Handle the simple special cases.
+		if (n < 2) { // (n == 0) || (n == 1)
 			// (!0 == 1) && (!1 == 0)
 			// The following valueOf call just retrieves BigInteger.ONE or BigInteger.ZERO.
 			return BigInteger.valueOf(1L - n);
@@ -422,7 +430,6 @@ public class StatUtil {
 			throw new IllegalArgumentException();
 		}
 		// (0 <= n) && (0 <= r)
-
 		final int n_cmp_r = n.compareTo(r);
 		if (n_cmp_r < 0) { // i.e., n < r
 			throw new IllegalArgumentException();
@@ -498,7 +505,6 @@ public class StatUtil {
 			throw new IllegalArgumentException();
 		}
 		// (0 <= n) && (0 <= r)
-
 		if (n < r) {
 			throw new IllegalArgumentException();
 		}
@@ -562,11 +568,15 @@ public class StatUtil {
 			throw new IllegalArgumentException();
 		}
 		// (0 <= n) && (0 <= r)
-
 		final int n_cmp_r = n.compareTo(r);
 		if (n_cmp_r < 0) { // i.e., n < r
 			throw new IllegalArgumentException();
-		} else if (n_cmp_r == 0) { // i.e., n == r
+		}
+		// 0 <= n_cmp_r
+		// i.e., r <= n
+
+		// Handle the simple special case.
+		if (n_cmp_r == 0) { // i.e., n == r
 			/**
 			 * This case is only an optimization since nCn == 1. The following code will handle it after setting
 			 * <code>r == n_minus_r == n - n == 0</code> but we might as well handle it earlier and save some
@@ -656,10 +666,13 @@ public class StatUtil {
 			throw new IllegalArgumentException();
 		}
 		// (0 <= n) && (0 <= r)
-
 		if (n < r) {
 			throw new IllegalArgumentException();
-		} else if (n == r) {
+		}
+		// r <= n
+
+		// Handle the simple special case.
+		if (n == r) {
 			/**
 			 * This case is only an optimization since nCn == 1. The following code will handle it after setting
 			 * <code>r == n_minus_r == n - n == 0</code> but we might as well handle it earlier and save some
@@ -707,8 +720,7 @@ public class StatUtil {
 	 */
 	protected static BigInteger stirling2LinearFixedInput(int n, int r) {
 		// S2(n, r) = (sum (-1)^i rCi (r - i)^n from i = 0 to i = r) / r!
-		BigInteger numerator = BigInteger.valueOf(r).pow(n), denominator = BigInteger.ONE;
-		BigInteger tmp = null;
+		BigInteger numerator = BigInteger.valueOf(r).pow(n), denominator = BigInteger.ONE, tmp = null;
 		for (int i = 1; i <= r; ++i) {
 			/**
 			 * Note that <code>BigInteger.valueOf(long)</code> calls are much cheaper than performing arithmetic
@@ -750,19 +762,129 @@ public class StatUtil {
 			throw new IllegalArgumentException();
 		}
 		// (0 <= n) && (0 <= r)
-
 		if (n < r) {
 			throw new IllegalArgumentException();
-		} else if ((n == 0) || (r == 1) || (n == r)) {
+		}
+		// r <= n
+
+		// Handle the simple special cases.
+		if ((n == 0) || (r == 1) || (n == r)) {
 			// S2(0, 0) == S2(n, 1) == S2(n, n) == 1
 			return BigInteger.ONE;
 		} else if (r == 0) {
 			// S2(n, 0) for n != 0 is 0
 			return BigInteger.ZERO;
 		}
-		// (r < n) && (n != 0) && (r != 0) && (r != 1)
+		// (n != 0) && (r != 1) && (n != r) && (r != 0)
 		// i.e., (1 <= n) && (2 <= r) && (r <= n - 1)
 		return StatUtil.stirling2LinearFixedInput(n, r);
+	}
+
+	/**
+	 * Linearly compute <code>S1(n, r)</code>. <br>
+	 * Precondition: <code>1 <= n</code> <br>
+	 * Precondition: <code>(1 <= r) && (r <= n - 1)</code>
+	 * 
+	 * @param n
+	 *            the given number of objects
+	 * 
+	 * @param r
+	 *            the given sample size
+	 * 
+	 * @param signed
+	 *            specifies whether the signed value of <code>S1(n, r)</code> should be returned
+	 * 
+	 * @return <code>S1(n, r)</code>.
+	 */
+	protected static BigInteger stirling1LinearFixedInput(int n, int r, boolean signed) {
+		if (signed) {
+			/**
+			 * <pre>
+			 * <code>
+			 * S1(n, r) = sum (-1)^i (n - 1 + i)C(n - r + i) (2n - r)C(n - r - i) S2(n - r + i, i) from i = 0 to i = n - r
+			 * </code>
+			 * </pre>
+			 */
+			final int n_1 = n - 1, n_r = n - r, n2_r = n + n_r;
+			BigInteger result = BigInteger.ZERO, tmp = null;
+			for (int i = 0; i <= n_r; ++i) {
+				tmp = StatUtil.nCrLinear(n_1 + i, n_r + i).multiply(StatUtil.nCrLinear(n2_r, n_r - i))
+						.multiply(StatUtil.stirling2Linear(n_r + i, i));
+				/**
+				 * Don't do <code>(i &= 1) != 0</code> since we need the value of <code>i</code> to remain
+				 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
+				 * will mutate <code>i</code>.
+				 */
+				result = ((i & 1) != 0) ? result.subtract(tmp) : result.add(tmp);
+			}
+			return result;
+		}
+		// !signed
+		// S1(n, r) = (-1)^(n - r) s1(n, r)
+		final BigInteger result = stirling1LinearFixedInput(n, r, true);
+		/**
+		 * It's fine to do <code>n -= r</code> instead of <code>n - r</code> since we don't need the value
+		 * of <code>n</code> to remain unchanged.
+		 */
+		return ((((n -= r) & 1) != 0) ? result.negate() : result);
+	}
+
+	/**
+	 * Linearly compute <code>S1(n, r)</code>.
+	 * 
+	 * @param n
+	 *            the given number of objects
+	 * 
+	 * @param r
+	 *            the given sample size
+	 * 
+	 * @param signed
+	 *            specifies whether the signed value of <code>S1(n, r)</code> should be returned
+	 * 
+	 * @return <code>S1(n, r)</code>.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(n < 0) || (r < 0) || (n < r)</code>
+	 */
+	public static BigInteger stirling1Linear(int n, int r, boolean signed) throws IllegalArgumentException {
+		if ((n < 0) || (r < 0)) {
+			throw new IllegalArgumentException();
+		}
+		// (0 <= n) && (0 <= r)
+		if (n < r) {
+			throw new IllegalArgumentException();
+		}
+		// r <= n
+
+		// Handle the simple special cases.
+		if ((n == 0) || (n == r)) {
+			// S1(0, 0) == S1(n, n) == 1
+			return BigInteger.ONE;
+		} else if (r == 0) {
+			// S1(n, 0) for n != 0 is 0
+			return BigInteger.ZERO;
+		}
+		// (n != 0) && (n != r) && (r != 0)
+		// i.e., (1 <= n) && (1 <= r) && (r <= n - 1)
+		return StatUtil.stirling1LinearFixedInput(n, r, signed);
+	}
+
+	/**
+	 * Linearly compute <code>S1(n, r)</code>.
+	 * 
+	 * @param n
+	 *            the given number of objects
+	 * 
+	 * @param r
+	 *            the given sample size
+	 * 
+	 * @return <code>StatUtil.stirling1Linear(n, r, true)</code>.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(n < 0) || (r < 0) || (n < r)</code>
+	 */
+	public static BigInteger stirling1Linear(int n, int r) throws IllegalArgumentException {
+		return StatUtil.stirling1Linear(n, r, true);
 	}
 
 	/**
@@ -900,10 +1022,7 @@ public class StatUtil {
 		 * 
 		 * <pre>
 		 * <code>
-		 *	(sum from i = 1 to i = m
-		 *		sum from j = 1 to j = n
-		 *			S2(m, i) * S2(n, j) * (product d - k from k = 0 to k = i + j - 1)
-		 *	) / (d^(n + m))
+		 * (sum sum S2(m, i) * S2(n, j) * (product d - k from k = 0 to k = i + j - 1) from j = 1 to j = n from i = 1 to i = m) / (d^(n + m))
 		 * </code>
 		 * </pre>
 		 */
@@ -979,7 +1098,7 @@ public class StatUtil {
 			return (outOf100 ? StatUtil.HUNDRED_ZERO_SCALE : BigDecimal.ONE);
 		}
 		// (m != 0) && (n != 0) && (m < d) && (n < d)
-		// i.e., (1 <= m) && (1 <= n) && (m < d) && (n < d)
+		// i.e., (1 <= m) && (1 <= n) && (max(m, n) < d)
 
 		if (d < (((long) m) + n)) {
 			throw new IllegalArgumentException();
@@ -1174,7 +1293,11 @@ public class StatUtil {
 	public static BigInteger fibonacciMap(int n) throws IllegalArgumentException {
 		if (n < 0) {
 			throw new IllegalArgumentException();
-		} else if (n < 2) { // (n == 0) || (n == 1)
+		}
+		// 0 <= n
+
+		// Handle the simple special cases.
+		if (n < 2) { // (n == 0) || (n == 1)
 			// (F0 == 0) && (F1 == 1)
 			// The following valueOf call just retrieves BigInteger.ZERO or BigInteger.ONE.
 			return BigInteger.valueOf(n);

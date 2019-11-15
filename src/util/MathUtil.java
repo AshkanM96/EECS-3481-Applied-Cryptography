@@ -34,30 +34,6 @@ public class MathUtil {
 	}
 
 	/**
-	 * Returns the base <code>2</code> logarithm of a <code>double</code> value. Special cases:
-	 * <ul>
-	 * <li>If the argument is <code>NaN</code> or <code>less than zero</code>, then the result is
-	 * <code>NaN</code>.
-	 * <li>If the argument is <code>positive infinity</code>, then the result is
-	 * <code>positive infinity</code>.
-	 * <li>If the argument is <code>positive zero</code> or <code>negative zero</code>, then the result
-	 * is <code>negative infinity</code>.
-	 * <li>If the argument is equal to <code>2<sup>p</sup></code> for integer <code>p</code>, then the
-	 * result is <code>p</code>.
-	 * </ul>
-	 * The computed result must be within <code>1 ulp</code> of the exact result. Results must be
-	 * <code>semi-monotonic</code>.
-	 *
-	 * @param n
-	 *            the given number
-	 * 
-	 * @return The base <code>2</code> logarithm of <code>n</code>.
-	 */
-	public static double log2(double n) {
-		return (Math.log(n) / MathUtil.LOG_2);
-	}
-
-	/**
 	 * @param n
 	 *            the given number
 	 * 
@@ -95,6 +71,30 @@ public class MathUtil {
 	 */
 	public static int signum(byte n) {
 		return ((n < 0) ? -1 : ((n == 0) ? 0 : 1));
+	}
+
+	/**
+	 * Returns the base <code>2</code> logarithm of a <code>double</code> value. Special cases:
+	 * <ul>
+	 * <li>If the argument is <code>NaN</code> or <code>less than zero</code>, then the result is
+	 * <code>NaN</code>.
+	 * <li>If the argument is <code>positive infinity</code>, then the result is
+	 * <code>positive infinity</code>.
+	 * <li>If the argument is <code>positive zero</code> or <code>negative zero</code>, then the result
+	 * is <code>negative infinity</code>.
+	 * <li>If the argument is equal to <code>2<sup>p</sup></code> for integer <code>p</code>, then the
+	 * result is <code>p</code>.
+	 * </ul>
+	 * The computed result must be within <code>1 ulp</code> of the exact result. Results must be
+	 * <code>semi-monotonic</code>.
+	 *
+	 * @param n
+	 *            the given number
+	 * 
+	 * @return The base <code>2</code> logarithm of <code>n</code>.
+	 */
+	public static double log2(double n) {
+		return (Math.log(n) / MathUtil.LOG_2);
 	}
 
 	/**
@@ -318,17 +318,22 @@ public class MathUtil {
 			} while (v != 0L);
 		}
 		/**
-		 * <code>x * abs_a + y * abs_b == gcd where y == (gcd - x * abs_a) / abs_b</code> <br>
-		 * So, <code>(x * sign_a) * a + (y * sign_b) * b == gcd where y == (gcd - x * abs_a) / abs_b</code>
+		 * At this point, we know that
+		 * <code>x * abs_a + y * abs_b == gcd where y == (gcd - x * abs_a) / abs_b</code>. <br>
+		 * But since <code>a == sign_a * abs_a</code>, <code>|sign_a| == 1</code>,
+		 * <code>b == sign_b * abs_b</code>, and <code>|sign_b| == 1</code>, we can conclude that
+		 * <code>(x * sign_a) * a + (y * sign_b) * b == gcd where y == (gcd - x * abs_a) / abs_b</code>.
 		 * <br>
-		 * So, <code>x' * a + y' * b == gcd where x' == a * sign_a and y' == y * sign_b</code> <br>
-		 * But since <code>b == sign_b * abs_b</code>, we can conclude that
-		 * <code>y' == (gcd - x * abs_a) / b</code>
+		 * Therefore,
+		 * <code>x' * a + y' * b == gcd where x' == x * sign_a and y' == y * sign_b == (gcd - x * abs_a) * (sign_b / abs_b)</code>.
+		 * <br>
+		 * But since <code>b == sign_b * abs_b</code> and <code>|sign_b| == 1</code>, we can conclude that
+		 * <code>sign_b / abs_b == 1 / b</code> and so <code>y' == (gcd - x * abs_a) / b</code>.
 		 */
 		/*
 		 * Have to use BigInteger to compute y' since every intermediate result in the formula for y' may
 		 * overflow a long. However, note that y' itself fits in a long, and so we can call longValue
-		 * instead of longValueExact and not worry about a potential overflow of y'.
+		 * instead of longValueExact and not worry about a potential overflow for y'.
 		 */
 		final long y = BigInteger.valueOf(gcd).subtract(BigInteger.valueOf(x).multiply(BigInteger.valueOf(abs_a)))
 				.divide(BigInteger.valueOf(b)).longValue();

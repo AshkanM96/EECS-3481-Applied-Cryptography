@@ -143,6 +143,56 @@ public class BigIntUtil {
 	}
 
 	/**
+	 * @param n
+	 *            the given BigInteger object
+	 * 
+	 * @return <code>floor(sqrt(n))</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>n == null</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>n < 0</code>
+	 */
+	public static BigInteger sqrtFloor(BigInteger n) throws NullPointerException, IllegalArgumentException {
+		if (n.signum() == -1) { // i.e., n < 0
+			throw new IllegalArgumentException();
+		}
+		// 0 <= n
+
+		if (n.signum() == 0) { // i.e., n == 0
+			return BigInteger.ZERO;
+		} else if (n.equals(BigInteger.ONE)) { // i.e., n == 1
+			return BigInteger.ONE;
+		}
+		// 2 <= n
+
+		BigInteger result = n.shiftRight(1); // i.e., result == n / 2
+		for (BigInteger q = n.divide(result); 0 < result.compareTo(q); /* Update inside. */) {
+			result = result.add(q).shiftRight(1); // result = (result + q) / 2
+			q = n.divide(result);
+		}
+		return result;
+	}
+
+	/**
+	 * @param n
+	 *            the given BigInteger object
+	 * 
+	 * @return <code>ceil(sqrt(n))</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>n == null</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>n < 0</code>
+	 */
+	public static BigInteger sqrtCeil(BigInteger n) throws NullPointerException, IllegalArgumentException {
+		final BigInteger sqrtFloor = BigIntUtil.sqrtFloor(n);
+		return (n.equals(sqrtFloor.multiply(sqrtFloor)) ? sqrtFloor : sqrtFloor.add(BigInteger.ONE));
+	}
+
+	/**
 	 * Postcondition: <code>Result != null</code> <br>
 	 * Postcondition: <code>Result.length == 3</code> <br>
 	 * Postcondition: <code>Result[2] == gcd(a, b)</code> <br>
@@ -206,12 +256,17 @@ public class BigIntUtil {
 			} while (v.signum() != 0);
 		}
 		/**
-		 * <code>x * abs_a + y * abs_b == gcd where y == (gcd - x * abs_a) / abs_b</code> <br>
-		 * So, <code>(x * sign_a) * a + (y * sign_b) * b == gcd where y == (gcd - x * abs_a) / abs_b</code>
+		 * At this point, we know that
+		 * <code>x * abs_a + y * abs_b == gcd where y == (gcd - x * abs_a) / abs_b</code>. <br>
+		 * But since <code>a == sign_a * abs_a</code>, <code>|sign_a| == 1</code>,
+		 * <code>b == sign_b * abs_b</code>, and <code>|sign_b| == 1</code>, we can conclude that
+		 * <code>(x * sign_a) * a + (y * sign_b) * b == gcd where y == (gcd - x * abs_a) / abs_b</code>.
 		 * <br>
-		 * So, <code>x' * a + y' * b == gcd where x' == a * sign_a and y' == y * sign_b</code> <br>
-		 * But since <code>b == sign_b * abs_b</code>, we can conclude that
-		 * <code>y' == (gcd - x * abs_a) / b</code>
+		 * Therefore,
+		 * <code>x' * a + y' * b == gcd where x' == x * sign_a and y' == y * sign_b == (gcd - x * abs_a) * (sign_b / abs_b)</code>.
+		 * <br>
+		 * But since <code>b == sign_b * abs_b</code> and <code>|sign_b| == 1</code>, we can conclude that
+		 * <code>sign_b / abs_b == 1 / b</code> and so <code>y' == (gcd - x * abs_a) / b</code>.
 		 */
 		return new BigInteger[] { (sign_a == -1) ? x.negate() : x, gcd.subtract(x.multiply(abs_a)).divide(b), gcd };
 	}

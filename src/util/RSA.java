@@ -92,7 +92,7 @@ public class RSA {
 	 *             If <code>(p == null) || (q == null) || (e == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(p <= 1) || (q <= 1) || (e <= 0)</code>
+	 *             If <code>(p <= 1) || (q <= 1) || (e <= 0) || (phi <= e)</code>
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>(gcd(e, phi) != 1) || (gcd(p, q) != 1)</code>
@@ -104,26 +104,34 @@ public class RSA {
 		}
 		// (0 < p) && (0 < q) && (0 < e)
 
-		// Set p, q, and e.
+		// Set p and q.
 		this.p = p;
 		this.q = q;
-		this.e = e;
 
 		// Save p - 1 and ensure that it is positive.
-		final BigInteger p_minus_1 = this.p.subtract(BigInteger.ONE);
-		if (p_minus_1.signum() != 1) { // i.e., (p - 1 <= 0)
+		final BigInteger p_minus_1 = this.p.subtract(BigInteger.ONE); // 0 <= p_minus_1
+		if (p_minus_1.signum() != 1) { // i.e., p - 1 <= 0
 			throw new IllegalArgumentException();
 		}
+		// 0 < p - 1
+		// i.e., 1 < p
 		// Save q - 1 and ensure that it is positive.
-		final BigInteger q_minus_1 = this.q.subtract(BigInteger.ONE);
-		if (q_minus_1.signum() != 1) { // i.e., (q - 1 <= 0)
+		final BigInteger q_minus_1 = this.q.subtract(BigInteger.ONE); // 0 <= q_minus_1
+		if (q_minus_1.signum() != 1) { // i.e., q - 1 <= 0
 			throw new IllegalArgumentException();
 		}
+		// 0 < q - 1
+		// i.e., 1 < q
 		// Compute the value of Euler's totient function for the cipher modulus.
 		final BigInteger phi = p_minus_1.multiply(q_minus_1);
+		if (phi.compareTo(e) <= 0) { // i.e., phi <= e
+			throw new IllegalArgumentException();
+		}
+		// e < phi
 
-		// Set n and d.
+		// Set n, e, and d.
 		this.n = this.p.multiply(this.q);
+		this.e = e;
 		this.d = this.e.modInverse(phi);
 
 		// Set dP, dQ, and qInv.
@@ -151,7 +159,7 @@ public class RSA {
 	 *             If <code>(phi == null) || (n == null) || (e == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(phi <= 0) || (n <= 0) || (e <= 0)</code>
+	 *             If <code>(phi <= 0) || (n <= 0) || (e <= 0) || (n <= phi) || (phi <= e)</code>
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>gcd(e, phi) != 1</code>
@@ -160,8 +168,13 @@ public class RSA {
 			throws NullPointerException, IllegalArgumentException, ArithmeticException {
 		if ((phi.signum() != 1) || (n.signum() != 1) || (e.signum() != 1)) { // i.e., (phi <= 0) || (n <= 0) || (e <= 0)
 			throw new IllegalArgumentException();
+		} else if (n.compareTo(phi) <= 0) { // i.e., n <= phi
+			throw new IllegalArgumentException();
+		} else if (phi.compareTo(e) <= 0) { // i.e., phi <= e
+			throw new IllegalArgumentException();
 		}
-		// (0 < phi) && (0 < n) && (0 < e)
+		// (0 < phi) && (0 < n) && (0 < e) && (phi < n) && (e < phi)
+		// i.e., (0 < e) && (e < phi) && (phi < n)
 
 		// Set p, q, dP, dQ, and qInv.
 		this.p = this.q = this.dP = this.dQ = this.qInv = null;
@@ -188,13 +201,18 @@ public class RSA {
 	 *             If <code>(n == null) || (e == null) || (d == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(n <= 0) || (e <= 0) || (d <= 0)</code>
+	 *             If <code>(n <= 0) || (e <= 0) || (d <= 0) || (n <= e) || (n <= d)</code>
 	 */
 	protected RSA(BigInteger n, BigInteger e, BigInteger d) throws NullPointerException, IllegalArgumentException {
 		if ((n.signum() != 1) || (e.signum() != 1) || (d.signum() != 1)) { // i.e., (n <= 0) || (e <= 0) || (d <= 0)
 			throw new IllegalArgumentException();
+		} else if (n.compareTo(e) <= 0) { // i.e., n <= e
+			throw new IllegalArgumentException();
+		} else if (n.compareTo(d) <= 0) { // i.e., n <= d
+			throw new IllegalArgumentException();
 		}
-		// (0 < n) && (0 < e) && (0 < d)
+		// (0 < n) && (0 < e) && (0 < d) && (e < n) && (d < n)
+		// i.e., (0 < e) && (0 < d) && (max(e, d) < n)
 
 		// Set p, q, dP, dQ, and qInv.
 		this.p = this.q = this.dP = this.dQ = this.qInv = null;
@@ -227,7 +245,7 @@ public class RSA {
 	 *             If <code>(p == null) || (q == null) || (e == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(p <= 1) || (q <= 1) || (e <= 0)</code>
+	 *             If <code>(p <= 1) || (q <= 1) || (e <= 0) || (phi <= e)</code>
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>(gcd(e, phi) != 1) || (gcd(p, q) != 1)</code>
@@ -255,7 +273,7 @@ public class RSA {
 	 *             If <code>(phi == null) || (n == null) || (e == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(phi <= 0) || (n <= 0) || (e <= 0)</code>
+	 *             If <code>(phi <= 0) || (n <= 0) || (e <= 0) || (n <= phi) || (phi <= e)</code>
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>gcd(e, phi) != 1</code>
@@ -283,7 +301,7 @@ public class RSA {
 	 *             If <code>(n == null) || (e == null) || (d == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(n <= 0) || (e <= 0) || (d <= 0)</code>
+	 *             If <code>(n <= 0) || (e <= 0) || (d <= 0) || (n <= e) || (n <= d)</code>
 	 */
 	public static RSA knownKeys(BigInteger n, BigInteger e, BigInteger d)
 			throws NullPointerException, IllegalArgumentException {

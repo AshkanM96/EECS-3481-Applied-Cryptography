@@ -123,7 +123,7 @@ public class RSACipherEng {
 	 *             <code>(p == null) || (q == null) || (e == null) || (opmode == null) || (padding == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(p <= 1) || (q <= 1) || (e <= 0)</code>
+	 *             If <code>(p <= 1) || (q <= 1) || (e <= 0) || (phi <= e)</code>
 	 * 
 	 * @throws NoSuchAlgorithmException
 	 *             Thrown by <code>CipherEngUtil.getEngine(RSAUtil.ALGORITHM, opmode, padding)</code>
@@ -148,7 +148,10 @@ public class RSACipherEng {
 		}
 		// 0 < e
 		final BigInteger phi = RSAUtil.phi(p, q);
-		// (1 < p) && (1 < q)
+		if (phi.compareTo(e) <= 0) { // i.e., phi <= e
+			throw new IllegalArgumentException();
+		}
+		// e < phi
 
 		// The following is meant to be an assignment of this.engine, this.opmode, and this.padding.
 		this.engine = CipherEngUtil.getEngine(RSAUtil.ALGORITHM, this.opmode = opmode, this.padding = padding);
@@ -190,7 +193,7 @@ public class RSACipherEng {
 	 *             <code>(phi == null) || (n == null) || (e == null) || (opmode == null) || (padding == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(phi <= 0) || (n <= 0) || (e <= 0)</code>
+	 *             If <code>(phi <= 0) || (n <= 0) || (e <= 0) || (n <= phi) || (phi <= e)</code>
 	 * 
 	 * @throws NoSuchAlgorithmException
 	 *             Thrown by <code>CipherEngUtil.getEngine(RSAUtil.ALGORITHM, opmode, padding)</code>
@@ -211,8 +214,13 @@ public class RSACipherEng {
 			NoSuchAlgorithmException, NoSuchPaddingException, ArithmeticException, InvalidKeySpecException {
 		if ((phi.signum() != 1) || (n.signum() != 1) || (e.signum() != 1)) { // i.e., (phi <= 0) || (n <= 0) || (e <= 0)
 			throw new IllegalArgumentException();
+		} else if (n.compareTo(phi) <= 0) { // i.e., n <= phi
+			throw new IllegalArgumentException();
+		} else if (phi.compareTo(e) <= 0) { // i.e., phi <= e
+			throw new IllegalArgumentException();
 		}
-		// (0 < phi) && (0 < n) && (0 < e)
+		// (0 < phi) && (0 < n) && (0 < e) && (phi < n) && (e < phi)
+		// i.e., (0 < e) && (e < phi) && (phi < n)
 
 		// The following is meant to be an assignment of this.engine, this.opmode, and this.padding.
 		this.engine = CipherEngUtil.getEngine(RSAUtil.ALGORITHM, this.opmode = opmode, this.padding = padding);
@@ -251,7 +259,7 @@ public class RSACipherEng {
 	 *             <code>(n == null) || (e == null) || (d == null) || (opmode == null) || (padding == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(n <= 0) || (e <= 0) || (d <= 0)</code>
+	 *             If <code>(n <= 0) || (e <= 0) || (d <= 0) || (n <= e) || (n <= d)</code>
 	 * 
 	 * @throws NoSuchAlgorithmException
 	 *             Thrown by <code>CipherEngUtil.getEngine(RSAUtil.ALGORITHM, opmode, padding)</code>
@@ -269,8 +277,13 @@ public class RSACipherEng {
 			NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeySpecException {
 		if ((n.signum() != 1) || (e.signum() != 1) || (d.signum() != 1)) { // i.e., (n <= 0) || (e <= 0) || (d <= 0)
 			throw new IllegalArgumentException();
+		} else if (n.compareTo(e) <= 0) { // i.e., n <= e
+			throw new IllegalArgumentException();
+		} else if (n.compareTo(d) <= 0) { // i.e., n <= d
+			throw new IllegalArgumentException();
 		}
-		// (0 < n) && (0 < e) && (0 < d)
+		// (0 < n) && (0 < e) && (0 < d) && (e < n) && (d < n)
+		// i.e., (0 < e) && (0 < d) && (max(e, d) < n)
 
 		// The following is meant to be an assignment of this.engine, this.opmode, and this.padding.
 		this.engine = CipherEngUtil.getEngine(RSAUtil.ALGORITHM, this.opmode = opmode, this.padding = padding);
@@ -331,7 +344,7 @@ public class RSACipherEng {
 	 *             <code>(p == null) || (q == null) || (e == null) || (opmode == null) || (padding == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(p <= 1) || (q <= 1) || (e <= 0)</code>
+	 *             If <code>(p <= 1) || (q <= 1) || (e <= 0) || (phi <= e)</code>
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>gcd(e, phi) != 1</code>
@@ -347,8 +360,8 @@ public class RSACipherEng {
 		try {
 			return new RSACipherEng(p, q, e, opmode, padding, null, null);
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
+			throw new ExceptionInInitializerError();
 		}
-		throw new ExceptionInInitializerError();
 	}
 
 	/**
@@ -372,7 +385,7 @@ public class RSACipherEng {
 	 *             If <code>(p == null) || (q == null) || (e == null) || (opmode == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(p <= 1) || (q <= 1) || (e <= 0)</code>
+	 *             If <code>(p <= 1) || (q <= 1) || (e <= 0) || (phi <= e)</code>
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>gcd(e, phi) != 1</code>
@@ -405,7 +418,7 @@ public class RSACipherEng {
 	 *             If <code>(p == null) || (q == null) || (e == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(p <= 1) || (q <= 1) || (e <= 0)</code>
+	 *             If <code>(p <= 1) || (q <= 1) || (e <= 0) || (phi <= e)</code>
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>gcd(e, phi) != 1</code>
@@ -445,7 +458,7 @@ public class RSACipherEng {
 	 *             <code>(phi == null) || (n == null) || (e == null) || (opmode == null) || (padding == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(phi <= 0) || (n <= 0) || (e <= 0)</code>
+	 *             If <code>(phi <= 0) || (n <= 0) || (e <= 0) || (n <= phi) || (phi <= e)</code>
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>gcd(e, phi) != 1</code>
@@ -461,8 +474,8 @@ public class RSACipherEng {
 		try {
 			return new RSACipherEng(phi, n, e, opmode, padding, null);
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
+			throw new ExceptionInInitializerError();
 		}
-		throw new ExceptionInInitializerError();
 	}
 
 	/**
@@ -486,7 +499,7 @@ public class RSACipherEng {
 	 *             If <code>(phi == null) || (n == null) || (e == null) || (opmode == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(phi <= 0) || (n <= 0) || (e <= 0)</code>
+	 *             If <code>(phi <= 0) || (n <= 0) || (e <= 0) || (n <= phi) || (phi <= e)</code>
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>gcd(e, phi) != 1</code>
@@ -519,7 +532,7 @@ public class RSACipherEng {
 	 *             If <code>(phi == null) || (n == null) || (e == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(phi <= 0) || (n <= 0) || (e <= 0)</code>
+	 *             If <code>(phi <= 0) || (n <= 0) || (e <= 0) || (n <= phi) || (phi <= e)</code>
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>gcd(e, phi) != 1</code>
@@ -559,7 +572,7 @@ public class RSACipherEng {
 	 *             <code>(n == null) || (e == null) || (d == null) || (opmode == null) || (padding == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(n <= 0) || (e <= 0) || (d <= 0)</code>
+	 *             If <code>(n <= 0) || (e <= 0) || (d <= 0) || (n <= e) || (n <= d)</code>
 	 * 
 	 * @throws InvalidKeySpecException
 	 *             Thrown by
@@ -572,8 +585,8 @@ public class RSACipherEng {
 		try {
 			return new RSACipherEng(n, e, d, opmode, padding);
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
+			throw new ExceptionInInitializerError();
 		}
-		throw new ExceptionInInitializerError();
 	}
 
 	/**
@@ -597,7 +610,7 @@ public class RSACipherEng {
 	 *             If <code>(n == null) || (e == null) || (d == null) || (opmode == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(n <= 0) || (e <= 0) || (d <= 0)</code>
+	 *             If <code>(n <= 0) || (e <= 0) || (d <= 0) || (n <= e) || (n <= d)</code>
 	 * 
 	 * @throws InvalidKeySpecException
 	 *             Thrown by
@@ -627,7 +640,7 @@ public class RSACipherEng {
 	 *             If <code>(n == null) || (e == null) || (d == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(n <= 0) || (e <= 0) || (d <= 0)</code>
+	 *             If <code>(n <= 0) || (e <= 0) || (d <= 0) || (n <= e) || (n <= d)</code>
 	 * 
 	 * @throws InvalidKeySpecException
 	 *             Thrown by
