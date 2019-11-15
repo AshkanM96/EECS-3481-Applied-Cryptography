@@ -148,6 +148,7 @@ public class RSACipherEng {
 		}
 		// 0 < e
 		final BigInteger phi = RSAUtil.phi(p, q);
+		// (1 < p) && (1 < q)
 		if (phi.compareTo(e) <= 0) { // i.e., phi <= e
 			throw new IllegalArgumentException();
 		}
