@@ -92,7 +92,7 @@ public class RSA {
 	 *             If <code>(p == null) || (q == null) || (e == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(p <= 1) || (q <= 1) || (e <= 0) || (phi <= e)</code>
+	 *             If <code>(p <= 1) || (q <= 1) || (p == q) || (e <= 0) || (phi <= e)</code>
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>(gcd(e, phi) != 1) || (gcd(p, q) != 1)</code>
@@ -101,8 +101,10 @@ public class RSA {
 			throws NullPointerException, IllegalArgumentException, ArithmeticException {
 		if ((p.signum() != 1) || (q.signum() != 1) || (e.signum() != 1)) { // i.e., (p <= 0) || (q <= 0) || (e <= 0)
 			throw new IllegalArgumentException();
+		} else if (p.equals(q)) { // i.e., p == q
+			throw new IllegalArgumentException();
 		}
-		// (0 < p) && (0 < q) && (0 < e)
+		// (0 < p) && (0 < q) && (0 < e) && (p != q)
 
 		// Set p and q.
 		this.p = p;
@@ -245,7 +247,7 @@ public class RSA {
 	 *             If <code>(p == null) || (q == null) || (e == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(p <= 1) || (q <= 1) || (e <= 0) || (phi <= e)</code>
+	 *             If <code>(p <= 1) || (q <= 1) || (p == q) || (e <= 0) || (phi <= e)</code>
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>(gcd(e, phi) != 1) || (gcd(p, q) != 1)</code>
@@ -380,15 +382,15 @@ public class RSA {
 
 		/*
 		 * Apply the public key since it should be small enough that will not merit using the Chinese
-		 * Remainder Theorem (i.e., C.R.T.).
+		 * Remainder Theorem.
 		 */
 		if (publicKey) {
 			return m.modPow(this.e, this.n);
 		}
 
 		/*
-		 * Check to see if we can use the Chinese Remainder Theorem (i.e., C.R.T.) instead of using the
-		 * private key directly.
+		 * Check to see if we can use the Chinese Remainder Theorem instead of using the private key
+		 * directly.
 		 */
 		if (this.p != null) {
 			/**
@@ -411,8 +413,8 @@ public class RSA {
 		}
 
 		/*
-		 * At this point, we know that publicKey is false and that the Chinese Remainder Theorem (i.e.,
-		 * C.R.T.) cannot be used. Therefore, just perform the standard calculation.
+		 * At this point, we know that publicKey is false and that the Chinese Remainder Theorem cannot be
+		 * used. Therefore, just perform the standard calculation.
 		 */
 		return m.modPow(this.d, this.n);
 	}

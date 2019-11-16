@@ -123,7 +123,7 @@ public class RSACipherEng {
 	 *             <code>(p == null) || (q == null) || (e == null) || (opmode == null) || (padding == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(p <= 1) || (q <= 1) || (e <= 0) || (phi <= e)</code>
+	 *             If <code>(p <= 1) || (q <= 1) || (p == q) || (e <= 0) || (phi <= e)</code>
 	 * 
 	 * @throws NoSuchAlgorithmException
 	 *             Thrown by <code>CipherEngUtil.getEngine(RSAUtil.ALGORITHM, opmode, padding)</code>
@@ -148,7 +148,7 @@ public class RSACipherEng {
 		}
 		// 0 < e
 		final BigInteger phi = RSAUtil.phi(p, q);
-		// (1 < p) && (1 < q)
+		// (1 < p) && (1 < q) && (p != q)
 		if (phi.compareTo(e) <= 0) { // i.e., phi <= e
 			throw new IllegalArgumentException();
 		}
@@ -345,7 +345,7 @@ public class RSACipherEng {
 	 *             <code>(p == null) || (q == null) || (e == null) || (opmode == null) || (padding == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(p <= 1) || (q <= 1) || (e <= 0) || (phi <= e)</code>
+	 *             If <code>(p <= 1) || (q <= 1) || (p == q) || (e <= 0) || (phi <= e)</code>
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>gcd(e, phi) != 1</code>
@@ -386,7 +386,7 @@ public class RSACipherEng {
 	 *             If <code>(p == null) || (q == null) || (e == null) || (opmode == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(p <= 1) || (q <= 1) || (e <= 0) || (phi <= e)</code>
+	 *             If <code>(p <= 1) || (q <= 1) || (p == q) || (e <= 0) || (phi <= e)</code>
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>gcd(e, phi) != 1</code>
@@ -419,7 +419,7 @@ public class RSACipherEng {
 	 *             If <code>(p == null) || (q == null) || (e == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(p <= 1) || (q <= 1) || (e <= 0) || (phi <= e)</code>
+	 *             If <code>(p <= 1) || (q <= 1) || (p == q) || (e <= 0) || (phi <= e)</code>
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>gcd(e, phi) != 1</code>
@@ -670,7 +670,7 @@ public class RSACipherEng {
 	 *             If <code>opmode == null</code>
 	 */
 	public void opmode(CipherEngUtil.OPMODE opmode) throws NullPointerException {
-		// The following is meant to be an assignment of this.engine, and this.opmode.
+		// The following is meant to be an assignment of this.engine and this.opmode.
 		try {
 			this.engine = CipherEngUtil.getEngine(RSAUtil.ALGORITHM, opmode, this.padding);
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
@@ -696,7 +696,7 @@ public class RSACipherEng {
 	 *             If <code>padding == null</code>
 	 */
 	public void padding(CipherEngUtil.PADDING padding) throws NullPointerException {
-		// The following is meant to be an assignment of this.engine, and this.padding.
+		// The following is meant to be an assignment of this.engine and this.padding.
 		try {
 			this.engine = CipherEngUtil.getEngine(RSAUtil.ALGORITHM, this.opmode, padding);
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {

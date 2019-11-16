@@ -81,7 +81,7 @@ public class SymCipherEng {
 	/**
 	 * Cipher algorithm.
 	 */
-	private ALGO_SYM algo;
+	private final ALGO_SYM algo;
 
 	/**
 	 * Cipher secret key.
@@ -358,25 +358,6 @@ public class SymCipherEng {
 	}
 
 	/**
-	 * Set the calling object's cipher algorithm to the given cipher algorithm.
-	 * 
-	 * @param algo
-	 *            the given cipher algorithm
-	 * 
-	 * @throws NullPointerException
-	 *             If <code>algo == null</code>
-	 */
-	public void algo(ALGO_SYM algo) throws NullPointerException {
-		// The following is meant to be an assignment of this.engine, and this.algo.
-		try {
-			this.engine = CipherEngUtil.getEngine(algo.name(), this.opmode, this.padding);
-		} catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {
-			throw new ExceptionInInitializerError();
-		}
-		this.key = SymCipherEng.key(this.key.getEncoded(), this.algo = algo);
-	}
-
-	/**
 	 * @param key
 	 *            the given cipher secret key
 	 * 
@@ -401,8 +382,8 @@ public class SymCipherEng {
 	public byte[] key() {
 		/*
 		 * With a simple test, we can determine that the getEncoded method returns a copy and not the actual
-		 * pointer. Therefore, it is safe to just return what it returns without making a copy since it has
-		 * made the copy.
+		 * pointer. Therefore, it is safe to just return what it returns without making a copy, since it has
+		 * made the copy for us.
 		 */
 		return this.key.getEncoded();
 	}
@@ -437,7 +418,7 @@ public class SymCipherEng {
 	 *             If <code>opmode == null</code>
 	 */
 	public void opmode(CipherEngUtil.OPMODE opmode) throws NullPointerException {
-		// The following is meant to be an assignment of this.engine, and this.opmode.
+		// The following is meant to be an assignment of this.engine and this.opmode.
 		try {
 			this.engine = CipherEngUtil.getEngine(this.algo.name(), opmode, this.padding);
 		} catch (NoSuchAlgorithmException | NoSuchPaddingException ex) {

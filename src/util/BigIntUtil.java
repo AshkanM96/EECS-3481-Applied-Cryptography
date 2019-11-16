@@ -84,6 +84,12 @@ public class BigIntUtil {
 	public static final BigInteger TEN = BigInteger.TEN;
 
 	/**
+	 * The default value for the <code>certainty</code> argument of the <code>probableSafePrime</code>
+	 * method.
+	 */
+	public static final int DEFAULT_CERTAINTY = 100;
+
+	/**
 	 * Prevent instantiation.
 	 */
 	private BigIntUtil() {
@@ -831,7 +837,7 @@ public class BigIntUtil {
 	 * proportional to the value of <code>certainty</code>.
 	 * 
 	 * @param bitLength
-	 *            the bitlength of the returned BigInteger
+	 *            the bit length of the returned BigInteger
 	 * 
 	 * @param certainty
 	 *            a measure of the uncertainty that the caller is willing to tolerate
@@ -844,22 +850,22 @@ public class BigIntUtil {
 	 * @throws IllegalArgumentException
 	 *             If <code>bitLength < 3</code>
 	 * 
-	 * @throws NullPointerException
-	 *             If <code>rnd == null</code>
-	 * 
 	 * @throws ArithmeticException
 	 *             Thrown by <code>new BigInteger(int, int, Random)</code>
 	 */
 	public static BigInteger probableSafePrime(int bitLength, int certainty, Random rnd)
-			throws IllegalArgumentException, NullPointerException, ArithmeticException {
-		if (bitLength < 3) { // The first safe prime is 5 which requires at least 3 bits to represent.
+			throws IllegalArgumentException, ArithmeticException {
+		if (bitLength < 3) { // The first safe prime is 5, which requires 3 bits to represent.
 			throw new IllegalArgumentException();
-		} else if (rnd == null) {
-			throw new NullPointerException();
+		}
+
+		// Fix null rnd.
+		if (rnd == null) {
+			rnd = ThreadLocalRandom.current();
 		}
 
 		for (BigInteger p = null; true; /* Update inside. */) {
-			// Generate a probable prime with the specified bitlength.
+			// Generate a probable prime with the specified bit length.
 			p = new BigInteger(bitLength, certainty, rnd);
 			// Check if (p - 1) / 2 is prime.
 			if (p.shiftRight(1).isProbablePrime(certainty)) {
@@ -875,7 +881,7 @@ public class BigIntUtil {
 	 * proportional to the value of <code>certainty</code>.
 	 * 
 	 * @param bitLength
-	 *            the bitlength of the returned BigInteger
+	 *            the bit length of the returned BigInteger
 	 * 
 	 * @param certainty
 	 *            a measure of the uncertainty that the caller is willing to tolerate
@@ -896,12 +902,12 @@ public class BigIntUtil {
 	/**
 	 * Constructs a randomly generated positive BigInteger that is probably a safe prime, with the
 	 * specified bitLength. The probability that the BigInteger represents a safe prime number will
-	 * exceed <code>1 - 2<sup>-100</sup></code>.
+	 * exceed <code>1 - 2<sup>-BigIntUtil.DEFAULT_CERTAINTY</sup></code>.
 	 * 
 	 * @param bitLength
-	 *            the bitlength of the returned BigInteger
+	 *            the bit length of the returned BigInteger
 	 * 
-	 * @return <code>BigIntUtil.probableSafePrime(bitLength, 100)</code>.
+	 * @return <code>BigIntUtil.probableSafePrime(bitLength, BigIntUtil.DEFAULT_CERTAINTY)</code>.
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>bitLength < 3</code>
@@ -910,6 +916,6 @@ public class BigIntUtil {
 	 *             Thrown by <code>new BigInteger(int, int, Random)</code>
 	 */
 	public static BigInteger probableSafePrime(int bitLength) throws IllegalArgumentException, ArithmeticException {
-		return BigIntUtil.probableSafePrime(bitLength, 100);
+		return BigIntUtil.probableSafePrime(bitLength, BigIntUtil.DEFAULT_CERTAINTY);
 	}
 }

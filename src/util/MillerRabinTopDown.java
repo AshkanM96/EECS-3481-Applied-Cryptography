@@ -20,11 +20,6 @@ public class MillerRabinTopDown {
 	 */
 
 	/**
-	 * <code>BigInteger.valueOf(2)</code>.
-	 */
-	public static final BigInteger TWO = BigInteger.valueOf(2L);
-
-	/**
 	 * The number being tested.
 	 */
 	public final BigInteger n;
@@ -49,15 +44,15 @@ public class MillerRabinTopDown {
 	 *             If <code>n == null</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(n <= 2) || (BigIntUtil.isEven(n))</code>
+	 *             If <code>BigIntUtil.isEven(n) || (n <= 1)</code>
 	 */
 	public MillerRabinTopDown(BigInteger n) throws NullPointerException, IllegalArgumentException {
-		if (n.compareTo(MillerRabinTopDown.TWO) <= 0) { // i.e., n <= 2
+		if (!n.testBit(0)) { // i.e., BigIntUtil.isEven(n)
 			throw new IllegalArgumentException();
-		} else if (!n.testBit(0)) { // i.e., BigIntUtil.isEven(n)
+		} else if (n.compareTo(BigInteger.ONE) <= 0) { // i.e., n <= 1
 			throw new IllegalArgumentException();
 		}
-		// n is an odd integer greater than 2
+		// n is an odd integer greater than 1
 
 		// The following is meant to be an assignment of this.n and this.n_minus_1.
 		this.n_minus_1 = (this.n = n).subtract(BigInteger.ONE);

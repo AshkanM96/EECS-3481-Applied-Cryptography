@@ -120,12 +120,12 @@ public class NumUtil {
 	public static final BigInteger SMALLEST_SAFE_PRIME_NOT_LONG = new BigInteger("9223372036854778487");
 
 	/**
-	 * The default <code>base</code> argument for Pollard's <code>p - 1</code> Algorithm.
+	 * The default value for the <code>base</code> argument of the <code>divisorPMinusOne</code> method.
 	 */
 	public static final byte P_MINUS_ONE_DEFAULT_BASE = 2;
 
 	/**
-	 * The default <code>end</code> argument for Pollard's <code>p - 1</code> Algorithm.
+	 * The default value for the <code>end</code> argument of the <code>divisorPMinusOne</code> method.
 	 */
 	public static final byte P_MINUS_ONE_DEFAULT_END = 100;
 

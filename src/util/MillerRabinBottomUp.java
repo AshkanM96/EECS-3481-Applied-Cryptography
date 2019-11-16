@@ -18,11 +18,6 @@ public class MillerRabinBottomUp {
 	 */
 
 	/**
-	 * <code>BigInteger.valueOf(2)</code>.
-	 */
-	public static final BigInteger TWO = BigInteger.valueOf(2L);
-
-	/**
 	 * The number being tested.
 	 */
 	public final BigInteger n;
@@ -52,18 +47,22 @@ public class MillerRabinBottomUp {
 	 *             If <code>n == null</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(n <= 2) || (BigIntUtil.isEven(n))</code>
+	 *             If <code>BigIntUtil.isEven(n) || (n <= 1)</code>
 	 */
 	public MillerRabinBottomUp(BigInteger n) throws NullPointerException, IllegalArgumentException {
-		if (n.compareTo(MillerRabinBottomUp.TWO) <= 0) { // i.e., n <= 2
+		if (!n.testBit(0)) { // i.e., BigIntUtil.isEven(n)
 			throw new IllegalArgumentException();
-		} else if (!n.testBit(0)) { // i.e., BigIntUtil.isEven(n)
+		} else if (n.compareTo(BigInteger.ONE) <= 0) { // i.e., n <= 1
 			throw new IllegalArgumentException();
 		}
-		// n is an odd integer greater than 2
+		// n is an odd integer greater than 1
 
 		// The following is meant to be an assignment of this.n and this.n_minus_1.
 		this.n_minus_1 = (this.n = n).subtract(BigInteger.ONE);
+		/*
+		 * this.n_minus_1 is guaranteed to be even since this.n is enforced to be odd which means that
+		 * dividing it by the largest power of 2 that it contains, will not have a remainder.
+		 */
 		// The following is meant to be an assignment of this.max_power_of_2 and this.max_odd_factor.
 		this.max_odd_factor = this.n_minus_1.shiftRight(this.max_power_of_2 = this.n_minus_1.getLowestSetBit());
 	}

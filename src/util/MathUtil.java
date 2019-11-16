@@ -908,7 +908,7 @@ public class MathUtil {
 	 *             || (Long.MAX_VALUE < n<sup>p</sup>) || (n<sup>p</sup> < Long.MIN_VALUE)</code>
 	 */
 	public static long powExact(long n, byte p) throws UndefinedInverseException, ArithmeticException {
-		if (p < 0L) {
+		if (p < 0) {
 			if (n == 0L) {
 				throw new UndefinedInverseException();
 			}

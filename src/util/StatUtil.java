@@ -805,11 +805,12 @@ public class StatUtil {
 			 * </code>
 			 * </pre>
 			 */
-			final int n_1 = n - 1, n_r = n - r, n2_r = n + n_r;
+			final int n_minus_1 = n - 1, n_minus_r = n - r, two_n_minus_r = n + n_minus_r;
 			BigInteger result = BigInteger.ZERO, tmp = null;
-			for (int i = 0; i <= n_r; ++i) {
-				tmp = StatUtil.nCrLinear(n_1 + i, n_r + i).multiply(StatUtil.nCrLinear(n2_r, n_r - i))
-						.multiply(StatUtil.stirling2Linear(n_r + i, i));
+			for (int i = 0; i <= n_minus_r; ++i) {
+				tmp = StatUtil.nCrLinear(n_minus_1 + i, n_minus_r + i)
+						.multiply(StatUtil.nCrLinear(two_n_minus_r, n_minus_r - i))
+						.multiply(StatUtil.stirling2Linear(n_minus_r + i, i));
 				/**
 				 * Don't do <code>(i &= 1) != 0</code> since we need the value of <code>i</code> to remain
 				 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which

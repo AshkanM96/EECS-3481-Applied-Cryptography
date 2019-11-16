@@ -31,7 +31,7 @@ public class RSAUtil {
 	public static final String ALGORITHM = "RSA";
 
 	/**
-	 * Default value for the <code>max_num_iters</code> argument of the <code>primeFactors</code>
+	 * The default value for the <code>max_num_iters</code> argument of the <code>primeFactors</code>
 	 * method.
 	 */
 	public static final int DEFAULT_MAX_NUM_ITERS = 1000;
@@ -197,13 +197,15 @@ public class RSAUtil {
 	 *             If <code>(p == null) || (q == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(p <= 1) || (q <= 1)</code>
+	 *             If <code>(p <= 1) || (q <= 1) || (p == q)</code>
 	 */
 	public static BigInteger phi(BigInteger p, BigInteger q) throws NullPointerException, IllegalArgumentException {
 		if ((p.signum() != 1) || (q.signum() != 1)) { // i.e., (p <= 0) || (q <= 0)
 			throw new IllegalArgumentException();
+		} else if (p.equals(q)) { // i.e., p == q
+			throw new IllegalArgumentException();
 		}
-		// (0 < p) && (0 < q)
+		// (0 < p) && (0 < q) && (p != q)
 
 		// Save p - 1 and ensure that it is positive.
 		final BigInteger p_minus_1 = p.subtract(BigInteger.ONE); // 0 <= p_minus_1
@@ -280,7 +282,7 @@ public class RSAUtil {
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(p <= 1) || (n <= 0) || (k <= 0) || (n <= k)
-	 *             || ((n % p) != 0) || ((n / p) <= 1) || (phi <= k)</code>
+	 *             || ((n % p) != 0) || (p == (n / p)) || ((n / p) <= 1) || (phi <= k)</code>
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>gcd(k, phi) != 1</code>
@@ -301,7 +303,10 @@ public class RSAUtil {
 		if (result[1].signum() != 0) {
 			// result[1] == (n % p) != 0, which means that p is not actually a factor of n.
 			throw new IllegalArgumentException();
+		} else if (p.equals(q)) { // i.e., p == q
+			throw new IllegalArgumentException();
 		}
+		// (p * q == n) && (p != q)
 
 		// Save p - 1 and ensure that it is positive.
 		final BigInteger p_minus_1 = p.subtract(BigInteger.ONE); // 0 <= p_minus_1
@@ -420,12 +425,15 @@ public class RSAUtil {
 	 *             If <code>(n == null) || (e == null) || (d == null)</code>
 	 * 
 	 * @throws IllegalArgumentException
-	 *             If <code>(n <= 1) || (e <= 0) || (d <= 0) || (n <= e) || (n <= d)
-	 *             || (max_num_iters <= 0) || ((e == 1) && (d == 1))</code>
+	 *             If
+	 *             <code>(n <= 1) || (e <= 0) || (d <= 0) || BigIntUtil.isEven(n) || (n <= e) || (n <= d)
+	 *             || (max_num_iters <= 0) || ((e == 1) && (d == 1)) || BigIntUtil.isEven(e * d - 1)</code>
 	 */
 	public static BigInteger[] primeFactors(BigInteger n, BigInteger e, BigInteger d, int max_num_iters, Random rnd)
 			throws NullPointerException, IllegalArgumentException {
 		if ((n.signum() != 1) || (e.signum() != 1) || (d.signum() != 1)) { // i.e., (n <= 0) || (e <= 0) || (d <= 0)
+			throw new IllegalArgumentException();
+		} else if (!n.testBit(0)) { // i.e., BigIntUtil.isEven(n)
 			throw new IllegalArgumentException();
 		} else if (n.compareTo(e) <= 0) { // i.e., n <= e
 			throw new IllegalArgumentException();
@@ -434,8 +442,8 @@ public class RSAUtil {
 		} else if (max_num_iters <= 0) {
 			throw new IllegalArgumentException();
 		}
-		// (0 < n) && (0 < e) && (0 < d) && (e < n) && (d < n) && (0 < max_num_iters)
-		// i.e., (0 < e) && (0 < d) && (max(e, d) < n) && (0 < max_num_iters)
+		// (0 < n) && (0 < e) && (0 < d) && (n % 2 == 1) && (e < n) && (d < n) && (0 < max_num_iters)
+		// i.e., (0 < e) && (0 < d) && (n % 2 == 1) && (max(e, d) < n) && (0 < max_num_iters)
 
 		// Fix null rnd.
 		if (rnd == null) {
@@ -449,6 +457,7 @@ public class RSAUtil {
 		}
 		// 0 < n - 1
 		// i.e., 1 < n
+		// i.e., 3 <= n
 		// Save e * d - 1 and ensure that it is positive.
 		final BigInteger k_times_phi = e.multiply(d).subtract(BigInteger.ONE); // 0 <= k_times_phi
 		if (k_times_phi.signum() != 1) { // i.e., e * d - 1 <= 0
@@ -457,18 +466,32 @@ public class RSAUtil {
 			throw new IllegalArgumentException();
 		}
 		// 0 < k_times_phi
+		/**
+		 * Note that <code>k_times_phi</code> is some unknown (positive) multiple of <code>phi</code> since
+		 * <code>e * d - 1 = 0 (mod phi)</code>. Furthermore, we know that <code>phi</code> is even for all
+		 * integers <code>n</code> greater than 2, and so it is even here since <code>3 <= n</code> by the
+		 * above. Thus, <code>k_times_phi</code> must also be an even number here.
+		 */
+		if (k_times_phi.testBit(0)) { // i.e., !BigIntUtil.isEven(k_times_phi)
+			throw new IllegalArgumentException();
+		}
+		// k_times_phi % 2 == 0
 
 		// Save the bit length of n - 1 since we need to generate random bases between 2 and n - 2.
 		final int n_bitLength = n_minus_1.bitLength();
 		// Find the largest power of 2 in k_times_phi and the largest odd factor of k_times_phi.
-		final int max_power_of_2 = k_times_phi.getLowestSetBit();
+		final int max_power_of_2 = k_times_phi.getLowestSetBit(); // 0 < max_power_of_2
 		final BigInteger max_odd_factor = k_times_phi.shiftRight(max_power_of_2);
 
 		// Perform Miller-Rabin's compositeness test at most max_num_iters times.
 		BigInteger base = null, gcd = null, r = null, prev_r = null;
 		int i = 0;
 		do {
-			// Generate a base in [2, n - 2] uniformly at random.
+			/*
+			 * Generate a base in [2, n - 2] uniformly at random by randomly generating integers uniformly
+			 * distributed in [0, 2^n_bitLength - 1] and then rejecting the ones that are less than 2 (i.e.,
+			 * less than or equal to 1) or greater than n - 2 (i.e., greater than or equal to n - 1).
+			 */
 			do {
 				base = new BigInteger(n_bitLength, rnd);
 			} while ((base.compareTo(BigInteger.ONE) <= 0) || (n_minus_1.compareTo(base) <= 0));
@@ -545,7 +568,7 @@ public class RSAUtil {
 	 * @param max_num_iters
 	 *            the maximum number of iterations to run Miller-Rabin's compositeness test
 	 * 
-	 * @return The resulting BigInteger array.
+	 * @return <code>RSAUtil.primeFactors(n, e, d, max_num_iters, ThreadLocalRandom.current())</code>.
 	 * 
 	 * @throws NullPointerException
 	 *             If <code>(n == null) || (e == null) || (d == null)</code>
@@ -575,7 +598,7 @@ public class RSAUtil {
 	 * @param d
 	 *            the given cipher private key
 	 * 
-	 * @return The resulting BigInteger array.
+	 * @return <code>RSAUtil.primeFactors(n, e, d, RSAUtil.DEFAULT_MAX_NUM_ITERS)</code>.
 	 * 
 	 * @throws NullPointerException
 	 *             If <code>(n == null) || (e == null) || (d == null)</code>
