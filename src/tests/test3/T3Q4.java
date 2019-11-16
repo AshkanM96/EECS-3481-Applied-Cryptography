@@ -13,7 +13,7 @@ public class T3Q4 {
 
 	public static void main(String[] args) {
 		final BigInteger n = new BigInteger("1033931178476059651954862004553");
-		final BigInteger b = MillerRabinTopDown.TWO;
+		final BigInteger b = BigInteger.valueOf(2L);
 		System.out.println("n == " + n + "\n");
 
 		final MillerRabinTopDown m = new MillerRabinTopDown(n);
