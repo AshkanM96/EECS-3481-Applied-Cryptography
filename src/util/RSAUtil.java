@@ -34,7 +34,7 @@ public class RSAUtil {
 	 * The default value for the <code>max_num_iters</code> argument of the <code>primeFactors</code>
 	 * method.
 	 */
-	public static final int DEFAULT_MAX_NUM_ITERS = 1000;
+	public static final int DEFAULT_MAX_NUM_ITERS = 100;
 
 	/**
 	 * @return <code>KeyPairGenerator.getInstance(RSAUtil.ALGORITHM)</code>.
@@ -468,9 +468,10 @@ public class RSAUtil {
 		// 0 < k_times_phi
 		/**
 		 * Note that <code>k_times_phi</code> is some unknown (positive) multiple of <code>phi</code> since
-		 * <code>e * d - 1 = 0 (mod phi)</code>. Furthermore, we know that <code>phi</code> is even for all
-		 * integers <code>n</code> greater than 2, and so it is even here since <code>3 <= n</code> by the
-		 * above. Thus, <code>k_times_phi</code> must also be an even number here.
+		 * <code>e * d = 1 (mod phi)</code>, and so <code>e * d - 1 = 0 (mod phi)</code>. Furthermore, we
+		 * know that <code>phi</code> is even for all integers <code>n</code> greater than 2, and so it is
+		 * even here since <code>3 <= n</code> by the above. Thus, <code>k_times_phi</code> must also be an
+		 * even number here.
 		 */
 		if (k_times_phi.testBit(0)) { // i.e., !BigIntUtil.isEven(k_times_phi)
 			throw new IllegalArgumentException();
@@ -508,7 +509,11 @@ public class RSAUtil {
 			}
 			// gcd(n, base) == 1
 
-			// Perform Miller-Rabin's compositeness test with the randomly generated base.
+			/**
+			 * Perform Miller-Rabin's compositeness test with the randomly generated base, since we know that
+			 * <code>base<sup>k_times_phi</sup> = 1 (mod n)</code> by Euler's totient theorem, and then apply
+			 * the Square-Root test to find non-trivial divisors of <code>n</code>.
+			 */
 			r = base.modPow(max_odd_factor, n);
 			/*
 			 * Check to see if the very first calculation resulted in a one and thus all of the other remainders
