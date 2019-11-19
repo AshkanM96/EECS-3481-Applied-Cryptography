@@ -816,8 +816,11 @@ public class BigIntUtil {
 	 * 
 	 * @throws NullPointerException
 	 *             If <code>n == null</code>
+	 *
+	 * @throws ArithmeticException
+	 *             Thrown by <code>BigInteger.nextProbablePrime()</code>
 	 */
-	public static BigInteger nextProbableSafePrime(BigInteger n) throws NullPointerException {
+	public static BigInteger nextProbableSafePrime(BigInteger n) throws NullPointerException, ArithmeticException {
 		for (BigInteger p = null; true; /* Update inside. */) {
 			// Find the next probable prime after n.
 			p = n.nextProbablePrime();
@@ -842,7 +845,7 @@ public class BigIntUtil {
 	 * @param certainty
 	 *            a measure of the uncertainty that the caller is willing to tolerate
 	 * 
-	 * @param rnd
+	 * @param prng
 	 *            source of random bits used to select candidates to be tested for primality
 	 * 
 	 * @return The resulting BigInteger object.
@@ -853,20 +856,18 @@ public class BigIntUtil {
 	 * @throws ArithmeticException
 	 *             Thrown by <code>new BigInteger(int, int, Random)</code>
 	 */
-	public static BigInteger probableSafePrime(int bitLength, int certainty, Random rnd)
+	public static BigInteger probableSafePrime(int bitLength, int certainty, Random prng)
 			throws IllegalArgumentException, ArithmeticException {
 		if (bitLength < 3) { // The first safe prime is 5, which requires 3 bits to represent.
 			throw new IllegalArgumentException();
 		}
-
-		// Fix null rnd.
-		if (rnd == null) {
-			rnd = ThreadLocalRandom.current();
+		if (prng == null) {
+			prng = ThreadLocalRandom.current();
 		}
 
 		for (BigInteger p = null; true; /* Update inside. */) {
 			// Generate a probable prime with the specified bit length.
-			p = new BigInteger(bitLength, certainty, rnd);
+			p = new BigInteger(bitLength, certainty, prng);
 			// Check if (p - 1) / 2 is prime.
 			if (p.shiftRight(1).isProbablePrime(certainty)) {
 				return p;
@@ -886,7 +887,7 @@ public class BigIntUtil {
 	 * @param certainty
 	 *            a measure of the uncertainty that the caller is willing to tolerate
 	 * 
-	 * @return <code>BigIntUtil.probableSafePrime(bitLength, certainty, ThreadLocalRandom.current())</code>.
+	 * @return <code>BigIntUtil.probableSafePrime(bitLength, certainty, null)</code>.
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>bitLength < 3</code>
@@ -896,7 +897,7 @@ public class BigIntUtil {
 	 */
 	public static BigInteger probableSafePrime(int bitLength, int certainty)
 			throws IllegalArgumentException, ArithmeticException {
-		return BigIntUtil.probableSafePrime(bitLength, certainty, ThreadLocalRandom.current());
+		return BigIntUtil.probableSafePrime(bitLength, certainty, null);
 	}
 
 	/**

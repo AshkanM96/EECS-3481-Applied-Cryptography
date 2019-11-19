@@ -17,6 +17,11 @@ public class Binary {
 	public static final int BITS_PER_BYTE = Byte.SIZE;
 
 	/**
+	 * Number of bits per one char.
+	 */
+	public static final int BITS_PER_CHAR = Character.SIZE;
+
+	/**
 	 * Number of bits per one short.
 	 */
 	public static final int BITS_PER_SHORT = Short.SIZE;
@@ -37,6 +42,11 @@ public class Binary {
 	public static final int MASK_BYTE_TO_INT = 0xFF;
 
 	/**
+	 * Mask for char to int conversion using & (i.e., bitwise and).
+	 */
+	public static final int MASK_CHAR_TO_INT = 0xFFFF;
+
+	/**
 	 * Mask for short to int conversion using & (i.e., bitwise and).
 	 */
 	public static final int MASK_SHORT_TO_INT = 0xFFFF;
@@ -45,6 +55,11 @@ public class Binary {
 	 * Mask for byte to long conversion using & (i.e., bitwise and).
 	 */
 	public static final long MASK_BYTE_TO_LONG = 0xFFL;
+
+	/**
+	 * Mask for char to long conversion using & (i.e., bitwise and).
+	 */
+	public static final long MASK_CHAR_TO_LONG = 0xFFFFL;
 
 	/**
 	 * Mask for short to long conversion using & (i.e., bitwise and).
@@ -84,7 +99,7 @@ public class Binary {
 	 * @return The resulting string.
 	 */
 	public static String toString(byte b) {
-		final StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder(Binary.BITS_PER_BYTE);
 		final String result = Integer.toBinaryString(b & Binary.MASK_BYTE_TO_INT);
 		// Pad with zeroes on the left to have Binary.BITS_PER_BYTE chars in total.
 		for (int i = Binary.BITS_PER_BYTE - result.length(); i != 0; --i) {
@@ -105,9 +120,9 @@ public class Binary {
 	 *             If <code>data == null</code>
 	 */
 	public static String toString(boolean[] data) throws NullPointerException {
-		final StringBuilder sb = new StringBuilder();
-		for (final boolean b : data) {
-			sb.append(Binary.toString(b));
+		final StringBuilder sb = new StringBuilder(data.length);
+		for (int i = 0; i != data.length; ++i) {
+			sb.append(data[i] ? "1" : "0"); // i.e., Binary.toString(data[i])
 		}
 		return sb.toString();
 	}
@@ -124,9 +139,9 @@ public class Binary {
 	 *             If <code>data == null</code>
 	 */
 	public static String toString(byte[] data) throws NullPointerException {
-		final StringBuilder sb = new StringBuilder();
-		for (final byte b : data) {
-			sb.append(Binary.toString(b));
+		final StringBuilder sb = new StringBuilder(data.length);
+		for (int i = 0; i != data.length; ++i) {
+			sb.append(Binary.toString(data[i]));
 		}
 		return sb.toString();
 	}
@@ -148,12 +163,90 @@ public class Binary {
 	 * @return The number of "on" bits (i.e., equal to 1) in the given byte.
 	 */
 	public static int countOnes(byte b) {
-		final String binStr = Integer.toBinaryString(b & Binary.MASK_BYTE_TO_INT);
 		int result = 0;
-		for (int i = 0; i != binStr.length(); ++i) {
-			if (binStr.charAt(i) == '1') {
-				++result;
-			}
+		for (int int_b = b; int_b != 0; int_b >>>= 1) {
+			/**
+			 * Don't do <code>int_b &= 1</code> since we need the value of <code>int_b</code> to remain
+			 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
+			 * will mutate <code>int_b</code>.
+			 */
+			result += (int_b & 1);
+		}
+		return result;
+	}
+
+	/**
+	 * @param c
+	 *            the given char
+	 * 
+	 * @return The number of "on" bits (i.e., equal to 1) in the given char.
+	 */
+	public static int countOnes(char c) {
+		int result = 0;
+		for (int int_c = c; int_c != 0; int_c >>>= 1) {
+			/**
+			 * Don't do <code>int_c &= 1</code> since we need the value of <code>int_c</code> to remain
+			 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
+			 * will mutate <code>int_c</code>.
+			 */
+			result += (int_c & 1);
+		}
+		return result;
+	}
+
+	/**
+	 * @param s
+	 *            the given short
+	 * 
+	 * @return The number of "on" bits (i.e., equal to 1) in the given short.
+	 */
+	public static int countOnes(short s) {
+		int result = 0;
+		for (int int_s = s; int_s != 0; int_s >>>= 1) {
+			/**
+			 * Don't do <code>int_s &= 1</code> since we need the value of <code>int_s</code> to remain
+			 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
+			 * will mutate <code>int_s</code>.
+			 */
+			result += (int_s & 1);
+		}
+		return result;
+	}
+
+	/**
+	 * @param i
+	 *            the given int
+	 * 
+	 * @return The number of "on" bits (i.e., equal to 1) in the given int.
+	 */
+	public static int countOnes(int i) {
+		int result = 0;
+		for (/* Already initialized. */; i != 0; i >>>= 1) {
+			/**
+			 * Don't do <code>i &= 1</code> since we need the value of <code>i</code> to remain unchanged. Note
+			 * that the difference is the <code>&=</code> instead of the <code>&</code> which will mutate
+			 * <code>i</code>.
+			 */
+			result += (i & 1);
+		}
+		return result;
+	}
+
+	/**
+	 * @param l
+	 *            the given long
+	 * 
+	 * @return The number of "on" bits (i.e., equal to 1) in the given long.
+	 */
+	public static int countOnes(long l) {
+		int result = 0;
+		for (/* Already initialized. */; l != 0L; l >>>= 1L) {
+			/**
+			 * Don't do <code>l &= 1L</code> since we need the value of <code>l</code> to remain unchanged. Note
+			 * that the difference is the <code>&=</code> instead of the <code>&</code> which will mutate
+			 * <code>l</code>.
+			 */
+			result += (l & 1L);
 		}
 		return result;
 	}
@@ -169,8 +262,8 @@ public class Binary {
 	 */
 	public static int countOnes(boolean[] data) throws NullPointerException {
 		int result = 0;
-		for (final boolean b : data) {
-			result += (b ? 1 : 0); // i.e., Binary.countOnes(b)
+		for (int i = 0; i != data.length; ++i) {
+			result += (data[i] ? 1 : 0); // i.e., Binary.countOnes(data[i])
 		}
 		return result;
 	}
@@ -186,8 +279,76 @@ public class Binary {
 	 */
 	public static int countOnes(byte[] data) throws NullPointerException {
 		int result = 0;
-		for (final byte b : data) {
-			result += Binary.countOnes(b);
+		for (int i = 0; i != data.length; ++i) {
+			result += Binary.countOnes(data[i]);
+		}
+		return result;
+	}
+
+	/**
+	 * @param data
+	 *            the given char array
+	 * 
+	 * @return The number of "on" bits (i.e., equal to 1) in the given char array.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 */
+	public static int countOnes(char[] data) throws NullPointerException {
+		int result = 0;
+		for (int i = 0; i != data.length; ++i) {
+			result += Binary.countOnes(data[i]);
+		}
+		return result;
+	}
+
+	/**
+	 * @param data
+	 *            the given short array
+	 * 
+	 * @return The number of "on" bits (i.e., equal to 1) in the given short array.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 */
+	public static int countOnes(short[] data) throws NullPointerException {
+		int result = 0;
+		for (int i = 0; i != data.length; ++i) {
+			result += Binary.countOnes(data[i]);
+		}
+		return result;
+	}
+
+	/**
+	 * @param data
+	 *            the given int array
+	 * 
+	 * @return The number of "on" bits (i.e., equal to 1) in the given int array.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 */
+	public static int countOnes(int[] data) throws NullPointerException {
+		int result = 0;
+		for (int i = 0; i != data.length; ++i) {
+			result += Binary.countOnes(data[i]);
+		}
+		return result;
+	}
+
+	/**
+	 * @param data
+	 *            the given long array
+	 * 
+	 * @return The number of "on" bits (i.e., equal to 1) in the given long array.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 */
+	public static int countOnes(long[] data) throws NullPointerException {
+		int result = 0;
+		for (int i = 0; i != data.length; ++i) {
+			result += Binary.countOnes(data[i]);
 		}
 		return result;
 	}
@@ -210,12 +371,66 @@ public class Binary {
 	 */
 	public static int countZeroes(byte b) {
 		/**
-		 * <code>Integer.toBinaryString(b & Binary.BYTE_CONVERTER)</code> may not include some zeroes on the
-		 * left end which is why the same algorithm used for <code>Binary.countOnes(byte)</code> may not
-		 * work here. Instead, we count all of the ones and then subtract them from the total number of
-		 * bits.
+		 * The same algorithm that was used for <code>Binary.countOnes(byte)</code> may not work here.
+		 * Instead, we count all of the ones, and then subtract them from the total number of bits.
 		 */
 		return (Binary.BITS_PER_BYTE - Binary.countOnes(b));
+	}
+
+	/**
+	 * @param c
+	 *            the given char
+	 * 
+	 * @return The number of "off" bits (i.e., equal to 0) in the given char.
+	 */
+	public static int countZeroes(char c) {
+		/**
+		 * The same algorithm that was used for <code>Binary.countOnes(char)</code> may not work here.
+		 * Instead, we count all of the ones, and then subtract them from the total number of bits.
+		 */
+		return (Binary.BITS_PER_CHAR - Binary.countOnes(c));
+	}
+
+	/**
+	 * @param s
+	 *            the given short
+	 * 
+	 * @return The number of "off" bits (i.e., equal to 0) in the given short.
+	 */
+	public static int countZeroes(short s) {
+		/**
+		 * The same algorithm that was used for <code>Binary.countOnes(short)</code> may not work here.
+		 * Instead, we count all of the ones, and then subtract them from the total number of bits.
+		 */
+		return (Binary.BITS_PER_SHORT - Binary.countOnes(s));
+	}
+
+	/**
+	 * @param i
+	 *            the given int
+	 * 
+	 * @return The number of "off" bits (i.e., equal to 0) in the given int.
+	 */
+	public static int countZeroes(int i) {
+		/**
+		 * The same algorithm that was used for <code>Binary.countOnes(int)</code> may not work here.
+		 * Instead, we count all of the ones, and then subtract them from the total number of bits.
+		 */
+		return (Binary.BITS_PER_INT - Binary.countOnes(i));
+	}
+
+	/**
+	 * @param l
+	 *            the given long
+	 * 
+	 * @return The number of "off" bits (i.e., equal to 0) in the given long.
+	 */
+	public static int countZeroes(long l) {
+		/**
+		 * The same algorithm that was used for <code>Binary.countOnes(long)</code> may not work here.
+		 * Instead, we count all of the ones, and then subtract them from the total number of bits.
+		 */
+		return (Binary.BITS_PER_LONG - Binary.countOnes(l));
 	}
 
 	/**
@@ -229,8 +444,8 @@ public class Binary {
 	 */
 	public static int countZeroes(boolean[] data) throws NullPointerException {
 		int result = 0;
-		for (final boolean b : data) {
-			result += (b ? 0 : 1); // i.e., Binary.countZeroes(b)
+		for (int i = 0; i != data.length; ++i) {
+			result += (data[i] ? 0 : 1); // i.e., Binary.countZeroes(data[i])
 		}
 		return result;
 	}
@@ -246,8 +461,76 @@ public class Binary {
 	 */
 	public static int countZeroes(byte[] data) throws NullPointerException {
 		int result = 0;
-		for (final byte b : data) {
-			result += Binary.countZeroes(b);
+		for (int i = 0; i != data.length; ++i) {
+			result += (Binary.BITS_PER_BYTE - Binary.countOnes(data[i])); // i.e., Binary.countZeroes(data[i])
+		}
+		return result;
+	}
+
+	/**
+	 * @param data
+	 *            the given char array
+	 * 
+	 * @return The number of "off" bits (i.e., equal to 0) in the given char array.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 */
+	public static int countZeroes(char[] data) throws NullPointerException {
+		int result = 0;
+		for (int i = 0; i != data.length; ++i) {
+			result += (Binary.BITS_PER_CHAR - Binary.countOnes(data[i])); // i.e., Binary.countZeroes(data[i]);
+		}
+		return result;
+	}
+
+	/**
+	 * @param data
+	 *            the given short array
+	 * 
+	 * @return The number of "off" bits (i.e., equal to 0) in the given short array.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 */
+	public static int countZeroes(short[] data) throws NullPointerException {
+		int result = 0;
+		for (int i = 0; i != data.length; ++i) {
+			result += (Binary.BITS_PER_SHORT - Binary.countOnes(data[i])); // i.e., Binary.countZeroes(data[i])
+		}
+		return result;
+	}
+
+	/**
+	 * @param data
+	 *            the given int array
+	 * 
+	 * @return The number of "off" bits (i.e., equal to 0) in the given int array.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 */
+	public static int countZeroes(int[] data) throws NullPointerException {
+		int result = 0;
+		for (int i = 0; i != data.length; ++i) {
+			result += (Binary.BITS_PER_INT - Binary.countOnes(data[i])); // i.e., Binary.countZeroes(data[i])
+		}
+		return result;
+	}
+
+	/**
+	 * @param data
+	 *            the given long array
+	 * 
+	 * @return The number of "off" bits (i.e., equal to 0) in the given long array.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 */
+	public static int countZeroes(long[] data) throws NullPointerException {
+		int result = 0;
+		for (int i = 0; i != data.length; ++i) {
+			result += (Binary.BITS_PER_LONG - Binary.countOnes(data[i])); // i.e., Binary.countZeroes(data[i])
 		}
 		return result;
 	}
@@ -475,7 +758,7 @@ public class Binary {
 	}
 
 	/**
-	 * <code>lhs &&= rhs</code>.
+	 * <code>lhs &= rhs</code>.
 	 * 
 	 * @param lhs
 	 *            the given left hand side boolean array
@@ -498,7 +781,7 @@ public class Binary {
 		}
 
 		for (int i = 0; i != lhs.length; ++i) {
-			lhs[i] = lhs[i] && rhs[i];
+			lhs[i] &= rhs[i];
 		}
 		return lhs;
 	}
@@ -818,7 +1101,7 @@ public class Binary {
 	}
 
 	/**
-	 * <code>lhs ||= rhs</code>.
+	 * <code>lhs |= rhs</code>.
 	 * 
 	 * @param lhs
 	 *            the given left hand side boolean array
@@ -841,7 +1124,7 @@ public class Binary {
 		}
 
 		for (int i = 0; i != lhs.length; ++i) {
-			lhs[i] = lhs[i] || rhs[i];
+			lhs[i] |= rhs[i];
 		}
 		return lhs;
 	}
@@ -1184,23 +1467,7 @@ public class Binary {
 		}
 
 		for (int i = 0; i != lhs.length; ++i) {
-			if (lhs[i]) {
-				if (rhs[i]) {
-					// Both are true.
-					lhs[i] = false;
-				} else {
-					// One is true and one is false.
-					lhs[i] = true;
-				}
-			} else {
-				if (rhs[i]) {
-					// One is true and one is false.
-					lhs[i] = true;
-				} else {
-					// Both are false.
-					lhs[i] = false;
-				}
-			}
+			lhs[i] ^= rhs[i];
 		}
 		return lhs;
 	}
@@ -1369,23 +1636,7 @@ public class Binary {
 
 		final boolean[] result = new boolean[lhs.length];
 		for (int i = 0; i != result.length; ++i) {
-			if (lhs[i]) {
-				if (rhs[i]) {
-					// Both are true.
-					result[i] = false;
-				} else {
-					// One is true and one is false.
-					result[i] = true;
-				}
-			} else {
-				if (rhs[i]) {
-					// One is true and one is false.
-					result[i] = true;
-				} else {
-					// Both are false.
-					result[i] = false;
-				}
-			}
+			result[i] = lhs[i] ^ rhs[i];
 		}
 		return result;
 	}

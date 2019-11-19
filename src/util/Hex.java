@@ -41,13 +41,12 @@ public class Hex {
 	 *             <code>i</code> is <code>valid</code>
 	 */
 	public static byte[] toBytes(String s) throws NullPointerException, NumberFormatException {
-		final int l = s.length();
-		if ((l & 1) != 0) { // i.e., !NumUtil.isEven(l)
+		if ((s.length() & 1) != 0) { // i.e., !NumUtil.isEven(s.length())
 			// When the string has an odd length, prepend a '0' to it.
 			s = "0" + s;
 		}
 
-		final int half = l / 2;
+		final int half = s.length() / 2;
 		final byte[] data = new byte[half];
 		for (int i = 0, twice_i = 0; i != half; ++i, twice_i += 2) {
 			data[i] = (byte) Integer.parseInt(s.substring(twice_i, twice_i + 2), Hex.RADIX);
@@ -67,7 +66,7 @@ public class Hex {
 	 *             If <code>data == null</code>
 	 */
 	public static String toString(byte[] data) throws NullPointerException {
-		final StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder(data.length);
 		for (int i = 0, tmp = 0; i != data.length; ++i) {
 			tmp = data[i] & Binary.MASK_BYTE_TO_INT;
 			if (tmp < Hex.RADIX) {

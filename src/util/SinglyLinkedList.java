@@ -113,7 +113,7 @@ public class SinglyLinkedList<T> implements Iterable<T> {
 		// Fill the given array with node data from [beginIndex, endIndex).
 		final int maxI = (int) Math.min(a.length, endIndex - beginIndex);
 		int i = 0;
-		for (; (node != null) && (i != maxI); node = node.next, ++i) {
+		for (/* Already initialized. */; (node != null) && (i != maxI); node = node.next, ++i) {
 			a[i] = node.data;
 		}
 		// Leave a null marker at the end of the range in the given array if possible.

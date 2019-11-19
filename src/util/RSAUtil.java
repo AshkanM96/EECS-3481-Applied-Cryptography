@@ -416,7 +416,7 @@ public class RSAUtil {
 	 * @param max_num_iters
 	 *            the maximum number of iterations to run Miller-Rabin's compositeness test
 	 * 
-	 * @param rnd
+	 * @param prng
 	 *            source of random bits used to select candidates for Miller-Rabin's compositeness test
 	 * 
 	 * @return The resulting BigInteger array.
@@ -429,7 +429,7 @@ public class RSAUtil {
 	 *             <code>(n <= 1) || (e <= 0) || (d <= 0) || BigIntUtil.isEven(n) || (n <= e) || (n <= d)
 	 *             || (max_num_iters <= 0) || ((e == 1) && (d == 1)) || BigIntUtil.isEven(e * d - 1)</code>
 	 */
-	public static BigInteger[] primeFactors(BigInteger n, BigInteger e, BigInteger d, int max_num_iters, Random rnd)
+	public static BigInteger[] primeFactors(BigInteger n, BigInteger e, BigInteger d, int max_num_iters, Random prng)
 			throws NullPointerException, IllegalArgumentException {
 		if ((n.signum() != 1) || (e.signum() != 1) || (d.signum() != 1)) { // i.e., (n <= 0) || (e <= 0) || (d <= 0)
 			throw new IllegalArgumentException();
@@ -444,10 +444,8 @@ public class RSAUtil {
 		}
 		// (0 < n) && (0 < e) && (0 < d) && (n % 2 == 1) && (e < n) && (d < n) && (0 < max_num_iters)
 		// i.e., (0 < e) && (0 < d) && (n % 2 == 1) && (max(e, d) < n) && (0 < max_num_iters)
-
-		// Fix null rnd.
-		if (rnd == null) {
-			rnd = ThreadLocalRandom.current();
+		if (prng == null) {
+			prng = ThreadLocalRandom.current();
 		}
 
 		// Save n - 1 and ensure that it is positive.
@@ -494,7 +492,7 @@ public class RSAUtil {
 			 * less than or equal to 1) or greater than n - 2 (i.e., greater than or equal to n - 1).
 			 */
 			do {
-				base = new BigInteger(n_bitLength, rnd);
+				base = new BigInteger(n_bitLength, prng);
 			} while ((base.compareTo(BigInteger.ONE) <= 0) || (n_minus_1.compareTo(base) <= 0));
 
 			// Check if base and n have a non-trivial common divisor.
@@ -573,7 +571,7 @@ public class RSAUtil {
 	 * @param max_num_iters
 	 *            the maximum number of iterations to run Miller-Rabin's compositeness test
 	 * 
-	 * @return <code>RSAUtil.primeFactors(n, e, d, max_num_iters, ThreadLocalRandom.current())</code>.
+	 * @return <code>RSAUtil.primeFactors(n, e, d, max_num_iters, null)</code>.
 	 * 
 	 * @throws NullPointerException
 	 *             If <code>(n == null) || (e == null) || (d == null)</code>
@@ -584,7 +582,7 @@ public class RSAUtil {
 	 */
 	public static BigInteger[] primeFactors(BigInteger n, BigInteger e, BigInteger d, int max_num_iters)
 			throws NullPointerException, IllegalArgumentException {
-		return RSAUtil.primeFactors(n, e, d, max_num_iters, ThreadLocalRandom.current());
+		return RSAUtil.primeFactors(n, e, d, max_num_iters, null);
 	}
 
 	/**
