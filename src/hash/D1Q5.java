@@ -33,7 +33,7 @@ public class D1Q5 {
 	public static void main(String[] args) throws NoSuchAlgorithmException {
 		final MessageDigest digester = MessageDigest.getInstance("MD5");
 
-		// Using https://crackstation.net/, can crack D1Q5.PASSWORD_MD5_HASH to "crypto".
+		// Using https://crackstation.net/, can crack D1Q5.PASSWORD_MD5_HASH to find "crypto".
 		System.out.println(Arrays.equals(digester.digest("crypto".getBytes()), D1Q5.PASSWORD_MD5_HASH) + "\n");
 	}
 }
