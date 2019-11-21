@@ -14,7 +14,7 @@ public class Hex {
 	 */
 
 	/**
-	 * Radix used for parsing.
+	 * Hexadecimal radix value.
 	 */
 	public static final int RADIX = 16;
 
@@ -23,6 +23,29 @@ public class Hex {
 	 */
 	private Hex() {
 		// Empty by design.
+	}
+
+	/**
+	 * Given a byte array, convert it to a string of hex digits.
+	 * 
+	 * @param data
+	 *            the given byte array
+	 * 
+	 * @return The resulting string.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 */
+	public static String toString(byte[] data) throws NullPointerException {
+		final StringBuilder sb = new StringBuilder(data.length);
+		for (int i = 0, tmp = 0; i != data.length; ++i) {
+			tmp = data[i] & Binary.MASK_BYTE_TO_INT;
+			if (tmp < Hex.RADIX) {
+				sb.append('0');
+			}
+			sb.append(Integer.toHexString(tmp).toUpperCase());
+		}
+		return sb.toString();
 	}
 
 	/**
@@ -52,28 +75,5 @@ public class Hex {
 			data[i] = (byte) Integer.parseInt(s.substring(twice_i, twice_i + 2), Hex.RADIX);
 		}
 		return data;
-	}
-
-	/**
-	 * Given a byte array, convert it to a string of hex digits.
-	 * 
-	 * @param data
-	 *            the given byte array
-	 * 
-	 * @return The resulting string.
-	 * 
-	 * @throws NullPointerException
-	 *             If <code>data == null</code>
-	 */
-	public static String toString(byte[] data) throws NullPointerException {
-		final StringBuilder sb = new StringBuilder(data.length);
-		for (int i = 0, tmp = 0; i != data.length; ++i) {
-			tmp = data[i] & Binary.MASK_BYTE_TO_INT;
-			if (tmp < Hex.RADIX) {
-				sb.append('0');
-			}
-			sb.append(Integer.toHexString(tmp));
-		}
-		return sb.toString().toUpperCase();
 	}
 }

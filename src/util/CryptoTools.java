@@ -41,12 +41,12 @@ public class CryptoTools {
 	/**
 	 * Lower bound for English Index of Coincidence.
 	 */
-	public static final double ENGLISH_IC_LOWER = 6.40;
+	public static final double ENGLISH_IC_LOWER = 6.4;
 
 	/**
 	 * Upper bound for English Index of Coincidence.
 	 */
-	public static final double ENGLISH_IC_UPPER = 7.10;
+	public static final double ENGLISH_IC_UPPER = 7.1;
 
 	/**
 	 * Prevent instantiation.
@@ -594,7 +594,7 @@ public class CryptoTools {
 		long sum = 0L, f = 0L;
 		for (int i = 0; i != freq.length; ++i) {
 			f = freq[i];
-			sum += f * (f - 1);
+			sum += f * (f - 1L);
 		}
 		return (100.0 * sum / (data.length * (data.length - 1)));
 	}
@@ -642,7 +642,7 @@ public class CryptoTools {
 		long sum = 0L, f = 0L;
 		for (int i = 0; i != freq.length; ++i) {
 			f = freq[i];
-			sum += f * (f - 1);
+			sum += f * (f - 1L);
 		}
 		return (100.0 * sum / (data.length * (data.length - 1)));
 	}
@@ -688,9 +688,14 @@ public class CryptoTools {
 	 *             <code>FileInputStream.read()</code>, and <code>FileInputStream.close()</code>
 	 */
 	public static byte[] fileToBytes(String filename) throws NullPointerException, FileNotFoundException, IOException {
+		// Check for filename being null so that a FileInputStream is not created unless needed.
+		if (filename == null) {
+			throw new NullPointerException();
+		}
+
 		try (final FileInputStream fis = new FileInputStream(filename)) {
 			final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			for (int b = 0; (b = fis.read()) != -1; /* Loop condition also performs update. */) {
+			for (int b = 0; (b = fis.read()) != -1; /* Update inside. */) {
 				baos.write(b);
 			}
 			fis.close();

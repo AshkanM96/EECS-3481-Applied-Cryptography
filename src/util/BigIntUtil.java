@@ -804,7 +804,7 @@ public class BigIntUtil {
 		}
 
 		/*
-		 * Generate a random number in [0, bound - 1] uniformly at random by randomly generating integers
+		 * Generate a random integer in [0, bound - 1] uniformly at random by randomly generating integers
 		 * uniformly distributed in [0, 2^bitLength - 1] and then rejecting the ones that are greater than
 		 * bound - 1 (i.e., greater than or equal to bound).
 		 */
@@ -854,8 +854,7 @@ public class BigIntUtil {
 	 */
 	public static BigInteger nextBigInt(BigInteger begin, BigInteger end, Random prng)
 			throws NullPointerException, IllegalArgumentException {
-		final int cmp = begin.compareTo(end);
-		if (0 <= cmp) { // i.e., end <= begin
+		if (0 <= begin.compareTo(end)) { // i.e., end <= begin
 			throw new IllegalArgumentException();
 		}
 		// begin < end
@@ -864,7 +863,7 @@ public class BigIntUtil {
 		}
 
 		/*
-		 * Generate a random number in [0, bound - 1] uniformly at random by randomly generating integers
+		 * Generate a random integer in [0, bound - 1] uniformly at random by randomly generating integers
 		 * uniformly distributed in [0, 2^bitLength - 1] and then rejecting the ones that are greater than
 		 * bound - 1 (i.e., greater than or equal to bound).
 		 */

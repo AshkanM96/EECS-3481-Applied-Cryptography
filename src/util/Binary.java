@@ -12,6 +12,11 @@ public class Binary {
 	 */
 
 	/**
+	 * Binary radix value.
+	 */
+	public static final int RADIX = 2;
+
+	/**
 	 * Number of bits per one byte.
 	 */
 	public static final int BITS_PER_BYTE = Byte.SIZE;
@@ -76,74 +81,6 @@ public class Binary {
 	 */
 	private Binary() {
 		// Empty by design.
-	}
-
-	/**
-	 * Given a boolean, convert it to a string of bits.
-	 * 
-	 * @param b
-	 *            the given boolean
-	 * 
-	 * @return The resulting string.
-	 */
-	public static String toString(boolean b) {
-		return (b ? "1" : "0");
-	}
-
-	/**
-	 * Given a byte, convert it to a string of bits.
-	 * 
-	 * @param b
-	 *            the given byte
-	 * 
-	 * @return The resulting string.
-	 */
-	public static String toString(byte b) {
-		final StringBuilder sb = new StringBuilder(Binary.BITS_PER_BYTE);
-		final String result = Integer.toBinaryString(b & Binary.MASK_BYTE_TO_INT);
-		// Pad with zeroes on the left to have Binary.BITS_PER_BYTE chars in total.
-		for (int i = Binary.BITS_PER_BYTE - result.length(); i != 0; --i) {
-			sb.append('0');
-		}
-		return sb.append(result).toString();
-	}
-
-	/**
-	 * Given a boolean array, convert it to a string of bits.
-	 * 
-	 * @param data
-	 *            the given boolean array
-	 * 
-	 * @return The resulting string.
-	 * 
-	 * @throws NullPointerException
-	 *             If <code>data == null</code>
-	 */
-	public static String toString(boolean[] data) throws NullPointerException {
-		final StringBuilder sb = new StringBuilder(data.length);
-		for (int i = 0; i != data.length; ++i) {
-			sb.append(data[i] ? "1" : "0"); // i.e., Binary.toString(data[i])
-		}
-		return sb.toString();
-	}
-
-	/**
-	 * Given a byte array, convert it to a string of bits.
-	 * 
-	 * @param data
-	 *            the given byte array
-	 * 
-	 * @return The resulting string.
-	 * 
-	 * @throws NullPointerException
-	 *             If <code>data == null</code>
-	 */
-	public static String toString(byte[] data) throws NullPointerException {
-		final StringBuilder sb = new StringBuilder(data.length);
-		for (int i = 0; i != data.length; ++i) {
-			sb.append(Binary.toString(data[i]));
-		}
-		return sb.toString();
 	}
 
 	/**
@@ -260,10 +197,10 @@ public class Binary {
 	 * @throws NullPointerException
 	 *             If <code>data == null</code>
 	 */
-	public static int countOnes(boolean[] data) throws NullPointerException {
-		int result = 0;
+	public static long countOnes(boolean[] data) throws NullPointerException {
+		long result = 0L;
 		for (int i = 0; i != data.length; ++i) {
-			result += (data[i] ? 1 : 0); // i.e., Binary.countOnes(data[i])
+			result += (data[i] ? 1L : 0L); // i.e., Binary.countOnes(data[i])
 		}
 		return result;
 	}
@@ -277,8 +214,8 @@ public class Binary {
 	 * @throws NullPointerException
 	 *             If <code>data == null</code>
 	 */
-	public static int countOnes(byte[] data) throws NullPointerException {
-		int result = 0;
+	public static long countOnes(byte[] data) throws NullPointerException {
+		long result = 0L;
 		for (int i = 0; i != data.length; ++i) {
 			result += Binary.countOnes(data[i]);
 		}
@@ -294,8 +231,8 @@ public class Binary {
 	 * @throws NullPointerException
 	 *             If <code>data == null</code>
 	 */
-	public static int countOnes(char[] data) throws NullPointerException {
-		int result = 0;
+	public static long countOnes(char[] data) throws NullPointerException {
+		long result = 0L;
 		for (int i = 0; i != data.length; ++i) {
 			result += Binary.countOnes(data[i]);
 		}
@@ -311,8 +248,8 @@ public class Binary {
 	 * @throws NullPointerException
 	 *             If <code>data == null</code>
 	 */
-	public static int countOnes(short[] data) throws NullPointerException {
-		int result = 0;
+	public static long countOnes(short[] data) throws NullPointerException {
+		long result = 0L;
 		for (int i = 0; i != data.length; ++i) {
 			result += Binary.countOnes(data[i]);
 		}
@@ -328,8 +265,8 @@ public class Binary {
 	 * @throws NullPointerException
 	 *             If <code>data == null</code>
 	 */
-	public static int countOnes(int[] data) throws NullPointerException {
-		int result = 0;
+	public static long countOnes(int[] data) throws NullPointerException {
+		long result = 0L;
 		for (int i = 0; i != data.length; ++i) {
 			result += Binary.countOnes(data[i]);
 		}
@@ -345,8 +282,8 @@ public class Binary {
 	 * @throws NullPointerException
 	 *             If <code>data == null</code>
 	 */
-	public static int countOnes(long[] data) throws NullPointerException {
-		int result = 0;
+	public static long countOnes(long[] data) throws NullPointerException {
+		long result = 0L;
 		for (int i = 0; i != data.length; ++i) {
 			result += Binary.countOnes(data[i]);
 		}
@@ -442,10 +379,10 @@ public class Binary {
 	 * @throws NullPointerException
 	 *             If <code>data == null</code>
 	 */
-	public static int countZeroes(boolean[] data) throws NullPointerException {
-		int result = 0;
+	public static long countZeroes(boolean[] data) throws NullPointerException {
+		long result = 0L;
 		for (int i = 0; i != data.length; ++i) {
-			result += (data[i] ? 0 : 1); // i.e., Binary.countZeroes(data[i])
+			result += (data[i] ? 0L : 1L); // i.e., Binary.countZeroes(data[i])
 		}
 		return result;
 	}
@@ -459,8 +396,8 @@ public class Binary {
 	 * @throws NullPointerException
 	 *             If <code>data == null</code>
 	 */
-	public static int countZeroes(byte[] data) throws NullPointerException {
-		int result = 0;
+	public static long countZeroes(byte[] data) throws NullPointerException {
+		long result = 0L;
 		for (int i = 0; i != data.length; ++i) {
 			result += (Binary.BITS_PER_BYTE - Binary.countOnes(data[i])); // i.e., Binary.countZeroes(data[i])
 		}
@@ -476,8 +413,8 @@ public class Binary {
 	 * @throws NullPointerException
 	 *             If <code>data == null</code>
 	 */
-	public static int countZeroes(char[] data) throws NullPointerException {
-		int result = 0;
+	public static long countZeroes(char[] data) throws NullPointerException {
+		long result = 0L;
 		for (int i = 0; i != data.length; ++i) {
 			result += (Binary.BITS_PER_CHAR - Binary.countOnes(data[i])); // i.e., Binary.countZeroes(data[i]);
 		}
@@ -493,8 +430,8 @@ public class Binary {
 	 * @throws NullPointerException
 	 *             If <code>data == null</code>
 	 */
-	public static int countZeroes(short[] data) throws NullPointerException {
-		int result = 0;
+	public static long countZeroes(short[] data) throws NullPointerException {
+		long result = 0L;
 		for (int i = 0; i != data.length; ++i) {
 			result += (Binary.BITS_PER_SHORT - Binary.countOnes(data[i])); // i.e., Binary.countZeroes(data[i])
 		}
@@ -510,8 +447,8 @@ public class Binary {
 	 * @throws NullPointerException
 	 *             If <code>data == null</code>
 	 */
-	public static int countZeroes(int[] data) throws NullPointerException {
-		int result = 0;
+	public static long countZeroes(int[] data) throws NullPointerException {
+		long result = 0L;
 		for (int i = 0; i != data.length; ++i) {
 			result += (Binary.BITS_PER_INT - Binary.countOnes(data[i])); // i.e., Binary.countZeroes(data[i])
 		}
@@ -527,8 +464,8 @@ public class Binary {
 	 * @throws NullPointerException
 	 *             If <code>data == null</code>
 	 */
-	public static int countZeroes(long[] data) throws NullPointerException {
-		int result = 0;
+	public static long countZeroes(long[] data) throws NullPointerException {
+		long result = 0L;
 		for (int i = 0; i != data.length; ++i) {
 			result += (Binary.BITS_PER_LONG - Binary.countOnes(data[i])); // i.e., Binary.countZeroes(data[i])
 		}
@@ -1784,5 +1721,221 @@ public class Binary {
 			result[i] = lhs[i] ^ rhs[i];
 		}
 		return result;
+	}
+
+	/**
+	 * Given a boolean, convert it to a string of bits.
+	 * 
+	 * @param b
+	 *            the given boolean
+	 * 
+	 * @return The resulting string.
+	 */
+	public static String toString(boolean b) {
+		return (b ? "1" : "0");
+	}
+
+	/**
+	 * Given a byte, convert it to a string of bits.
+	 * 
+	 * @param b
+	 *            the given byte
+	 * 
+	 * @return The resulting string.
+	 */
+	public static String toString(byte b) {
+		final StringBuilder sb = new StringBuilder(Binary.BITS_PER_BYTE);
+		final String result = Integer.toBinaryString(b & Binary.MASK_BYTE_TO_INT);
+		// Pad with zeroes on the left to have Binary.BITS_PER_BYTE chars in total.
+		for (int count = Binary.BITS_PER_BYTE - result.length(); count != 0; --count) {
+			sb.append('0');
+		}
+		return sb.append(result).toString();
+	}
+
+	/**
+	 * Given a char, convert it to a string of bits.
+	 * 
+	 * @param c
+	 *            the given char
+	 * 
+	 * @return The resulting string.
+	 */
+	public static String toString(char c) {
+		final StringBuilder sb = new StringBuilder(Binary.BITS_PER_CHAR);
+		final String result = Integer.toBinaryString(c & Binary.MASK_CHAR_TO_INT);
+		// Pad with zeroes on the left to have Binary.BITS_PER_CHAR chars in total.
+		for (int count = Binary.BITS_PER_CHAR - result.length(); count != 0; --count) {
+			sb.append('0');
+		}
+		return sb.append(result).toString();
+	}
+
+	/**
+	 * Given a short, convert it to a string of bits.
+	 * 
+	 * @param s
+	 *            the given short
+	 * 
+	 * @return The resulting string.
+	 */
+	public static String toString(short s) {
+		final StringBuilder sb = new StringBuilder(Binary.BITS_PER_SHORT);
+		final String result = Integer.toBinaryString(s & Binary.MASK_SHORT_TO_INT);
+		// Pad with zeroes on the left to have Binary.BITS_PER_SHORT chars in total.
+		for (int count = Binary.BITS_PER_SHORT - result.length(); count != 0; --count) {
+			sb.append('0');
+		}
+		return sb.append(result).toString();
+	}
+
+	/**
+	 * Given an int, convert it to a string of bits.
+	 * 
+	 * @param i
+	 *            the given int
+	 * 
+	 * @return The resulting string.
+	 */
+	public static String toString(int i) {
+		final StringBuilder sb = new StringBuilder(Binary.BITS_PER_INT);
+		final String result = Integer.toBinaryString(i);
+		// Pad with zeroes on the left to have Binary.BITS_PER_INT chars in total.
+		for (int count = Binary.BITS_PER_INT - result.length(); count != 0; --count) {
+			sb.append('0');
+		}
+		return sb.append(result).toString();
+	}
+
+	/**
+	 * Given a long, convert it to a string of bits.
+	 * 
+	 * @param l
+	 *            the given long
+	 * 
+	 * @return The resulting string.
+	 */
+	public static String toString(long l) {
+		final StringBuilder sb = new StringBuilder(Binary.BITS_PER_LONG);
+		final String result = Long.toBinaryString(l);
+		// Pad with zeroes on the left to have Binary.BITS_PER_LONG chars in total.
+		for (int count = Binary.BITS_PER_LONG - result.length(); count != 0; --count) {
+			sb.append('0');
+		}
+		return sb.append(result).toString();
+	}
+
+	/**
+	 * Given a boolean array, convert it to a string of bits.
+	 * 
+	 * @param data
+	 *            the given boolean array
+	 * 
+	 * @return The resulting string.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 */
+	public static String toString(boolean[] data) throws NullPointerException {
+		final StringBuilder sb = new StringBuilder(data.length);
+		for (int i = 0; i != data.length; ++i) {
+			sb.append(data[i] ? "1" : "0"); // i.e., Binary.toString(data[i])
+		}
+		return sb.toString();
+	}
+
+	/**
+	 * Given a byte array, convert it to a string of bits.
+	 * 
+	 * @param data
+	 *            the given byte array
+	 * 
+	 * @return The resulting string.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 */
+	public static String toString(byte[] data) throws NullPointerException {
+		final StringBuilder sb = new StringBuilder(data.length);
+		for (int i = 0; i != data.length; ++i) {
+			sb.append(Binary.toString(data[i]));
+		}
+		return sb.toString();
+	}
+
+	/**
+	 * Given a char array, convert it to a string of bits.
+	 * 
+	 * @param data
+	 *            the given char array
+	 * 
+	 * @return The resulting string.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 */
+	public static String toString(char[] data) throws NullPointerException {
+		final StringBuilder sb = new StringBuilder(data.length);
+		for (int i = 0; i != data.length; ++i) {
+			sb.append(Binary.toString(data[i]));
+		}
+		return sb.toString();
+	}
+
+	/**
+	 * Given a short array, convert it to a string of bits.
+	 * 
+	 * @param data
+	 *            the given short array
+	 * 
+	 * @return The resulting string.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 */
+	public static String toString(short[] data) throws NullPointerException {
+		final StringBuilder sb = new StringBuilder(data.length);
+		for (int i = 0; i != data.length; ++i) {
+			sb.append(Binary.toString(data[i]));
+		}
+		return sb.toString();
+	}
+
+	/**
+	 * Given an int array, convert it to a string of bits.
+	 * 
+	 * @param data
+	 *            the given int array
+	 * 
+	 * @return The resulting string.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 */
+	public static String toString(int[] data) throws NullPointerException {
+		final StringBuilder sb = new StringBuilder(data.length);
+		for (int i = 0; i != data.length; ++i) {
+			sb.append(Binary.toString(data[i]));
+		}
+		return sb.toString();
+	}
+
+	/**
+	 * Given a long array, convert it to a string of bits.
+	 * 
+	 * @param data
+	 *            the given long array
+	 * 
+	 * @return The resulting string.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 */
+	public static String toString(long[] data) throws NullPointerException {
+		final StringBuilder sb = new StringBuilder(data.length);
+		for (int i = 0; i != data.length; ++i) {
+			sb.append(Binary.toString(data[i]));
+		}
+		return sb.toString();
 	}
 }
