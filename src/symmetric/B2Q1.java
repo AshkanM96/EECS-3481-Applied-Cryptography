@@ -83,8 +83,8 @@ public class B2Q1 {
 		// Save the encrypted version of the newly flipped plaintext.
 		byte[] flippedCiphertext = null;
 		// Save the total number of different bits to be able to compute the average after the loop.
-		long totalDiffBitCount = 0L;
-		for (int run = 0, flipBitIndex = 0, flipByteIndex = 0, flipBitMask = 0, numDiffBits = 0; run != B2Q1.MAX_RUNS; ++run) {
+		long numDiffBits = 0L, totalDiffBitCount = 0L;
+		for (int run = 0, flipBitIndex = 0, flipByteIndex = 0, flipBitMask = 0; run != B2Q1.MAX_RUNS; ++run) {
 			// Generate a random index for the bit to be flipped.
 			flipBitIndex = prng.nextInt(B2Q1.PLAINTEXT.length * Binary.BITS_PER_BYTE);
 			// Compute the index that contains the (flipBitIndex + 1)^th bit.
@@ -103,7 +103,7 @@ public class B2Q1 {
 			// "on" bits to measure how different they are from each other.
 			numDiffBits = Binary.countOnes(Binary.xor(ciphertext, flippedCiphertext));
 			// Accumulate the count of the number of different bits.
-			totalDiffBitCount += numDiffBits;
+			totalDiffBitCount = Math.addExact(totalDiffBitCount, numDiffBits);
 
 			// Only print if requested.
 			if (B2Q1.PRINT_RUN) {
