@@ -70,8 +70,8 @@ public class A2Q4 {
 			}
 			System.out.println("Affine key " + a.toString() + " gives dot product " + dotProduct + ".");
 			System.out.println("Plaintext is:");
-			for (final byte b : decrytedText) {
-				System.out.print((char) b);
+			for (int i = 0; i != decrytedText.length; ++i) {
+				System.out.print((char) decrytedText[i]);
 			}
 			System.out.println("\n");
 		}
@@ -79,8 +79,8 @@ public class A2Q4 {
 		// Print probable affine key and probable plaintext.
 		System.out.println("Probable affine key is " + Affine.toString(A2Q4.AFFINE_ALPHA, probableBeta) + ".\n");
 		System.out.println("Probable plaintext is:");
-		for (final byte b : probablePlaintext) {
-			System.out.print((char) b);
+		for (int i = 0; i != probablePlaintext.length; ++i) {
+			System.out.print((char) probablePlaintext[i]);
 		}
 		System.out.println('\n');
 	}

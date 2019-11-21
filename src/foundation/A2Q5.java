@@ -53,7 +53,8 @@ public class A2Q5 {
 		double maxDotProduct = -1.0, dotProduct = 0.0;
 		byte[] probablePlaintext = null, decrytedText = null;
 		final Affine a = new Affine(Affine.MIN_ALPHA_VALUE, A2Q5.AFFINE_BETA);
-		for (final int alpha : validAlphaValues) {
+		for (int alpha_idx = 0, alpha = 0; alpha_idx != validAlphaValues.length; ++alpha_idx) {
+			alpha = validAlphaValues[alpha_idx];
 			a.alpha(alpha); // Set the affine object's alpha attribute.
 
 			// Decrypt the ciphertext using alpha and beta.
@@ -71,8 +72,8 @@ public class A2Q5 {
 			}
 			System.out.println("Affine key " + a.toString() + " gives dot product " + dotProduct + ".");
 			System.out.println("Plaintext is:");
-			for (final byte b : decrytedText) {
-				System.out.print((char) b);
+			for (int i = 0; i != decrytedText.length; ++i) {
+				System.out.print((char) decrytedText[i]);
 			}
 			System.out.println("\n");
 		}
@@ -80,8 +81,8 @@ public class A2Q5 {
 		// Print probable affine key and probable plaintext.
 		System.out.println("Probable affine key is " + Affine.toString(probableAlpha, A2Q5.AFFINE_BETA) + ".\n");
 		System.out.println("Probable plaintext is:");
-		for (final byte b : probablePlaintext) {
-			System.out.print((char) b);
+		for (int i = 0; i != probablePlaintext.length; ++i) {
+			System.out.print((char) probablePlaintext[i]);
 		}
 		System.out.println('\n');
 	}

@@ -58,8 +58,8 @@ public class A2Q3 {
 			// Decrypt the ciphertext using the affine key.
 			System.out.println("Probable affine key " + (keyNum + 1) + " is " + a.toString() + ".\n");
 			System.out.println("Probable plaintext " + (keyNum + 1) + " is:");
-			for (final byte b : ciphertext) {
-				System.out.print(a.decrypt(b));
+			for (int i = 0; i != ciphertext.length; ++i) {
+				System.out.print(a.decrypt(ciphertext[i]));
 			}
 			System.out.println('\n');
 		}
