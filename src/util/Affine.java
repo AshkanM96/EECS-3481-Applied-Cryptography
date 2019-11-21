@@ -550,7 +550,8 @@ public class Affine {
 
 		// Iterate through all valid alpha values and check whether they satisfy the equation in step 3.
 		int tmp = 0, beta = 0;
-		for (final int alpha : Affine.VALID_ALPHA_VALUES) {
+		for (int alpha_idx = 0, alpha = 0; alpha_idx != Affine.VALID_ALPHA_VALUES.length; ++alpha_idx) {
+			alpha = Affine.VALID_ALPHA_VALUES[alpha_idx];
 			if (lhs == (alpha * rhs_not_multiplied_by_alpha) % m) {
 				// The current value of alpha satisfies the equation.
 				// Now find the associated beta value.
@@ -626,7 +627,8 @@ public class Affine {
 		final ArrayList<Integer> possibleAlphaValues = new ArrayList<Integer>();
 
 		// Iterate through all valid alpha values and check whether they satisfy the equation in step 2.
-		for (final int alpha : Affine.VALID_ALPHA_VALUES) {
+		for (int alpha_idx = 0, alpha = 0; alpha_idx != Affine.VALID_ALPHA_VALUES.length; ++alpha_idx) {
+			alpha = Affine.VALID_ALPHA_VALUES[alpha_idx];
 			if (lhs == (alpha * p) % m) {
 				// The current value of alpha satisfies the equation.
 				possibleAlphaValues.add(alpha);
@@ -713,7 +715,8 @@ public class Affine {
 		double maxDotProduct = -1.0, dotProduct = 0.0;
 		final byte[] probablePlaintext = new byte[c.length], decrytedText = new byte[c.length];
 		final Affine a = new Affine();
-		for (final int alpha : Affine.VALID_ALPHA_VALUES) {
+		for (int alpha_idx = 0, alpha = 0; alpha_idx != Affine.VALID_ALPHA_VALUES.length; ++alpha_idx) {
+			alpha = Affine.VALID_ALPHA_VALUES[alpha_idx];
 			a.alpha(alpha); // Set the affine object's alpha attribute.
 			for (int beta = Affine.MIN_BETA_VALUE; beta != Affine.MAX_CIPHER_KEY_VALUE; ++beta) {
 				a.beta(beta); // Set the affine object's beta attribute.
@@ -744,8 +747,8 @@ public class Affine {
 		if (print) {
 			System.out.println("Probable affine key is (" + probableAlpha + ", " + probableBeta + ").\n");
 			System.out.println("Probable plaintext is:");
-			for (final byte b : probablePlaintext) {
-				System.out.print((char) b);
+			for (int i = 0; i != probablePlaintext.length; ++i) {
+				System.out.print((char) probablePlaintext[i]);
 			}
 			System.out.println('\n');
 		}
@@ -884,21 +887,23 @@ public class Affine {
 
 		// Decrypt the ciphertext using each found affine key.
 		final byte[][] probablePlaintexts = new byte[numKeys][c.length];
+		byte[] probablePlaintexts_row = null;
 		final Affine a = new Affine();
 		for (int keyNum = 0; keyNum != numKeys; ++keyNum) {
+			probablePlaintexts_row = probablePlaintexts[keyNum];
 			// Set the affine object's alpha and beta attributes.
 			a.alpha(keys[0][keyNum]);
 			a.beta(keys[1][keyNum]);
 			// Decrypt the ciphertext using the affine key.
 			for (int i = 0; i != c.length; ++i) {
-				probablePlaintexts[keyNum][i] = (byte) a.decryptFixedInput(c[i]);
+				probablePlaintexts_row[i] = (byte) a.decryptFixedInput(c[i]);
 			}
 			// Only print if requested.
 			if (print) {
 				System.out.println("Probable affine key " + (keyNum + 1) + " is " + a.toString() + ".\n");
 				System.out.println("Probable plaintext " + (keyNum + 1) + " is:");
-				for (final byte b : probablePlaintexts[keyNum]) {
-					System.out.print((char) b);
+				for (int i = 0; i != probablePlaintexts_row.length; ++i) {
+					System.out.print((char) probablePlaintexts_row[i]);
 				}
 				System.out.println('\n');
 			}

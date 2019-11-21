@@ -167,6 +167,7 @@ public class MillerRabinTopDown {
 				// Check to see if the exponent is even.
 				if (exp.testBit(0)) { // i.e., !BigIntUtil.isEven(exp)
 					// Exponent is odd but r is still 1 therefore the test is inconclusive.
+
 					// Only print if requested.
 					if (print) {
 						System.out.println("\nTest is inconclusive with base " + base
@@ -174,8 +175,7 @@ public class MillerRabinTopDown {
 					}
 					return new TestResultMillerRabinTopDown(this.n, true, base);
 				}
-				// !exp.testBit(0)
-				// i.e., BigIntUtil.isEven(exp)
+				// BigIntUtil.isEven(exp)
 				exp = exp.shiftRight(1);
 				// Save the next exponent so that it isn't recomputed later and then advance the iterator.
 				this.exponents_it.insert(exp);

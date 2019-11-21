@@ -2,6 +2,7 @@ package util;
 
 import java.util.Arrays;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Utility array methods in addition to Java's Arrays class.
@@ -620,7 +621,7 @@ public class ArrayUtil {
 
 		// Construct ArrayUtil.prng if needed. Executed at most once.
 		if (ArrayUtil.prng == null) {
-			ArrayUtil.prng = new Random();
+			ArrayUtil.prng = ThreadLocalRandom.current();
 		}
 
 		// Fisher-Yates Algorithm.
@@ -644,7 +645,7 @@ public class ArrayUtil {
 
 		// Construct ArrayUtil.prng if needed. Executed at most once.
 		if (ArrayUtil.prng == null) {
-			ArrayUtil.prng = new Random();
+			ArrayUtil.prng = ThreadLocalRandom.current();
 		}
 
 		// Fisher-Yates Algorithm.
@@ -668,7 +669,7 @@ public class ArrayUtil {
 
 		// Construct ArrayUtil.prng if needed. Executed at most once.
 		if (ArrayUtil.prng == null) {
-			ArrayUtil.prng = new Random();
+			ArrayUtil.prng = ThreadLocalRandom.current();
 		}
 
 		// Fisher-Yates Algorithm.
@@ -692,7 +693,7 @@ public class ArrayUtil {
 
 		// Construct ArrayUtil.prng if needed. Executed at most once.
 		if (ArrayUtil.prng == null) {
-			ArrayUtil.prng = new Random();
+			ArrayUtil.prng = ThreadLocalRandom.current();
 		}
 
 		// Fisher-Yates Algorithm.
@@ -716,7 +717,7 @@ public class ArrayUtil {
 
 		// Construct ArrayUtil.prng if needed. Executed at most once.
 		if (ArrayUtil.prng == null) {
-			ArrayUtil.prng = new Random();
+			ArrayUtil.prng = ThreadLocalRandom.current();
 		}
 
 		// Fisher-Yates Algorithm.
@@ -740,7 +741,7 @@ public class ArrayUtil {
 
 		// Construct ArrayUtil.prng if needed. Executed at most once.
 		if (ArrayUtil.prng == null) {
-			ArrayUtil.prng = new Random();
+			ArrayUtil.prng = ThreadLocalRandom.current();
 		}
 
 		// Fisher-Yates Algorithm.
@@ -764,7 +765,7 @@ public class ArrayUtil {
 
 		// Construct ArrayUtil.prng if needed. Executed at most once.
 		if (ArrayUtil.prng == null) {
-			ArrayUtil.prng = new Random();
+			ArrayUtil.prng = ThreadLocalRandom.current();
 		}
 
 		// Fisher-Yates Algorithm.
@@ -788,7 +789,7 @@ public class ArrayUtil {
 
 		// Construct ArrayUtil.prng if needed. Executed at most once.
 		if (ArrayUtil.prng == null) {
-			ArrayUtil.prng = new Random();
+			ArrayUtil.prng = ThreadLocalRandom.current();
 		}
 
 		// Fisher-Yates Algorithm.
@@ -812,7 +813,7 @@ public class ArrayUtil {
 
 		// Construct ArrayUtil.prng if needed. Executed at most once.
 		if (ArrayUtil.prng == null) {
-			ArrayUtil.prng = new Random();
+			ArrayUtil.prng = ThreadLocalRandom.current();
 		}
 
 		// Fisher-Yates Algorithm.

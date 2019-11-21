@@ -341,8 +341,8 @@ public class Caesar {
 		if (print) {
 			System.out.println("Probable caesar key is " + probableCaesarKey + ".\n");
 			System.out.println("Probable plaintext is:");
-			for (final byte b : probablePlaintext) {
-				System.out.print((char) b);
+			for (int i = 0; i != probablePlaintext.length; ++i) {
+				System.out.print((char) probablePlaintext[i]);
 			}
 			System.out.println('\n');
 		}
@@ -455,8 +455,8 @@ public class Caesar {
 		if (print) {
 			System.out.println("Probable caesar key is " + probableCaesarKey + ".\n");
 			System.out.println("Probable plaintext is:");
-			for (final byte b : probablePlaintext) {
-				System.out.print((char) b);
+			for (int i = 0; i != probablePlaintext.length; ++i) {
+				System.out.print((char) probablePlaintext[i]);
 			}
 			System.out.println('\n');
 		}

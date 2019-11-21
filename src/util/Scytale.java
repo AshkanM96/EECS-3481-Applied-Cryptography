@@ -506,8 +506,8 @@ public class Scytale implements Iterable<Integer> {
 		final MatrixInt matrix = new MatrixInt(MatrixInt.otherDim(data.length, numCols), numCols);
 		// Fill the matrix using its iterator with mutation support.
 		final MatrixInt.MatrixIntIterator matrix_it = matrix.iterator(true);
-		for (final char c : data) {
-			matrix_it.next((int) c);
+		for (int i = 0; i != data.length; ++i) {
+			matrix_it.next((int) data[i]);
 		}
 
 		final char[] result = new char[data.length];
@@ -589,8 +589,8 @@ public class Scytale implements Iterable<Integer> {
 		final MatrixInt matrix = new MatrixInt(MatrixInt.otherDim(data.length, numCols), numCols);
 		// Fill the matrix using its iterator with mutation support.
 		final MatrixInt.MatrixIntIterator matrix_it = matrix.iterator(true);
-		for (final byte b : data) {
-			matrix_it.next((int) b);
+		for (int i = 0; i != data.length; ++i) {
+			matrix_it.next((int) data[i]);
 		}
 
 		final byte[] result = new byte[data.length];

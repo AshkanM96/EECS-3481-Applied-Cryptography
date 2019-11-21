@@ -383,14 +383,14 @@ public class RSAUtil {
 		final BigInteger b = phi.subtract(n).subtract(BigInteger.ONE); // b < 0
 		if (!b.testBit(0)) { // i.e., BigIntUtil.isEven(b)
 			final BigInteger bPrime = b.shiftRight(1); // bPrime < 0
-			final BigInteger dPrime = BigIntUtil.sqrtFloor(bPrime.multiply(bPrime).subtract(n));
+			final BigInteger dPrime = BigIntUtil.sqrt(bPrime.multiply(bPrime).subtract(n), true);
 			final BigInteger q = dPrime.add(bPrime).negate();
 			final BigInteger p = dPrime.subtract(bPrime);
 			// q == (|b'| - d') < p == (|b'| + d')
 			return new BigInteger[] { q, p };
 		}
 		// !BigIntUtil.isEven(b)
-		final BigInteger d = BigIntUtil.sqrtFloor(b.multiply(b).subtract(n.shiftLeft(2)));
+		final BigInteger d = BigIntUtil.sqrt(b.multiply(b).subtract(n.shiftLeft(2)), true);
 		final BigInteger q = d.add(b).shiftRight(1).negate();
 		final BigInteger p = d.subtract(b).shiftRight(1);
 		// q == (|b| - d) / 2 < p == (|b| + d) / 2
@@ -510,7 +510,7 @@ public class RSAUtil {
 			/**
 			 * Perform Miller-Rabin's compositeness test with the randomly generated base, since we know that
 			 * <code>base<sup>k_times_phi</sup> = 1 (mod n)</code> by Euler's totient theorem, and then apply
-			 * the Square-Root test to find non-trivial divisors of <code>n</code>.
+			 * the Square-Root test to find non-trivial divisors of <code>n</code> when possible.
 			 */
 			r = base.modPow(max_odd_factor, n);
 			/*
@@ -521,17 +521,17 @@ public class RSAUtil {
 				// Loop until i == 0.
 				i = max_power_of_2;
 				do {
-					// Check to see if r is -1 (mod n).
-					if (r.equals(n_minus_1)) { // i.e., r == n - 1
-						break; // Inconclusive.
-					}
-					// r != n - 1
-
 					prev_r = r; // Save the previous remainder for the Square-Root test.
 					r = r.multiply(r).mod(n); // Square r (mod n).
 
 					// Check to see if r is 1 (mod n).
 					if (r.equals(BigInteger.ONE)) { // i.e., r == 1
+						// Check to see if prev_r is -1 (mod n).
+						if (prev_r.equals(n_minus_1)) { // i.e., prev_r == n - 1
+							break; // Inconclusive.
+						}
+						// prev_r != n - 1
+
 						// Apply the Square-Root test to prev_r, 1, and n.
 						final BigInteger q = n.gcd(prev_r.subtract(BigInteger.ONE)), p = n.divide(q);
 						if (q.compareTo(p) <= 0) { // i.e., q <= p

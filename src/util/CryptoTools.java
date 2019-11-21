@@ -29,7 +29,7 @@ public class CryptoTools {
 	public static final int ENGLISH_ALPHABET_SIZE = 26;
 
 	/**
-	 * Probability of <code>i^th</code> English character is stored at
+	 * Probability of <code>i<sup>th</sup></code> English character is stored at
 	 * <code>CryptoTools.ENGLISH_LETTER_PROBABILITY[i - 1]</code>.
 	 */
 	protected static final double[] ENGLISH_LETTER_PROBABILITY = { 8.12, 1.49, 2.71, 4.32, 12.02, 2.3, 2.03, 5.92, 7.31,
@@ -243,7 +243,8 @@ public class CryptoTools {
 			return true;
 		}
 
-		for (int i = 0; i != s.length(); ++i) {
+		final int length = s.length();
+		for (int i = 0; i != length; ++i) {
 			if (!CryptoTools.isASCIIPrintable(s.charAt(i))) {
 				return false;
 			}
@@ -590,8 +591,9 @@ public class CryptoTools {
 		}
 
 		final int[] freq = CryptoTools.getFrequenciesFixedInput(data);
-		long sum = 0L;
-		for (final int f : freq) {
+		long sum = 0L, f = 0L;
+		for (int i = 0; i != freq.length; ++i) {
+			f = freq[i];
 			sum += f * (f - 1);
 		}
 		return (100.0 * sum / (data.length * (data.length - 1)));
@@ -637,8 +639,9 @@ public class CryptoTools {
 		}
 
 		final int[] freq = CryptoTools.getFrequenciesFixedInput(data);
-		long sum = 0L;
-		for (final int f : freq) {
+		long sum = 0L, f = 0L;
+		for (int i = 0; i != freq.length; ++i) {
+			f = freq[i];
 			sum += f * (f - 1);
 		}
 		return (100.0 * sum / (data.length * (data.length - 1)));

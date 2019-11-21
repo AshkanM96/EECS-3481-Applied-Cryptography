@@ -900,8 +900,8 @@ public class Vigenere implements Iterable<Character> {
 		if (print) {
 			System.out.println("Probable vigenere key is " + (new String(keyWord)) + ".\n");
 			System.out.println("Probable plaintext is:");
-			for (final byte b : probablePlaintext) {
-				System.out.print((char) b);
+			for (int i = 0; i != probablePlaintext.length; ++i) {
+				System.out.print((char) probablePlaintext[i]);
 			}
 			System.out.println('\n');
 		}

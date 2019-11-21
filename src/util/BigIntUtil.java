@@ -152,20 +152,27 @@ public class BigIntUtil {
 	 * @param n
 	 *            the given BigInteger object
 	 * 
-	 * @return <code>floor(sqrt(n))</code>.
+	 * @param floor
+	 *            specifies whether the floor of <code>sqrt(n)</code> should be computed and returned
+	 * 
+	 * @return <code>sqrt(n)</code>.
 	 * 
 	 * @throws NullPointerException
 	 *             If <code>n == null</code>
 	 * 
-	 * @throws IllegalArgumentException
+	 * @throws ArithmeticException
 	 *             If <code>n < 0</code>
 	 */
-	public static BigInteger sqrtFloor(BigInteger n) throws NullPointerException, IllegalArgumentException {
+	public static BigInteger sqrt(BigInteger n, boolean floor) throws NullPointerException, ArithmeticException {
 		if (n.signum() == -1) { // i.e., n < 0
-			throw new IllegalArgumentException();
+			throw new ArithmeticException();
 		}
 		// 0 <= n
 
+		/*
+		 * Handle the simple special cases. Note that these cases, are needed since otherwise we would have
+		 * a division by zero when initializing q in the following loop.
+		 */
 		if (n.signum() == 0) { // i.e., n == 0
 			return BigInteger.ZERO;
 		} else if (n.equals(BigInteger.ONE)) { // i.e., n == 1
@@ -173,29 +180,28 @@ public class BigIntUtil {
 		}
 		// 2 <= n
 
-		BigInteger result = n.shiftRight(1); // i.e., result == n / 2
+		BigInteger result = n.shiftRight(1); // i.e., 1 <= result == n / 2
 		for (BigInteger q = n.divide(result); 0 < result.compareTo(q); /* Update inside. */) {
 			result = result.add(q).shiftRight(1); // result = (result + q) / 2
 			q = n.divide(result);
 		}
-		return result;
+		return ((floor || n.equals(result.multiply(result))) ? result : result.add(BigInteger.ONE));
 	}
 
 	/**
 	 * @param n
 	 *            the given BigInteger object
 	 * 
-	 * @return <code>ceil(sqrt(n))</code>.
+	 * @return <code>BigIntUtil.sqrt(n, true)</code>.
 	 * 
 	 * @throws NullPointerException
 	 *             If <code>n == null</code>
 	 * 
-	 * @throws IllegalArgumentException
+	 * @throws ArithmeticException
 	 *             If <code>n < 0</code>
 	 */
-	public static BigInteger sqrtCeil(BigInteger n) throws NullPointerException, IllegalArgumentException {
-		final BigInteger sqrtFloor = BigIntUtil.sqrtFloor(n);
-		return (n.equals(sqrtFloor.multiply(sqrtFloor)) ? sqrtFloor : sqrtFloor.add(BigInteger.ONE));
+	public static BigInteger sqrt(BigInteger n) throws NullPointerException, ArithmeticException {
+		return BigIntUtil.sqrt(n, true);
 	}
 
 	/**
@@ -589,13 +595,11 @@ public class BigIntUtil {
 	 */
 	protected static int powersLength(BigInteger begin, BigInteger end)
 			throws NullPointerException, IllegalArgumentException, ArithmeticException {
-		// Validate begin and end.
 		final int cmp = begin.compareTo(end);
 		if (0 < cmp) { // i.e., end < begin
 			throw new IllegalArgumentException();
 		}
-		// cmp <= 0
-		// i.e., begin <= end
+		// begin <= end
 		return ((cmp == 0) ? 0 : end.subtract(begin).intValueExact());
 	}
 
@@ -771,6 +775,127 @@ public class BigIntUtil {
 	public static BigInteger[] modPowers(BigInteger n, BigInteger m)
 			throws NullPointerException, InvalidModulusException, ArithmeticException {
 		return BigIntUtil.modPowers(n, m, m);
+	}
+
+	/**
+	 * @param bound
+	 *            the given upper bound
+	 * 
+	 * @param prng
+	 *            source of random bits used to compute the new BigInteger
+	 * 
+	 * @return A pseudorandom <code>BigInteger</code> value uniformly distributed in
+	 *         <code>[0, bound)</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>bound == null</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>bound <= 0</code>
+	 */
+	public static BigInteger nextBigInt(BigInteger bound, Random prng)
+			throws NullPointerException, IllegalArgumentException {
+		if (bound.signum() != 1) { // i.e., bound <= 0
+			throw new IllegalArgumentException();
+		}
+		// 0 < bound
+		if (prng == null) {
+			prng = ThreadLocalRandom.current();
+		}
+
+		/*
+		 * Generate a random number in [0, bound - 1] uniformly at random by randomly generating integers
+		 * uniformly distributed in [0, 2^bitLength - 1] and then rejecting the ones that are greater than
+		 * bound - 1 (i.e., greater than or equal to bound).
+		 */
+		final int bitLength = bound.bitLength();
+		BigInteger result = null;
+		do {
+			result = new BigInteger(bitLength, prng);
+		} while (bound.compareTo(result) <= 0);
+		return result;
+	}
+
+	/**
+	 * @param bound
+	 *            the given upper bound
+	 * 
+	 * @return <code>BigIntUtil.nextBigInt(bound, ThreadLocalRandom.current())</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>bound == null</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>bound <= 0</code>
+	 */
+	public static BigInteger nextBigInt(BigInteger bound) throws NullPointerException, IllegalArgumentException {
+		// Cannot pass null as the second argument since it would be ambiguous.
+		return BigIntUtil.nextBigInt(bound, ThreadLocalRandom.current());
+	}
+
+	/**
+	 * @param begin
+	 *            the given lower bound
+	 * 
+	 * @param end
+	 *            the given upper bound
+	 * 
+	 * @param prng
+	 *            source of random bits used to compute the new BigInteger
+	 * 
+	 * @return A pseudorandom <code>BigInteger</code> value uniformly distributed in
+	 *         <code>[begin, end)</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>(begin == null) || (end == null)</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>end <= begin</code>
+	 */
+	public static BigInteger nextBigInt(BigInteger begin, BigInteger end, Random prng)
+			throws NullPointerException, IllegalArgumentException {
+		final int cmp = begin.compareTo(end);
+		if (0 <= cmp) { // i.e., end <= begin
+			throw new IllegalArgumentException();
+		}
+		// begin < end
+		if (prng == null) {
+			prng = ThreadLocalRandom.current();
+		}
+
+		/*
+		 * Generate a random number in [0, bound - 1] uniformly at random by randomly generating integers
+		 * uniformly distributed in [0, 2^bitLength - 1] and then rejecting the ones that are greater than
+		 * bound - 1 (i.e., greater than or equal to bound).
+		 */
+		final BigInteger bound = end.subtract(begin); // 0 < bound == end - begin
+		final int bitLength = bound.bitLength();
+		BigInteger result = null;
+		do {
+			result = new BigInteger(bitLength, prng);
+		} while (bound.compareTo(result) <= 0);
+		// Finally, add begin to result to get a random number in [begin, end - 1].
+		return result.add(begin);
+	}
+
+	/**
+	 * @param begin
+	 *            the given lower bound
+	 * 
+	 * @param end
+	 *            the given upper bound
+	 * 
+	 * @return <code>BigIntUtil.nextBigInt(begin, end, null)</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>(begin == null) || (end == null)</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>end <= begin</code>
+	 */
+	public static BigInteger nextBigInt(BigInteger begin, BigInteger end)
+			throws NullPointerException, IllegalArgumentException {
+		return BigIntUtil.nextBigInt(begin, end, null);
 	}
 
 	/**

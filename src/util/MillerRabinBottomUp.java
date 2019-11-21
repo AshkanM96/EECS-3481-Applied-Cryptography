@@ -140,17 +140,6 @@ public class MillerRabinBottomUp {
 		// Loop until i == -1.
 		int i = this.max_power_of_2 - 1;
 		do {
-			// Check to see if r is -1 (mod n).
-			if (r.equals(this.n_minus_1)) { // i.e., r == n - 1
-				// Only print if requested.
-				if (print) {
-					System.out.println(
-							"\nTest is inconclusive with base " + base + " since the final remainder is -1 (mod n).\n");
-				}
-				return new TestResultMillerRabinBottomUp(this.n, true, base);
-			}
-			// r != n - 1
-
 			prev_r = r; // Save the previous remainder for the Square-Root test.
 			r = r.multiply(r).mod(this.n); // Square r (mod this.n).
 			// Only print if requested.
@@ -161,6 +150,17 @@ public class MillerRabinBottomUp {
 
 			// Check to see if r is 1 (mod n).
 			if (r.equals(BigInteger.ONE)) { // i.e., r == 1
+				// Check to see if prev_r is -1 (mod n).
+				if (prev_r.equals(this.n_minus_1)) { // i.e., prev_r == n - 1
+					// Only print if requested.
+					if (print) {
+						System.out.println("\nTest is inconclusive with base " + base
+								+ " since the final remainder is -1 (mod n).\n");
+					}
+					return new TestResultMillerRabinBottomUp(this.n, true, base);
+				}
+				// prev_r != n - 1
+
 				// Apply the Square-Root test to prev_r, 1, and this.n.
 				final BigInteger superFactor1 = this.n.gcd(prev_r.subtract(BigInteger.ONE));
 				final BigInteger superFactor2 = this.n.gcd(prev_r.add(BigInteger.ONE));
@@ -175,7 +175,7 @@ public class MillerRabinBottomUp {
 			// r != 1
 		} while (--i != -1);
 		/*
-		 * At this point, we know that i == -1 and that r != 1 thus this.n is composite by Fermat's test.
+		 * At this point, we know that i == -1 and that r != 1, thus this.n is composite by Fermat's test.
 		 * However, we cannot find the super factors since we cannot perform the Square-Root test.
 		 */
 		// Only print if requested.
