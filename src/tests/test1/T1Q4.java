@@ -77,8 +77,8 @@ public class T1Q4 {
 		}
 
 		System.out.println("Plaintext is:");
-		for (final byte b : plaintext) {
-			System.out.print((char) b);
+		for (int i = 0; i != plaintext.length; ++i) {
+			System.out.print((char) plaintext[i]);
 		}
 		System.out.println('\n');
 	}
