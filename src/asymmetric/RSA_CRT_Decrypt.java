@@ -6,7 +6,7 @@ import util.CryptoTools;
 import util.RSA;
 
 /**
- * RSA decryption use case with manual BigInteger manipulations using CRT.
+ * RSA decryption use case with manual BigInteger manipulations using the Chinese Remainder Theorem.
  * 
  * @author Ashkan Moatamed
  */
