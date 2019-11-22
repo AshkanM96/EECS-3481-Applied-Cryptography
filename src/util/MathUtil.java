@@ -280,15 +280,15 @@ public class MathUtil {
 			}
 			// b != 0
 
-			// 0 * a + 1 * b == b == gcd(0, b)
+			// 0 * 0 + 1 * b == b == gcd(0, b)
 			return new long[] { 0L, 1L, b };
 		} else if (b == 0L) { // a != 0
-			// 1 * a + 0 * b == a == gcd(a, 0)
+			// 1 * a + 0 * 0 == a == gcd(a, 0)
 			return new long[] { 1L, 0L, a };
 		}
 		// (a != 0) && (b != 0)
 
-		// The algorithm only works for 0 < a and 0 < b so compute and save absolute values and signs.
+		// The algorithm only works for positive values so compute/save the absolute values and the signs.
 		long abs_a = a, abs_b = b;
 		int sign_a = 1;
 		if (a < 0L) {
@@ -306,10 +306,16 @@ public class MathUtil {
 			long u = 0L, v = abs_b, remainder = 0L, quotient = gcd, tmp = 0L;
 			do {
 				// Compute the quotient and the remainder.
+				// The following is meant to be an assignment of remainder and quotient.
 				remainder = gcd - (quotient /= v) * v;
 				// (quotient == gcd / v) && (remainder == gcd % v)
 
 				// Update all of the variables.
+				/**
+				 * It's fine to do <code>x -= (quotient *= u)</code> instead of <code>x - (quotient * u)</code>
+				 * since we don't need the value of <code>x</code> and <code>quotient</code> to remain unchanged at
+				 * this point.
+				 */
 				tmp = (x -= (quotient *= u));
 				quotient = gcd = v;
 				x = u;
@@ -1052,7 +1058,7 @@ public class MathUtil {
 	 * @return <code>n (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 */
 	public static long mod(long n, long m) throws InvalidModulusException {
 		if (m < 1L) {
@@ -1073,7 +1079,7 @@ public class MathUtil {
 	 * @return <code>n (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 */
 	public static int mod(int n, int m) throws InvalidModulusException {
 		if (m < 1) {
@@ -1094,7 +1100,7 @@ public class MathUtil {
 	 * @return <code>n (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 */
 	public static short mod(short n, short m) throws InvalidModulusException {
 		if (m < 1) {
@@ -1115,7 +1121,7 @@ public class MathUtil {
 	 * @return <code>n (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 */
 	public static byte mod(byte n, byte m) throws InvalidModulusException {
 		if (m < 1) {
@@ -1179,7 +1185,7 @@ public class MathUtil {
 	 * @return <code>N</code> where <code>N (mod m) == n (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 */
 	public static long modMin(long n, long m) throws InvalidModulusException {
 		if (m < 1L) {
@@ -1202,7 +1208,7 @@ public class MathUtil {
 	 * @return <code>N</code> where <code>N (mod m) == n (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 */
 	public static int modMin(int n, int m) throws InvalidModulusException {
 		if (m < 1) {
@@ -1225,7 +1231,7 @@ public class MathUtil {
 	 * @return <code>N</code> where <code>N (mod m) == n (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 */
 	public static short modMin(short n, short m) throws InvalidModulusException {
 		if (m < 1) {
@@ -1248,7 +1254,7 @@ public class MathUtil {
 	 * @return <code>N</code> where <code>N (mod m) == n (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 */
 	public static byte modMin(byte n, byte m) throws InvalidModulusException {
 		if (m < 1) {
@@ -1307,7 +1313,7 @@ public class MathUtil {
 	 * @return <code>n<sup>-1</sup> (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 2</code>
+	 *             If <code>m <= 1</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>gcd(n (mod m), m) != 1</code>
@@ -1341,7 +1347,7 @@ public class MathUtil {
 	 * @return <code>n<sup>-1</sup> (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 2</code>
+	 *             If <code>m <= 1</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>gcd(n (mod m), m) != 1</code>
@@ -1375,7 +1381,7 @@ public class MathUtil {
 	 * @return <code>n<sup>-1</sup> (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 2</code>
+	 *             If <code>m <= 1</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>gcd(n (mod m), m) != 1</code>
@@ -1409,7 +1415,7 @@ public class MathUtil {
 	 * @return <code>n<sup>-1</sup> (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 2</code>
+	 *             If <code>m <= 1</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>gcd(n (mod m), m) != 1</code>
@@ -1467,7 +1473,7 @@ public class MathUtil {
 	 * @return <code>a + b (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 */
 	public static long modAdd(long a, long b, long m) throws InvalidModulusException {
 		if (m < 1L) {
@@ -1493,7 +1499,7 @@ public class MathUtil {
 	 * @return <code>a + b (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 */
 	public static int modAdd(int a, int b, int m) throws InvalidModulusException {
 		if (m < 1) {
@@ -1518,7 +1524,7 @@ public class MathUtil {
 	 * @return <code>a + b (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 */
 	@SuppressWarnings("cast")
 	public static short modAdd(short a, short b, short m) throws InvalidModulusException {
@@ -1544,7 +1550,7 @@ public class MathUtil {
 	 * @return <code>a + b (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 */
 	@SuppressWarnings("cast")
 	public static byte modAdd(byte a, byte b, byte m) throws InvalidModulusException {
@@ -1574,7 +1580,7 @@ public class MathUtil {
 	 * @return <code>n + sum(args) (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws NullPointerException
 	 *             If <code>args == null</code>
@@ -1618,7 +1624,7 @@ public class MathUtil {
 	 * @return <code>n + sum(args) (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws NullPointerException
 	 *             If <code>args == null</code>
@@ -1658,7 +1664,7 @@ public class MathUtil {
 	 * @return <code>n + sum(args) (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws NullPointerException
 	 *             If <code>args == null</code>
@@ -1698,7 +1704,7 @@ public class MathUtil {
 	 * @return <code>n + sum(args) (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws NullPointerException
 	 *             If <code>args == null</code>
@@ -1755,7 +1761,7 @@ public class MathUtil {
 	 * @return <code>a - b (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 */
 	public static long modSub(long a, long b, long m) throws InvalidModulusException {
 		if (m < 1L) {
@@ -1781,7 +1787,7 @@ public class MathUtil {
 	 * @return <code>a - b (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 */
 	public static int modSub(int a, int b, int m) throws InvalidModulusException {
 		if (m < 1) {
@@ -1806,7 +1812,7 @@ public class MathUtil {
 	 * @return <code>a - b (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 */
 	@SuppressWarnings("cast")
 	public static short modSub(short a, short b, short m) throws InvalidModulusException {
@@ -1832,7 +1838,7 @@ public class MathUtil {
 	 * @return <code>a - b (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 */
 	@SuppressWarnings("cast")
 	public static byte modSub(byte a, byte b, byte m) throws InvalidModulusException {
@@ -1862,7 +1868,7 @@ public class MathUtil {
 	 * @return <code>n - sum(args) (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws NullPointerException
 	 *             If <code>args == null</code>
@@ -1906,7 +1912,7 @@ public class MathUtil {
 	 * @return <code>n - sum(args) (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws NullPointerException
 	 *             If <code>args == null</code>
@@ -1946,7 +1952,7 @@ public class MathUtil {
 	 * @return <code>n - sum(args) (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws NullPointerException
 	 *             If <code>args == null</code>
@@ -1986,7 +1992,7 @@ public class MathUtil {
 	 * @return <code>n - sum(args) (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws NullPointerException
 	 *             If <code>args == null</code>
@@ -2096,7 +2102,7 @@ public class MathUtil {
 	 * @return <code>a * b (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 */
 	public static long modMult(long a, long b, long m) throws InvalidModulusException {
 		if (m < 1L) {
@@ -2122,7 +2128,7 @@ public class MathUtil {
 	 * @return <code>a * b (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 */
 	public static int modMult(int a, int b, int m) throws InvalidModulusException {
 		if (m < 1) {
@@ -2147,7 +2153,7 @@ public class MathUtil {
 	 * @return <code>a * b (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 */
 	@SuppressWarnings("cast")
 	public static short modMult(short a, short b, short m) throws InvalidModulusException {
@@ -2173,7 +2179,7 @@ public class MathUtil {
 	 * @return <code>a * b (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 */
 	@SuppressWarnings("cast")
 	public static byte modMult(byte a, byte b, byte m) throws InvalidModulusException {
@@ -2203,7 +2209,7 @@ public class MathUtil {
 	 * @return <code>n * product(args) (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws NullPointerException
 	 *             If <code>args == null</code>
@@ -2250,7 +2256,7 @@ public class MathUtil {
 	 * @return <code>n * product(args) (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws NullPointerException
 	 *             If <code>args == null</code>
@@ -2298,7 +2304,7 @@ public class MathUtil {
 	 * @return <code>n * product(args) (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws NullPointerException
 	 *             If <code>args == null</code>
@@ -2346,7 +2352,7 @@ public class MathUtil {
 	 * @return <code>n * product(args) (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws NullPointerException
 	 *             If <code>args == null</code>
@@ -2417,7 +2423,7 @@ public class MathUtil {
 	 * @return The resulting long array.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>(m1 < 1) || (m2 < 1)</code>
+	 *             If <code>(m1 <= 0) || (m2 <= 0)</code>
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>Long.MAX_VALUE < lcm(m1, m2)</code>
@@ -2445,7 +2451,7 @@ public class MathUtil {
 			m = Math.multiplyExact(m1, m2);
 		} else { // i.e., gcd != 1
 			// Handle the invalid case.
-			if (MathUtil.modFixedInput(n1, gcd) != MathUtil.modFixedInput(n2, gcd)) {
+			if (MathUtil.modFixedInput(n1, gcd) != MathUtil.modFixedInput(n2, gcd)) { // i.e., n1 != n2 (mod gcd)
 				throw new IllegalArgumentException();
 			}
 			m = Math.multiplyExact(m1 /= gcd, m2);
@@ -2462,8 +2468,8 @@ public class MathUtil {
 		m2 = MathUtil.modMinFixedInput(m2, m);
 
 		/*
-		 * Apply the C.R.T. formula for two congruences but maintain all variables being in [-m / 2, m / 2]
-		 * \cap \doubleZ during calculations.
+		 * Apply the C.R.T. formula for two congruences but make sure that the value of all variables is in
+		 * [-m / 2, m / 2] \cap \doubleZ during all calculations.
 		 */
 		long lhs = MathUtil.modMultFixedInput(MathUtil.modMultFixedInput(n1, m2, m), m2_inverse, m);
 		final long rhs = MathUtil.modMultFixedInput(MathUtil.modMultFixedInput(n2, m1, m), m1_inverse, m);
@@ -2504,7 +2510,7 @@ public class MathUtil {
 	 * @return The resulting long array.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>(m1 < 1) || (m2 < 1)</code>
+	 *             If <code>(m1 <= 0) || (m2 <= 0)</code>
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>Long.MAX_VALUE < lcm(m1, m2)</code>
@@ -2557,7 +2563,7 @@ public class MathUtil {
 	 * @return The resulting integer array.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>(m1 < 1) || (m2 < 1)</code>
+	 *             If <code>(m1 <= 0) || (m2 <= 0)</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>n1 != n2 (mod gcd(m1, m2))</code>
@@ -2606,7 +2612,7 @@ public class MathUtil {
 	 * @return The resulting integer array.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>(m1 < 1) || (m2 < 1)</code>
+	 *             If <code>(m1 <= 0) || (m2 <= 0)</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>n1 != n2 (mod gcd(m1, m2))</code>
@@ -2659,7 +2665,7 @@ public class MathUtil {
 	 * @return The resulting short array.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>(m1 < 1) || (m2 < 1)</code>
+	 *             If <code>(m1 <= 0) || (m2 <= 0)</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>n1 != n2 (mod gcd(m1, m2))</code>
@@ -2708,7 +2714,7 @@ public class MathUtil {
 	 * @return The resulting short array.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>(m1 < 1) || (m2 < 1)</code>
+	 *             If <code>(m1 <= 0) || (m2 <= 0)</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>n1 != n2 (mod gcd(m1, m2))</code>
@@ -2761,7 +2767,7 @@ public class MathUtil {
 	 * @return The resulting byte array.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>(m1 < 1) || (m2 < 1)</code>
+	 *             If <code>(m1 <= 0) || (m2 <= 0)</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>n1 != n2 (mod gcd(m1, m2))</code>
@@ -2810,7 +2816,7 @@ public class MathUtil {
 	 * @return The resulting byte array.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>(m1 < 1) || (m2 < 1)</code>
+	 *             If <code>(m1 <= 0) || (m2 <= 0)</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>n1 != n2 (mod gcd(m1, m2))</code>
@@ -2885,7 +2891,7 @@ public class MathUtil {
 	 * @return <code>n<sup>p</sup> (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(p < 0) && ((n (mod m) == 0) || (gcd(n (mod m), m) != 1))</code>
@@ -2961,7 +2967,6 @@ public class MathUtil {
 			return 1L;
 		}
 		// p < 0
-		// Compute the multiplicative inverse of n in mod m.
 		final long n_inverse = MathUtil.modInverseFixedInput(n, m);
 		// Handle the degenerate case where p's absolute value is not representable as a non-negative long.
 		if (p == Long.MIN_VALUE) { // i.e., -p == p < 0
@@ -2999,7 +3004,7 @@ public class MathUtil {
 	 * @return <code>n<sup>p</sup> (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(p < 0) && ((n (mod m) == 0) || (gcd(n (mod m), m) != 1))</code>
@@ -3028,7 +3033,7 @@ public class MathUtil {
 	 * @return <code>n<sup>p</sup> (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(p < 0) && ((n (mod m) == 0) || (gcd(n (mod m), m) != 1))</code>
@@ -3057,7 +3062,7 @@ public class MathUtil {
 	 * @return <code>n<sup>p</sup> (mod m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>(p < 0) && ((n (mod m) == 0) || (gcd(n (mod m), m) != 1))</code>
@@ -3156,7 +3161,7 @@ public class MathUtil {
 	 * @return The resulting long array.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>end < begin</code>
@@ -3272,7 +3277,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.modPowers(n, m, 0L, end)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>end < 0</code>
@@ -3301,7 +3306,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.modPowers(n, m, m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>Integer.MAX_VALUE < m</code>
@@ -3332,7 +3337,7 @@ public class MathUtil {
 	 * @return The resulting integer array.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>end < begin</code>
@@ -3448,7 +3453,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.modPowers(n, m, 0, end)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>end < 0</code>
@@ -3473,7 +3478,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.modPowers(n, m, m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 */
 	public static int[] modPowers(int n, int m) throws InvalidModulusException {
 		return MathUtil.modPowers(n, m, m);
@@ -3501,7 +3506,7 @@ public class MathUtil {
 	 * @return The resulting short array.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>end < begin</code>
@@ -3614,7 +3619,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.modPowers(n, m, (short) 0, end)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>end < 0</code>
@@ -3640,7 +3645,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.modPowers(n, m, m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 */
 	public static short[] modPowers(short n, short m) throws InvalidModulusException {
 		return MathUtil.modPowers(n, m, m);
@@ -3668,7 +3673,7 @@ public class MathUtil {
 	 * @return The resulting byte array.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>end < begin</code>
@@ -3781,7 +3786,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.modPowers(n, m, (byte) 0, end)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>end < 0</code>
@@ -3806,7 +3811,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.modPowers(n, m, m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 */
 	public static byte[] modPowers(byte n, byte m) throws InvalidModulusException {
 		return MathUtil.modPowers(n, m, m);
@@ -3970,7 +3975,7 @@ public class MathUtil {
 	 *         <code>x</code> exists and <code>null</code> otherwise.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>end < begin</code>
@@ -4041,7 +4046,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogLinearSearch(n, target, m, 1L, end)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>end < 1</code>
@@ -4067,7 +4072,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogLinearSearch(n, target, m, m - 1L)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 */
 	public static Long discreteLogLinearSearch(long n, long target, long m) throws InvalidModulusException {
 		return MathUtil.discreteLogLinearSearch(n, target, m, m - 1L);
@@ -4099,7 +4104,7 @@ public class MathUtil {
 	 *         <code>x</code> exists and <code>null</code> otherwise.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>end < begin</code>
@@ -4135,7 +4140,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogLinearSearch(n, target, m, 1, end)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>end < 1</code>
@@ -4161,7 +4166,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogLinearSearch(n, target, m, m - 1)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 */
 	public static Integer discreteLogLinearSearch(int n, int target, int m) throws InvalidModulusException {
 		return MathUtil.discreteLogLinearSearch(n, target, m, m - 1);
@@ -4193,7 +4198,7 @@ public class MathUtil {
 	 *         <code>x</code> exists and <code>null</code> otherwise.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>end < begin</code>
@@ -4229,7 +4234,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogLinearSearch(n, target, m, (short) 1, end)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>end < 1</code>
@@ -4255,7 +4260,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogLinearSearch(n, target, m, (short) (m - 1))</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 */
 	public static Short discreteLogLinearSearch(short n, short target, short m) throws InvalidModulusException {
 		return MathUtil.discreteLogLinearSearch(n, target, m, (short) (m - 1));
@@ -4287,7 +4292,7 @@ public class MathUtil {
 	 *         <code>x</code> exists and <code>null</code> otherwise.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>end < begin</code>
@@ -4323,7 +4328,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogLinearSearch(n, target, m, (byte) 1, end)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>end < 1</code>
@@ -4349,7 +4354,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogLinearSearch(n, target, m, (byte) (m - 1))</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 */
 	public static Byte discreteLogLinearSearch(byte n, byte target, byte m) throws InvalidModulusException {
 		return MathUtil.discreteLogLinearSearch(n, target, m, (byte) (m - 1));
@@ -4583,7 +4588,7 @@ public class MathUtil {
 	 *         <code>x</code> exists and <code>null</code> otherwise.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
@@ -4665,7 +4670,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, generateBoth, true)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
@@ -4702,7 +4707,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, true)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
@@ -4734,7 +4739,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogBabyGiant(n, target, m, m - 1L)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>Integer.MAX_VALUE < (((long) Math.sqrt(m - 1)) + 1)</code>
@@ -4778,7 +4783,7 @@ public class MathUtil {
 	 *         <code>x</code> exists and <code>null</code> otherwise.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
@@ -4819,7 +4824,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, generateBoth, true)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
@@ -4853,7 +4858,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, true)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
@@ -4882,7 +4887,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogBabyGiant(n, target, m, m - 1)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>gcd(n (mod m), m) != 1</code>
@@ -4923,7 +4928,7 @@ public class MathUtil {
 	 *         <code>x</code> exists and <code>null</code> otherwise.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
@@ -4964,7 +4969,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, generateBoth, true)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
@@ -4998,7 +5003,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, true)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
@@ -5027,7 +5032,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogBabyGiant(n, target, m, (short) (m - 1))</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>gcd(n (mod m), m) != 1</code>
@@ -5068,7 +5073,7 @@ public class MathUtil {
 	 *         <code>x</code> exists and <code>null</code> otherwise.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
@@ -5109,7 +5114,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, generateBoth, true)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
@@ -5143,7 +5148,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogBabyGiant(n, target, m, upperOrder, true)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
@@ -5172,7 +5177,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogBabyGiant(n, target, m, (byte) (m - 1))</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>gcd(n (mod m), m) != 1</code>
@@ -5706,7 +5711,7 @@ public class MathUtil {
 	 *         <code>x</code> exists and <code>null</code> otherwise.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
@@ -5802,7 +5807,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, simple, hashFactor, generateBothBabyGiant, true)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
@@ -5859,7 +5864,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, simple, hashFactor, true)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
@@ -5911,7 +5916,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, simple, false)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
@@ -5956,7 +5961,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, false)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
@@ -5996,7 +6001,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, false)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
@@ -6029,7 +6034,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, m - 1L)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>Integer.MAX_VALUE < (((long) Math.sqrt(max(p<sub>i</sub>))) + 1)</code>
@@ -6089,7 +6094,7 @@ public class MathUtil {
 	 *         <code>x</code> exists and <code>null</code> otherwise.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
@@ -6147,7 +6152,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, simple, hashFactor, generateBothBabyGiant, true)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
@@ -6199,7 +6204,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, simple, hashFactor, true)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
@@ -6246,7 +6251,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, simple, false)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
@@ -6286,7 +6291,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, false)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
@@ -6322,7 +6327,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, false)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
@@ -6352,7 +6357,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, m - 1)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>gcd(n (mod m), m) != 1</code>
@@ -6409,7 +6414,7 @@ public class MathUtil {
 	 *         <code>x</code> exists and <code>null</code> otherwise.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
@@ -6467,7 +6472,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, simple, hashFactor, generateBothBabyGiant, true)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
@@ -6519,7 +6524,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, simple, hashFactor, true)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
@@ -6566,7 +6571,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, simple, false)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
@@ -6606,7 +6611,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, false)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
@@ -6642,7 +6647,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, false)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
@@ -6672,7 +6677,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, (short) (m - 1))</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>gcd(n (mod m), m) != 1</code>
@@ -6729,7 +6734,7 @@ public class MathUtil {
 	 *         <code>x</code> exists and <code>null</code> otherwise.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
@@ -6787,7 +6792,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, simple, hashFactor, generateBothBabyGiant, true)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
@@ -6839,7 +6844,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, simple, hashFactor, true)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
@@ -6886,7 +6891,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, simple, false)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
@@ -6926,7 +6931,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, linearSearchIfNotBabyGiant, false)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
@@ -6962,7 +6967,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, upperOrder, false)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(upperOrder < 1) || (m - 1 < upperOrder)</code>
@@ -6992,7 +6997,7 @@ public class MathUtil {
 	 * @return <code>MathUtil.discreteLogPohligHellman(n, target, m, (byte) (m - 1))</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws UndefinedInverseException
 	 *             If <code>gcd(n (mod m), m) != 1</code>

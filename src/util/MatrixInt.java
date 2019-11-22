@@ -1097,43 +1097,43 @@ public class MatrixInt implements Iterable<Integer> {
 	/**
 	 * <code>operator%=(int)</code>.
 	 * 
-	 * @param n
+	 * @param m
 	 *            the given integer
 	 * 
 	 * @return <code>this</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>n < 1</code>
+	 *             If <code>m <= 0</code>
 	 */
-	public MatrixInt modEquals(int n) throws InvalidModulusException {
-		if (n < 1) {
+	public MatrixInt modEquals(int m) throws InvalidModulusException {
+		if (m < 1) {
 			throw new InvalidModulusException();
 		}
-		// 1 <= n
-		// i.e., 0 < n
-		MatrixInt.apply(this.numRows, this.numCols, this.data, this.data, n, MatrixInt.OP_MOD);
+		// 1 <= m
+		// i.e., 0 < m
+		MatrixInt.apply(this.numRows, this.numCols, this.data, this.data, m, MatrixInt.OP_MOD);
 		return this;
 	}
 
 	/**
 	 * <code>operator%(int)</code>.
 	 * 
-	 * @param n
+	 * @param m
 	 *            the given integer
 	 * 
-	 * @return <code>new MatrixInt(this).modEquals(n)</code>.
+	 * @return <code>new MatrixInt(this).modEquals(m)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>n < 1</code>
+	 *             If <code>m <= 0</code>
 	 */
-	public MatrixInt mod(int n) throws InvalidModulusException {
-		if (n < 1) {
+	public MatrixInt mod(int m) throws InvalidModulusException {
+		if (m < 1) {
 			throw new InvalidModulusException();
 		}
-		// 1 <= n
-		// i.e., 0 < n
+		// 1 <= m
+		// i.e., 0 < m
 		final MatrixInt result = new MatrixInt(this.numRows, this.numCols);
-		MatrixInt.apply(result.numRows, result.numCols, result.data, this.data, n, MatrixInt.OP_MOD);
+		MatrixInt.apply(result.numRows, result.numCols, result.data, this.data, m, MatrixInt.OP_MOD);
 		return result;
 	}
 
@@ -1478,7 +1478,7 @@ public class MatrixInt implements Iterable<Integer> {
 	 * @return <code>this.isSquare() && (MathUtil.gcd(this.determinant(), m) == 1)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 */
 	public boolean isInvertibleMod(int m) throws InvalidModulusException {
 		if (m < 1) {
@@ -1502,7 +1502,7 @@ public class MatrixInt implements Iterable<Integer> {
 	 * @return The resulting InverseInfo object.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 2</code>
+	 *             If <code>m <= 1</code>
 	 * 
 	 * @throws IllegalStateException
 	 *             If <code>!this.isSquare()</code>
@@ -1551,7 +1551,7 @@ public class MatrixInt implements Iterable<Integer> {
 	 * @return The inverse of <code>this</code> using <code>(mod m)</code> arithmetic.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 2</code>
+	 *             If <code>m <= 1</code>
 	 * 
 	 * @throws IllegalStateException
 	 *             If <code>!this.isInvertibleMod(m)</code>

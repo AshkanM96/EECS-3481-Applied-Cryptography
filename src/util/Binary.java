@@ -1745,6 +1745,14 @@ public class Binary {
 	 */
 	public static String toString(byte b) {
 		final StringBuilder sb = new StringBuilder(Binary.BITS_PER_BYTE);
+		/**
+		 * Note that we have to use <code>Integer.toBinaryString</code> instead of
+		 * <code>Integer.toString(int, Binary.RADIX)</code>, since the latter includes a negative sign in
+		 * its returned string when it needs to. Moreover, we should use the bit mask when passing the given
+		 * byte to <code>Integer.toBinaryString</code>, since the binary representation of the value of
+		 * <code>b</code> differs when being represented as an int instead of a byte when <code>b</code> is
+		 * negative.
+		 */
 		final String result = Integer.toBinaryString(b & Binary.MASK_BYTE_TO_INT);
 		// Pad with zeroes on the left to have Binary.BITS_PER_BYTE chars in total.
 		for (int count = Binary.BITS_PER_BYTE - result.length(); count != 0; --count) {
@@ -1763,6 +1771,14 @@ public class Binary {
 	 */
 	public static String toString(char c) {
 		final StringBuilder sb = new StringBuilder(Binary.BITS_PER_CHAR);
+		/**
+		 * Note that we have to use <code>Integer.toBinaryString</code> instead of
+		 * <code>Integer.toString(int, Binary.RADIX)</code>, since the latter includes a negative sign in
+		 * its returned string when it needs to. Moreover, we should use the bit mask when passing the given
+		 * char to <code>Integer.toBinaryString</code>, since the binary representation of the value of
+		 * <code>c</code> differs when being represented as an int instead of a char when <code>c</code> is
+		 * negative.
+		 */
 		final String result = Integer.toBinaryString(c & Binary.MASK_CHAR_TO_INT);
 		// Pad with zeroes on the left to have Binary.BITS_PER_CHAR chars in total.
 		for (int count = Binary.BITS_PER_CHAR - result.length(); count != 0; --count) {
@@ -1781,6 +1797,14 @@ public class Binary {
 	 */
 	public static String toString(short s) {
 		final StringBuilder sb = new StringBuilder(Binary.BITS_PER_SHORT);
+		/**
+		 * Note that we have to use <code>Integer.toBinaryString</code> instead of
+		 * <code>Integer.toString(int, Binary.RADIX)</code>, since the latter includes a negative sign in
+		 * its returned string when it needs to. Moreover, we should use the bit mask when passing the given
+		 * short to <code>Integer.toBinaryString</code>, since the binary representation of the value of
+		 * <code>s</code> differs when being represented as an int instead of a short when <code>s</code> is
+		 * negative.
+		 */
 		final String result = Integer.toBinaryString(s & Binary.MASK_SHORT_TO_INT);
 		// Pad with zeroes on the left to have Binary.BITS_PER_SHORT chars in total.
 		for (int count = Binary.BITS_PER_SHORT - result.length(); count != 0; --count) {
@@ -1799,6 +1823,11 @@ public class Binary {
 	 */
 	public static String toString(int i) {
 		final StringBuilder sb = new StringBuilder(Binary.BITS_PER_INT);
+		/**
+		 * Note that we have to use <code>Integer.toBinaryString</code> instead of
+		 * <code>Integer.toString(int, Binary.RADIX)</code>, since the latter includes a negative sign in
+		 * its returned string when it needs to.
+		 */
 		final String result = Integer.toBinaryString(i);
 		// Pad with zeroes on the left to have Binary.BITS_PER_INT chars in total.
 		for (int count = Binary.BITS_PER_INT - result.length(); count != 0; --count) {
@@ -1817,6 +1846,11 @@ public class Binary {
 	 */
 	public static String toString(long l) {
 		final StringBuilder sb = new StringBuilder(Binary.BITS_PER_LONG);
+		/**
+		 * Note that we have to use <code>Long.toBinaryString</code> instead of
+		 * <code>Long.toString(long, Binary.RADIX)</code>, since the latter includes a negative sign in its
+		 * returned string when it needs to.
+		 */
 		final String result = Long.toBinaryString(l);
 		// Pad with zeroes on the left to have Binary.BITS_PER_LONG chars in total.
 		for (int count = Binary.BITS_PER_LONG - result.length(); count != 0; --count) {

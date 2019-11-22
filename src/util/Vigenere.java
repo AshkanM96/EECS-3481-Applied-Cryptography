@@ -436,7 +436,7 @@ public class Vigenere implements Iterable<Character> {
 	 * @return The decrypted plaintext char.
 	 */
 	protected char decryptFixedInput(int c) {
-		final int index = (this.index == 0 ? this.key.length - 1 : this.index - 1);
+		final int index = ((this.index == 0) ? this.key.length - 1 : this.index - 1);
 		final char result = Caesar.decryptFixedInput(this.key[index], c);
 		this.index = index;
 		return result;
@@ -732,7 +732,7 @@ public class Vigenere implements Iterable<Character> {
 		 * The maximum possible length of the vigenere cipher key. If the key is any longer then it just
 		 * cannot be determined through this method.
 		 */
-		final int maxKeyLength = c.length / 2;
+		final int maxKeyLength = c.length / 2; // 1 <= maxKeyLength
 
 		/*
 		 * Try every possible key length for the vigenere cipher. For each key length, take the appropriate

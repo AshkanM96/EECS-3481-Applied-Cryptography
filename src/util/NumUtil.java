@@ -2600,7 +2600,7 @@ public class NumUtil {
 	 *         found using Pollard's <code>p - 1</code> Algorithm.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>n < 1</code>
+	 *             If <code>n <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(end < begin) || (begin < 0)
@@ -2720,7 +2720,7 @@ public class NumUtil {
 	 * @return <code>NumUtil.divisorPMinusOne(n, base, 0L, end)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>n < 1</code>
+	 *             If <code>n <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(end < 0)
@@ -2746,7 +2746,7 @@ public class NumUtil {
 	 * @return <code>NumUtil.divisorPMinusOne(n, NumUtil.P_MINUS_ONE_DEFAULT_BASE, end)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>n < 1</code>
+	 *             If <code>n <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>end < 0</code>
@@ -2769,7 +2769,7 @@ public class NumUtil {
 	 * @return <code>NumUtil.divisorPMinusOne(n, NumUtil.P_MINUS_ONE_DEFAULT_END)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>n < 1</code>
+	 *             If <code>n <= 0</code>
 	 */
 	public static Long divisorPMinusOne(long n) throws InvalidModulusException {
 		return NumUtil.divisorPMinusOne(n, NumUtil.P_MINUS_ONE_DEFAULT_END);
@@ -2797,7 +2797,7 @@ public class NumUtil {
 	 *         found using Pollard's <code>p - 1</code> Algorithm.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>n < 1</code>
+	 *             If <code>n <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(end < begin) || (begin < 0)
@@ -2827,7 +2827,7 @@ public class NumUtil {
 	 * @return <code>NumUtil.divisorPMinusOne(n, base, 0, end)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>n < 1</code>
+	 *             If <code>n <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(end < 0)
@@ -2853,7 +2853,7 @@ public class NumUtil {
 	 * @return <code>NumUtil.divisorPMinusOne(n, NumUtil.P_MINUS_ONE_DEFAULT_BASE, end)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>n < 1</code>
+	 *             If <code>n <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>end < 0</code>
@@ -2876,7 +2876,7 @@ public class NumUtil {
 	 * @return <code>NumUtil.divisorPMinusOne(n, NumUtil.P_MINUS_ONE_DEFAULT_END)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>n < 1</code>
+	 *             If <code>n <= 0</code>
 	 */
 	public static Integer divisorPMinusOne(int n) throws InvalidModulusException {
 		return NumUtil.divisorPMinusOne(n, NumUtil.P_MINUS_ONE_DEFAULT_END);
@@ -2904,7 +2904,7 @@ public class NumUtil {
 	 *         found using Pollard's <code>p - 1</code> Algorithm.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>n < 1</code>
+	 *             If <code>n <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(end < begin) || (begin < 0)
@@ -2934,7 +2934,7 @@ public class NumUtil {
 	 * @return <code>NumUtil.divisorPMinusOne(n, base, (short) 0, end)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>n < 1</code>
+	 *             If <code>n <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(end < 0)
@@ -2960,7 +2960,7 @@ public class NumUtil {
 	 * @return <code>NumUtil.divisorPMinusOne(n, NumUtil.P_MINUS_ONE_DEFAULT_BASE, end)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>n < 1</code>
+	 *             If <code>n <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>end < 0</code>
@@ -2983,7 +2983,7 @@ public class NumUtil {
 	 * @return <code>NumUtil.divisorPMinusOne(n, NumUtil.P_MINUS_ONE_DEFAULT_END)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>n < 1</code>
+	 *             If <code>n <= 0</code>
 	 */
 	public static Short divisorPMinusOne(short n) throws InvalidModulusException, IllegalArgumentException {
 		return NumUtil.divisorPMinusOne(n, NumUtil.P_MINUS_ONE_DEFAULT_END);
@@ -3011,7 +3011,7 @@ public class NumUtil {
 	 *         found using Pollard's <code>p - 1</code> Algorithm.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>n < 1</code>
+	 *             If <code>n <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(end < begin) || (begin < 0)
@@ -3041,7 +3041,7 @@ public class NumUtil {
 	 * @return <code>NumUtil.divisorPMinusOne(n, base, (byte) 0, end)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>n < 1</code>
+	 *             If <code>n <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>(end < 0)
@@ -3067,7 +3067,7 @@ public class NumUtil {
 	 * @return <code>NumUtil.divisorPMinusOne(n, NumUtil.P_MINUS_ONE_DEFAULT_BASE, end)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>n < 1</code>
+	 *             If <code>n <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>end < 0</code>
@@ -3090,7 +3090,7 @@ public class NumUtil {
 	 * @return <code>NumUtil.divisorPMinusOne(n, NumUtil.P_MINUS_ONE_DEFAULT_END)</code>.
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>n < 1</code>
+	 *             If <code>n <= 0</code>
 	 */
 	public static Byte divisorPMinusOne(byte n) throws InvalidModulusException {
 		return NumUtil.divisorPMinusOne(n, NumUtil.P_MINUS_ONE_DEFAULT_END);

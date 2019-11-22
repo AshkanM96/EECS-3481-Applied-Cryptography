@@ -688,7 +688,6 @@ public class CryptoTools {
 	 *             <code>FileInputStream.read()</code>, and <code>FileInputStream.close()</code>
 	 */
 	public static byte[] fileToBytes(String filename) throws NullPointerException, FileNotFoundException, IOException {
-		// Check for filename being null so that a FileInputStream is not created unless needed.
 		if (filename == null) {
 			throw new NullPointerException();
 		}
@@ -724,7 +723,6 @@ public class CryptoTools {
 	 */
 	public static void bytesToFile(byte[] data, String filename)
 			throws NullPointerException, FileNotFoundException, IOException {
-		// Check for data being null so that a FileOutputStream is not created unless needed.
 		if (data == null) {
 			throw new NullPointerException();
 		}

@@ -231,15 +231,15 @@ public class BigIntUtil {
 			}
 			// b != 0
 
-			// 0 * a + 1 * b == b == gcd(0, b)
+			// 0 * 0 + 1 * b == b == gcd(0, b)
 			return new BigInteger[] { BigInteger.ZERO, BigInteger.ONE, b };
 		} else if (sign_b == 0) { // i.e., (b == 0) && (a != 0)
-			// 1 * a + 0 * b == a == gcd(a, 0)
+			// 1 * a + 0 * 0 == a == gcd(a, 0)
 			return new BigInteger[] { BigInteger.ONE, BigInteger.ZERO, a };
 		}
 		// (a != 0) && (b != 0)
 
-		// The algorithm only works for 0 < a and 0 < b so compute and save absolute values.
+		// The algorithm only works for positive values so compute/save the absolute values.
 		BigInteger abs_a = a, abs_b = b;
 		if (sign_a == -1) { // i.e., a < 0
 			abs_a = a.negate();
@@ -249,7 +249,7 @@ public class BigIntUtil {
 		}
 		// (abs_a == a.abs()) && (abs_b == b.abs())
 
-		// Algorithm is from Introduction to Mathematical Cryptography 2nd Edition Exercise 1.12.
+		// The algorithm is from Introduction to Mathematical Cryptography 2nd Edition Exercise 1.12.
 		BigInteger gcd = abs_a, x = BigInteger.ONE;
 		{
 			BigInteger u = BigInteger.ZERO, v = abs_b, tmp = null;
@@ -367,7 +367,7 @@ public class BigIntUtil {
 	 *             If <code>(n1 == null) || (m1 == null) || (n2 == null) || (m2 == null)</code>
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>(m1 < 1) || (m2 < 1)</code>
+	 *             If <code>(m1 <= 0) || (m2 <= 0)</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>n1 != n2 (mod gcd(m1, m2))</code>
@@ -394,7 +394,7 @@ public class BigIntUtil {
 			m = m1.multiply(m2);
 		} else { // i.e., gcd != 1
 			// Handle the invalid case.
-			if (!n1.mod(gcd).equals(n2.mod(gcd))) {
+			if (!n1.mod(gcd).equals(n2.mod(gcd))) { // i.e., n1 != n2 (mod gcd)
 				throw new IllegalArgumentException();
 			}
 			m = (m1 = m1.divide(gcd)).multiply(m2);
@@ -474,7 +474,7 @@ public class BigIntUtil {
 	 *             If <code>(n1 == null) || (m1 == null) || (n2 == null) || (m2 == null)</code>
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>(m1 < 1) || (m2 < 1)</code>
+	 *             If <code>(m1 <= 0) || (m2 <= 0)</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>n1 != n2 (mod gcd(m1, m2))</code>
@@ -527,7 +527,7 @@ public class BigIntUtil {
 	 *             If <code>(n1 == null) || (m1 == null) || (n2 == null) || (m2 == null)</code>
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>(m1 < 1) || (m2 < 1)</code>
+	 *             If <code>(m1 <= 0) || (m2 <= 0)</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>n1 != n2 (mod gcd(m1, m2))</code>
@@ -565,7 +565,7 @@ public class BigIntUtil {
 	 *             If <code>(n1 == null) || (m1 == null) || (n2 == null) || (m2 == null)</code>
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>(m1 < 1) || (m2 < 1)</code>
+	 *             If <code>(m1 <= 0) || (m2 <= 0)</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>n1 != n2 (mod gcd(m1, m2))</code>
@@ -628,7 +628,7 @@ public class BigIntUtil {
 	 *             If <code>(n == null) || (m == null) || (begin == null) || (end == null)</code>
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>end < begin</code>
@@ -665,19 +665,23 @@ public class BigIntUtil {
 		// Fix n to be in [0, m - 1] \cap \doubleZ.
 		n = n.mod(m);
 
-		if (n.signum() == 0) { // i.e., n == 0
-			/**
-			 * This case is needed since 0 to any positive power is 0 and so any non-zero assignment of
-			 * <code>result[i]</code> will be wrong in this case. Furthermore, note that we are defining
-			 * <code>0<sup>0</sup> == 0</code> here even though it is undefined in math.
-			 */
-			if (begin.signum() == -1) { // i.e., begin < 0
-				throw new UndefinedInverseException();
+		if (n.compareTo(BigInteger.ONE) <= 0) { // i.e., n <= 1
+			// i.e., (n == 0) || (n == 1)
+			if (n.signum() == 0) { // i.e., n == 0
+				/**
+				 * This case is needed since 0 to any positive power is 0 and so any non-zero assignment of
+				 * <code>result[i]</code> will be wrong in this case. Furthermore, note that we are defining
+				 * <code>0<sup>0</sup> == 0</code> here even though it is undefined in math.
+				 */
+				if (begin.signum() == -1) { // i.e., begin < 0
+					throw new UndefinedInverseException();
+				}
+				// 0 <= begin
+				Arrays.fill(result, BigInteger.ZERO);
+				return result;
 			}
-			// 0 <= begin
-			Arrays.fill(result, BigInteger.ZERO);
-			return result;
-		} else if (n.equals(BigInteger.ONE)) { // i.e., n == 1 (mod m)
+			// n != 0
+			// i.e., n == 1
 			/*
 			 * This case is only an optimization since 1 to any power is 1 and so the loop will do extra
 			 * unnecessary work to arrive at the same result.
@@ -687,7 +691,7 @@ public class BigIntUtil {
 		}
 		// 2 <= n
 		// i.e., (1 < n) && (n <= m - 1) && (2 < m)
-		if (n.add(BigInteger.ONE).equals(m)) { // i.e., n == -1 (mod m)
+		if (n.equals(m.subtract(BigInteger.ONE))) { // i.e., n == -1 (mod m)
 			/*
 			 * This case is only an optimization since -1 to any even power is 1 and otherwise is -1. So the
 			 * loop will do extra unnecessary work to arrive at the same result.
@@ -702,15 +706,16 @@ public class BigIntUtil {
 		// i.e., (1 < n) && (n < m - 1) && (3 < m)
 
 		// Fill and return the resulting BigInteger array.
+		BigInteger n_to_i = null;
 		try {
-			BigInteger n_to_i = n.modPow(begin, m);
-			for (int i = 0; i != length; ++i, n_to_i = n_to_i.multiply(n).mod(m)) {
-				result[i] = n_to_i;
-			}
-			return result;
+			n_to_i = n.modPow(begin, m);
 		} catch (ArithmeticException ex) {
 			throw new UndefinedInverseException();
 		}
+		for (int i = 0; i != length; ++i, n_to_i = n_to_i.multiply(n).mod(m)) {
+			result[i] = n_to_i;
+		}
+		return result;
 	}
 
 	/**
@@ -735,7 +740,7 @@ public class BigIntUtil {
 	 *             If <code>(n == null) || (m == null) || (end == null)</code>
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>end < 0</code>
@@ -767,7 +772,7 @@ public class BigIntUtil {
 	 *             If <code>(n == null) || (m == null)</code>
 	 * 
 	 * @throws InvalidModulusException
-	 *             If <code>m < 1</code>
+	 *             If <code>m <= 0</code>
 	 * 
 	 * @throws ArithmeticException
 	 *             If <code>Integer.MAX_VALUE < m</code>
@@ -775,126 +780,6 @@ public class BigIntUtil {
 	public static BigInteger[] modPowers(BigInteger n, BigInteger m)
 			throws NullPointerException, InvalidModulusException, ArithmeticException {
 		return BigIntUtil.modPowers(n, m, m);
-	}
-
-	/**
-	 * @param bound
-	 *            the given upper bound
-	 * 
-	 * @param prng
-	 *            source of random bits used to compute the new BigInteger
-	 * 
-	 * @return A pseudorandom <code>BigInteger</code> value uniformly distributed in
-	 *         <code>[0, bound)</code>.
-	 * 
-	 * @throws NullPointerException
-	 *             If <code>bound == null</code>
-	 * 
-	 * @throws IllegalArgumentException
-	 *             If <code>bound <= 0</code>
-	 */
-	public static BigInteger nextBigInt(BigInteger bound, Random prng)
-			throws NullPointerException, IllegalArgumentException {
-		if (bound.signum() != 1) { // i.e., bound <= 0
-			throw new IllegalArgumentException();
-		}
-		// 0 < bound
-		if (prng == null) {
-			prng = ThreadLocalRandom.current();
-		}
-
-		/*
-		 * Generate a random integer in [0, bound - 1] uniformly at random by randomly generating integers
-		 * uniformly distributed in [0, 2^bitLength - 1] and then rejecting the ones that are greater than
-		 * bound - 1 (i.e., greater than or equal to bound).
-		 */
-		final int bitLength = bound.bitLength();
-		BigInteger result = null;
-		do {
-			result = new BigInteger(bitLength, prng);
-		} while (bound.compareTo(result) <= 0);
-		return result;
-	}
-
-	/**
-	 * @param bound
-	 *            the given upper bound
-	 * 
-	 * @return <code>BigIntUtil.nextBigInt(bound, ThreadLocalRandom.current())</code>.
-	 * 
-	 * @throws NullPointerException
-	 *             If <code>bound == null</code>
-	 * 
-	 * @throws IllegalArgumentException
-	 *             If <code>bound <= 0</code>
-	 */
-	public static BigInteger nextBigInt(BigInteger bound) throws NullPointerException, IllegalArgumentException {
-		// Cannot pass null as the second argument since it would be ambiguous.
-		return BigIntUtil.nextBigInt(bound, ThreadLocalRandom.current());
-	}
-
-	/**
-	 * @param begin
-	 *            the given lower bound
-	 * 
-	 * @param end
-	 *            the given upper bound
-	 * 
-	 * @param prng
-	 *            source of random bits used to compute the new BigInteger
-	 * 
-	 * @return A pseudorandom <code>BigInteger</code> value uniformly distributed in
-	 *         <code>[begin, end)</code>.
-	 * 
-	 * @throws NullPointerException
-	 *             If <code>(begin == null) || (end == null)</code>
-	 * 
-	 * @throws IllegalArgumentException
-	 *             If <code>end <= begin</code>
-	 */
-	public static BigInteger nextBigInt(BigInteger begin, BigInteger end, Random prng)
-			throws NullPointerException, IllegalArgumentException {
-		if (0 <= begin.compareTo(end)) { // i.e., end <= begin
-			throw new IllegalArgumentException();
-		}
-		// begin < end
-		if (prng == null) {
-			prng = ThreadLocalRandom.current();
-		}
-
-		/*
-		 * Generate a random integer in [0, bound - 1] uniformly at random by randomly generating integers
-		 * uniformly distributed in [0, 2^bitLength - 1] and then rejecting the ones that are greater than
-		 * bound - 1 (i.e., greater than or equal to bound).
-		 */
-		final BigInteger bound = end.subtract(begin); // 0 < bound == end - begin
-		final int bitLength = bound.bitLength();
-		BigInteger result = null;
-		do {
-			result = new BigInteger(bitLength, prng);
-		} while (bound.compareTo(result) <= 0);
-		// Finally, add begin to result to get a random number in [begin, end - 1].
-		return result.add(begin);
-	}
-
-	/**
-	 * @param begin
-	 *            the given lower bound
-	 * 
-	 * @param end
-	 *            the given upper bound
-	 * 
-	 * @return <code>BigIntUtil.nextBigInt(begin, end, null)</code>.
-	 * 
-	 * @throws NullPointerException
-	 *             If <code>(begin == null) || (end == null)</code>
-	 * 
-	 * @throws IllegalArgumentException
-	 *             If <code>end <= begin</code>
-	 */
-	public static BigInteger nextBigInt(BigInteger begin, BigInteger end)
-			throws NullPointerException, IllegalArgumentException {
-		return BigIntUtil.nextBigInt(begin, end, null);
 	}
 
 	/**
