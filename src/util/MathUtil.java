@@ -3090,7 +3090,7 @@ public class MathUtil {
 	 * @throws ArithmeticException
 	 *             If <code>Integer.MAX_VALUE < (end - begin)</code>
 	 */
-	protected static int powersLength(long begin, long end) throws IllegalArgumentException, ArithmeticException {
+	public static int powersLength(long begin, long end) throws IllegalArgumentException, ArithmeticException {
 		if (end < begin) {
 			throw new IllegalArgumentException();
 		} else if (begin == end) {
@@ -3128,15 +3128,24 @@ public class MathUtil {
 		if (begin == Long.MIN_VALUE) { // i.e., -begin == begin < 0
 			// -begin == Long.MAX_VALUE + 1 so length == end + (Long.MAX_VALUE + 1)
 			/**
-			 * Due to the above check, we know that <code>end <= Integer.MAX_VALUE + Long.MIN_VALUE</code> which
-			 * is much less than <code>0</code> and so <code>end + Long.MAX_VALUE + 1</code> will not overflow a
-			 * long.
+			 * Due to the above checks, we know that <code>end <= Integer.MAX_VALUE + Long.MIN_VALUE</code>
+			 * which is much less than <code>-1</code>, and so we can easily see that
+			 * <code>end + Long.MAX_VALUE + 1</code> will not overflow a long. Furthermore, it's fine to do
+			 * <code>end += Long.MAX_VALUE</code> instead of <code>end + Long.MAX_VALUE</code> since we don't
+			 * need the value of <code>end</code> to remain unchanged. Note that the difference is the
+			 * <code>+=</code> instead of the <code>+</code> which will mutate <code>end</code>.
 			 */
 			return ((int) ((end += Long.MAX_VALUE) + 1L));
 		}
 		// begin != Long.MIN_VALUE
 		// i.e., 0 < -begin
-		return ((int) (end -= begin));
+		/**
+		 * It's fine to do <code>end += (begin *= -1L)</code> instead of <code>end + (begin * -1L)</code>
+		 * since we don't need the value of <code>end</code> and <code>begin</code> to remain unchanged.
+		 * Note that the difference is the <code>+=</code> and <code>*=</code> instead of the <code>+</code>
+		 * and <code>*</code> which will mutate <code>end</code> and <code>begin</code>.
+		 */
+		return ((int) (end += (begin *= -1L)));
 	}
 
 	/**

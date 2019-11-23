@@ -593,7 +593,7 @@ public class BigIntUtil {
 	 * @throws ArithmeticException
 	 *             If <code>Integer.MAX_VALUE < (end - begin)</code>
 	 */
-	protected static int powersLength(BigInteger begin, BigInteger end)
+	public static int powersLength(BigInteger begin, BigInteger end)
 			throws NullPointerException, IllegalArgumentException, ArithmeticException {
 		final int cmp = begin.compareTo(end);
 		if (0 < cmp) { // i.e., end < begin

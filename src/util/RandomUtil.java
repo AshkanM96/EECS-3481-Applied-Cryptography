@@ -15,6 +15,21 @@ public class RandomUtil {
 	 */
 
 	/**
+	 * <code>BigInteger.valueOf(Long.MIN_VALUE)</code>.
+	 */
+	public static final BigInteger LONG_MIN_VALUE = BigInteger.valueOf(Long.MIN_VALUE); // -2^63
+
+	/**
+	 * <code>BigInteger.valueOf(Long.MAX_VALUE)</code>.
+	 */
+	public static final BigInteger LONG_MAX_VALUE = BigInteger.valueOf(Long.MAX_VALUE); // 2^63 - 1
+
+	/**
+	 * <code>RandomUtil.LONG_MAX_VALUE.add(BigInteger.ONE)</code>.
+	 */
+	public static final BigInteger LONG_MAX_VALUE_PLUS_1 = RandomUtil.LONG_MIN_VALUE.negate(); // 2^63
+
+	/**
 	 * Prevent instantiation.
 	 */
 	private RandomUtil() {
@@ -172,7 +187,7 @@ public class RandomUtil {
 		// Finally, add begin to result to get a random integer in [begin, end - 1].
 		/**
 		 * It's fine to do <code>result += begin</code> instead of <code>result + begin</code> since we
-		 * don't need the value of <code>n</code> to remain unchanged. Furthermore, note that
+		 * don't need the value of <code>result</code> to remain unchanged. Furthermore, note that
 		 * <code>result + begin</code> is guaranteed to fit in an int since it is an element of
 		 * <code>[begin, end - 1] \cap \doubleZ</code>.
 		 */
@@ -276,5 +291,23 @@ public class RandomUtil {
 	 */
 	public static long nextLong(long begin, long end) throws IllegalArgumentException {
 		return RandomUtil.nextLong(begin, end, null);
+	}
+
+	/**
+	 * @param prng
+	 *            source of random bits used to compute the new long
+	 * 
+	 * @return A pseudorandom <code>long</code> value uniformly distributed in
+	 *         <code>[Long.MIN_VALUE, Long.MAX_VALUE]</code>.
+	 */
+	public static long nextLong(Random prng) {
+		return RandomUtil.nextBigInt(RandomUtil.LONG_MIN_VALUE, RandomUtil.LONG_MAX_VALUE_PLUS_1, prng).longValue();
+	}
+
+	/**
+	 * @return <code>RandomUtil.nextLong(null)</code>.
+	 */
+	public static long nextLong() {
+		return RandomUtil.nextLong(null);
 	}
 }
