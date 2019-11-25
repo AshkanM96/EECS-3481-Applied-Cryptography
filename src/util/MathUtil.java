@@ -1148,9 +1148,9 @@ public class MathUtil {
 	protected static long modMinFixedInput(long n, long m) {
 		if (n < 0L) {
 			/**
-			 * By the precondition on <code>n</code>, we know that <code>(-m + 1 <= n <= -1)</code>. Therefore,
-			 * <code>(1 <= other <= m - 1)</code> and <code>-n</code> will not overflow since
-			 * <code>(1 <= -n <= m - 1 < m <= Long.MAX_VALUE)</code>. <br>
+			 * By the precondition on <code>n</code>, we know that <code>(-m + 1 <= n) && (n <= -1)</code>.
+			 * Therefore, <code>(1 <= other) && (other <= m - 1)</code> and <code>-n</code> will not overflow
+			 * since <code>(1 <= -n) && (-n <= m - 1) && (m - 1 < m) && (m <= Long.MAX_VALUE)</code>. <br>
 			 * <br>
 			 * 
 			 * Don't do <code>n += m</code> or <code>n *= -1</code> since we need the value of <code>n</code> to
@@ -1161,9 +1161,10 @@ public class MathUtil {
 		}
 		// 0 <= n
 		/**
-		 * By the precondition on <code>n</code>, we know that <code>(0 <= n <= m - 1)</code>. Therefore,
-		 * <code>(-m <= other <= -1)</code> and so <code>other < 0</code> but <code>-other</code> will not
-		 * overflow since <code>(1 <= -other <= m <= Long.MAX_VALUE)</code>. <br>
+		 * By the precondition on <code>n</code>, we know that <code>(0 <= n) && (n <= m - 1)</code>.
+		 * Therefore, <code>(-m <= other) && (other <= -1)</code> and so <code>other < 0</code> but
+		 * <code>-other</code> will not overflow since
+		 * <code>(1 <= -other) && (-other <= m) && (m <= Long.MAX_VALUE)</code>. <br>
 		 * <br>
 		 * 
 		 * Don't do <code>n -= m</code> or <code>other *= -1</code> since we need the value of

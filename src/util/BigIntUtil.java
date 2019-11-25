@@ -317,6 +317,64 @@ public class BigIntUtil {
 	}
 
 	/**
+	 * Precondition: <code>(m != null) && (0 < m)</code> <br>
+	 * Precondition: <code>(n != null) && (|n| < m)</code> <br>
+	 * Postcondition: <code>(Result != null) && (|Result| <= (m / 2))</code>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>N</code> where <code>N (mod m) == n (mod m)</code>.
+	 */
+	protected static BigInteger modMinFixedInput(BigInteger n, BigInteger m) {
+		if (n.signum() == -1) { // i.e., n < 0
+			/**
+			 * By the precondition on <code>n</code>, we know that <code>(-m + 1 <= n) && (n <= -1)</code>.
+			 * Therefore, <code>(1 <= other) && (other <= m - 1)</code>.
+			 */
+			final BigInteger other = n.add(m), abs_n = n.negate();
+			return ((other.compareTo(abs_n) < 0) ? other : n);
+		}
+		// 0 <= n
+		/**
+		 * By the precondition on <code>n</code>, we know that <code>(0 <= n) && (n <= m - 1)</code>.
+		 * Therefore, <code>(-m <= other) && (other <= -1)</code> and so <code>other < 0</code>.
+		 */
+		final BigInteger other = n.subtract(m), abs_other = other.negate();
+		return ((abs_other.compareTo(n) < 0) ? other : n);
+	}
+
+	/**
+	 * Postcondition: <code>(Result != null) && (|Result| <= (m / 2))</code>
+	 * 
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>N</code> where <code>N (mod m) == n (mod m)</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>(n == null) || (m == null)</code>
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 */
+	public static BigInteger modMin(BigInteger n, BigInteger m) throws NullPointerException, InvalidModulusException {
+		if (n == null) {
+			throw new NullPointerException();
+		} else if (m.signum() != 1) { // i.e., m <= 0
+			throw new InvalidModulusException();
+		}
+		// 0 < m
+		return BigIntUtil.modMinFixedInput(n.remainder(m), m);
+	}
+
+	/**
 	 * Chinese Remainder Theorem. <br>
 	 * Postcondition: <code>Result != null</code> <br>
 	 * Postcondition: <code>justAnswer implies (Result.length == 2)</code> <br>
