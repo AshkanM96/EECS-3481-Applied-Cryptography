@@ -473,6 +473,256 @@ public class Binary {
 	}
 
 	/**
+	 * Postcondition: <code>Result == BigInteger.valueOf(b).testBit(bitIndex)</code>
+	 * 
+	 * @param b
+	 *            the given byte
+	 * 
+	 * @param bitIndex
+	 *            the given bit index
+	 * 
+	 * @return The bit at the given index where the rightmost (i.e., least significant) bit has index 0.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(bitIndex < 0) || (Binary.BITS_PER_BYTE <= bitIndex)</code>
+	 */
+	public static boolean getBit(byte b, int bitIndex) throws IllegalArgumentException {
+		if ((bitIndex < 0) || (Binary.BITS_PER_BYTE <= bitIndex)) {
+			throw new IllegalArgumentException();
+		}
+		// (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_BYTE)
+		return ((b & (1 << bitIndex)) != 0);
+	}
+
+	/**
+	 * Postcondition: <code>Result == BigInteger.valueOf(c).testBit(bitIndex)</code>
+	 * 
+	 * @param c
+	 *            the given char
+	 * 
+	 * @param bitIndex
+	 *            the given bit index
+	 * 
+	 * @return The bit at the given index where the rightmost (i.e., least significant) bit has index 0.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(bitIndex < 0) || (Binary.BITS_PER_CHAR <= bitIndex)</code>
+	 */
+	public static boolean getBit(char c, int bitIndex) throws IllegalArgumentException {
+		if ((bitIndex < 0) || (Binary.BITS_PER_CHAR <= bitIndex)) {
+			throw new IllegalArgumentException();
+		}
+		// (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_CHAR)
+		return ((c & (1 << bitIndex)) != 0);
+	}
+
+	/**
+	 * Postcondition: <code>Result == BigInteger.valueOf(s).testBit(bitIndex)</code>
+	 * 
+	 * @param s
+	 *            the given short
+	 * 
+	 * @param bitIndex
+	 *            the given bit index
+	 * 
+	 * @return The bit at the given index where the rightmost (i.e., least significant) bit has index 0.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(bitIndex < 0) || (Binary.BITS_PER_SHORT <= bitIndex)</code>
+	 */
+	public static boolean getBit(short s, int bitIndex) throws IllegalArgumentException {
+		if ((bitIndex < 0) || (Binary.BITS_PER_SHORT <= bitIndex)) {
+			throw new IllegalArgumentException();
+		}
+		// (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_SHORT)
+		return ((s & (1 << bitIndex)) != 0);
+	}
+
+	/**
+	 * Postcondition: <code>Result == BigInteger.valueOf(i).testBit(bitIndex)</code>
+	 * 
+	 * @param i
+	 *            the given int
+	 * 
+	 * @param bitIndex
+	 *            the given bit index
+	 * 
+	 * @return The bit at the given index where the rightmost (i.e., least significant) bit has index 0.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(bitIndex < 0) || (Binary.BITS_PER_INT <= bitIndex)</code>
+	 */
+	public static boolean getBit(int i, int bitIndex) throws IllegalArgumentException {
+		if ((bitIndex < 0) || (Binary.BITS_PER_INT <= bitIndex)) {
+			throw new IllegalArgumentException();
+		}
+		// (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_INT)
+		return ((i & (1 << bitIndex)) != 0);
+	}
+
+	/**
+	 * Postcondition: <code>Result == BigInteger.valueOf(l).testBit(bitIndex)</code>
+	 * 
+	 * @param l
+	 *            the given long
+	 * 
+	 * @param bitIndex
+	 *            the given bit index
+	 * 
+	 * @return The bit at the given index where the rightmost (i.e., least significant) bit has index 0.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(bitIndex < 0) || (Binary.BITS_PER_LONG <= bitIndex)</code>
+	 */
+	public static boolean getBit(long l, int bitIndex) throws IllegalArgumentException {
+		if ((bitIndex < 0) || (Binary.BITS_PER_LONG <= bitIndex)) {
+			throw new IllegalArgumentException();
+		}
+		// (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_LONG)
+		return ((l & (1L << bitIndex)) != 0L);
+	}
+
+	/**
+	 * @param data
+	 *            the given byte array
+	 * 
+	 * @param bitIndex
+	 *            the given bit index
+	 * 
+	 * @return <code>Binary.getBit(data[(data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_BYTE))], (int) (bitIndex % Binary.BITS_PER_BYTE))</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If
+	 *             <code>(data.length == 0) || (bitIndex < 0) || (Binary.BITS_PER_BYTE * data.length <= bitIndex)</code>
+	 */
+	public static boolean getBit(byte[] data, long bitIndex) throws NullPointerException, IllegalArgumentException {
+		if (data.length == 0) {
+			throw new IllegalArgumentException();
+		} else if ((bitIndex < 0L) || (Binary.BITS_PER_BYTE * ((long) data.length) <= bitIndex)) {
+			throw new IllegalArgumentException();
+		}
+		// (data.length != 0) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_BYTE * data.length)
+		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_BYTE * data.length)
+		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_BYTE));
+		return Binary.getBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_BYTE));
+	}
+
+	/**
+	 * @param data
+	 *            the given char array
+	 * 
+	 * @param bitIndex
+	 *            the given bit index
+	 * 
+	 * @return <code>Binary.getBit(data[(data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_CHAR))], (int) (bitIndex % Binary.BITS_PER_CHAR))</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If
+	 *             <code>(data.length == 0) || (bitIndex < 0) || (Binary.BITS_PER_CHAR * data.length <= bitIndex)</code>
+	 */
+	public static boolean getBit(char[] data, long bitIndex) throws NullPointerException, IllegalArgumentException {
+		if (data.length == 0) {
+			throw new IllegalArgumentException();
+		} else if ((bitIndex < 0L) || (Binary.BITS_PER_CHAR * ((long) data.length) <= bitIndex)) {
+			throw new IllegalArgumentException();
+		}
+		// (data.length != 0) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_CHAR * data.length)
+		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_CHAR * data.length)
+		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_CHAR));
+		return Binary.getBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_CHAR));
+	}
+
+	/**
+	 * @param data
+	 *            the given short array
+	 * 
+	 * @param bitIndex
+	 *            the given bit index
+	 * 
+	 * @return <code>Binary.getBit(data[(data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_SHORT))], (int) (bitIndex % Binary.BITS_PER_SHORT))</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If
+	 *             <code>(data.length == 0) || (bitIndex < 0) || (Binary.BITS_PER_SHORT * data.length <= bitIndex)</code>
+	 */
+	public static boolean getBit(short[] data, long bitIndex) throws NullPointerException, IllegalArgumentException {
+		if (data.length == 0) {
+			throw new IllegalArgumentException();
+		} else if ((bitIndex < 0L) || (Binary.BITS_PER_SHORT * ((long) data.length) <= bitIndex)) {
+			throw new IllegalArgumentException();
+		}
+		// (data.length != 0) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_SHORT * data.length)
+		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_SHORT * data.length)
+		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_SHORT));
+		return Binary.getBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_SHORT));
+	}
+
+	/**
+	 * @param data
+	 *            the given int array
+	 * 
+	 * @param bitIndex
+	 *            the given bit index
+	 * 
+	 * @return <code>Binary.getBit(data[(data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_INT))], (int) (bitIndex % Binary.BITS_PER_INT))</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If
+	 *             <code>(data.length == 0) || (bitIndex < 0) || (Binary.BITS_PER_INT * data.length <= bitIndex)</code>
+	 */
+	public static boolean getBit(int[] data, long bitIndex) throws NullPointerException, IllegalArgumentException {
+		if (data.length == 0) {
+			throw new IllegalArgumentException();
+		} else if ((bitIndex < 0L) || (Binary.BITS_PER_INT * ((long) data.length) <= bitIndex)) {
+			throw new IllegalArgumentException();
+		}
+		// (data.length != 0) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_INT * data.length)
+		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_INT * data.length)
+		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_INT));
+		return Binary.getBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_INT));
+	}
+
+	/**
+	 * @param data
+	 *            the given long array
+	 * 
+	 * @param bitIndex
+	 *            the given bit index
+	 * 
+	 * @return <code>Binary.getBit(data[(data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_LONG))], (int) (bitIndex % Binary.BITS_PER_LONG))</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If
+	 *             <code>(data.length == 0) || (bitIndex < 0) || (Binary.BITS_PER_LONG * data.length <= bitIndex)</code>
+	 */
+	public static boolean getBit(long[] data, long bitIndex) throws NullPointerException, IllegalArgumentException {
+		if (data.length == 0) {
+			throw new IllegalArgumentException();
+		} else if ((bitIndex < 0L) || (Binary.BITS_PER_LONG * ((long) data.length) <= bitIndex)) {
+			throw new IllegalArgumentException();
+		}
+		// (data.length != 0) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_LONG * data.length)
+		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_LONG * data.length)
+		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_LONG));
+		return Binary.getBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_LONG));
+	}
+
+	/**
 	 * <code>data = !data</code>.
 	 * 
 	 * @param data

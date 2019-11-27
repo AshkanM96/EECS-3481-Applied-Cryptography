@@ -228,6 +228,9 @@ public class RandomUtil {
 			throw new IllegalArgumentException();
 		}
 		// 0 < bound
+		if (prng == null) {
+			prng = ThreadLocalRandom.current();
+		}
 
 		// Generate a random integer in [0, bound - 1] uniformly at random.
 		return ((bound <= Integer.MAX_VALUE) ? prng.nextInt((int) bound)

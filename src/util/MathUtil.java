@@ -3100,7 +3100,7 @@ public class MathUtil {
 		// begin < end
 
 		if (-1L < begin) { // i.e., 0 <= begin
-			// 0 <= begin < end so end - begin will not overflow a long.
+			// (0 <= begin) && (begin < end) so end - begin will not overflow a long.
 			/**
 			 * It's fine to do <code>end -= begin</code> instead of <code>end - begin</code> since we don't need
 			 * the value of <code>end</code> to remain unchanged. Note that the difference is the
@@ -4614,10 +4614,10 @@ public class MathUtil {
 			throws InvalidModulusException, IllegalArgumentException, ArithmeticException, UndefinedInverseException {
 		if (m < 1L) {
 			throw new InvalidModulusException();
-		} else if ((upperOrder < 1L) || (m - 1L < upperOrder)) {
+		} else if ((upperOrder < 1L) || (m <= upperOrder)) {
 			throw new IllegalArgumentException();
 		}
-		// (1 <= m) && (1 <= upperOrder) && (upperOrder <= m - 1)
+		// (1 <= m) && (1 <= upperOrder) && (upperOrder < m)
 		// i.e., (0 < m) && (1 <= upperOrder) && (upperOrder <= m - 1)
 
 		// Fix n to be in [0, m - 1] \cap \doubleZ.
@@ -5741,10 +5741,10 @@ public class MathUtil {
 			throws InvalidModulusException, IllegalArgumentException, ArithmeticException, UndefinedInverseException {
 		if (m < 1L) {
 			throw new InvalidModulusException();
-		} else if ((upperOrder < 1L) || (m - 1L < upperOrder)) {
+		} else if ((upperOrder < 1L) || (m <= upperOrder)) {
 			throw new IllegalArgumentException();
 		}
-		// (1 <= m) && (1 <= upperOrder) && (upperOrder <= m - 1)
+		// (1 <= m) && (1 <= upperOrder) && (upperOrder < m)
 		// i.e., (0 < m) && (1 <= upperOrder) && (upperOrder <= m - 1)
 
 		// Fix n to be in [0, m - 1] \cap \doubleZ.
