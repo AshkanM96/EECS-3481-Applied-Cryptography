@@ -17,17 +17,17 @@ public class RandomUtil {
 	/**
 	 * <code>BigInteger.valueOf(Long.MIN_VALUE)</code>.
 	 */
-	public static final BigInteger LONG_MIN_VALUE = BigInteger.valueOf(Long.MIN_VALUE); // -2^63
+	public static final BigInteger LONG_MIN_VALUE = BigInteger.valueOf(Long.MIN_VALUE); // -2<sup>63</sup>
 
 	/**
 	 * <code>BigInteger.valueOf(Long.MAX_VALUE)</code>.
 	 */
-	public static final BigInteger LONG_MAX_VALUE = BigInteger.valueOf(Long.MAX_VALUE); // 2^63 - 1
+	public static final BigInteger LONG_MAX_VALUE = BigInteger.valueOf(Long.MAX_VALUE); // 2<sup>63</sup>-1
 
 	/**
 	 * <code>RandomUtil.LONG_MAX_VALUE.add(BigInteger.ONE)</code>.
 	 */
-	public static final BigInteger LONG_MAX_VALUE_PLUS_1 = RandomUtil.LONG_MIN_VALUE.negate(); // 2^63
+	public static final BigInteger LONG_MAX_VALUE_PLUS_1 = RandomUtil.LONG_MIN_VALUE.negate(); // 2<sup>63</sup>
 
 	/**
 	 * Prevent instantiation.
@@ -157,60 +157,6 @@ public class RandomUtil {
 	}
 
 	/**
-	 * @param begin
-	 *            the given lower bound
-	 * 
-	 * @param end
-	 *            the given upper bound
-	 * 
-	 * @param prng
-	 *            source of random bits used to compute the new int
-	 * 
-	 * @return A pseudorandom <code>int</code> value uniformly distributed in <code>[begin, end)</code>.
-	 * 
-	 * @throws IllegalArgumentException
-	 *             If <code>end <= begin</code>
-	 */
-	public static int nextInt(int begin, int end, Random prng) throws IllegalArgumentException {
-		if (end <= begin) {
-			throw new IllegalArgumentException();
-		}
-		// begin < end
-		if (prng == null) {
-			prng = ThreadLocalRandom.current();
-		}
-
-		// Generate a random integer in [0, bound - 1] uniformly at random.
-		final long bound = ((long) end) - begin; // 0 < bound
-		long result = (bound <= Integer.MAX_VALUE) ? prng.nextInt((int) bound)
-				: RandomUtil.nextBigInt(BigInteger.valueOf(bound), prng).longValue();
-		// Finally, add begin to result to get a random integer in [begin, end - 1].
-		/**
-		 * It's fine to do <code>result += begin</code> instead of <code>result + begin</code> since we
-		 * don't need the value of <code>result</code> to remain unchanged. Furthermore, note that
-		 * <code>result + begin</code> is guaranteed to fit in an int since it is an element of
-		 * <code>[begin, end - 1] \cap \doubleZ</code>.
-		 */
-		return ((int) (result += begin));
-	}
-
-	/**
-	 * @param begin
-	 *            the given lower bound
-	 * 
-	 * @param end
-	 *            the given upper bound
-	 * 
-	 * @return <code>RandomUtil.nextInt(begin, end, null)</code>.
-	 * 
-	 * @throws IllegalArgumentException
-	 *             If <code>end <= begin</code>
-	 */
-	public static int nextInt(int begin, int end) throws IllegalArgumentException {
-		return RandomUtil.nextInt(begin, end, null);
-	}
-
-	/**
 	 * @param bound
 	 *            the given upper bound
 	 * 
@@ -312,5 +258,59 @@ public class RandomUtil {
 	 */
 	public static long nextLong() {
 		return RandomUtil.nextLong(null);
+	}
+
+	/**
+	 * @param begin
+	 *            the given lower bound
+	 * 
+	 * @param end
+	 *            the given upper bound
+	 * 
+	 * @param prng
+	 *            source of random bits used to compute the new int
+	 * 
+	 * @return A pseudorandom <code>int</code> value uniformly distributed in <code>[begin, end)</code>.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>end <= begin</code>
+	 */
+	public static int nextInt(int begin, int end, Random prng) throws IllegalArgumentException {
+		if (end <= begin) {
+			throw new IllegalArgumentException();
+		}
+		// begin < end
+		if (prng == null) {
+			prng = ThreadLocalRandom.current();
+		}
+
+		// Generate a random integer in [0, bound - 1] uniformly at random.
+		final long bound = ((long) end) - begin; // 0 < bound
+		long result = (bound <= Integer.MAX_VALUE) ? prng.nextInt((int) bound)
+				: RandomUtil.nextBigInt(BigInteger.valueOf(bound), prng).longValue();
+		// Finally, add begin to result to get a random integer in [begin, end - 1].
+		/**
+		 * It's fine to do <code>result += begin</code> instead of <code>result + begin</code> since we
+		 * don't need the value of <code>result</code> to remain unchanged. Furthermore, note that
+		 * <code>result + begin</code> is guaranteed to fit in an int since it is an element of
+		 * <code>[begin, end - 1] \cap \doubleZ</code>.
+		 */
+		return ((int) (result += begin));
+	}
+
+	/**
+	 * @param begin
+	 *            the given lower bound
+	 * 
+	 * @param end
+	 *            the given upper bound
+	 * 
+	 * @return <code>RandomUtil.nextInt(begin, end, null)</code>.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>end <= begin</code>
+	 */
+	public static int nextInt(int begin, int end) throws IllegalArgumentException {
+		return RandomUtil.nextInt(begin, end, null);
 	}
 }

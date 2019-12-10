@@ -101,7 +101,12 @@ public class Binary {
 	 */
 	public static int countOnes(byte b) {
 		int result = 0;
-		for (int int_b = b; int_b != 0; int_b >>>= 1) {
+		/**
+		 * Note that we should use the bit mask when initializing <code>int_b</code>, since the binary
+		 * representation of the value of <code>b</code> differs when being represented as an int instead of
+		 * a byte when <code>b</code> is negative.
+		 */
+		for (int int_b = b & Binary.MASK_BYTE_TO_INT; int_b != 0; int_b >>>= 1) {
 			/**
 			 * Don't do <code>int_b &= 1</code> since we need the value of <code>int_b</code> to remain
 			 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
@@ -120,7 +125,12 @@ public class Binary {
 	 */
 	public static int countOnes(char c) {
 		int result = 0;
-		for (int int_c = c; int_c != 0; int_c >>>= 1) {
+		/**
+		 * Note that we should use the bit mask when initializing <code>int_c</code>, since the binary
+		 * representation of the value of <code>c</code> differs when being represented as an int instead of
+		 * a char when <code>c</code> is negative.
+		 */
+		for (int int_c = c & Binary.MASK_CHAR_TO_INT; int_c != 0; int_c >>>= 1) {
 			/**
 			 * Don't do <code>int_c &= 1</code> since we need the value of <code>int_c</code> to remain
 			 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
@@ -139,7 +149,12 @@ public class Binary {
 	 */
 	public static int countOnes(short s) {
 		int result = 0;
-		for (int int_s = s; int_s != 0; int_s >>>= 1) {
+		/**
+		 * Note that we should use the bit mask when initializing <code>int_s</code>, since the binary
+		 * representation of the value of <code>s</code> differs when being represented as an int instead of
+		 * a short when <code>s</code> is negative.
+		 */
+		for (int int_s = s & Binary.MASK_SHORT_TO_INT; int_s != 0; int_s >>>= 1) {
 			/**
 			 * Don't do <code>int_s &= 1</code> since we need the value of <code>int_s</code> to remain
 			 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
@@ -720,6 +735,465 @@ public class Binary {
 		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_LONG * data.length)
 		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_LONG));
 		return Binary.getBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_LONG));
+	}
+
+	/**
+	 * Postcondition: <code>Result == BigInteger.valueOf(b).flipBit(bitIndex).byteValue()</code>
+	 * 
+	 * @param b
+	 *            the given byte
+	 * 
+	 * @param bitIndex
+	 *            the given bit index
+	 * 
+	 * @return The byte with its specified bit being flipped where the rightmost (i.e., least
+	 *         significant) bit has index 0.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(bitIndex < 0) || (Binary.BITS_PER_BYTE <= bitIndex)</code>
+	 */
+	public static byte flipBit(byte b, int bitIndex) throws IllegalArgumentException {
+		if ((bitIndex < 0) || (Binary.BITS_PER_BYTE <= bitIndex)) {
+			throw new IllegalArgumentException();
+		}
+		// (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_BYTE)
+		return ((byte) (b ^ (1 << bitIndex)));
+	}
+
+	/**
+	 * Postcondition: <code>Result == ((char) BigInteger.valueOf(c).flipBit(bitIndex).intValue())</code>
+	 * 
+	 * @param c
+	 *            the given char
+	 * 
+	 * @param bitIndex
+	 *            the given bit index
+	 * 
+	 * @return The char with its specified bit being flipped where the rightmost (i.e., least
+	 *         significant) bit has index 0.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(bitIndex < 0) || (Binary.BITS_PER_CHAR <= bitIndex)</code>
+	 */
+	public static char flipBit(char c, int bitIndex) throws IllegalArgumentException {
+		if ((bitIndex < 0) || (Binary.BITS_PER_CHAR <= bitIndex)) {
+			throw new IllegalArgumentException();
+		}
+		// (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_CHAR)
+		return ((char) (c ^ (1 << bitIndex)));
+	}
+
+	/**
+	 * Postcondition: <code>Result == BigInteger.valueOf(s).flipBit(bitIndex).shortValue()</code>
+	 * 
+	 * @param s
+	 *            the given short
+	 * 
+	 * @param bitIndex
+	 *            the given bit index
+	 * 
+	 * @return The short with its specified bit being flipped where the rightmost (i.e., least
+	 *         significant) bit has index 0.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(bitIndex < 0) || (Binary.BITS_PER_SHORT <= bitIndex)</code>
+	 */
+	public static short flipBit(short s, int bitIndex) throws IllegalArgumentException {
+		if ((bitIndex < 0) || (Binary.BITS_PER_SHORT <= bitIndex)) {
+			throw new IllegalArgumentException();
+		}
+		// (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_SHORT)
+		return ((short) (s ^ (1 << bitIndex)));
+	}
+
+	/**
+	 * Postcondition: <code>Result == BigInteger.valueOf(i).flipBit(bitIndex).intValue()</code>
+	 * 
+	 * @param i
+	 *            the given int
+	 * 
+	 * @param bitIndex
+	 *            the given bit index
+	 * 
+	 * @return The int with its specified bit being flipped where the rightmost (i.e., least
+	 *         significant) bit has index 0.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(bitIndex < 0) || (Binary.BITS_PER_INT <= bitIndex)</code>
+	 */
+	public static int flipBit(int i, int bitIndex) throws IllegalArgumentException {
+		if ((bitIndex < 0) || (Binary.BITS_PER_INT <= bitIndex)) {
+			throw new IllegalArgumentException();
+		}
+		// (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_INT)
+		return (i ^ (1 << bitIndex));
+	}
+
+	/**
+	 * Postcondition: <code>Result == BigInteger.valueOf(l).flipBit(bitIndex).longValue()</code>
+	 * 
+	 * @param l
+	 *            the given long
+	 * 
+	 * @param bitIndex
+	 *            the given bit index
+	 * 
+	 * @return The long with its specified bit being flipped where the rightmost (i.e., least
+	 *         significant) bit has index 0.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(bitIndex < 0) || (Binary.BITS_PER_LONG <= bitIndex)</code>
+	 */
+	public static long flipBit(long l, int bitIndex) throws IllegalArgumentException {
+		if ((bitIndex < 0) || (Binary.BITS_PER_LONG <= bitIndex)) {
+			throw new IllegalArgumentException();
+		}
+		// (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_LONG)
+		return (l ^ (1L << bitIndex));
+	}
+
+	/**
+	 * <pre>
+	 * <code>
+	 * final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_BYTE));
+	 * data[dataIndex] = Binary.flipBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_BYTE));
+	 * </code>
+	 * </pre>
+	 * 
+	 * @param data
+	 *            the given byte array
+	 * 
+	 * @param bitIndex
+	 *            the given bit index
+	 * 
+	 * @return <code>data</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If
+	 *             <code>(data.length == 0) || (bitIndex < 0) || (Binary.BITS_PER_BYTE * data.length <= bitIndex)</code>
+	 */
+	public static byte[] flipBitEquals(byte[] data, long bitIndex)
+			throws NullPointerException, IllegalArgumentException {
+		if (data.length == 0) {
+			throw new IllegalArgumentException();
+		} else if ((bitIndex < 0L) || (Binary.BITS_PER_BYTE * ((long) data.length) <= bitIndex)) {
+			throw new IllegalArgumentException();
+		}
+		// (data.length != 0) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_BYTE * data.length)
+		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_BYTE * data.length)
+		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_BYTE));
+		data[dataIndex] = Binary.flipBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_BYTE));
+		return data;
+	}
+
+	/**
+	 * <pre>
+	 * <code>
+	 * final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_CHAR));
+	 * data[dataIndex] = Binary.flipBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_CHAR));
+	 * </code>
+	 * </pre>
+	 * 
+	 * @param data
+	 *            the given char array
+	 * 
+	 * @param bitIndex
+	 *            the given bit index
+	 * 
+	 * @return <code>data</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If
+	 *             <code>(data.length == 0) || (bitIndex < 0) || (Binary.BITS_PER_CHAR * data.length <= bitIndex)</code>
+	 */
+	public static char[] flipBitEquals(char[] data, long bitIndex)
+			throws NullPointerException, IllegalArgumentException {
+		if (data.length == 0) {
+			throw new IllegalArgumentException();
+		} else if ((bitIndex < 0L) || (Binary.BITS_PER_CHAR * ((long) data.length) <= bitIndex)) {
+			throw new IllegalArgumentException();
+		}
+		// (data.length != 0) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_CHAR * data.length)
+		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_CHAR * data.length)
+		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_CHAR));
+		data[dataIndex] = Binary.flipBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_CHAR));
+		return data;
+	}
+
+	/**
+	 * <pre>
+	 * <code>
+	 * final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_SHORT));
+	 * data[dataIndex] = Binary.flipBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_SHORT));
+	 * </code>
+	 * </pre>
+	 * 
+	 * @param data
+	 *            the given short array
+	 * 
+	 * @param bitIndex
+	 *            the given bit index
+	 * 
+	 * @return <code>data</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If
+	 *             <code>(data.length == 0) || (bitIndex < 0) || (Binary.BITS_PER_SHORT * data.length <= bitIndex)</code>
+	 */
+	public static short[] flipBitEquals(short[] data, long bitIndex)
+			throws NullPointerException, IllegalArgumentException {
+		if (data.length == 0) {
+			throw new IllegalArgumentException();
+		} else if ((bitIndex < 0L) || (Binary.BITS_PER_SHORT * ((long) data.length) <= bitIndex)) {
+			throw new IllegalArgumentException();
+		}
+		// (data.length != 0) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_SHORT * data.length)
+		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_SHORT * data.length)
+		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_SHORT));
+		data[dataIndex] = Binary.flipBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_SHORT));
+		return data;
+	}
+
+	/**
+	 * <pre>
+	 * <code>
+	 * final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_INT));
+	 * data[dataIndex] = Binary.flipBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_INT));
+	 * </code>
+	 * </pre>
+	 * 
+	 * @param data
+	 *            the given int array
+	 * 
+	 * @param bitIndex
+	 *            the given bit index
+	 * 
+	 * @return <code>data</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If
+	 *             <code>(data.length == 0) || (bitIndex < 0) || (Binary.BITS_PER_INT * data.length <= bitIndex)</code>
+	 */
+	public static int[] flipBitEquals(int[] data, long bitIndex) throws NullPointerException, IllegalArgumentException {
+		if (data.length == 0) {
+			throw new IllegalArgumentException();
+		} else if ((bitIndex < 0L) || (Binary.BITS_PER_INT * ((long) data.length) <= bitIndex)) {
+			throw new IllegalArgumentException();
+		}
+		// (data.length != 0) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_INT * data.length)
+		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_INT * data.length)
+		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_INT));
+		data[dataIndex] = Binary.flipBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_INT));
+		return data;
+	}
+
+	/**
+	 * <pre>
+	 * <code>
+	 * final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_LONG));
+	 * data[dataIndex] = Binary.flipBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_LONG));
+	 * </code>
+	 * </pre>
+	 * 
+	 * @param data
+	 *            the given long array
+	 * 
+	 * @param bitIndex
+	 *            the given bit index
+	 * 
+	 * @return <code>data</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If
+	 *             <code>(data.length == 0) || (bitIndex < 0) || (Binary.BITS_PER_LONG * data.length <= bitIndex)</code>
+	 */
+	public static long[] flipBitEquals(long[] data, long bitIndex)
+			throws NullPointerException, IllegalArgumentException {
+		if (data.length == 0) {
+			throw new IllegalArgumentException();
+		} else if ((bitIndex < 0L) || (Binary.BITS_PER_LONG * ((long) data.length) <= bitIndex)) {
+			throw new IllegalArgumentException();
+		}
+		// (data.length != 0) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_LONG * data.length)
+		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_LONG * data.length)
+		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_LONG));
+		data[dataIndex] = Binary.flipBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_LONG));
+		return data;
+	}
+
+	/**
+	 * @param data
+	 *            the given byte array
+	 * 
+	 * @param bitIndex
+	 *            the given bit index
+	 * 
+	 * @return <code>Binary.flipBitEquals(Arrays.copyOf(data, data.length), bitIndex)</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If
+	 *             <code>(data.length == 0) || (bitIndex < 0) || (Binary.BITS_PER_BYTE * data.length <= bitIndex)</code>
+	 */
+	public static byte[] flipBit(byte[] data, long bitIndex) throws NullPointerException, IllegalArgumentException {
+		if (data.length == 0) {
+			throw new IllegalArgumentException();
+		} else if ((bitIndex < 0L) || (Binary.BITS_PER_BYTE * ((long) data.length) <= bitIndex)) {
+			throw new IllegalArgumentException();
+		}
+		// (data.length != 0) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_BYTE * data.length)
+		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_BYTE * data.length)
+		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_BYTE));
+		final byte[] result = new byte[data.length];
+		System.arraycopy(data, 0, result, 0, dataIndex);
+		result[dataIndex] = Binary.flipBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_BYTE));
+		System.arraycopy(data, dataIndex + 1, result, dataIndex + 1, result.length - 1 - dataIndex);
+		return result;
+	}
+
+	/**
+	 * @param data
+	 *            the given char array
+	 * 
+	 * @param bitIndex
+	 *            the given bit index
+	 * 
+	 * @return <code>Binary.flipBitEquals(Arrays.copyOf(data, data.length), bitIndex)</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If
+	 *             <code>(data.length == 0) || (bitIndex < 0) || (Binary.BITS_PER_CHAR * data.length <= bitIndex)</code>
+	 */
+	public static char[] flipBit(char[] data, long bitIndex) throws NullPointerException, IllegalArgumentException {
+		if (data.length == 0) {
+			throw new IllegalArgumentException();
+		} else if ((bitIndex < 0L) || (Binary.BITS_PER_CHAR * ((long) data.length) <= bitIndex)) {
+			throw new IllegalArgumentException();
+		}
+		// (data.length != 0) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_CHAR * data.length)
+		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_CHAR * data.length)
+		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_CHAR));
+		final char[] result = new char[data.length];
+		System.arraycopy(data, 0, result, 0, dataIndex);
+		result[dataIndex] = Binary.flipBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_CHAR));
+		System.arraycopy(data, dataIndex + 1, result, dataIndex + 1, result.length - 1 - dataIndex);
+		return result;
+	}
+
+	/**
+	 * @param data
+	 *            the given short array
+	 * 
+	 * @param bitIndex
+	 *            the given bit index
+	 * 
+	 * @return <code>Binary.flipBitEquals(Arrays.copyOf(data, data.length), bitIndex)</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If
+	 *             <code>(data.length == 0) || (bitIndex < 0) || (Binary.BITS_PER_SHORT * data.length <= bitIndex)</code>
+	 */
+	public static short[] flipBit(short[] data, long bitIndex) throws NullPointerException, IllegalArgumentException {
+		if (data.length == 0) {
+			throw new IllegalArgumentException();
+		} else if ((bitIndex < 0L) || (Binary.BITS_PER_SHORT * ((long) data.length) <= bitIndex)) {
+			throw new IllegalArgumentException();
+		}
+		// (data.length != 0) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_SHORT * data.length)
+		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_SHORT * data.length)
+		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_SHORT));
+		final short[] result = new short[data.length];
+		System.arraycopy(data, 0, result, 0, dataIndex);
+		result[dataIndex] = Binary.flipBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_SHORT));
+		System.arraycopy(data, dataIndex + 1, result, dataIndex + 1, result.length - 1 - dataIndex);
+		return result;
+	}
+
+	/**
+	 * @param data
+	 *            the given int array
+	 * 
+	 * @param bitIndex
+	 *            the given bit index
+	 * 
+	 * @return <code>Binary.flipBitEquals(Arrays.copyOf(data, data.length), bitIndex)</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If
+	 *             <code>(data.length == 0) || (bitIndex < 0) || (Binary.BITS_PER_INT * data.length <= bitIndex)</code>
+	 */
+	public static int[] flipBit(int[] data, long bitIndex) throws NullPointerException, IllegalArgumentException {
+		if (data.length == 0) {
+			throw new IllegalArgumentException();
+		} else if ((bitIndex < 0L) || (Binary.BITS_PER_INT * ((long) data.length) <= bitIndex)) {
+			throw new IllegalArgumentException();
+		}
+		// (data.length != 0) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_INT * data.length)
+		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_INT * data.length)
+		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_INT));
+		final int[] result = new int[data.length];
+		System.arraycopy(data, 0, result, 0, dataIndex);
+		result[dataIndex] = Binary.flipBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_INT));
+		System.arraycopy(data, dataIndex + 1, result, dataIndex + 1, result.length - 1 - dataIndex);
+		return result;
+	}
+
+	/**
+	 * @param data
+	 *            the given long array
+	 * 
+	 * @param bitIndex
+	 *            the given bit index
+	 * 
+	 * @return <code>Binary.flipBitEquals(Arrays.copyOf(data, data.length), bitIndex)</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If
+	 *             <code>(data.length == 0) || (bitIndex < 0) || (Binary.BITS_PER_LONG * data.length <= bitIndex)</code>
+	 */
+	public static long[] flipBit(long[] data, long bitIndex) throws NullPointerException, IllegalArgumentException {
+		if (data.length == 0) {
+			throw new IllegalArgumentException();
+		} else if ((bitIndex < 0L) || (Binary.BITS_PER_LONG * ((long) data.length) <= bitIndex)) {
+			throw new IllegalArgumentException();
+		}
+		// (data.length != 0) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_LONG * data.length)
+		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_LONG * data.length)
+		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_LONG));
+		final long[] result = new long[data.length];
+		System.arraycopy(data, 0, result, 0, dataIndex);
+		result[dataIndex] = Binary.flipBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_LONG));
+		System.arraycopy(data, dataIndex + 1, result, dataIndex + 1, result.length - 1 - dataIndex);
+		return result;
 	}
 
 	/**
