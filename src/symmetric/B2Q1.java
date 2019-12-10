@@ -78,31 +78,23 @@ public class B2Q1 {
 		}
 
 		final Random prng = ThreadLocalRandom.current();
-		// Save the flipped byte in the plaintext to be able to restore it.
-		byte originalFlippedByte = 0;
-		// Save the encrypted version of the newly flipped plaintext.
+		// Save the number of bits in the plaintext.
+		final int numBits = Math.multiplyExact(Binary.BITS_PER_BYTE, B2Q1.PLAINTEXT.length);
+
 		byte[] flippedCiphertext = null;
-		// Save the total number of different bits to be able to compute the average after the loop.
 		long numDiffBits = 0L, totalDiffBitCount = 0L;
-		for (int run = 0, flipBitIndex = 0, flipByteIndex = 0, flipBitMask = 0; run != B2Q1.MAX_RUNS; ++run) {
-			// Generate a random index for the bit to be flipped.
-			flipBitIndex = prng.nextInt(B2Q1.PLAINTEXT.length * Binary.BITS_PER_BYTE);
-			// Compute the index that contains the (flipBitIndex + 1)^th bit.
-			flipByteIndex = flipBitIndex / Binary.BITS_PER_BYTE;
-			// Compute a bitmask used to flip the (flipBitIndex + 1)^th bit.
-			flipBitMask = 1 << ((Binary.BITS_PER_BYTE - 1) - (flipBitIndex % Binary.BITS_PER_BYTE));
+		for (int run = 0, flipBitIndex = 0; run != B2Q1.MAX_RUNS; ++run) {
+			// Select a random bit to be flipped, and then flip it in the plaintext.
+			flipBitIndex = prng.nextInt(numBits);
+			Binary.flipBitEquals(B2Q1.PLAINTEXT, flipBitIndex);
 
-			// Save the (flipByteIndex + 1)^th byte in the plaintext to be able to restore it.
-			originalFlippedByte = B2Q1.PLAINTEXT[flipByteIndex];
-			// Flip the (flipBitIndex + 1)^th bit in the plaintext by xoring it with the bitmask.
-			B2Q1.PLAINTEXT[flipByteIndex] ^= flipBitMask;
-
-			// Encrypt the newly flipped plaintext using the engine to get the flippedCiphertext.
+			/*
+			 * Encrypt the flipped plaintext using the engine, and then xor it with the original ciphertext, and
+			 * then count the number of "on" bits to measure how different they are from each other.
+			 */
 			flippedCiphertext = engine.encrypt(B2Q1.PLAINTEXT);
-			// Xor ciphertext and flippedCiphertext, then count number of
-			// "on" bits to measure how different they are from each other.
 			numDiffBits = Binary.countOnes(Binary.xor(ciphertext, flippedCiphertext));
-			// Accumulate the count of the number of different bits.
+			// Accumulate the count of the number of different bits across all tests.
 			totalDiffBitCount = Math.addExact(totalDiffBitCount, numDiffBits);
 
 			// Only print if requested.
@@ -114,8 +106,8 @@ public class B2Q1 {
 						+ (numDiffBits != 1 ? "s.\n\n" : ".\n\n"));
 			}
 
-			// Restore the plaintext to its original value.
-			B2Q1.PLAINTEXT[flipByteIndex] = originalFlippedByte;
+			// Restore the plaintext to its original value by flipping the selected bit again.
+			Binary.flipBitEquals(B2Q1.PLAINTEXT, flipBitIndex);
 		}
 		System.out.println("An average of " + (1.0 * totalDiffBitCount / B2Q1.MAX_RUNS)
 				+ " bits in the ciphertext were changed as a result of flipping one bit in the plaintext across "
