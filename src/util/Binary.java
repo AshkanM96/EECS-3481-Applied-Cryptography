@@ -17,27 +17,27 @@ public class Binary {
 	public static final int RADIX = 2;
 
 	/**
-	 * Number of bits per one byte.
+	 * Number of bits needed to store one byte.
 	 */
 	public static final int BITS_PER_BYTE = Byte.SIZE;
 
 	/**
-	 * Number of bits per one char.
+	 * Number of bits needed to store one char.
 	 */
 	public static final int BITS_PER_CHAR = Character.SIZE;
 
 	/**
-	 * Number of bits per one short.
+	 * Number of bits needed to store one short.
 	 */
 	public static final int BITS_PER_SHORT = Short.SIZE;
 
 	/**
-	 * Number of bits per one int.
+	 * Number of bits needed to store one int.
 	 */
 	public static final int BITS_PER_INT = Integer.SIZE;
 
 	/**
-	 * Number of bits per one long.
+	 * Number of bits needed to store one long.
 	 */
 	public static final int BITS_PER_LONG = Long.SIZE;
 
@@ -198,7 +198,7 @@ public class Binary {
 			 * that the difference is the <code>&=</code> instead of the <code>&</code> which will mutate
 			 * <code>l</code>.
 			 */
-			result += (l & 1L);
+			result += (int) (l & 1L);
 		}
 		return result;
 	}
@@ -506,7 +506,11 @@ public class Binary {
 			throw new IllegalArgumentException();
 		}
 		// (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_BYTE)
-		return ((b & (1 << bitIndex)) != 0);
+		/**
+		 * It's fine to do <code>b &= (1 << bitIndex)</code> instead of <code>b & (1 << bitIndex)</code>
+		 * since we don't need the value of <code>b</code> to remain unchanged.
+		 */
+		return ((b &= (1 << bitIndex)) != 0);
 	}
 
 	/**
@@ -528,7 +532,11 @@ public class Binary {
 			throw new IllegalArgumentException();
 		}
 		// (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_CHAR)
-		return ((c & (1 << bitIndex)) != 0);
+		/**
+		 * It's fine to do <code>c &= (1 << bitIndex)</code> instead of <code>c & (1 << bitIndex)</code>
+		 * since we don't need the value of <code>c</code> to remain unchanged.
+		 */
+		return ((c &= (1 << bitIndex)) != 0);
 	}
 
 	/**
@@ -550,7 +558,11 @@ public class Binary {
 			throw new IllegalArgumentException();
 		}
 		// (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_SHORT)
-		return ((s & (1 << bitIndex)) != 0);
+		/**
+		 * It's fine to do <code>s &= (1 << bitIndex)</code> instead of <code>s & (1 << bitIndex)</code>
+		 * since we don't need the value of <code>s</code> to remain unchanged.
+		 */
+		return ((s &= (1 << bitIndex)) != 0);
 	}
 
 	/**
@@ -572,7 +584,11 @@ public class Binary {
 			throw new IllegalArgumentException();
 		}
 		// (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_INT)
-		return ((i & (1 << bitIndex)) != 0);
+		/**
+		 * It's fine to do <code>i &= (1 << bitIndex)</code> instead of <code>i & (1 << bitIndex)</code>
+		 * since we don't need the value of <code>i</code> to remain unchanged.
+		 */
+		return ((i &= (1 << bitIndex)) != 0);
 	}
 
 	/**
@@ -594,7 +610,11 @@ public class Binary {
 			throw new IllegalArgumentException();
 		}
 		// (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_LONG)
-		return ((l & (1L << bitIndex)) != 0L);
+		/**
+		 * It's fine to do <code>l &= (1L << bitIndex)</code> instead of <code>l & (1L << bitIndex)</code>
+		 * since we don't need the value of <code>l</code> to remain unchanged.
+		 */
+		return ((l &= (1L << bitIndex)) != 0L);
 	}
 
 	/**
@@ -622,7 +642,12 @@ public class Binary {
 		// (data.length != 0) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_BYTE * data.length)
 		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_BYTE * data.length)
 		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_BYTE));
-		return Binary.getBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_BYTE));
+		/**
+		 * Don't do <code>data[dataIndex] &= ...</code> since we need the value of
+		 * <code>data[dataIndex]</code> to remain unchanged. Note that the difference is the <code>&=</code>
+		 * instead of the <code>&</code> which will mutate <code>data[dataIndex]</code>.
+		 */
+		return ((data[dataIndex] & (1 << ((int) (bitIndex % Binary.BITS_PER_BYTE)))) != 0);
 	}
 
 	/**
@@ -650,7 +675,12 @@ public class Binary {
 		// (data.length != 0) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_CHAR * data.length)
 		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_CHAR * data.length)
 		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_CHAR));
-		return Binary.getBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_CHAR));
+		/**
+		 * Don't do <code>data[dataIndex] &= ...</code> since we need the value of
+		 * <code>data[dataIndex]</code> to remain unchanged. Note that the difference is the <code>&=</code>
+		 * instead of the <code>&</code> which will mutate <code>data[dataIndex]</code>.
+		 */
+		return ((data[dataIndex] & (1 << ((int) (bitIndex % Binary.BITS_PER_CHAR)))) != 0);
 	}
 
 	/**
@@ -678,7 +708,12 @@ public class Binary {
 		// (data.length != 0) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_SHORT * data.length)
 		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_SHORT * data.length)
 		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_SHORT));
-		return Binary.getBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_SHORT));
+		/**
+		 * Don't do <code>data[dataIndex] &= ...</code> since we need the value of
+		 * <code>data[dataIndex]</code> to remain unchanged. Note that the difference is the <code>&=</code>
+		 * instead of the <code>&</code> which will mutate <code>data[dataIndex]</code>.
+		 */
+		return ((data[dataIndex] & (1 << ((int) (bitIndex % Binary.BITS_PER_SHORT)))) != 0);
 	}
 
 	/**
@@ -706,7 +741,12 @@ public class Binary {
 		// (data.length != 0) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_INT * data.length)
 		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_INT * data.length)
 		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_INT));
-		return Binary.getBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_INT));
+		/**
+		 * Don't do <code>data[dataIndex] &= ...</code> since we need the value of
+		 * <code>data[dataIndex]</code> to remain unchanged. Note that the difference is the <code>&=</code>
+		 * instead of the <code>&</code> which will mutate <code>data[dataIndex]</code>.
+		 */
+		return ((data[dataIndex] & (1 << ((int) (bitIndex % Binary.BITS_PER_INT)))) != 0);
 	}
 
 	/**
@@ -734,7 +774,12 @@ public class Binary {
 		// (data.length != 0) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_LONG * data.length)
 		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_LONG * data.length)
 		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_LONG));
-		return Binary.getBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_LONG));
+		/**
+		 * Don't do <code>data[dataIndex] &= ...</code> since we need the value of
+		 * <code>data[dataIndex]</code> to remain unchanged. Note that the difference is the <code>&=</code>
+		 * instead of the <code>&</code> which will mutate <code>data[dataIndex]</code>.
+		 */
+		return ((data[dataIndex] & (1L << ((int) (bitIndex % Binary.BITS_PER_LONG)))) != 0L);
 	}
 
 	/**
@@ -757,7 +802,11 @@ public class Binary {
 			throw new IllegalArgumentException();
 		}
 		// (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_BYTE)
-		return ((byte) (b ^ (1 << bitIndex)));
+		/**
+		 * It's fine to do <code>b ^= (1 << bitIndex)</code> instead of <code>b ^ (1 << bitIndex)</code>
+		 * since we don't need the value of <code>b</code> to remain unchanged.
+		 */
+		return (b ^= (1 << bitIndex));
 	}
 
 	/**
@@ -780,7 +829,11 @@ public class Binary {
 			throw new IllegalArgumentException();
 		}
 		// (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_CHAR)
-		return ((char) (c ^ (1 << bitIndex)));
+		/**
+		 * It's fine to do <code>c ^= (1 << bitIndex)</code> instead of <code>c ^ (1 << bitIndex)</code>
+		 * since we don't need the value of <code>c</code> to remain unchanged.
+		 */
+		return (c ^= (1 << bitIndex));
 	}
 
 	/**
@@ -803,7 +856,11 @@ public class Binary {
 			throw new IllegalArgumentException();
 		}
 		// (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_SHORT)
-		return ((short) (s ^ (1 << bitIndex)));
+		/**
+		 * It's fine to do <code>s ^= (1 << bitIndex)</code> instead of <code>s ^ (1 << bitIndex)</code>
+		 * since we don't need the value of <code>s</code> to remain unchanged.
+		 */
+		return (s ^= (1 << bitIndex));
 	}
 
 	/**
@@ -826,7 +883,11 @@ public class Binary {
 			throw new IllegalArgumentException();
 		}
 		// (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_INT)
-		return (i ^ (1 << bitIndex));
+		/**
+		 * It's fine to do <code>i ^= (1 << bitIndex)</code> instead of <code>i ^ (1 << bitIndex)</code>
+		 * since we don't need the value of <code>i</code> to remain unchanged.
+		 */
+		return (i ^= (1 << bitIndex));
 	}
 
 	/**
@@ -849,7 +910,11 @@ public class Binary {
 			throw new IllegalArgumentException();
 		}
 		// (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_LONG)
-		return (l ^ (1L << bitIndex));
+		/**
+		 * It's fine to do <code>l ^= (1L << bitIndex)</code> instead of <code>l ^ (1L << bitIndex)</code>
+		 * since we don't need the value of <code>l</code> to remain unchanged.
+		 */
+		return (l ^= (1L << bitIndex));
 	}
 
 	/**
@@ -885,7 +950,7 @@ public class Binary {
 		// (data.length != 0) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_BYTE * data.length)
 		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_BYTE * data.length)
 		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_BYTE));
-		data[dataIndex] = Binary.flipBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_BYTE));
+		data[dataIndex] ^= (1 << ((int) (bitIndex % Binary.BITS_PER_BYTE)));
 		return data;
 	}
 
@@ -922,7 +987,7 @@ public class Binary {
 		// (data.length != 0) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_CHAR * data.length)
 		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_CHAR * data.length)
 		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_CHAR));
-		data[dataIndex] = Binary.flipBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_CHAR));
+		data[dataIndex] ^= (1 << ((int) (bitIndex % Binary.BITS_PER_CHAR)));
 		return data;
 	}
 
@@ -959,7 +1024,7 @@ public class Binary {
 		// (data.length != 0) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_SHORT * data.length)
 		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_SHORT * data.length)
 		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_SHORT));
-		data[dataIndex] = Binary.flipBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_SHORT));
+		data[dataIndex] ^= (1 << ((int) (bitIndex % Binary.BITS_PER_SHORT)));
 		return data;
 	}
 
@@ -995,7 +1060,7 @@ public class Binary {
 		// (data.length != 0) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_INT * data.length)
 		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_INT * data.length)
 		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_INT));
-		data[dataIndex] = Binary.flipBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_INT));
+		data[dataIndex] ^= (1 << ((int) (bitIndex % Binary.BITS_PER_INT)));
 		return data;
 	}
 
@@ -1032,7 +1097,7 @@ public class Binary {
 		// (data.length != 0) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_LONG * data.length)
 		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_LONG * data.length)
 		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_LONG));
-		data[dataIndex] = Binary.flipBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_LONG));
+		data[dataIndex] ^= (1L << ((int) (bitIndex % Binary.BITS_PER_LONG)));
 		return data;
 	}
 
@@ -1062,9 +1127,8 @@ public class Binary {
 		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_BYTE * data.length)
 		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_BYTE));
 		final byte[] result = new byte[data.length];
-		System.arraycopy(data, 0, result, 0, dataIndex);
-		result[dataIndex] = Binary.flipBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_BYTE));
-		System.arraycopy(data, dataIndex + 1, result, dataIndex + 1, result.length - 1 - dataIndex);
+		System.arraycopy(data, 0, result, 0, result.length);
+		result[dataIndex] ^= (1 << ((int) (bitIndex % Binary.BITS_PER_BYTE)));
 		return result;
 	}
 
@@ -1094,9 +1158,8 @@ public class Binary {
 		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_CHAR * data.length)
 		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_CHAR));
 		final char[] result = new char[data.length];
-		System.arraycopy(data, 0, result, 0, dataIndex);
-		result[dataIndex] = Binary.flipBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_CHAR));
-		System.arraycopy(data, dataIndex + 1, result, dataIndex + 1, result.length - 1 - dataIndex);
+		System.arraycopy(data, 0, result, 0, result.length);
+		result[dataIndex] ^= (1 << ((int) (bitIndex % Binary.BITS_PER_CHAR)));
 		return result;
 	}
 
@@ -1126,9 +1189,8 @@ public class Binary {
 		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_SHORT * data.length)
 		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_SHORT));
 		final short[] result = new short[data.length];
-		System.arraycopy(data, 0, result, 0, dataIndex);
-		result[dataIndex] = Binary.flipBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_SHORT));
-		System.arraycopy(data, dataIndex + 1, result, dataIndex + 1, result.length - 1 - dataIndex);
+		System.arraycopy(data, 0, result, 0, result.length);
+		result[dataIndex] ^= (1 << ((int) (bitIndex % Binary.BITS_PER_SHORT)));
 		return result;
 	}
 
@@ -1158,9 +1220,8 @@ public class Binary {
 		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_INT * data.length)
 		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_INT));
 		final int[] result = new int[data.length];
-		System.arraycopy(data, 0, result, 0, dataIndex);
-		result[dataIndex] = Binary.flipBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_INT));
-		System.arraycopy(data, dataIndex + 1, result, dataIndex + 1, result.length - 1 - dataIndex);
+		System.arraycopy(data, 0, result, 0, result.length);
+		result[dataIndex] ^= (1 << ((int) (bitIndex % Binary.BITS_PER_INT)));
 		return result;
 	}
 
@@ -1190,9 +1251,539 @@ public class Binary {
 		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_LONG * data.length)
 		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_LONG));
 		final long[] result = new long[data.length];
-		System.arraycopy(data, 0, result, 0, dataIndex);
-		result[dataIndex] = Binary.flipBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_LONG));
-		System.arraycopy(data, dataIndex + 1, result, dataIndex + 1, result.length - 1 - dataIndex);
+		System.arraycopy(data, 0, result, 0, result.length);
+		result[dataIndex] ^= (1L << ((int) (bitIndex % Binary.BITS_PER_LONG)));
+		return result;
+	}
+
+	/**
+	 * Postcondition:
+	 * <code>on implies (Result == BigInteger.valueOf(b).setBit(bitIndex).byteValue())</code> <br>
+	 * Postcondition:
+	 * <code>(!on) implies (Result == BigInteger.valueOf(b).clearBit(bitIndex).byteValue())</code>
+	 * 
+	 * @param b
+	 *            the given byte
+	 * 
+	 * @param bitIndex
+	 *            the given bit index
+	 * 
+	 * @param on
+	 *            the new bit value
+	 * 
+	 * @return The byte with its specified bit being set to the given boolean where the rightmost (i.e.,
+	 *         least significant) bit has index 0.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(bitIndex < 0) || (Binary.BITS_PER_BYTE <= bitIndex)</code>
+	 */
+	public static byte setBit(byte b, int bitIndex, boolean on) throws IllegalArgumentException {
+		// Note that the getBit method does the precondition check for this method as well.
+		if (Binary.getBit(b, bitIndex) != on) {
+			b ^= (1 << bitIndex); // b = Binary.flipBit(b, bitIndex)
+		}
+		return b;
+	}
+
+	/**
+	 * Postcondition:
+	 * <code>on implies (Result == ((char) BigInteger.valueOf(c).setBit(bitIndex).intValue()))</code>
+	 * <br>
+	 * Postcondition:
+	 * <code>(!on) implies (Result == ((char) BigInteger.valueOf(c).clearBit(bitIndex).intValue()))</code>
+	 * 
+	 * @param c
+	 *            the given char
+	 * 
+	 * @param bitIndex
+	 *            the given bit index
+	 * 
+	 * @param on
+	 *            the new bit value
+	 * 
+	 * @return The char with its specified bit being set to the given boolean where the rightmost (i.e.,
+	 *         least significant) bit has index 0.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(bitIndex < 0) || (Binary.BITS_PER_CHAR <= bitIndex)</code>
+	 */
+	public static char setBit(char c, int bitIndex, boolean on) throws IllegalArgumentException {
+		// Note that the getBit method does the precondition check for this method as well.
+		if (Binary.getBit(c, bitIndex) != on) {
+			c ^= (1 << bitIndex); // c = Binary.flipBit(c, bitIndex)
+		}
+		return c;
+	}
+
+	/**
+	 * Postcondition:
+	 * <code>on implies (Result == BigInteger.valueOf(s).setBit(bitIndex).shortValue())</code> <br>
+	 * Postcondition:
+	 * <code>(!on) implies (Result == BigInteger.valueOf(s).clearBit(bitIndex).shortValue())</code>
+	 * 
+	 * @param s
+	 *            the given short
+	 * 
+	 * @param bitIndex
+	 *            the given bit index
+	 * 
+	 * @param on
+	 *            the new bit value
+	 * 
+	 * @return The short with its specified bit being set to the given boolean where the rightmost
+	 *         (i.e., least significant) bit has index 0.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(bitIndex < 0) || (Binary.BITS_PER_SHORT <= bitIndex)</code>
+	 */
+	public static short setBit(short s, int bitIndex, boolean on) throws IllegalArgumentException {
+		// Note that the getBit method does the precondition check for this method as well.
+		if (Binary.getBit(s, bitIndex) != on) {
+			s ^= (1 << bitIndex); // s = Binary.flipBit(s, bitIndex)
+		}
+		return s;
+	}
+
+	/**
+	 * Postcondition:
+	 * <code>on implies (Result == BigInteger.valueOf(i).setBit(bitIndex).intValue())</code> <br>
+	 * Postcondition:
+	 * <code>(!on) implies (Result == BigInteger.valueOf(i).clearBit(bitIndex).intValue())</code>
+	 * 
+	 * @param i
+	 *            the given int
+	 * 
+	 * @param bitIndex
+	 *            the given bit index
+	 * 
+	 * @param on
+	 *            the new bit value
+	 * 
+	 * @return The int with its specified bit being set to the given boolean where the rightmost (i.e.,
+	 *         least significant) bit has index 0.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(bitIndex < 0) || (Binary.BITS_PER_INT <= bitIndex)</code>
+	 */
+	public static int setBit(int i, int bitIndex, boolean on) throws IllegalArgumentException {
+		// Note that the getBit method does the precondition check for this method as well.
+		if (Binary.getBit(i, bitIndex) != on) {
+			i ^= (1 << bitIndex); // i = Binary.flipBit(i, bitIndex)
+		}
+		return i;
+	}
+
+	/**
+	 * Postcondition:
+	 * <code>on implies (Result == BigInteger.valueOf(l).setBit(bitIndex).longValue())</code> <br>
+	 * Postcondition:
+	 * <code>(!on) implies (Result == BigInteger.valueOf(l).clearBit(bitIndex).longValue())</code>
+	 * 
+	 * @param l
+	 *            the given long
+	 * 
+	 * @param bitIndex
+	 *            the given bit index
+	 * 
+	 * @param on
+	 *            the new bit value
+	 * 
+	 * @return The long with its specified bit being set to the given boolean where the rightmost (i.e.,
+	 *         least significant) bit has index 0.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(bitIndex < 0) || (Binary.BITS_PER_LONG <= bitIndex)</code>
+	 */
+	public static long setBit(long l, int bitIndex, boolean on) throws IllegalArgumentException {
+		// Note that the getBit method does the precondition check for this method as well.
+		if (Binary.getBit(l, bitIndex) != on) {
+			l ^= (1L << bitIndex); // l = Binary.flipBit(l, bitIndex)
+		}
+		return l;
+	}
+
+	/**
+	 * <pre>
+	 * <code>
+	 * final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_BYTE));
+	 * data[dataIndex] = Binary.setBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_BYTE), on);
+	 * </code>
+	 * </pre>
+	 * 
+	 * @param data
+	 *            the given byte array
+	 * 
+	 * @param bitIndex
+	 *            the given bit index
+	 * 
+	 * @param on
+	 *            the new bit value
+	 * 
+	 * @return <code>data</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If
+	 *             <code>(data.length == 0) || (bitIndex < 0) || (Binary.BITS_PER_BYTE * data.length <= bitIndex)</code>
+	 */
+	public static byte[] setBitEquals(byte[] data, long bitIndex, boolean on)
+			throws NullPointerException, IllegalArgumentException {
+		if (data.length == 0) {
+			throw new IllegalArgumentException();
+		} else if ((bitIndex < 0L) || (Binary.BITS_PER_BYTE * ((long) data.length) <= bitIndex)) {
+			throw new IllegalArgumentException();
+		}
+		// (data.length != 0) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_BYTE * data.length)
+		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_BYTE * data.length)
+		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_BYTE));
+		// Note that there is no good way of inlining the setBit method here.
+		data[dataIndex] = Binary.setBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_BYTE), on);
+		return data;
+	}
+
+	/**
+	 * <pre>
+	 * <code>
+	 * final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_CHAR));
+	 * data[dataIndex] = Binary.setBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_CHAR), on);
+	 * </code>
+	 * </pre>
+	 * 
+	 * @param data
+	 *            the given char array
+	 * 
+	 * @param bitIndex
+	 *            the given bit index
+	 * 
+	 * @param on
+	 *            the new bit value
+	 * 
+	 * @return <code>data</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If
+	 *             <code>(data.length == 0) || (bitIndex < 0) || (Binary.BITS_PER_CHAR * data.length <= bitIndex)</code>
+	 */
+	public static char[] setBitEquals(char[] data, long bitIndex, boolean on)
+			throws NullPointerException, IllegalArgumentException {
+		if (data.length == 0) {
+			throw new IllegalArgumentException();
+		} else if ((bitIndex < 0L) || (Binary.BITS_PER_CHAR * ((long) data.length) <= bitIndex)) {
+			throw new IllegalArgumentException();
+		}
+		// (data.length != 0) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_CHAR * data.length)
+		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_CHAR * data.length)
+		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_CHAR));
+		// Note that there is no good way of inlining the setBit method here.
+		data[dataIndex] = Binary.setBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_CHAR), on);
+		return data;
+	}
+
+	/**
+	 * <pre>
+	 * <code>
+	 * final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_SHORT));
+	 * data[dataIndex] = Binary.setBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_SHORT), on);
+	 * </code>
+	 * </pre>
+	 * 
+	 * @param data
+	 *            the given short array
+	 * 
+	 * @param bitIndex
+	 *            the given bit index
+	 * 
+	 * @param on
+	 *            the new bit value
+	 * 
+	 * @return <code>data</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If
+	 *             <code>(data.length == 0) || (bitIndex < 0) || (Binary.BITS_PER_SHORT * data.length <= bitIndex)</code>
+	 */
+	public static short[] setBitEquals(short[] data, long bitIndex, boolean on)
+			throws NullPointerException, IllegalArgumentException {
+		if (data.length == 0) {
+			throw new IllegalArgumentException();
+		} else if ((bitIndex < 0L) || (Binary.BITS_PER_SHORT * ((long) data.length) <= bitIndex)) {
+			throw new IllegalArgumentException();
+		}
+		// (data.length != 0) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_SHORT * data.length)
+		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_SHORT * data.length)
+		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_SHORT));
+		// Note that there is no good way of inlining the setBit method here.
+		data[dataIndex] = Binary.setBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_SHORT), on);
+		return data;
+	}
+
+	/**
+	 * <pre>
+	 * <code>
+	 * final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_INT));
+	 * data[dataIndex] = Binary.setBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_INT), on);
+	 * </code>
+	 * </pre>
+	 * 
+	 * @param data
+	 *            the given int array
+	 * 
+	 * @param bitIndex
+	 *            the given bit index
+	 * 
+	 * @param on
+	 *            the new bit value
+	 * 
+	 * @return <code>data</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If
+	 *             <code>(data.length == 0) || (bitIndex < 0) || (Binary.BITS_PER_INT * data.length <= bitIndex)</code>
+	 */
+	public static int[] setBitEquals(int[] data, long bitIndex, boolean on)
+			throws NullPointerException, IllegalArgumentException {
+		if (data.length == 0) {
+			throw new IllegalArgumentException();
+		} else if ((bitIndex < 0L) || (Binary.BITS_PER_INT * ((long) data.length) <= bitIndex)) {
+			throw new IllegalArgumentException();
+		}
+		// (data.length != 0) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_INT * data.length)
+		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_INT * data.length)
+		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_INT));
+		// Note that there is no good way of inlining the setBit method here.
+		data[dataIndex] = Binary.setBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_INT), on);
+		return data;
+	}
+
+	/**
+	 * <pre>
+	 * <code>
+	 * final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_LONG));
+	 * data[dataIndex] = Binary.setBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_LONG), on);
+	 * </code>
+	 * </pre>
+	 * 
+	 * @param data
+	 *            the given long array
+	 * 
+	 * @param bitIndex
+	 *            the given bit index
+	 * 
+	 * @param on
+	 *            the new bit value
+	 * 
+	 * @return <code>data</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If
+	 *             <code>(data.length == 0) || (bitIndex < 0) || (Binary.BITS_PER_LONG * data.length <= bitIndex)</code>
+	 */
+	public static long[] setBitEquals(long[] data, long bitIndex, boolean on)
+			throws NullPointerException, IllegalArgumentException {
+		if (data.length == 0) {
+			throw new IllegalArgumentException();
+		} else if ((bitIndex < 0L) || (Binary.BITS_PER_LONG * ((long) data.length) <= bitIndex)) {
+			throw new IllegalArgumentException();
+		}
+		// (data.length != 0) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_LONG * data.length)
+		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_LONG * data.length)
+		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_LONG));
+		// Note that there is no good way of inlining the setBit method here.
+		data[dataIndex] = Binary.setBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_LONG), on);
+		return data;
+	}
+
+	/**
+	 * @param data
+	 *            the given byte array
+	 * 
+	 * @param bitIndex
+	 *            the given bit index
+	 * 
+	 * @param on
+	 *            the new bit value
+	 * 
+	 * @return <code>Binary.setBitEquals(Arrays.copyOf(data, data.length), bitIndex, on)</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If
+	 *             <code>(data.length == 0) || (bitIndex < 0) || (Binary.BITS_PER_BYTE * data.length <= bitIndex)</code>
+	 */
+	public static byte[] setBit(byte[] data, long bitIndex, boolean on)
+			throws NullPointerException, IllegalArgumentException {
+		if (data.length == 0) {
+			throw new IllegalArgumentException();
+		} else if ((bitIndex < 0L) || (Binary.BITS_PER_BYTE * ((long) data.length) <= bitIndex)) {
+			throw new IllegalArgumentException();
+		}
+		// (data.length != 0) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_BYTE * data.length)
+		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_BYTE * data.length)
+		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_BYTE));
+		final byte[] result = new byte[data.length];
+		System.arraycopy(data, 0, result, 0, result.length);
+		// Note that there is no good way of inlining the setBit method here.
+		result[dataIndex] = Binary.setBit(result[dataIndex], (int) (bitIndex % Binary.BITS_PER_BYTE), on);
+		return result;
+	}
+
+	/**
+	 * @param data
+	 *            the given char array
+	 * 
+	 * @param bitIndex
+	 *            the given bit index
+	 * 
+	 * @param on
+	 *            the new bit value
+	 * 
+	 * @return <code>Binary.setBitEquals(Arrays.copyOf(data, data.length), bitIndex, on)</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If
+	 *             <code>(data.length == 0) || (bitIndex < 0) || (Binary.BITS_PER_CHAR * data.length <= bitIndex)</code>
+	 */
+	public static char[] setBit(char[] data, long bitIndex, boolean on)
+			throws NullPointerException, IllegalArgumentException {
+		if (data.length == 0) {
+			throw new IllegalArgumentException();
+		} else if ((bitIndex < 0L) || (Binary.BITS_PER_CHAR * ((long) data.length) <= bitIndex)) {
+			throw new IllegalArgumentException();
+		}
+		// (data.length != 0) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_CHAR * data.length)
+		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_CHAR * data.length)
+		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_CHAR));
+		final char[] result = new char[data.length];
+		System.arraycopy(data, 0, result, 0, result.length);
+		// Note that there is no good way of inlining the setBit method here.
+		result[dataIndex] = Binary.setBit(result[dataIndex], (int) (bitIndex % Binary.BITS_PER_CHAR), on);
+		return result;
+	}
+
+	/**
+	 * @param data
+	 *            the given short array
+	 * 
+	 * @param bitIndex
+	 *            the given bit index
+	 * 
+	 * @param on
+	 *            the new bit value
+	 * 
+	 * @return <code>Binary.setBitEquals(Arrays.copyOf(data, data.length), bitIndex, on)</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If
+	 *             <code>(data.length == 0) || (bitIndex < 0) || (Binary.BITS_PER_SHORT * data.length <= bitIndex)</code>
+	 */
+	public static short[] setBit(short[] data, long bitIndex, boolean on)
+			throws NullPointerException, IllegalArgumentException {
+		if (data.length == 0) {
+			throw new IllegalArgumentException();
+		} else if ((bitIndex < 0L) || (Binary.BITS_PER_SHORT * ((long) data.length) <= bitIndex)) {
+			throw new IllegalArgumentException();
+		}
+		// (data.length != 0) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_SHORT * data.length)
+		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_SHORT * data.length)
+		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_SHORT));
+		final short[] result = new short[data.length];
+		System.arraycopy(data, 0, result, 0, result.length);
+		// Note that there is no good way of inlining the setBit method here.
+		result[dataIndex] = Binary.setBit(result[dataIndex], (int) (bitIndex % Binary.BITS_PER_SHORT), on);
+		return result;
+	}
+
+	/**
+	 * @param data
+	 *            the given int array
+	 * 
+	 * @param bitIndex
+	 *            the given bit index
+	 * 
+	 * @param on
+	 *            the new bit value
+	 * 
+	 * @return <code>Binary.setBitEquals(Arrays.copyOf(data, data.length), bitIndex, on)</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If
+	 *             <code>(data.length == 0) || (bitIndex < 0) || (Binary.BITS_PER_INT * data.length <= bitIndex)</code>
+	 */
+	public static int[] setBit(int[] data, long bitIndex, boolean on)
+			throws NullPointerException, IllegalArgumentException {
+		if (data.length == 0) {
+			throw new IllegalArgumentException();
+		} else if ((bitIndex < 0L) || (Binary.BITS_PER_INT * ((long) data.length) <= bitIndex)) {
+			throw new IllegalArgumentException();
+		}
+		// (data.length != 0) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_INT * data.length)
+		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_INT * data.length)
+		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_INT));
+		final int[] result = new int[data.length];
+		System.arraycopy(data, 0, result, 0, result.length);
+		// Note that there is no good way of inlining the setBit method here.
+		result[dataIndex] = Binary.setBit(result[dataIndex], (int) (bitIndex % Binary.BITS_PER_INT), on);
+		return result;
+	}
+
+	/**
+	 * @param data
+	 *            the given long array
+	 * 
+	 * @param bitIndex
+	 *            the given bit index
+	 * 
+	 * @param on
+	 *            the new bit value
+	 * 
+	 * @return <code>Binary.setBitEquals(Arrays.copyOf(data, data.length), bitIndex, on)</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If
+	 *             <code>(data.length == 0) || (bitIndex < 0) || (Binary.BITS_PER_LONG * data.length <= bitIndex)</code>
+	 */
+	public static long[] setBit(long[] data, long bitIndex, boolean on)
+			throws NullPointerException, IllegalArgumentException {
+		if (data.length == 0) {
+			throw new IllegalArgumentException();
+		} else if ((bitIndex < 0L) || (Binary.BITS_PER_LONG * ((long) data.length) <= bitIndex)) {
+			throw new IllegalArgumentException();
+		}
+		// (data.length != 0) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_LONG * data.length)
+		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_LONG * data.length)
+		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_LONG));
+		final long[] result = new long[data.length];
+		System.arraycopy(data, 0, result, 0, result.length);
+		// Note that there is no good way of inlining the setBit method here.
+		result[dataIndex] = Binary.setBit(result[dataIndex], (int) (bitIndex % Binary.BITS_PER_LONG), on);
 		return result;
 	}
 
@@ -2597,7 +3188,7 @@ public class Binary {
 	public static String toString(boolean[] data) throws NullPointerException {
 		final StringBuilder sb = new StringBuilder(data.length);
 		for (int i = 0; i != data.length; ++i) {
-			sb.append(data[i] ? "1" : "0"); // i.e., Binary.toString(data[i])
+			sb.append(data[i] ? '1' : '0'); // i.e., Binary.toString(data[i])
 		}
 		return sb.toString();
 	}
@@ -2614,7 +3205,7 @@ public class Binary {
 	 *             If <code>data == null</code>
 	 */
 	public static String toString(byte[] data) throws NullPointerException {
-		final StringBuilder sb = new StringBuilder(data.length);
+		final StringBuilder sb = new StringBuilder(Binary.BITS_PER_BYTE * data.length);
 		for (int i = 0; i != data.length; ++i) {
 			sb.append(Binary.toString(data[i]));
 		}
@@ -2633,7 +3224,7 @@ public class Binary {
 	 *             If <code>data == null</code>
 	 */
 	public static String toString(char[] data) throws NullPointerException {
-		final StringBuilder sb = new StringBuilder(data.length);
+		final StringBuilder sb = new StringBuilder(Binary.BITS_PER_CHAR * data.length);
 		for (int i = 0; i != data.length; ++i) {
 			sb.append(Binary.toString(data[i]));
 		}
@@ -2652,7 +3243,7 @@ public class Binary {
 	 *             If <code>data == null</code>
 	 */
 	public static String toString(short[] data) throws NullPointerException {
-		final StringBuilder sb = new StringBuilder(data.length);
+		final StringBuilder sb = new StringBuilder(Binary.BITS_PER_SHORT * data.length);
 		for (int i = 0; i != data.length; ++i) {
 			sb.append(Binary.toString(data[i]));
 		}
@@ -2671,7 +3262,7 @@ public class Binary {
 	 *             If <code>data == null</code>
 	 */
 	public static String toString(int[] data) throws NullPointerException {
-		final StringBuilder sb = new StringBuilder(data.length);
+		final StringBuilder sb = new StringBuilder(Binary.BITS_PER_INT * data.length);
 		for (int i = 0; i != data.length; ++i) {
 			sb.append(Binary.toString(data[i]));
 		}
@@ -2690,10 +3281,223 @@ public class Binary {
 	 *             If <code>data == null</code>
 	 */
 	public static String toString(long[] data) throws NullPointerException {
-		final StringBuilder sb = new StringBuilder(data.length);
+		final StringBuilder sb = new StringBuilder(Binary.BITS_PER_LONG * data.length);
 		for (int i = 0; i != data.length; ++i) {
 			sb.append(Binary.toString(data[i]));
 		}
 		return sb.toString();
+	}
+
+	/**
+	 * Given a string of bits, convert it to a boolean array.
+	 * 
+	 * @param s
+	 *            the given string
+	 * 
+	 * @return The resulting boolean array.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>s == null</code>
+	 * 
+	 * @throws NumberFormatException
+	 *             If <code>((s.charAt(i) != '0') && (s.charAt(i) != '1'))</code> for some valid
+	 *             <code>i</code>
+	 */
+	public static boolean[] toBooleans(String s) throws NullPointerException, NumberFormatException {
+		final boolean[] result = new boolean[s.length()];
+		char c = '\0';
+		for (int i = 0; i != result.length; ++i) {
+			// assert (!result[i]);
+			c = s.charAt(i);
+			if (c == '1') {
+				result[i] = true;
+			} else if (c != '0') {
+				throw new NumberFormatException();
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Given a string of bits, convert it to a byte array.
+	 * 
+	 * @param s
+	 *            the given string
+	 * 
+	 * @return The resulting byte array.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>s == null</code>
+	 * 
+	 * @throws NumberFormatException
+	 *             Thrown by
+	 *             <code>Integer.parseInt(s.substring(i, i + Binary.BITS_PER_BYTE), Binary.RADIX)</code>
+	 *             where <code>i</code> is valid
+	 */
+	public static byte[] toBytes(String s) throws NullPointerException, NumberFormatException {
+		final int s_length = s.length();
+		final int quotient = s_length / Binary.BITS_PER_BYTE, remainder = s_length - Binary.BITS_PER_BYTE * quotient;
+		// remainder == s_length % Binary.BITS_PER_BYTE
+
+		byte[] result = null;
+		int result_idx = 0;
+		if (remainder == 0) {
+			result = new byte[quotient];
+		} else {
+			result = new byte[1 + quotient];
+			result[0] = (byte) Integer.parseInt(s.substring(0, remainder), Binary.RADIX);
+			result_idx = 1;
+		}
+		for (int s_idx = remainder; s_idx != s_length; s_idx += Binary.BITS_PER_BYTE, ++result_idx) {
+			result[result_idx] = (byte) Integer.parseInt(s.substring(s_idx, s_idx + Binary.BITS_PER_BYTE),
+					Binary.RADIX);
+		}
+		return result;
+	}
+
+	/**
+	 * Given a string of bits, convert it to a char array.
+	 * 
+	 * @param s
+	 *            the given string
+	 * 
+	 * @return The resulting char array.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>s == null</code>
+	 * 
+	 * @throws NumberFormatException
+	 *             Thrown by
+	 *             <code>Integer.parseInt(s.substring(i, i + Binary.BITS_PER_CHAR), Binary.RADIX)</code>
+	 *             where <code>i</code> is valid
+	 */
+	public static char[] toChars(String s) throws NullPointerException, NumberFormatException {
+		final int s_length = s.length();
+		final int quotient = s_length / Binary.BITS_PER_CHAR, remainder = s_length - Binary.BITS_PER_CHAR * quotient;
+		// remainder == s_length % Binary.BITS_PER_CHAR
+
+		char[] result = null;
+		int result_idx = 0;
+		if (remainder == 0) {
+			result = new char[quotient];
+		} else {
+			result = new char[1 + quotient];
+			result[0] = (char) Integer.parseInt(s.substring(0, remainder), Binary.RADIX);
+			result_idx = 1;
+		}
+		for (int s_idx = remainder; s_idx != s_length; s_idx += Binary.BITS_PER_CHAR, ++result_idx) {
+			result[result_idx] = (char) Integer.parseInt(s.substring(s_idx, s_idx + Binary.BITS_PER_CHAR),
+					Binary.RADIX);
+		}
+		return result;
+	}
+
+	/**
+	 * Given a string of bits, convert it to a short array.
+	 * 
+	 * @param s
+	 *            the given string
+	 * 
+	 * @return The resulting short array.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>s == null</code>
+	 * 
+	 * @throws NumberFormatException
+	 *             Thrown by
+	 *             <code>Integer.parseInt(s.substring(i, i + Binary.BITS_PER_SHORT), Binary.RADIX)</code>
+	 *             where <code>i</code> is valid
+	 */
+	public static short[] toShorts(String s) throws NullPointerException, NumberFormatException {
+		final int s_length = s.length();
+		final int quotient = s_length / Binary.BITS_PER_SHORT, remainder = s_length - Binary.BITS_PER_SHORT * quotient;
+		// remainder == s_length % Binary.BITS_PER_SHORT
+
+		short[] result = null;
+		int result_idx = 0;
+		if (remainder == 0) {
+			result = new short[quotient];
+		} else {
+			result = new short[1 + quotient];
+			result[0] = (short) Integer.parseInt(s.substring(0, remainder), Binary.RADIX);
+			result_idx = 1;
+		}
+		for (int s_idx = remainder; s_idx != s_length; s_idx += Binary.BITS_PER_SHORT, ++result_idx) {
+			result[result_idx] = (short) Integer.parseInt(s.substring(s_idx, s_idx + Binary.BITS_PER_SHORT),
+					Binary.RADIX);
+		}
+		return result;
+	}
+
+	/**
+	 * Given a string of bits, convert it to an int array.
+	 * 
+	 * @param s
+	 *            the given string
+	 * 
+	 * @return The resulting int array.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>s == null</code>
+	 * 
+	 * @throws NumberFormatException
+	 *             Thrown by
+	 *             <code>Integer.parseInt(s.substring(i, i + Binary.BITS_PER_INT), Binary.RADIX)</code>
+	 *             where <code>i</code> is valid
+	 */
+	public static int[] toInts(String s) throws NullPointerException, NumberFormatException {
+		final int s_length = s.length();
+		final int quotient = s_length / Binary.BITS_PER_INT, remainder = s_length - Binary.BITS_PER_INT * quotient;
+		// remainder == s_length % Binary.BITS_PER_INT
+
+		int[] result = null;
+		int result_idx = 0;
+		if (remainder == 0) {
+			result = new int[quotient];
+		} else {
+			result = new int[1 + quotient];
+			result[0] = Integer.parseInt(s.substring(0, remainder), Binary.RADIX);
+			result_idx = 1;
+		}
+		for (int s_idx = remainder; s_idx != s_length; s_idx += Binary.BITS_PER_INT, ++result_idx) {
+			result[result_idx] = Integer.parseInt(s.substring(s_idx, s_idx + Binary.BITS_PER_INT), Binary.RADIX);
+		}
+		return result;
+	}
+
+	/**
+	 * Given a string of bits, convert it to a long array.
+	 * 
+	 * @param s
+	 *            the given string
+	 * 
+	 * @return The resulting long array.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>s == null</code>
+	 * 
+	 * @throws NumberFormatException
+	 *             Thrown by
+	 *             <code>Long.parseLong(s.substring(i, i + Binary.BITS_PER_LONG), Binary.RADIX)</code>
+	 *             where <code>i</code> is valid
+	 */
+	public static long[] toLongs(String s) throws NullPointerException, NumberFormatException {
+		final int s_length = s.length();
+		final int quotient = s_length / Binary.BITS_PER_LONG, remainder = s_length - Binary.BITS_PER_LONG * quotient;
+		// remainder == s_length % Binary.BITS_PER_LONG
+
+		long[] result = null;
+		int result_idx = 0;
+		if (remainder == 0) {
+			result = new long[quotient];
+		} else {
+			result = new long[1 + quotient];
+			result[0] = Long.parseLong(s.substring(0, remainder), Binary.RADIX);
+			result_idx = 1;
+		}
+		for (int s_idx = remainder; s_idx != s_length; s_idx += Binary.BITS_PER_LONG, ++result_idx) {
+			result[result_idx] = Long.parseLong(s.substring(s_idx, s_idx + Binary.BITS_PER_LONG), Binary.RADIX);
+		}
+		return result;
 	}
 }

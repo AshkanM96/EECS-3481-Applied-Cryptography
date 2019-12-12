@@ -185,7 +185,7 @@ public class BigIntUtil {
 			result = result.add(q).shiftRight(1); // result = (result + q) / 2
 			q = n.divide(result);
 		}
-		return ((floor || n.equals(result.multiply(result))) ? result : result.add(BigInteger.ONE));
+		return ((floor || result.multiply(result).equals(n)) ? result : result.add(BigInteger.ONE));
 	}
 
 	/**

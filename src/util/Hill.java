@@ -72,11 +72,26 @@ public class Hill implements Iterable<Integer> {
 	}
 
 	/**
-	 * Construct a Hill object from the given one dimensional integer key array. The cipher key will
-	 * take <code>(int) Math.sqrt(key.length)</code> as its number of rows and number of columns.
-	 * Therefore, some of the right-end entries of the given integer array will be ignored if its length
-	 * is not a perfect square. Specifically, the last accessed index will be
-	 * <code>((int) Math.sqrt(key.length)) * ((int) Math.sqrt(key.length)) - 1</code>.
+	 * Construct a Hill object from the given one dimensional integer key array.
+	 * 
+	 * @param key
+	 *            the given one dimensional integer key array
+	 * 
+	 * @param floor
+	 *            specifies whether the floor of <code>sqrt(key.length)</code> should be used
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>key == null</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>key.length == 0</code>
+	 */
+	public Hill(int[] key, boolean floor) throws NullPointerException, IllegalArgumentException {
+		this.key(key, floor);
+	}
+
+	/**
+	 * Equivalent to <code>new Hill(key, true)</code>.
 	 * 
 	 * @param key
 	 *            the given one dimensional integer key array
@@ -88,7 +103,7 @@ public class Hill implements Iterable<Integer> {
 	 *             If <code>key.length == 0</code>
 	 */
 	public Hill(int[] key) throws NullPointerException, IllegalArgumentException {
-		this.key(key);
+		this.key(key, true);
 	}
 
 	/**
@@ -180,7 +195,7 @@ public class Hill implements Iterable<Integer> {
 	public MatrixInt key(int side) throws IllegalArgumentException {
 		// No need to do this.key.modEquals(CryptoTools.ENGLISH_ALPHABET_SIZE) since this.key.isAllZero().
 		final MatrixInt oldKey = this.key;
-		this.key = new MatrixInt(side, side);
+		this.key = new MatrixInt(side, side, 0);
 		this.keyInverse = null;
 		return oldKey;
 	}
@@ -212,14 +227,13 @@ public class Hill implements Iterable<Integer> {
 	}
 
 	/**
-	 * Reset the calling object's key to the given one dimensional integer key array. The cipher key
-	 * will take <code>(int) Math.sqrt(key.length)</code> as its number of rows and number of columns.
-	 * Therefore, some of the right-end entries of the given integer array will be ignored if its length
-	 * is not a perfect square. Specifically, the last accessed index will be
-	 * <code>((int) Math.sqrt(key.length)) * ((int) Math.sqrt(key.length)) - 1</code>.
+	 * Reset the calling object's key to the given one dimensional integer key array.
 	 * 
 	 * @param key
 	 *            the given one dimensional integer key array
+	 * 
+	 * @param floor
+	 *            specifies whether the floor of <code>sqrt(key.length)</code> should be used
 	 * 
 	 * @return The old key.
 	 * 
@@ -229,11 +243,27 @@ public class Hill implements Iterable<Integer> {
 	 * @throws IllegalArgumentException
 	 *             If <code>key.length == 0</code>
 	 */
-	public MatrixInt key(int[] key) throws NullPointerException, IllegalArgumentException {
+	public MatrixInt key(int[] key, boolean floor) throws NullPointerException, IllegalArgumentException {
 		final MatrixInt oldKey = this.key;
-		this.key = MatrixInt.square(key).modEquals(CryptoTools.ENGLISH_ALPHABET_SIZE);
+		this.key = MatrixInt.square(key, floor).modEquals(CryptoTools.ENGLISH_ALPHABET_SIZE);
 		this.keyInverse = null;
 		return oldKey;
+	}
+
+	/**
+	 * @param key
+	 *            the given one dimensional integer key array
+	 * 
+	 * @return <code>this.key(key, true)</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>key == null</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>key.length == 0</code>
+	 */
+	public MatrixInt key(int[] key) throws NullPointerException, IllegalArgumentException {
+		return this.key(key, true);
 	}
 
 	/**
@@ -352,7 +382,7 @@ public class Hill implements Iterable<Integer> {
 	 * @return <code>MathUtil.gcd(this.key.determinant(), CryptoTools.ENGLISH_ALPHABET_SIZE) == 1</code>.
 	 */
 	public boolean checkValidKey() {
-		return (MathUtil.gcdFixedInput(this.key.determinant(), CryptoTools.ENGLISH_ALPHABET_SIZE) == 1L);
+		return (MathUtil.gcdFixedInput(this.key.determinant(0), CryptoTools.ENGLISH_ALPHABET_SIZE) == 1L);
 	}
 
 	/**

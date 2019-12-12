@@ -19,7 +19,7 @@ public class CryptoTools {
 	 */
 
 	/**
-	 * Complement of <code>32</code>.
+	 * Bitwise complement of <code>32</code>.
 	 */
 	public static final int COMPLEMENT_OF_32 = ~32;
 
@@ -29,7 +29,7 @@ public class CryptoTools {
 	public static final int ENGLISH_ALPHABET_SIZE = 26;
 
 	/**
-	 * Probability of <code>i<sup>th</sup></code> English character is stored at
+	 * The probability of the <code>i<sup>th</sup></code> English character is stored at
 	 * <code>CryptoTools.ENGLISH_LETTER_PROBABILITY[i - 1]</code>.
 	 */
 	protected static final double[] ENGLISH_LETTER_PROBABILITY = { 8.12, 1.49, 2.71, 4.32, 12.02, 2.3, 2.03, 5.92, 7.31,
@@ -71,7 +71,7 @@ public class CryptoTools {
 	 * @return <code>CryptoTools.ENGLISH_LETTER_PROBABILITY[i]</code>.
 	 * 
 	 * @throws IndexOutOfBoundsException
-	 *             If <code>(i < 0) || (CryptoTools.ENGLISH_LETTER_PROBABILITY.length <= i)</code>
+	 *             If <code>(i < 0) || (CryptoTools.ENGLISH_ALPHABET_SIZE <= i)</code>
 	 */
 	public static double english(int i) throws IndexOutOfBoundsException {
 		return CryptoTools.ENGLISH_LETTER_PROBABILITY[i];
@@ -81,11 +81,12 @@ public class CryptoTools {
 	 * @param IC
 	 *            the given Index of Coincidence
 	 * 
-	 * @return <code>(Double.compare(CryptoTools.ENGLISH_IC_LOWER, IC) <= 0) && (Double.compare(IC, CryptoTools.ENGLISH_IC_UPPER) <= 0)</code>.
+	 * @return <code>true</code> if and only if
+	 *         <code>(CryptoTools.ENGLISH_IC_LOWER <= IC) && (IC <= CryptoTools.ENGLISH_IC_UPPER)</code>.
 	 */
 	public static boolean isEnglishIC(double IC) {
-		return ((Double.compare(CryptoTools.ENGLISH_IC_LOWER, IC) <= 0)
-				&& (Double.compare(IC, CryptoTools.ENGLISH_IC_UPPER) <= 0));
+		return ((Double.compare(CryptoTools.ENGLISH_IC_LOWER, IC) <= 0) // i.e., CryptoTools.ENGLISH_IC_LOWER <= IC
+				&& (Double.compare(IC, CryptoTools.ENGLISH_IC_UPPER) <= 0)); // i.e., IC <= CryptoTools.ENGLISH_IC_UPPER
 	}
 
 	/**

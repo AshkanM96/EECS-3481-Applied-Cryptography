@@ -52,12 +52,14 @@ public class MatrixInt implements Iterable<Integer> {
 	 */
 
 	/**
-	 * Number of rows.
+	 * Number of rows. <br>
+	 * <code>1 <= this.numRows</code>.
 	 */
 	public final int numRows;
 
 	/**
-	 * Number of columns.
+	 * Number of columns. <br>
+	 * <code>1 <= this.numCols</code>.
 	 */
 	public final int numCols;
 
@@ -115,7 +117,8 @@ public class MatrixInt implements Iterable<Integer> {
 
 	/**
 	 * Construct a MatrixInt object with <code>1</code> row and <code>1</code> column and the given
-	 * integer in that entry.
+	 * integer in that entry. <br>
+	 * Equivalent to <code>new MatrixInt(1, 1, n)</code>.
 	 * 
 	 * @param n
 	 *            the given integer
@@ -203,7 +206,7 @@ public class MatrixInt implements Iterable<Integer> {
 	 *             If <code>data.length == 0</code>
 	 */
 	public static MatrixInt row(int[] data) throws NullPointerException, IllegalArgumentException {
-		final MatrixInt result = new MatrixInt(1, data.length);
+		final MatrixInt result = new MatrixInt(1, data.length, 0);
 		final int[] result_row = result.data[0];
 		for (int colNum = 0; colNum != data.length; ++colNum) {
 			result_row[colNum] = data[colNum];
@@ -215,13 +218,13 @@ public class MatrixInt implements Iterable<Integer> {
 	 * @param numCols
 	 *            the given number of columns
 	 * 
-	 * @return <code>new MatrixInt(1, numCols)</code>.
+	 * @return <code>new MatrixInt(1, numCols, 0)</code>.
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>numCols < 1</code>
 	 */
 	public static MatrixInt row(int numCols) throws IllegalArgumentException {
-		return new MatrixInt(1, numCols);
+		return new MatrixInt(1, numCols, 0);
 	}
 
 	/**
@@ -242,7 +245,7 @@ public class MatrixInt implements Iterable<Integer> {
 	 *             If <code>data.length == 0</code>
 	 */
 	public static MatrixInt column(int[] data) throws NullPointerException, IllegalArgumentException {
-		final MatrixInt result = new MatrixInt(data.length, 1);
+		final MatrixInt result = new MatrixInt(data.length, 1, 0);
 		for (int rowNum = 0; rowNum != data.length; ++rowNum) {
 			result.data[rowNum][0] = data[rowNum];
 		}
@@ -253,24 +256,28 @@ public class MatrixInt implements Iterable<Integer> {
 	 * @param numRows
 	 *            the given number of rows
 	 * 
-	 * @return <code>new MatrixInt(numRows, 1)</code>.
+	 * @return <code>new MatrixInt(numRows, 1, 0)</code>.
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>numRows < 1</code>
 	 */
 	public static MatrixInt column(int numRows) throws IllegalArgumentException {
-		return new MatrixInt(numRows, 1);
+		return new MatrixInt(numRows, 1, 0);
 	}
 
 	/**
 	 * Square matrix static factory: construct a MatrixInt object from the given one dimensional integer
-	 * array. The resulting object will take <code>(int) Math.sqrt(data.length)</code> as its number of
-	 * rows and number of columns. Therefore, some of the right-end entries of the given integer array
-	 * will be ignored if its length is not a perfect square. Specifically, the last accessed index will
-	 * be <code>((int) Math.sqrt(data.length)) * ((int) Math.sqrt(data.length)) - 1</code>.
+	 * array. <br>
+	 * Postcondition: <code>floor implies (side == ((int) Math.floor(Math.sqrt(data.length))))</code>
+	 * <br>
+	 * Postcondition: <code>(!floor) implies (side == ((int) Math.ceil(Math.sqrt(data.length))))</code>
 	 * 
 	 * @param data
 	 *            the given one dimensional integer array
+	 * 
+	 * @param floor
+	 *            specifies whether the floor of <code>sqrt(data.length)</code> should be used as the
+	 *            resulting object's number of rows and number of columns
 	 * 
 	 * @return The resulting MatrixInt object.
 	 * 
@@ -280,17 +287,21 @@ public class MatrixInt implements Iterable<Integer> {
 	 * @throws IllegalArgumentException
 	 *             If <code>data.length == 0</code>
 	 */
-	public static MatrixInt square(int[] data) throws NullPointerException, IllegalArgumentException {
+	public static MatrixInt square(int[] data, boolean floor) throws NullPointerException, IllegalArgumentException {
 		if (data.length == 0) {
 			throw new IllegalArgumentException();
 		}
 
-		final int side = (int) Math.sqrt(data.length);
-		final MatrixInt result = new MatrixInt(side, side);
+		final int sqrt = (int) Math.sqrt(data.length);
+		final int side = (floor || (sqrt * sqrt == data.length)) ? sqrt : (1 + sqrt);
+		final MatrixInt result = new MatrixInt(side, side, 0);
 		int[] result_row = null;
 		for (int rowNum = 0, data_index = 0; rowNum != side; data_index = (++rowNum) * side) {
 			result_row = result.data[rowNum];
 			for (int colNum = 0; colNum != side; ++colNum, ++data_index) {
+				if (data.length <= data_index) {
+					return result;
+				}
 				result_row[colNum] = data[data_index];
 			}
 		}
@@ -298,16 +309,32 @@ public class MatrixInt implements Iterable<Integer> {
 	}
 
 	/**
+	 * @param data
+	 *            the given one dimensional integer array
+	 * 
+	 * @return <code>MatrixInt.square(data, true)</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>data == null</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>data.length == 0</code>
+	 */
+	public static MatrixInt square(int[] data) throws NullPointerException, IllegalArgumentException {
+		return MatrixInt.square(data, true);
+	}
+
+	/**
 	 * @param side
 	 *            the given number of rows/columns
 	 * 
-	 * @return <code>new MatrixInt(side, side)</code>.
+	 * @return <code>new MatrixInt(side, side, 0)</code>.
 	 * 
 	 * @throws IllegalArgumentException
 	 *             If <code>side < 1</code>
 	 */
 	public static MatrixInt square(int side) throws IllegalArgumentException {
-		return new MatrixInt(side, side);
+		return new MatrixInt(side, side, 0);
 	}
 
 	/**
@@ -324,7 +351,7 @@ public class MatrixInt implements Iterable<Integer> {
 	 */
 	public static MatrixInt identity(int side) throws IllegalArgumentException {
 		// Identity matrix has ones on the main diagonal and zeroes everywhere else.
-		final MatrixInt result = new MatrixInt(side, side);
+		final MatrixInt result = new MatrixInt(side, side, 0);
 		for (int rowNum = 0; rowNum != side; ++rowNum) {
 			result.data[rowNum][rowNum] = 1;
 		}
@@ -865,7 +892,7 @@ public class MatrixInt implements Iterable<Integer> {
 	 */
 	public MatrixInt plus(MatrixInt other) throws NullPointerException, IllegalArgumentException {
 		this.sameDimEnforce(other);
-		final MatrixInt result = new MatrixInt(other.numRows, other.numCols);
+		final MatrixInt result = new MatrixInt(other.numRows, other.numCols, 0);
 		MatrixInt.apply(result.numRows, result.numCols, result.data, this.data, other.data, MatrixInt.OP_ADD);
 		return result;
 	}
@@ -898,7 +925,7 @@ public class MatrixInt implements Iterable<Integer> {
 			return new MatrixInt(this);
 		}
 		// n != 0
-		final MatrixInt result = new MatrixInt(this.numRows, this.numCols);
+		final MatrixInt result = new MatrixInt(this.numRows, this.numCols, 0);
 		MatrixInt.apply(result.numRows, result.numCols, result.data, this.data, n, MatrixInt.OP_ADD);
 		return result;
 	}
@@ -939,7 +966,7 @@ public class MatrixInt implements Iterable<Integer> {
 	 */
 	public MatrixInt minus(MatrixInt other) throws NullPointerException, IllegalArgumentException {
 		this.sameDimEnforce(other);
-		final MatrixInt result = new MatrixInt(other.numRows, other.numCols);
+		final MatrixInt result = new MatrixInt(other.numRows, other.numCols, 0);
 		MatrixInt.apply(result.numRows, result.numCols, result.data, this.data, other.data, MatrixInt.OP_SUB);
 		return result;
 	}
@@ -972,7 +999,7 @@ public class MatrixInt implements Iterable<Integer> {
 			return new MatrixInt(this);
 		}
 		// n != 0
-		final MatrixInt result = new MatrixInt(this.numRows, this.numCols);
+		final MatrixInt result = new MatrixInt(this.numRows, this.numCols, 0);
 		MatrixInt.apply(result.numRows, result.numCols, result.data, this.data, n, MatrixInt.OP_SUB);
 		return result;
 	}
@@ -1000,7 +1027,7 @@ public class MatrixInt implements Iterable<Integer> {
 			throw new IllegalArgumentException();
 		}
 
-		final MatrixInt result = new MatrixInt(lhs.numRows, rhs.numCols);
+		final MatrixInt result = new MatrixInt(lhs.numRows, rhs.numCols, 0);
 		int[] result_row = null, lhs_row = null;
 		for (int i = 0; i != lhs.numRows; ++i) {
 			result_row = result.data[i];
@@ -1042,7 +1069,7 @@ public class MatrixInt implements Iterable<Integer> {
 			return new MatrixInt(this);
 		}
 		// n != 1
-		final MatrixInt result = new MatrixInt(this.numRows, this.numCols);
+		final MatrixInt result = new MatrixInt(this.numRows, this.numCols, 0);
 		MatrixInt.apply(result.numRows, result.numCols, result.data, this.data, n, MatrixInt.OP_MUL);
 		return result;
 	}
@@ -1089,7 +1116,7 @@ public class MatrixInt implements Iterable<Integer> {
 			return new MatrixInt(this);
 		}
 		// n != 1
-		final MatrixInt result = new MatrixInt(this.numRows, this.numCols);
+		final MatrixInt result = new MatrixInt(this.numRows, this.numCols, 0);
 		MatrixInt.apply(result.numRows, result.numCols, result.data, this.data, n, MatrixInt.OP_DIV);
 		return result;
 	}
@@ -1132,7 +1159,7 @@ public class MatrixInt implements Iterable<Integer> {
 		}
 		// 1 <= m
 		// i.e., 0 < m
-		final MatrixInt result = new MatrixInt(this.numRows, this.numCols);
+		final MatrixInt result = new MatrixInt(this.numRows, this.numCols, 0);
 		MatrixInt.apply(result.numRows, result.numCols, result.data, this.data, m, MatrixInt.OP_MOD);
 		return result;
 	}
@@ -1141,7 +1168,7 @@ public class MatrixInt implements Iterable<Integer> {
 	 * @return The transpose of <code>this</code>.
 	 */
 	public MatrixInt transpose() {
-		final MatrixInt result = new MatrixInt(this.numCols, this.numRows);
+		final MatrixInt result = new MatrixInt(this.numCols, this.numRows, 0);
 		int[] result_row = null;
 		for (int rowNum = 0; rowNum != result.numRows; ++rowNum) {
 			result_row = result.data[rowNum];
@@ -1168,6 +1195,52 @@ public class MatrixInt implements Iterable<Integer> {
 			result += this.data[rowNum][rowNum];
 		}
 		return result;
+	}
+
+	/**
+	 * Swap the rows indexed by the given indices.
+	 * 
+	 * @param rowNum1
+	 *            the first given row index
+	 * 
+	 * @param rowNum2
+	 *            the second given row index
+	 * 
+	 * @throws IndexOutOfBoundsException
+	 *             If <code>(rowNum1 < 0) || (this.numRows <= rowNum1)
+	 *             || (rowNum2 < 0) || (this.numRows <= rowNum2)</code>
+	 */
+	public void swapRows(int rowNum1, int rowNum2) throws IndexOutOfBoundsException {
+		final int[] tmp = this.data[rowNum1];
+		this.data[rowNum1] = this.data[rowNum2];
+		this.data[rowNum2] = tmp;
+	}
+
+	/**
+	 * Swap the columns indexed by the given indices.
+	 * 
+	 * @param colNum1
+	 *            the first given column index
+	 * 
+	 * @param colNum2
+	 *            the second given column index
+	 * 
+	 * @throws IndexOutOfBoundsException
+	 *             If <code>(colNum1 < 0) || (this.numCols <= colNum1)
+	 *             || (colNum2 < 0) || (this.numCols <= colNum2)</code>
+	 */
+	public void swapCols(int colNum1, int colNum2) throws IndexOutOfBoundsException {
+		if ((colNum1 < 0) || (this.numCols <= colNum1) || (colNum2 < 0) || (this.numCols <= colNum2)) {
+			throw new IndexOutOfBoundsException();
+		}
+
+		int[] row = null;
+		for (int rowNum = 0, tmp = 0; rowNum != this.numRows; ++rowNum) {
+			row = this.data[rowNum];
+			tmp = row[colNum1];
+			row[colNum1] = row[colNum2];
+			row[colNum2] = tmp;
+		}
 	}
 
 	/**
@@ -1208,7 +1281,7 @@ public class MatrixInt implements Iterable<Integer> {
 			// excludingCol != this.numCols
 
 			// Special case denoting no row exclusion.
-			final MatrixInt result = new MatrixInt(this.numRows, this.numCols - 1);
+			final MatrixInt result = new MatrixInt(this.numRows, this.numCols - 1, 0);
 			int[] row = null, result_row = null;
 			for (int rowNum = 0; rowNum != this.numRows; ++rowNum) {
 				row = this.data[rowNum];
@@ -1224,7 +1297,7 @@ public class MatrixInt implements Iterable<Integer> {
 			return result;
 		} else if (excludingCol == this.numCols) { // excludingRow != this.numRows
 			// Special case denoting no column exclusion.
-			final MatrixInt result = new MatrixInt(this.numRows - 1, this.numCols);
+			final MatrixInt result = new MatrixInt(this.numRows - 1, this.numCols, 0);
 			int[] row = null, result_row = null;
 			for (int rowNum = 0; rowNum != excludingRow; ++rowNum) {
 				row = this.data[rowNum];
@@ -1249,7 +1322,7 @@ public class MatrixInt implements Iterable<Integer> {
 		 * General case denoting excluding row indexed by excludingRow and excluding column indexed by
 		 * excludingCol.
 		 */
-		final MatrixInt result = new MatrixInt(this.numRows - 1, this.numCols - 1);
+		final MatrixInt result = new MatrixInt(this.numRows - 1, this.numCols - 1, 0);
 		int[] row = null, result_row = null;
 		for (int rowNum = 0, result_rowNum = -1; rowNum != this.numRows; ++rowNum) {
 			if (rowNum != excludingRow) {
@@ -1304,19 +1377,60 @@ public class MatrixInt implements Iterable<Integer> {
 	}
 
 	/**
-	 * @return The determinant of <code>this</code>.
+	 * @param rowNum
+	 *            the given row index
+	 * 
+	 * @return The determinant of <code>this</code> computed along the
+	 *         <code>(rowNum + 1)<sup>th</sup></code> row.
+	 * 
+	 * @throws IllegalStateException
+	 *             If <code>!this.isSquare()</code>
+	 * 
+	 * @throws IndexOutOfBoundsException
+	 *             If <code>(rowNum < 0) || (this.numRows <= rowNum)</code>
+	 */
+	public int determinant(int rowNum) throws IllegalStateException, IndexOutOfBoundsException {
+		if (this.numRows != this.numCols) { // i.e., !this.isSquare()
+			throw new IllegalStateException();
+		} else if ((rowNum < 0) || (this.numRows <= rowNum)) {
+			throw new IndexOutOfBoundsException();
+		}
+
+		// Handle the simple special cases.
+		if (this.numRows == 1) {
+			return this.data[0][0];
+		}
+		// this.numRows != 1
+		// i.e, 1 < this.numRows
+		if (rowNum == 0) {
+			return MatrixInt.determinantHelper(this.numRows, this.data);
+		}
+		// rowNum != 0
+
+		// First, swap rows, and then call determinantHelper.
+		final int[] first_row = this.data[0], rowNum_row = this.data[rowNum];
+		this.data[0] = rowNum_row;
+		this.data[rowNum] = first_row;
+		int result = MatrixInt.determinantHelper(this.numRows, this.data);
+		// Next, swap rows again to restore this.data.
+		this.data[0] = first_row;
+		this.data[rowNum] = rowNum_row;
+		// Note that row swapping negates the determinant, and so we have to fix that.
+		return (result *= -1);
+	}
+
+	/**
+	 * @return <code>this.determinant(0)</code>.
 	 * 
 	 * @throws IllegalStateException
 	 *             If <code>!this.isSquare()</code>
 	 */
 	public int determinant() throws IllegalStateException {
-		if (this.numRows != this.numCols) { // i.e., !this.isSquare()
-			throw new IllegalStateException();
-		}
-		return ((this.numRows == 1) ? this.data[0][0] : MatrixInt.determinantHelper(this.numRows, this.data));
+		return this.determinant(0);
 	}
 
 	/**
+	 * Recursively calculates the determinant of <code>data</code> along its first row. <br>
 	 * Precondition: <code>1 < side</code> <br>
 	 * Precondition: <code>data != null</code> <br>
 	 * Precondition: <code>data.length == side</code> <br>
@@ -1343,8 +1457,9 @@ public class MatrixInt implements Iterable<Integer> {
 		final int side_minus_one = side - 1;
 		final int[][] sub = new int[side_minus_one][side_minus_one];
 		int[] row = null, sub_row = null;
-		for (int colNum = 0, sign = 1; colNum != side; ++colNum, sign *= -1 /* Alternate signs. */) {
+		for (int colNum = 0, sign = 1; colNum != side; ++colNum, sign *= -1) {
 			if (first_row[colNum] != 0) {
+				// Calculate the determinant of the submatrix along its first row after copying it into sub.
 				for (int rowNum = 1; rowNum != side; ++rowNum) {
 					row = data[rowNum];
 					sub_row = sub[rowNum - 1];
@@ -1371,12 +1486,12 @@ public class MatrixInt implements Iterable<Integer> {
 			throw new IllegalStateException();
 		}
 
-		final MatrixInt result = new MatrixInt(this.numRows, this.numCols);
+		final MatrixInt result = new MatrixInt(this.numRows, this.numCols, 0);
 		int[] result_row = null;
 		for (int rowNum = 0; rowNum != this.numRows; ++rowNum) {
 			result_row = result.data[rowNum];
 			for (int colNum = 0; colNum != this.numCols; ++colNum) {
-				result_row[colNum] = this.submatrix(rowNum, colNum).determinant();
+				result_row[colNum] = this.submatrix(rowNum, colNum).determinant(0);
 			}
 		}
 		return result;
@@ -1393,13 +1508,13 @@ public class MatrixInt implements Iterable<Integer> {
 			throw new IllegalStateException();
 		}
 
-		final MatrixInt result = new MatrixInt(this.numRows, this.numCols);
+		final MatrixInt result = new MatrixInt(this.numRows, this.numCols, 0);
 		int[] result_row = null;
 		for (int rowNum = 0; rowNum != this.numRows; ++rowNum) {
 			result_row = result.data[rowNum];
 			for (int colNum = 0; colNum != this.numCols; ++colNum) {
 				result_row[colNum] = (NumUtil.isEven(((long) rowNum) + colNum) ? 1 : -1)
-						* this.submatrix(rowNum, colNum).determinant();
+						* this.submatrix(rowNum, colNum).determinant(0);
 			}
 		}
 		return result;
@@ -1418,13 +1533,13 @@ public class MatrixInt implements Iterable<Integer> {
 			throw new IllegalStateException();
 		}
 
-		final MatrixInt result = new MatrixInt(this.numRows, this.numCols);
+		final MatrixInt result = new MatrixInt(this.numRows, this.numCols, 0);
 		int[] result_row = null;
 		for (int rowNum = 0; rowNum != this.numRows; ++rowNum) {
 			result_row = result.data[rowNum];
 			for (int colNum = 0; colNum != this.numCols; ++colNum) {
 				result_row[colNum] = (NumUtil.isEven(((long) colNum) + rowNum) ? 1 : -1)
-						* this.submatrix(colNum, rowNum).determinant();
+						* this.submatrix(colNum, rowNum).determinant(0);
 			}
 		}
 		return result;
@@ -1434,7 +1549,7 @@ public class MatrixInt implements Iterable<Integer> {
 	 * @return <code>this.isSquare() && (this.determinant() != 0)</code>.
 	 */
 	public boolean isInvertible() {
-		return ((this.numRows == this.numCols) && (this.determinant() != 0));
+		return ((this.numRows == this.numCols) && (this.determinant(0) != 0));
 	}
 
 	/**
@@ -1449,7 +1564,7 @@ public class MatrixInt implements Iterable<Integer> {
 	 *             If <code>!this.isSquare()</code>
 	 */
 	public InverseInfo detInv() throws IllegalStateException {
-		final int determinant = this.determinant();
+		final int determinant = this.determinant(0);
 		if (determinant == 0) {
 			// null to denote the nonexistence of this matrix's inverse.
 			return new InverseInfo(0, null);
@@ -1486,7 +1601,7 @@ public class MatrixInt implements Iterable<Integer> {
 		}
 		// 1 <= m
 		// i.e., 0 < m
-		return ((this.numRows == this.numCols) && (MathUtil.gcdFixedInput(this.determinant(), m) == 1L));
+		return ((this.numRows == this.numCols) && (MathUtil.gcdFixedInput(this.determinant(0), m) == 1L));
 	}
 
 	/**
@@ -1515,7 +1630,7 @@ public class MatrixInt implements Iterable<Integer> {
 		// 2 <= m
 		// i.e., 1 < m
 
-		final int determinant = this.determinant();
+		final int determinant = this.determinant(0);
 		try {
 			/**
 			 * Save the inverse of the determinant in mod m as a long instead of an int to ensure that the

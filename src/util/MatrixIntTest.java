@@ -104,57 +104,102 @@ public class MatrixIntTest {
 	}
 
 	/**
-	 * Testing MatrixInt.square(int[]) with 3-by-3 square.
+	 * Testing MatrixInt.square(int[], boolean) with 3-by-3 square.
 	 */
 	@SuppressWarnings("static-method")
 	@Test
 	public void test07() {
-		final int[][] data = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
-		MatrixInt m = null;
 		{
-			final int[] tmp = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-			m = MatrixInt.square(tmp);
+			final int[][] data = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
+			MatrixInt m = null;
+			{
+				final int[] tmp = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+				m = MatrixInt.square(tmp, true);
+			}
+			assertTrue("Correct numRows", m.numRows == 3);
+			assertTrue("Correct numCols", m.numCols == 3);
+			assertTrue("isSquare", m.isSquare());
+			assertTrue("Equal data", ArrayUtil.equals(m.data, data));
 		}
-		assertTrue("Correct numRows", m.numRows == 3);
-		assertTrue("Correct numCols", m.numCols == 3);
-		assertTrue("isSquare", m.isSquare());
-		assertTrue("Equal data", ArrayUtil.equals(m.data, data));
+
+		{
+			final int[][] data = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
+			MatrixInt m = null;
+			{
+				final int[] tmp = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+				m = MatrixInt.square(tmp, false);
+			}
+			assertTrue("Correct numRows", m.numRows == 3);
+			assertTrue("Correct numCols", m.numCols == 3);
+			assertTrue("isSquare", m.isSquare());
+			assertTrue("Equal data", ArrayUtil.equals(m.data, data));
+		}
 	}
 
 	/**
-	 * Testing MatrixInt.square(int[]) with between 2-by-2 and 3-by-3 square.
+	 * Testing MatrixInt.square(int[], boolean) with between 2-by-2 and 3-by-3 square.
 	 */
 	@SuppressWarnings("static-method")
 	@Test
 	public void test08() {
-		final int[][] data = { { 1, 2 }, { 3, 4 } };
-		MatrixInt m = null;
 		{
-			final int[] tmp = { 1, 2, 3, 4, 5, 6, 7, 8 };
-			m = MatrixInt.square(tmp);
+			final int[][] data = { { 1, 2 }, { 3, 4 } };
+			MatrixInt m = null;
+			{
+				final int[] tmp = { 1, 2, 3, 4, 5, 6, 7, 8 };
+				m = MatrixInt.square(tmp, true);
+			}
+			assertTrue("Correct numRows", m.numRows == 2);
+			assertTrue("Correct numCols", m.numCols == 2);
+			assertTrue("isSquare", m.isSquare());
+			assertTrue("Equal data", ArrayUtil.equals(m.data, data));
 		}
-		assertTrue("Correct numRows", m.numRows == 2);
-		assertTrue("Correct numCols", m.numCols == 2);
-		assertTrue("isSquare", m.isSquare());
-		assertTrue("Equal data", ArrayUtil.equals(m.data, data));
+
+		{
+			final int[][] data = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 0 } };
+			MatrixInt m = null;
+			{
+				final int[] tmp = { 1, 2, 3, 4, 5, 6, 7, 8 };
+				m = MatrixInt.square(tmp, false);
+			}
+			assertTrue("Correct numRows", m.numRows == 3);
+			assertTrue("Correct numCols", m.numCols == 3);
+			assertTrue("isSquare", m.isSquare());
+			assertTrue("Equal data", ArrayUtil.equals(m.data, data));
+		}
 	}
 
 	/**
-	 * Testing MatrixInt.square(int[]) with between 3-by-3 and 4-by-4 square.
+	 * Testing MatrixInt.square(int[], boolean) with between 3-by-3 and 4-by-4 square.
 	 */
 	@SuppressWarnings("static-method")
 	@Test
 	public void test09() {
-		final int[][] data = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
-		MatrixInt m = null;
 		{
-			final int[] tmp = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
-			m = MatrixInt.square(tmp);
+			final int[][] data = { { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
+			MatrixInt m = null;
+			{
+				final int[] tmp = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+				m = MatrixInt.square(tmp, true);
+			}
+			assertTrue("Correct numRows", m.numRows == 3);
+			assertTrue("Correct numCols", m.numCols == 3);
+			assertTrue("isSquare", m.isSquare());
+			assertTrue("Equal data", ArrayUtil.equals(m.data, data));
 		}
-		assertTrue("Correct numRows", m.numRows == 3);
-		assertTrue("Correct numCols", m.numCols == 3);
-		assertTrue("isSquare", m.isSquare());
-		assertTrue("Equal data", ArrayUtil.equals(m.data, data));
+
+		{
+			final int[][] data = { { 1, 2, 3, 4 }, { 5, 6, 7, 8 }, { 9, 10, 0, 0 }, { 0, 0, 0, 0 } };
+			MatrixInt m = null;
+			{
+				final int[] tmp = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+				m = MatrixInt.square(tmp, false);
+			}
+			assertTrue("Correct numRows", m.numRows == 4);
+			assertTrue("Correct numCols", m.numCols == 4);
+			assertTrue("isSquare", m.isSquare());
+			assertTrue("Equal data", ArrayUtil.equals(m.data, data));
+		}
 	}
 
 	/**
@@ -163,10 +208,11 @@ public class MatrixIntTest {
 	@SuppressWarnings("static-method")
 	@Test
 	public void test10() {
-		final int[][] data = { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } };
-		final MatrixInt m = MatrixInt.identity(3);
-		assertTrue("Correct numRows", m.numRows == 3);
-		assertTrue("Correct numCols", m.numCols == 3);
+		final int[][] data = { { 1, 0, 0, 0, 0 }, { 0, 1, 0, 0, 0 }, { 0, 0, 1, 0, 0 }, { 0, 0, 0, 1, 0 },
+				{ 0, 0, 0, 0, 1 } };
+		final MatrixInt m = MatrixInt.identity(5);
+		assertTrue("Correct numRows", m.numRows == 5);
+		assertTrue("Correct numCols", m.numCols == 5);
 		assertTrue("isSquare", m.isSquare());
 		assertTrue("isIdentity", m.isIdentity());
 		assertTrue("isTranspositionRow", m.isTranspositionRow());
@@ -174,7 +220,9 @@ public class MatrixIntTest {
 		assertTrue("isTranspositionCol(false)", m.isTranspositionCol(false));
 		assertTrue("isTransposition", m.isTransposition());
 		assertTrue("isInvertible", m.isInvertible());
-		assertTrue("Correct determinant", m.determinant() == 1);
+		for (int rowNum = 0; rowNum != m.numRows; ++rowNum) {
+			assertTrue("Correct determinant(" + rowNum + ")", m.determinant(rowNum) == 1);
+		}
 		assertTrue("Equal data", ArrayUtil.equals(m.data, data));
 	}
 
@@ -261,7 +309,7 @@ public class MatrixIntTest {
 
 		{
 			final int[] data = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-			final MatrixInt m = MatrixInt.square(data);
+			final MatrixInt m = MatrixInt.square(data, true);
 			int expected = 1;
 			for (Integer i : m) {
 				assertTrue("Expect " + expected, (i != null) && (i == expected));
@@ -315,7 +363,7 @@ public class MatrixIntTest {
 
 		{
 			final int[] data = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-			final MatrixInt m = MatrixInt.square(data);
+			final MatrixInt m = MatrixInt.square(data, true);
 			final MatrixInt.MatrixIntIterator it = m.iterator().end();
 			Integer i = null;
 			for (int expected = 9; it.hasPrev(); --expected) {

@@ -79,11 +79,26 @@ public class Scytale implements Iterable<Integer> {
 	}
 
 	/**
-	 * Construct a Scytale object from the given one dimensional integer key array. The cipher key will
-	 * take <code>(int) Math.sqrt(key.length)</code> as its number of rows and number of columns.
-	 * Therefore, some of the right-end entries of the given integer array will be ignored if its length
-	 * is not a perfect square. Specifically, the last accessed index will be
-	 * <code>((int) Math.sqrt(key.length)) * ((int) Math.sqrt(key.length)) - 1</code>.
+	 * Construct a Scytale object from the given one dimensional integer key array.
+	 * 
+	 * @param key
+	 *            the given one dimensional integer key array
+	 * 
+	 * @param floor
+	 *            specifies whether the floor of <code>sqrt(key.length)</code> should be used
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>key == null</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>key.length == 0</code>
+	 */
+	public Scytale(int[] key, boolean floor) throws NullPointerException, IllegalArgumentException {
+		this.key(key, floor);
+	}
+
+	/**
+	 * Equivalent to <code>new Scytale(key, true)</code>.
 	 * 
 	 * @param key
 	 *            the given one dimensional integer key array
@@ -95,7 +110,7 @@ public class Scytale implements Iterable<Integer> {
 	 *             If <code>key.length == 0</code>
 	 */
 	public Scytale(int[] key) throws NullPointerException, IllegalArgumentException {
-		this.key(key);
+		this.key(key, true);
 	}
 
 	/**
@@ -180,7 +195,7 @@ public class Scytale implements Iterable<Integer> {
 	public MatrixInt key(int side) throws IllegalArgumentException {
 		// No need to do this.key.modEquals(Scytale.MODULUS) since this.key.isAllZero().
 		final MatrixInt oldKey = this.key;
-		this.key = new MatrixInt(side, side);
+		this.key = new MatrixInt(side, side, 0);
 		this.isValidKey = false;
 		return oldKey;
 	}
@@ -212,14 +227,13 @@ public class Scytale implements Iterable<Integer> {
 	}
 
 	/**
-	 * Reset the calling object's key to the given one dimensional integer key array. The cipher key
-	 * will take <code>(int) Math.sqrt(key.length)</code> as its number of rows and number of columns.
-	 * Therefore, some of the right-end entries of the given integer array will be ignored if its length
-	 * is not a perfect square. Specifically, the last accessed index will be
-	 * <code>((int) Math.sqrt(key.length)) * ((int) Math.sqrt(key.length)) - 1</code>.
+	 * Reset the calling object's key to the given one dimensional integer key array.
 	 * 
 	 * @param key
 	 *            the given one dimensional integer key array
+	 * 
+	 * @param floor
+	 *            specifies whether the floor of <code>sqrt(key.length)</code> should be used
 	 * 
 	 * @return The old key.
 	 * 
@@ -229,11 +243,27 @@ public class Scytale implements Iterable<Integer> {
 	 * @throws IllegalArgumentException
 	 *             If <code>key.length == 0</code>
 	 */
-	public MatrixInt key(int[] key) throws NullPointerException, IllegalArgumentException {
+	public MatrixInt key(int[] key, boolean floor) throws NullPointerException, IllegalArgumentException {
 		final MatrixInt oldKey = this.key;
-		this.key = MatrixInt.square(key).modEquals(Scytale.MODULUS);
+		this.key = MatrixInt.square(key, floor).modEquals(Scytale.MODULUS);
 		this.isValidKey = false;
 		return oldKey;
+	}
+
+	/**
+	 * @param key
+	 *            the given one dimensional integer key array
+	 * 
+	 * @return <code>this.key(key, true)</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>key == null</code>
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>key.length == 0</code>
+	 */
+	public MatrixInt key(int[] key) throws NullPointerException, IllegalArgumentException {
+		return this.key(key, true);
 	}
 
 	/**
@@ -503,7 +533,7 @@ public class Scytale implements Iterable<Integer> {
 			return Arrays.copyOf(data, data.length);
 		}
 
-		final MatrixInt matrix = new MatrixInt(MatrixInt.otherDim(data.length, numCols), numCols);
+		final MatrixInt matrix = new MatrixInt(MatrixInt.otherDim(data.length, numCols), numCols, 0);
 		// Fill the matrix using its iterator with mutation support.
 		final MatrixInt.MatrixIntIterator matrix_it = matrix.iterator(true);
 		for (int i = 0; i != data.length; ++i) {
@@ -586,7 +616,7 @@ public class Scytale implements Iterable<Integer> {
 			return Arrays.copyOf(data, data.length);
 		}
 
-		final MatrixInt matrix = new MatrixInt(MatrixInt.otherDim(data.length, numCols), numCols);
+		final MatrixInt matrix = new MatrixInt(MatrixInt.otherDim(data.length, numCols), numCols, 0);
 		// Fill the matrix using its iterator with mutation support.
 		final MatrixInt.MatrixIntIterator matrix_it = matrix.iterator(true);
 		for (int i = 0; i != data.length; ++i) {

@@ -98,6 +98,27 @@ public class MathUtil {
 	}
 
 	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param base
+	 *            the given base
+	 * 
+	 * @return <code>Math.log(n) / Math.log(base)</code>.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             If <code>(base <= 0) || (base == 1)</code>
+	 */
+	public static double log(double n, double base) throws IllegalArgumentException {
+		if (Double.compare(base, 0) <= 0) { // i.e., base <= 0
+			throw new IllegalArgumentException();
+		} else if (Double.compare(base, 1) == 0) { // i.e., base == 1
+			throw new IllegalArgumentException();
+		}
+		return (Math.log(n) / Math.log(base));
+	}
+
+	/**
 	 * Precondition: <code>!((a == Long.MIN_VALUE) && ((b == 0) || (b == Long.MIN_VALUE)))</code> <br>
 	 * Precondition: <code>!((b == Long.MIN_VALUE) && ((a == 0) || (a == Long.MIN_VALUE)))</code>
 	 * 
