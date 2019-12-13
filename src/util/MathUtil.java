@@ -3460,7 +3460,7 @@ public class MathUtil {
 			 * instead of the <code>+</code> which will set <code>n_to_i</code> to <code>n_to_i (mod m)</code>
 			 * which may violate the invariant.
 			 */
-			result[i] = (int) ((n_to_i < 0) ? (n_to_i + m) : n_to_i);
+			result[i] = (int) ((n_to_i < 0L) ? (n_to_i + m) : n_to_i);
 		}
 		return result;
 	}
@@ -3617,7 +3617,7 @@ public class MathUtil {
 		// i.e., (1 < n) && (n < m - 1) && (3 < m)
 
 		// Fill and return the resulting short array.
-		int n_to_i = (begin == 0) ? 1 : ((int) MathUtil.modPow((long) n, (long) begin, (long) m));
+		int n_to_i = (begin == 0) ? 1 : (int) MathUtil.modPow((long) n, (long) begin, (long) m);
 		for (int i = 0; i != length; ++i, n_to_i = (n_to_i *= n) % m) {
 			/**
 			 * Don't do <code>(n_to_i < 0) ? (n_to_i += m) : n_to_i</code> since we want to maintain the
@@ -3783,7 +3783,7 @@ public class MathUtil {
 		// i.e., (1 < n) && (n < m - 1) && (3 < m)
 
 		// Fill and return the resulting byte array.
-		int n_to_i = (begin == 0) ? 1 : ((int) MathUtil.modPow((long) n, (long) begin, (long) m));
+		int n_to_i = (begin == 0) ? 1 : (int) MathUtil.modPow((long) n, (long) begin, (long) m);
 		for (int i = 0; i != length; ++i, n_to_i = (n_to_i *= n) % m) {
 			/**
 			 * Don't do <code>(n_to_i < 0) ? (n_to_i += m) : n_to_i</code> since we want to maintain the
@@ -3896,7 +3896,7 @@ public class MathUtil {
 		 * <code>n</code> to remain unchanged.
 		 */
 		if (++n == m) { // i.e., n == -1 (mod m)
-			// -1 to any even power is 1 (but target != 1) and otherwise is -1 (but target != -1).
+			// -1 to any even power is 1 but target != 1, and otherwise is -1 but target != n == -1.
 			return null;
 		}
 		// n != m - 1
