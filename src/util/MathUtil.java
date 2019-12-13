@@ -1,7 +1,6 @@
 package util;
 
 import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -110,9 +109,9 @@ public class MathUtil {
 	 *             If <code>(base <= 0) || (base == 1)</code>
 	 */
 	public static double log(double n, double base) throws IllegalArgumentException {
-		if (Double.compare(base, 0) <= 0) { // i.e., base <= 0
+		if (Double.compare(base, 0.0) <= 0) { // i.e., base <= 0
 			throw new IllegalArgumentException();
-		} else if (Double.compare(base, 1) == 0) { // i.e., base == 1
+		} else if (Double.compare(base, 1.0) == 0) { // i.e., base == 1
 			throw new IllegalArgumentException();
 		}
 		return (Math.log(n) / Math.log(base));
@@ -3248,7 +3247,9 @@ public class MathUtil {
 			 * This case is only an optimization since 1 to any power is 1 and so the loop will do extra
 			 * unnecessary work to arrive at the same result.
 			 */
-			Arrays.fill(result, 1L);
+			for (int i = 0; i != length; ++i) {
+				result[i] = 1L;
+			}
 			return result;
 		}
 		// 2 <= n
@@ -3276,13 +3277,13 @@ public class MathUtil {
 		n = MathUtil.modMinFixedInput(n, m);
 
 		// Fill and return the resulting long array.
-		long n_to_i = (begin == 0L) ? 1L : MathUtil.modPow(n, begin, m);
+		long n_to_i = (begin == 0L) ? 1L : MathUtil.modMinFixedInput(MathUtil.modPow(n, begin, m), m);
 		for (int i = 0; i != length; ++i, n_to_i = MathUtil.modMultFixedInput(n_to_i, n, m)) {
 			/**
 			 * Don't do <code>(n_to_i < 0L) ? (n_to_i += m) : n_to_i</code> since we want to maintain the
-			 * following invariant <code>|n_to_i| <= (m / 2)</code>. Note that the difference is the
-			 * <code>+=</code> instead of the <code>+</code> which will set <code>n_to_i</code> to
-			 * <code>n_to_i (mod m)</code> which may violate the invariant.
+			 * invariant <code>|n_to_i| <= (m / 2)</code>. Note that the difference is the <code>+=</code>
+			 * instead of the <code>+</code> which will set <code>n_to_i</code> to <code>n_to_i (mod m)</code>
+			 * which may violate the invariant.
 			 */
 			result[i] = (n_to_i < 0L) ? (n_to_i + m) : n_to_i;
 		}
@@ -3424,7 +3425,9 @@ public class MathUtil {
 			 * This case is only an optimization since 1 to any power is 1 and so the loop will do extra
 			 * unnecessary work to arrive at the same result.
 			 */
-			Arrays.fill(result, 1);
+			for (int i = 0; i != length; ++i) {
+				result[i] = 1;
+			}
 			return result;
 		}
 		// 2 <= n
@@ -3448,19 +3451,16 @@ public class MathUtil {
 		// n != m - 1
 		// i.e., (1 < n) && (n < m - 1) && (3 < m)
 
-		// Fix n to be in [-m / 2, m / 2] \cap \doubleZ.
-		n = (int) MathUtil.modMinFixedInput(n, m);
-
 		// Fill and return the resulting integer array.
-		int n_to_i = (begin == 0) ? 1 : (int) MathUtil.modPow((long) n, (long) begin, (long) m);
-		for (int i = 0; i != length; ++i, n_to_i = (int) MathUtil.modMultFixedInput(n_to_i, n, m)) {
+		long n_to_i = (begin == 0) ? 1L : MathUtil.modPow((long) n, (long) begin, (long) m);
+		for (int i = 0; i != length; ++i, n_to_i = (n_to_i *= n) % m) {
 			/**
 			 * Don't do <code>(n_to_i < 0) ? (n_to_i += m) : n_to_i</code> since we want to maintain the
-			 * following invariant <code>|n_to_i| <= (m / 2)</code>. Note that the difference is the
-			 * <code>+=</code> instead of the <code>+</code> which will set <code>n_to_i</code> to
-			 * <code>n_to_i (mod m)</code> which may violate the invariant.
+			 * invariant <code>|n_to_i| <= (m / 2)</code>. Note that the difference is the <code>+=</code>
+			 * instead of the <code>+</code> which will set <code>n_to_i</code> to <code>n_to_i (mod m)</code>
+			 * which may violate the invariant.
 			 */
-			result[i] = (n_to_i < 0) ? (n_to_i + m) : n_to_i;
+			result[i] = (int) ((n_to_i < 0) ? (n_to_i + m) : n_to_i);
 		}
 		return result;
 	}
@@ -3590,7 +3590,9 @@ public class MathUtil {
 			 * This case is only an optimization since 1 to any power is 1 and so the loop will do extra
 			 * unnecessary work to arrive at the same result.
 			 */
-			Arrays.fill(result, (short) 1);
+			for (int i = 0; i != length; ++i) {
+				result[i] = 1;
+			}
 			return result;
 		}
 		// 2 <= n
@@ -3614,17 +3616,14 @@ public class MathUtil {
 		// n != m - 1
 		// i.e., (1 < n) && (n < m - 1) && (3 < m)
 
-		// Fix n to be in [-m / 2, m / 2] \cap \doubleZ.
-		n = (short) MathUtil.modMinFixedInput(n, m);
-
 		// Fill and return the resulting short array.
-		short n_to_i = (begin == 0) ? 1 : (short) MathUtil.modPow((long) n, (long) begin, (long) m);
-		for (int i = 0; i != length; ++i, n_to_i = (short) MathUtil.modMultFixedInput(n_to_i, n, m)) {
+		int n_to_i = (begin == 0) ? 1 : ((int) MathUtil.modPow((long) n, (long) begin, (long) m));
+		for (int i = 0; i != length; ++i, n_to_i = (n_to_i *= n) % m) {
 			/**
 			 * Don't do <code>(n_to_i < 0) ? (n_to_i += m) : n_to_i</code> since we want to maintain the
-			 * following invariant <code>|n_to_i| <= (m / 2)</code>. Note that the difference is the
-			 * <code>+=</code> instead of the <code>+</code> which will set <code>n_to_i</code> to
-			 * <code>n_to_i (mod m)</code> which may violate the invariant.
+			 * invariant <code>|n_to_i| <= (m / 2)</code>. Note that the difference is the <code>+=</code>
+			 * instead of the <code>+</code> which will set <code>n_to_i</code> to <code>n_to_i (mod m)</code>
+			 * which may violate the invariant.
 			 */
 			result[i] = (short) ((n_to_i < 0) ? (n_to_i + m) : n_to_i);
 		}
@@ -3757,7 +3756,9 @@ public class MathUtil {
 			 * This case is only an optimization since 1 to any power is 1 and so the loop will do extra
 			 * unnecessary work to arrive at the same result.
 			 */
-			Arrays.fill(result, (byte) 1);
+			for (int i = 0; i != length; ++i) {
+				result[i] = 1;
+			}
 			return result;
 		}
 		// 2 <= n
@@ -3781,17 +3782,14 @@ public class MathUtil {
 		// n != m - 1
 		// i.e., (1 < n) && (n < m - 1) && (3 < m)
 
-		// Fix n to be in [-m / 2, m / 2] \cap \doubleZ.
-		n = (byte) MathUtil.modMinFixedInput(n, m);
-
 		// Fill and return the resulting byte array.
-		byte n_to_i = (begin == 0) ? 1 : (byte) MathUtil.modPow((long) n, (long) begin, (long) m);
-		for (int i = 0; i != length; ++i, n_to_i = (byte) MathUtil.modMultFixedInput(n_to_i, n, m)) {
+		int n_to_i = (begin == 0) ? 1 : ((int) MathUtil.modPow((long) n, (long) begin, (long) m));
+		for (int i = 0; i != length; ++i, n_to_i = (n_to_i *= n) % m) {
 			/**
 			 * Don't do <code>(n_to_i < 0) ? (n_to_i += m) : n_to_i</code> since we want to maintain the
-			 * following invariant <code>|n_to_i| <= (m / 2)</code>. Note that the difference is the
-			 * <code>+=</code> instead of the <code>+</code> which will set <code>n_to_i</code> to
-			 * <code>n_to_i (mod m)</code> which may violate the invariant.
+			 * invariant <code>|n_to_i| <= (m / 2)</code>. Note that the difference is the <code>+=</code>
+			 * instead of the <code>+</code> which will set <code>n_to_i</code> to <code>n_to_i (mod m)</code>
+			 * which may violate the invariant.
 			 */
 			result[i] = (byte) ((n_to_i < 0) ? (n_to_i + m) : n_to_i);
 		}
@@ -5348,6 +5346,8 @@ public class MathUtil {
 		 * separately by repeatedly shifting out all but one unknown digit in the exponent, and then compute
 		 * that one unknown digit by elementary methods.
 		 */
+		// Fix target to be in [-m / 2, m / 2] \cap \doubleZ.
+		target = MathUtil.modMinFixedInput(target, m);
 		final long n_inverse = MathUtil.modInverseFixedInput(n, m);
 		final long p_to_e_minus_1 = p_to_e / p;
 		long nu = MathUtil.modPowFixedInput(n, p_to_e_minus_1, m), nu_inverse = 0L; // order(nu) <= p
@@ -5395,7 +5395,7 @@ public class MathUtil {
 			// The algorithm is from https://en.wikipedia.org/wiki/Pohlig%E2%80%93Hellman_algorithm.
 			long x = 0L;
 			Long d_k = null;
-			for (long k = 0L, target_k = 0L, p_to_k = 1L; k != e; ++k, p_to_k *= p) {
+			for (long k = 0L, p_to_k = 1L, target_k = 0L; k != e; ++k, p_to_k *= p) {
 				/**
 				 * Compute
 				 * <code>target_k == (n<sup>-x<sub>k</sub></sup> * target)<sup>p<sup>(e - 1 - k)</sup></sup> (mod m)</code>.
@@ -5444,7 +5444,7 @@ public class MathUtil {
 		// The algorithm is from https://en.wikipedia.org/wiki/Pohlig%E2%80%93Hellman_algorithm.
 		long x = 0L;
 		Long d_k = null;
-		for (long k = 0L, target_k = 0L, p_to_k = 1L; k != e; ++k, p_to_k *= p) {
+		for (long k = 0L, p_to_k = 1L, target_k = 0L; k != e; ++k, p_to_k *= p) {
 			/**
 			 * Compute
 			 * <code>target_k == (n<sup>-x<sub>k</sub></sup> * target)<sup>p<sup>(e - 1 - k)</sup></sup> (mod m)</code>.
@@ -5649,6 +5649,7 @@ public class MathUtil {
 			n_i += m;
 		}
 		// (0 <= n_i) && (n_i <= m - 1) && (order(n_i) <= p_i_to_e_i)
+		// Fix target_i to be in [0, m - 1] \cap \doubleZ.
 		if (target_i < 0L) {
 			target_i += m;
 		}
@@ -5674,6 +5675,7 @@ public class MathUtil {
 				n_i += m;
 			}
 			// (0 <= n_i) && (n_i <= m - 1) && (order(n_i) <= p_i_to_e_i)
+			// Fix target_i to be in [0, m - 1] \cap \doubleZ.
 			if ((target_i = MathUtil.modPowFixedInput(target, quotient, m)) < 0L) {
 				target_i += m;
 			}

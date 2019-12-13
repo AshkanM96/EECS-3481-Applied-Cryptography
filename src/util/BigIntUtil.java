@@ -1,7 +1,6 @@
 package util;
 
 import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -735,7 +734,9 @@ public class BigIntUtil {
 					throw new UndefinedInverseException();
 				}
 				// 0 <= begin
-				Arrays.fill(result, BigInteger.ZERO);
+				for (int i = 0; i != length; ++i) {
+					result[i] = BigInteger.ZERO;
+				}
 				return result;
 			}
 			// n != 0
@@ -744,7 +745,9 @@ public class BigIntUtil {
 			 * This case is only an optimization since 1 to any power is 1 and so the loop will do extra
 			 * unnecessary work to arrive at the same result.
 			 */
-			Arrays.fill(result, BigInteger.ONE);
+			for (int i = 0; i != length; ++i) {
+				result[i] = BigInteger.ONE;
+			}
 			return result;
 		}
 		// 2 <= n

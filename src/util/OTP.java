@@ -7,9 +7,7 @@ package util;
  */
 public class OTP {
 	/**
-	 * Dependencies: <code>
-	 * 		1. util.Binary
-	 * </code>
+	 * No dependencies.
 	 */
 
 	/**
@@ -67,7 +65,15 @@ public class OTP {
 	 *             If <code>key.length != data.length</code>
 	 */
 	public static char[] apply(char[] key, char[] data) throws NullPointerException, IllegalArgumentException {
-		return Binary.xor(key, data);
+		if (key.length != data.length) {
+			throw new IllegalArgumentException();
+		}
+
+		final char[] result = new char[data.length];
+		for (int i = 0; i != result.length; ++i) {
+			result[i] = (char) (key[i] ^ data[i]);
+		}
+		return result;
 	}
 
 	/**
@@ -88,7 +94,15 @@ public class OTP {
 	 *             If <code>key.length != data.length</code>
 	 */
 	public static byte[] apply(byte[] key, byte[] data) throws NullPointerException, IllegalArgumentException {
-		return Binary.xor(key, data);
+		if (key.length != data.length) {
+			throw new IllegalArgumentException();
+		}
+
+		final byte[] result = new byte[data.length];
+		for (int i = 0; i != result.length; ++i) {
+			result[i] = (byte) (key[i] ^ data[i]);
+		}
+		return result;
 	}
 
 	/**
@@ -142,7 +156,15 @@ public class OTP {
 	 *             If <code>c.length != p.length</code>
 	 */
 	public static char[] key(char[] c, char[] p) throws NullPointerException, IllegalArgumentException {
-		return Binary.xor(c, p);
+		if (c.length != p.length) {
+			throw new IllegalArgumentException();
+		}
+
+		final char[] result = new char[c.length];
+		for (int i = 0; i != result.length; ++i) {
+			result[i] = (char) (c[i] ^ p[i]);
+		}
+		return result;
 	}
 
 	/**
@@ -164,6 +186,14 @@ public class OTP {
 	 *             If <code>c.length != p.length</code>
 	 */
 	public static byte[] key(byte[] c, byte[] p) throws NullPointerException, IllegalArgumentException {
-		return Binary.xor(c, p);
+		if (c.length != p.length) {
+			throw new IllegalArgumentException();
+		}
+
+		final byte[] result = new byte[c.length];
+		for (int i = 0; i != result.length; ++i) {
+			result[i] = (byte) (c[i] ^ p[i]);
+		}
+		return result;
 	}
 }

@@ -11,7 +11,6 @@ public class Hill implements Iterable<Integer> {
 	 * 		1. util.MatrixInt
 	 * 		2. util.CryptoTools
 	 * 		3. util.MathUtil
-	 * 		4. util.BidirectionalIterator
 	 * </code>
 	 */
 

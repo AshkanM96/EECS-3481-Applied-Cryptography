@@ -1416,6 +1416,11 @@ public class MatrixInt implements Iterable<Integer> {
 		this.data[0] = first_row;
 		this.data[rowNum] = rowNum_row;
 		// Note that row swapping negates the determinant, and so we have to fix that.
+		/**
+		 * It's fine to do <code>result *= -1</code> instead of <code>-1 * result</code> since we don't need
+		 * the value of <code>result</code> to remain unchanged. Note that the difference is the
+		 * <code>*=</code> instead of the <code>*</code> which will mutate <code>result</code>.
+		 */
 		return (result *= -1);
 	}
 
@@ -1732,7 +1737,7 @@ public class MatrixInt implements Iterable<Integer> {
 			return false;
 		}
 		// Check individual entries.
-		return this.equals(other.data);
+		return ArrayUtil.equals(this.data, other.data); // this.equals(other.data)
 	}
 
 	/**
