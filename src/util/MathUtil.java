@@ -3454,13 +3454,7 @@ public class MathUtil {
 		// Fill and return the resulting integer array.
 		long n_to_i = (begin == 0) ? 1L : MathUtil.modPow((long) n, (long) begin, (long) m);
 		for (int i = 0; i != length; ++i, n_to_i = (n_to_i *= n) % m) {
-			/**
-			 * Don't do <code>(n_to_i < 0) ? (n_to_i += m) : n_to_i</code> since we want to maintain the
-			 * invariant <code>|n_to_i| <= (m / 2)</code>. Note that the difference is the <code>+=</code>
-			 * instead of the <code>+</code> which will set <code>n_to_i</code> to <code>n_to_i (mod m)</code>
-			 * which may violate the invariant.
-			 */
-			result[i] = (int) ((n_to_i < 0L) ? (n_to_i + m) : n_to_i);
+			result[i] = (int) n_to_i;
 		}
 		return result;
 	}
@@ -3619,13 +3613,7 @@ public class MathUtil {
 		// Fill and return the resulting short array.
 		int n_to_i = (begin == 0) ? 1 : (int) MathUtil.modPow((long) n, (long) begin, (long) m);
 		for (int i = 0; i != length; ++i, n_to_i = (n_to_i *= n) % m) {
-			/**
-			 * Don't do <code>(n_to_i < 0) ? (n_to_i += m) : n_to_i</code> since we want to maintain the
-			 * invariant <code>|n_to_i| <= (m / 2)</code>. Note that the difference is the <code>+=</code>
-			 * instead of the <code>+</code> which will set <code>n_to_i</code> to <code>n_to_i (mod m)</code>
-			 * which may violate the invariant.
-			 */
-			result[i] = (short) ((n_to_i < 0) ? (n_to_i + m) : n_to_i);
+			result[i] = (short) n_to_i;
 		}
 		return result;
 	}
@@ -3785,13 +3773,7 @@ public class MathUtil {
 		// Fill and return the resulting byte array.
 		int n_to_i = (begin == 0) ? 1 : (int) MathUtil.modPow((long) n, (long) begin, (long) m);
 		for (int i = 0; i != length; ++i, n_to_i = (n_to_i *= n) % m) {
-			/**
-			 * Don't do <code>(n_to_i < 0) ? (n_to_i += m) : n_to_i</code> since we want to maintain the
-			 * invariant <code>|n_to_i| <= (m / 2)</code>. Note that the difference is the <code>+=</code>
-			 * instead of the <code>+</code> which will set <code>n_to_i</code> to <code>n_to_i (mod m)</code>
-			 * which may violate the invariant.
-			 */
-			result[i] = (byte) ((n_to_i < 0) ? (n_to_i + m) : n_to_i);
+			result[i] = (byte) n_to_i;
 		}
 		return result;
 	}

@@ -1278,11 +1278,15 @@ public class Binary {
 	 *             If <code>(bitIndex < 0) || (Binary.BITS_PER_BYTE <= bitIndex)</code>
 	 */
 	public static byte setBit(byte b, int bitIndex, boolean on) throws IllegalArgumentException {
-		// Note that the getBit method does the precondition check for this method as well.
-		if (Binary.getBit(b, bitIndex) != on) {
-			b ^= (1 << bitIndex); // b = Binary.flipBit(b, bitIndex)
+		if ((bitIndex < 0) || (Binary.BITS_PER_BYTE <= bitIndex)) {
+			throw new IllegalArgumentException();
 		}
-		return b;
+		// (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_BYTE)
+		/**
+		 * It's fine to do <code>b |= ...</code> or <code>b &= ...</code> instead of <code>b | ...</code>
+		 * and <code>b & ...</code> since we don't need the value of <code>b</code> to remain unchanged.
+		 */
+		return (on ? (b |= (1 << bitIndex)) : (b &= ~(1 << bitIndex)));
 	}
 
 	/**
@@ -1308,11 +1312,15 @@ public class Binary {
 	 *             If <code>(bitIndex < 0) || (Binary.BITS_PER_CHAR <= bitIndex)</code>
 	 */
 	public static char setBit(char c, int bitIndex, boolean on) throws IllegalArgumentException {
-		// Note that the getBit method does the precondition check for this method as well.
-		if (Binary.getBit(c, bitIndex) != on) {
-			c ^= (1 << bitIndex); // c = Binary.flipBit(c, bitIndex)
+		if ((bitIndex < 0) || (Binary.BITS_PER_CHAR <= bitIndex)) {
+			throw new IllegalArgumentException();
 		}
-		return c;
+		// (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_CHAR)
+		/**
+		 * It's fine to do <code>c |= ...</code> or <code>c &= ...</code> instead of <code>c | ...</code>
+		 * and <code>c & ...</code> since we don't need the value of <code>c</code> to remain unchanged.
+		 */
+		return (on ? (c |= (1 << bitIndex)) : (c &= ~(1 << bitIndex)));
 	}
 
 	/**
@@ -1337,11 +1345,15 @@ public class Binary {
 	 *             If <code>(bitIndex < 0) || (Binary.BITS_PER_SHORT <= bitIndex)</code>
 	 */
 	public static short setBit(short s, int bitIndex, boolean on) throws IllegalArgumentException {
-		// Note that the getBit method does the precondition check for this method as well.
-		if (Binary.getBit(s, bitIndex) != on) {
-			s ^= (1 << bitIndex); // s = Binary.flipBit(s, bitIndex)
+		if ((bitIndex < 0) || (Binary.BITS_PER_SHORT <= bitIndex)) {
+			throw new IllegalArgumentException();
 		}
-		return s;
+		// (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_SHORT)
+		/**
+		 * It's fine to do <code>s |= ...</code> or <code>s &= ...</code> instead of <code>s | ...</code>
+		 * and <code>s & ...</code> since we don't need the value of <code>s</code> to remain unchanged.
+		 */
+		return (on ? (s |= (1 << bitIndex)) : (s &= ~(1 << bitIndex)));
 	}
 
 	/**
@@ -1366,11 +1378,15 @@ public class Binary {
 	 *             If <code>(bitIndex < 0) || (Binary.BITS_PER_INT <= bitIndex)</code>
 	 */
 	public static int setBit(int i, int bitIndex, boolean on) throws IllegalArgumentException {
-		// Note that the getBit method does the precondition check for this method as well.
-		if (Binary.getBit(i, bitIndex) != on) {
-			i ^= (1 << bitIndex); // i = Binary.flipBit(i, bitIndex)
+		if ((bitIndex < 0) || (Binary.BITS_PER_INT <= bitIndex)) {
+			throw new IllegalArgumentException();
 		}
-		return i;
+		// (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_INT)
+		/**
+		 * It's fine to do <code>i |= ...</code> or <code>i &= ...</code> instead of <code>i | ...</code>
+		 * and <code>i & ...</code> since we don't need the value of <code>i</code> to remain unchanged.
+		 */
+		return (on ? (i |= (1 << bitIndex)) : (i &= ~(1 << bitIndex)));
 	}
 
 	/**
@@ -1395,11 +1411,15 @@ public class Binary {
 	 *             If <code>(bitIndex < 0) || (Binary.BITS_PER_LONG <= bitIndex)</code>
 	 */
 	public static long setBit(long l, int bitIndex, boolean on) throws IllegalArgumentException {
-		// Note that the getBit method does the precondition check for this method as well.
-		if (Binary.getBit(l, bitIndex) != on) {
-			l ^= (1L << bitIndex); // l = Binary.flipBit(l, bitIndex)
+		if ((bitIndex < 0) || (Binary.BITS_PER_LONG <= bitIndex)) {
+			throw new IllegalArgumentException();
 		}
-		return l;
+		// (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_LONG)
+		/**
+		 * It's fine to do <code>l |= ...</code> or <code>l &= ...</code> instead of <code>l | ...</code>
+		 * and <code>l & ...</code> since we don't need the value of <code>l</code> to remain unchanged.
+		 */
+		return (on ? (l |= (1L << bitIndex)) : (l &= ~(1L << bitIndex)));
 	}
 
 	/**
@@ -1438,8 +1458,11 @@ public class Binary {
 		// (data.length != 0) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_BYTE * data.length)
 		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_BYTE * data.length)
 		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_BYTE));
-		// Note that there is no good way of inlining the setBit method here.
-		data[dataIndex] = Binary.setBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_BYTE), on);
+		if (on) {
+			data[dataIndex] |= (1 << ((int) (bitIndex % Binary.BITS_PER_BYTE)));
+		} else {
+			data[dataIndex] &= ~(1 << ((int) (bitIndex % Binary.BITS_PER_BYTE)));
+		}
 		return data;
 	}
 
@@ -1479,8 +1502,11 @@ public class Binary {
 		// (data.length != 0) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_CHAR * data.length)
 		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_CHAR * data.length)
 		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_CHAR));
-		// Note that there is no good way of inlining the setBit method here.
-		data[dataIndex] = Binary.setBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_CHAR), on);
+		if (on) {
+			data[dataIndex] |= (1 << ((int) (bitIndex % Binary.BITS_PER_CHAR)));
+		} else {
+			data[dataIndex] &= ~(1 << ((int) (bitIndex % Binary.BITS_PER_CHAR)));
+		}
 		return data;
 	}
 
@@ -1520,8 +1546,11 @@ public class Binary {
 		// (data.length != 0) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_SHORT * data.length)
 		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_SHORT * data.length)
 		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_SHORT));
-		// Note that there is no good way of inlining the setBit method here.
-		data[dataIndex] = Binary.setBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_SHORT), on);
+		if (on) {
+			data[dataIndex] |= (1 << ((int) (bitIndex % Binary.BITS_PER_SHORT)));
+		} else {
+			data[dataIndex] &= ~(1 << ((int) (bitIndex % Binary.BITS_PER_SHORT)));
+		}
 		return data;
 	}
 
@@ -1561,8 +1590,11 @@ public class Binary {
 		// (data.length != 0) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_INT * data.length)
 		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_INT * data.length)
 		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_INT));
-		// Note that there is no good way of inlining the setBit method here.
-		data[dataIndex] = Binary.setBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_INT), on);
+		if (on) {
+			data[dataIndex] |= (1 << ((int) (bitIndex % Binary.BITS_PER_INT)));
+		} else {
+			data[dataIndex] &= ~(1 << ((int) (bitIndex % Binary.BITS_PER_INT)));
+		}
 		return data;
 	}
 
@@ -1602,8 +1634,11 @@ public class Binary {
 		// (data.length != 0) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_LONG * data.length)
 		// i.e., (1 <= data.length) && (0 <= bitIndex) && (bitIndex < Binary.BITS_PER_LONG * data.length)
 		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_LONG));
-		// Note that there is no good way of inlining the setBit method here.
-		data[dataIndex] = Binary.setBit(data[dataIndex], (int) (bitIndex % Binary.BITS_PER_LONG), on);
+		if (on) {
+			data[dataIndex] |= (1L << ((int) (bitIndex % Binary.BITS_PER_LONG)));
+		} else {
+			data[dataIndex] &= ~(1L << ((int) (bitIndex % Binary.BITS_PER_LONG)));
+		}
 		return data;
 	}
 
@@ -1638,8 +1673,11 @@ public class Binary {
 		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_BYTE));
 		final byte[] result = new byte[data.length];
 		System.arraycopy(data, 0, result, 0, result.length);
-		// Note that there is no good way of inlining the setBit method here.
-		result[dataIndex] = Binary.setBit(result[dataIndex], (int) (bitIndex % Binary.BITS_PER_BYTE), on);
+		if (on) {
+			result[dataIndex] |= (1 << ((int) (bitIndex % Binary.BITS_PER_BYTE)));
+		} else {
+			result[dataIndex] &= ~(1 << ((int) (bitIndex % Binary.BITS_PER_BYTE)));
+		}
 		return result;
 	}
 
@@ -1674,8 +1712,11 @@ public class Binary {
 		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_CHAR));
 		final char[] result = new char[data.length];
 		System.arraycopy(data, 0, result, 0, result.length);
-		// Note that there is no good way of inlining the setBit method here.
-		result[dataIndex] = Binary.setBit(result[dataIndex], (int) (bitIndex % Binary.BITS_PER_CHAR), on);
+		if (on) {
+			result[dataIndex] |= (1 << ((int) (bitIndex % Binary.BITS_PER_CHAR)));
+		} else {
+			result[dataIndex] &= ~(1 << ((int) (bitIndex % Binary.BITS_PER_CHAR)));
+		}
 		return result;
 	}
 
@@ -1710,8 +1751,11 @@ public class Binary {
 		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_SHORT));
 		final short[] result = new short[data.length];
 		System.arraycopy(data, 0, result, 0, result.length);
-		// Note that there is no good way of inlining the setBit method here.
-		result[dataIndex] = Binary.setBit(result[dataIndex], (int) (bitIndex % Binary.BITS_PER_SHORT), on);
+		if (on) {
+			result[dataIndex] |= (1 << ((int) (bitIndex % Binary.BITS_PER_SHORT)));
+		} else {
+			result[dataIndex] &= ~(1 << ((int) (bitIndex % Binary.BITS_PER_SHORT)));
+		}
 		return result;
 	}
 
@@ -1746,8 +1790,11 @@ public class Binary {
 		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_INT));
 		final int[] result = new int[data.length];
 		System.arraycopy(data, 0, result, 0, result.length);
-		// Note that there is no good way of inlining the setBit method here.
-		result[dataIndex] = Binary.setBit(result[dataIndex], (int) (bitIndex % Binary.BITS_PER_INT), on);
+		if (on) {
+			result[dataIndex] |= (1 << ((int) (bitIndex % Binary.BITS_PER_INT)));
+		} else {
+			result[dataIndex] &= ~(1 << ((int) (bitIndex % Binary.BITS_PER_INT)));
+		}
 		return result;
 	}
 
@@ -1782,8 +1829,11 @@ public class Binary {
 		final int dataIndex = (data.length - 1) - ((int) (bitIndex / Binary.BITS_PER_LONG));
 		final long[] result = new long[data.length];
 		System.arraycopy(data, 0, result, 0, result.length);
-		// Note that there is no good way of inlining the setBit method here.
-		result[dataIndex] = Binary.setBit(result[dataIndex], (int) (bitIndex % Binary.BITS_PER_LONG), on);
+		if (on) {
+			result[dataIndex] |= (1L << ((int) (bitIndex % Binary.BITS_PER_LONG)));
+		} else {
+			result[dataIndex] &= ~(1L << ((int) (bitIndex % Binary.BITS_PER_LONG)));
+		}
 		return result;
 	}
 

@@ -220,26 +220,15 @@ public class AlgebraUtil {
 		// n != m - 1
 		// i.e., (1 < n) && (n < m - 1) && (3 < m)
 
-		// Fix n to be in [-m / 2, m / 2] \cap \doubleZ.
-		n = (int) MathUtil.modMinFixedInput(n, m);
-
 		// Fill and return the resulting map.
 		Integer index = null;
-		for (int i = 2, n_to_i = n, key = 0; i != m; ++i) {
-			// Update n_to_i and key.
-			n_to_i = (int) MathUtil.modMultFixedInput(n_to_i, n, m);
-			/**
-			 * Don't do <code>(n_to_i < 0) ? (n_to_i += m) : n_to_i</code> since we want to maintain the
-			 * following invariant <code>|n_to_i| <= (m / 2)</code>. Note that the difference is the
-			 * <code>+=</code> instead of the <code>+</code> which will set <code>n_to_i</code> to
-			 * <code>n_to_i (mod m)</code> which may violate the invariant.
-			 */
-			key = (n_to_i < 0) ? (n_to_i + m) : n_to_i;
-
-			// Update result.
-			if ((index = result.put(key, i)) != null) { // order(n) == i - index
+		long n_to_i = n;
+		for (int i = 2; i != m; ++i) {
+			// Update n_to_i and result.
+			n_to_i = (n_to_i *= n) % m;
+			if ((index = result.put((int) n_to_i, i)) != null) { // order(n) == i - index
 				// Re-map the current key to its original value.
-				result.put(key, index);
+				result.put((int) n_to_i, index);
 				break;
 			}
 		}
@@ -340,26 +329,15 @@ public class AlgebraUtil {
 		// n != m - 1
 		// i.e., (1 < n) && (n < m - 1) && (3 < m)
 
-		// Fix n to be in [-m / 2, m / 2] \cap \doubleZ.
-		n = (short) MathUtil.modMinFixedInput(n, m);
-
 		// Fill and return the resulting map.
 		Short index = null;
-		for (short i = 2, n_to_i = n, key = 0; i != m; ++i) {
-			// Update n_to_i and key.
-			n_to_i = (short) MathUtil.modMultFixedInput(n_to_i, n, m);
-			/**
-			 * Don't do <code>(n_to_i < 0) ? (n_to_i += m) : n_to_i</code> since we want to maintain the
-			 * following invariant <code>|n_to_i| <= (m / 2)</code>. Note that the difference is the
-			 * <code>+=</code> instead of the <code>+</code> which will set <code>n_to_i</code> to
-			 * <code>n_to_i (mod m)</code> which may violate the invariant.
-			 */
-			key = (short) ((n_to_i < 0) ? (n_to_i + m) : n_to_i);
-
-			// Update result.
-			if ((index = result.put(key, i)) != null) { // order(n) == i - index
+		int n_to_i = n;
+		for (short i = 2; i != m; ++i) {
+			// Update n_to_i and result.
+			n_to_i = (n_to_i *= n) % m;
+			if ((index = result.put((short) n_to_i, i)) != null) { // order(n) == i - index
 				// Re-map the current key to its original value.
-				result.put(key, index);
+				result.put((short) n_to_i, index);
 				break;
 			}
 		}
@@ -460,26 +438,15 @@ public class AlgebraUtil {
 		// n != m - 1
 		// i.e., (1 < n) && (n < m - 1) && (3 < m)
 
-		// Fix n to be in [-m / 2, m / 2] \cap \doubleZ.
-		n = (byte) MathUtil.modMinFixedInput(n, m);
-
 		// Fill and return the resulting map.
 		Byte index = null;
-		for (byte i = 2, n_to_i = n, key = 0; i != m; ++i) {
-			// Update n_to_i and key.
-			n_to_i = (byte) MathUtil.modMultFixedInput(n_to_i, n, m);
-			/**
-			 * Don't do <code>(n_to_i < 0) ? (n_to_i += m) : n_to_i</code> since we want to maintain the
-			 * following invariant <code>|n_to_i| <= (m / 2)</code>. Note that the difference is the
-			 * <code>+=</code> instead of the <code>+</code> which will set <code>n_to_i</code> to
-			 * <code>n_to_i (mod m)</code> which may violate the invariant.
-			 */
-			key = (byte) ((n_to_i < 0) ? (n_to_i + m) : n_to_i);
-
-			// Update result.
-			if ((index = result.put(key, i)) != null) { // order(n) == i - index
+		int n_to_i = n;
+		for (byte i = 2; i != m; ++i) {
+			// Update n_to_i and result.
+			n_to_i = (n_to_i *= n) % m;
+			if ((index = result.put((byte) n_to_i, i)) != null) { // order(n) == i - index
 				// Re-map the current key to its original value.
-				result.put(key, index);
+				result.put((byte) n_to_i, index);
 				break;
 			}
 		}
