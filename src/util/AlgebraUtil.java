@@ -3,6 +3,7 @@ package util;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -571,7 +572,7 @@ public class AlgebraUtil {
 			if (m < 1L) {
 				throw new InvalidModulusException();
 			} else if (m == 1L) { // i.e., n == 0 (mod m)
-				return false;
+				return true;
 			}
 			// 1 < m
 			// i.e., (m == 2) || (m == 3) || (m == 4) || (m == 5) || (m == 6)
@@ -589,7 +590,8 @@ public class AlgebraUtil {
 
 			// Handle the simple special cases.
 			if (m == 5L) {
-				return ((n == 2L) || (n == 3L)); // Only primitive roots mod 5, are 2 and 3.
+				// Only primitive roots mod 5, are 2 and 3.
+				return ((n == 2L) || (n == 3L));
 			}
 			// m != 5
 			// i.e., (m == 2) || (m == 3) || (m == 4) || (m == 6)
@@ -597,7 +599,8 @@ public class AlgebraUtil {
 			 * It's fine to do <code>++n</code> instead of <code>n + 1</code> since we don't need the value of
 			 * <code>n</code> to remain unchanged.
 			 */
-			return (++n == m); // Only primitive root mod m, is m - 1 for m in { 2, 3, 4, 6 }.
+			// Only primitive root mod m, is m - 1 for m in { 2, 3, 4, 6 }.
+			return (++n == m);
 		}
 		// 7 <= m
 
@@ -619,7 +622,8 @@ public class AlgebraUtil {
 			 * <code>mOddFactor /= 2L</code> instead of <code>mOddFactor / 2L</code>.
 			 */
 			if (((mOddFactor /= 2L) & 1L) == 0L) { // i.e., NumUtil.isEven(mOddFactor)
-				return false; // There are no primitive roots mod m since m % 4 == 0.
+				// There are no primitive roots mod m since m % 4 == 0.
+				return false;
 			}
 		}
 		// ((m % 2 != 0) && (mOddFactor == m)) || (((m / 2) % 2 != 0) && (mOddFactor == m / 2))
@@ -643,7 +647,7 @@ public class AlgebraUtil {
 		/**
 		 * We know that a primitive root modulo <code>m</code>, must be coprime with <code>m</code>.
 		 */
-		if (MathUtil.gcdFixedInput(n, m) != 1L) {
+		if (MathUtil.gcdFixedInput(n, m) != 1L) { // i.e., gcd(n, m) != 1
 			return false;
 		}
 		// gcd(n, m) == 1
@@ -663,7 +667,8 @@ public class AlgebraUtil {
 			NumUtil.printFactorsLong(mOddFactors, hash);
 		}
 		if (mOddFactors.size() != 1) {
-			return false; // There are no primitive roots mod m since mOddFactor isn't a prime power.
+			// There are no primitive roots mod m since mOddFactor isn't a prime power.
+			return false;
 		}
 
 		/**
@@ -920,14 +925,1063 @@ public class AlgebraUtil {
 	}
 
 	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param hash
+	 *            specifies whether the data structure used to store the factors, should be a
+	 *            <code>HashMap</code> instead of a <code>TreeMap</code> when factoring <code>m</code>
+	 *            and <code>phi(m)</code>
+	 * 
+	 * @param print
+	 *            specifies whether the factoring of <code>m</code> and <code>phi(m)</code> should be
+	 *            printed to the standard output stream
+	 * 
+	 * @return The first <code>primitive root mod m</code> greater than <code>n (mod m)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws NoSuchElementException
+	 *             If there are no <code>primitive roots mod m</code> greater than
+	 *             <code>n (mod m)</code>
+	 * 
+	 * @throws IllegalStateException
+	 *             If there are no <code>primitive roots mod m</code> (i.e.,
+	 *             <code>AlgebraUtil.primitiveRoots(m).length == 0</code>)
+	 */
+	public static long primitiveRootAfter(long n, long m, boolean hash, boolean print)
+			throws InvalidModulusException, NoSuchElementException, IllegalStateException {
+		if (m < 7L) { // i.e., (m < 1) || (m == 1) || (m == 2) || (m == 3) || (m == 4) || (m == 5) || (m == 6)
+			if (m < 1L) {
+				throw new InvalidModulusException();
+			} else if (m == 1L) { // i.e., n == 0 (mod m)
+				throw new NoSuchElementException();
+			}
+			// 1 < m
+			// i.e., (m == 2) || (m == 3) || (m == 4) || (m == 5) || (m == 6)
+
+			// Fix n to be in [0, m - 1] \cap \doubleZ.
+			if ((n %= m) < 0L) {
+				n += m;
+			}
+
+			// Handle the simple special cases.
+			if (m == 5L) {
+				// Only primitive roots mod 5, are 2 and 3.
+				if (n < 2L) {
+					return 2L;
+				} else if (n == 2L) {
+					return 3L;
+				}
+				// 2 < n
+				// i.e., 3 <= n
+				throw new NoSuchElementException();
+			}
+			// m != 5
+			// i.e., (m == 2) || (m == 3) || (m == 4) || (m == 6)
+			if (n != m - 1L) { // i.e., n < m - 1
+				// Only primitive root mod m, is m - 1 for m in { 2, 3, 4, 6 }.
+				return (m - 1L);
+			}
+			// n == m - 1
+			// i.e., n == -1 (mod m)
+			throw new NoSuchElementException();
+		}
+		// 7 <= m
+
+		/**
+		 * There is a primitive root mod <code>m</code>, if and only if <code>m</code> factors into
+		 * <code>p<sup>e</sup></code> or <code>2 * p<sup>e</sup></code> where <code>p</code> is an odd prime
+		 * number and <code>e</code> is a natural number. Therefore, make sure that <code>2</code> divides
+		 * <code>m</code> at most once.
+		 */
+		long mOddFactor = m;
+		if ((mOddFactor & 1L) == 0L) { // i.e., NumUtil.isEven(mOddFactor)
+			/**
+			 * Don't do <code>(mOddFactor &= 1L) == 0L</code> since we need the value of <code>mOddFactor</code>
+			 * to remain unchanged. Note that the difference is the <code>&=</code> instead of the
+			 * <code>&</code> which will mutate <code>mOddFactor</code>. <br>
+			 * <br>
+			 * 
+			 * However, the following is meant to be an assignment of <code>mOddFactor</code> when we do
+			 * <code>mOddFactor /= 2L</code> instead of <code>mOddFactor / 2L</code>.
+			 */
+			if (((mOddFactor /= 2L) & 1L) == 0L) { // i.e., NumUtil.isEven(mOddFactor)
+				// There are no primitive roots mod m since m % 4 == 0.
+				throw new IllegalStateException();
+			}
+		}
+		// ((m % 2 != 0) && (mOddFactor == m)) || (((m / 2) % 2 != 0) && (mOddFactor == m / 2))
+
+		/**
+		 * Factor the largest odd divisor of <code>m</code> and check whether it is a prime power.
+		 */
+		final Map<Long, Byte> mOddFactors = NumUtil.factorSqrt(mOddFactor, hash, false);
+		// Only print if requested.
+		if (print) {
+			if (m == mOddFactor) {
+				System.out.print("m = " + m + " = ");
+			} else { // m != mOddFactor
+				// i.e., m == 2 * mOddFactor
+				System.out.print("m = " + m + " = 2 * ");
+			}
+			NumUtil.printFactorsLong(mOddFactors, hash);
+		}
+		if (mOddFactors.size() != 1) {
+			// There are no primitive roots mod m since mOddFactor isn't a prime power.
+			throw new IllegalStateException();
+		}
+
+		// Fix n to be in [0, m - 1] \cap \doubleZ.
+		if ((n %= m) < 0L) {
+			n += m;
+		}
+
+		/**
+		 * Note that the following case needs to be handled here instead of before the factoring of
+		 * <code>mOddFactor</code>. This is because at that point we still do not know if there are any
+		 * primitive roots modulo <code>m</code>, which means that we cannot know whether to throw a
+		 * <code>NoSuchElementException</code> or an <code>IllegalStateException</code>. <br>
+		 * <br>
+		 * 
+		 * For all <code>7 <= m</code>, we know that <code>m - 1</code> can never be a primitive root modulo
+		 * <code>m</code> since <code>3 <= phi(m)</code> but <code>order(m - 1) == 2</code>.
+		 */
+		if (n == m - 1L) { // i.e., n == -1 (mod m)
+			throw new NoSuchElementException();
+		}
+		// (0 <= n) && (n <= m - 2)
+
+		/**
+		 * Compute <code>phi(m)</code> and then factor it. <br>
+		 * <br>
+		 * 
+		 * At this point, we know that one of the following is true: <br>
+		 * Case I: <code>m == mOddFactor</code> <br>
+		 * Therefore, <code>phi(m) == phi(mOddFactor)</code> <br>
+		 * Case II: <code>m == 2 * mOddFactor</code> <br>
+		 * Therefore, <code>phi(m) == phi(2) * phi(mOddFactor) == 1 * phi(mOddFactor)</code> <br>
+		 * <br>
+		 * 
+		 * However, we also know that <code>mOddFactor == p<sup>e</sup></code> and so we can conclude that
+		 * <code>phi(m) == phi(mOddFactor) == mOddFactor * (1 - <sup>1</sup>&frasl;<sub>p</sub>)</code>.
+		 */
+		final long p = mOddFactors.entrySet().iterator().next().getKey();
+		final long phiM = mOddFactor - (mOddFactor / p);
+		final Map<Long, Byte> phiMFactors = NumUtil.factorSqrt(phiM, hash, false);
+		// Only print if requested.
+		if (print) {
+			System.out.print("phi(m) = " + phiM + " = ");
+			NumUtil.printFactorsLong(phiMFactors, hash);
+		}
+		final Set<Long> phiMFactorsKeySet = phiMFactors.keySet();
+
+		/**
+		 * Compute <code>phi(phi(m))</code> which is the number of primitive roots mod <code>m</code> using
+		 * the following fact: <br>
+		 * <br>
+		 * 
+		 * We know that
+		 * <code>phi(n) = product(phi(p<sub>i</sub><sup>e<sub>i</sub></sup>) from i = 1 to i = t)</code>
+		 * where <code>p<sub>i</sub></code>'s are the prime factors of <code>n</code> with natural powers
+		 * <code>e<sub>i</sub></code> and natural number <code>t</code>. After a little bit of
+		 * simplification, we can find that
+		 * <code>phi(n) = n * product((1 - <sup>1</sup>&frasl;<sub>p<sub>i</sub></sub>) from i = 1 to i = t)</code>.
+		 */
+		long phiPhiM = phiM;
+		final Iterator<Long> it = phiMFactorsKeySet.iterator();
+		do {
+			phiPhiM -= (phiPhiM / it.next());
+		} while (it.hasNext());
+
+		// Find the smallest primitive root greater than n and return it.
+		final long maxN = m - 1L;
+		if (m == mOddFactor) { // i.e., m % 2 != 0
+			for (++n; n != maxN; ++n) {
+				if (n % p != 0L) { // i.e., gcd(n, m) == 1
+					if (AlgebraUtil.isPrimitiveRootFixedInput(n, m, phiM, phiMFactorsKeySet)) {
+						return n;
+					}
+				}
+			}
+		} else { // i.e., m % 2 == 0
+			/**
+			 * Don't do <code>(n &= 1L) == 0L</code> since we need the value of <code>n</code> to remain
+			 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
+			 * will mutate <code>n</code>.
+			 */
+			if ((n & 1L) == 0L) { // i.e., NumUtil.isEven(n)
+				++n;
+			} else {
+				n += 2L;
+			}
+			for (/* Already initialized. */; n != maxN; n += 2L) {
+				if (n % p != 0L) { // i.e., gcd(n, m) == 1
+					if (AlgebraUtil.isPrimitiveRootFixedInput(n, m, phiM, phiMFactorsKeySet)) {
+						return n;
+					}
+				}
+			}
+		}
+		throw new NoSuchElementException();
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param hash
+	 *            specifies whether the data structure used to store the factors, should be a
+	 *            <code>HashMap</code> instead of a <code>TreeMap</code> when factoring <code>m</code>
+	 *            and <code>phi(m)</code>
+	 * 
+	 * @return <code>AlgebraUtil.primitiveRootAfter(n, m, hash, false)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws NoSuchElementException
+	 *             If there are no <code>primitive roots mod m</code> greater than
+	 *             <code>n (mod m)</code>
+	 * 
+	 * @throws IllegalStateException
+	 *             If there are no <code>primitive roots mod m</code> (i.e.,
+	 *             <code>AlgebraUtil.primitiveRoots(m).length == 0</code>)
+	 */
+	public static long primitiveRootAfter(long n, long m, boolean hash)
+			throws InvalidModulusException, NoSuchElementException, IllegalStateException {
+		return AlgebraUtil.primitiveRootAfter(n, m, hash, false);
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>AlgebraUtil.primitiveRootAfter(n, m, false)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws NoSuchElementException
+	 *             If there are no <code>primitive roots mod m</code> greater than
+	 *             <code>n (mod m)</code>
+	 * 
+	 * @throws IllegalStateException
+	 *             If there are no <code>primitive roots mod m</code> (i.e.,
+	 *             <code>AlgebraUtil.primitiveRoots(m).length == 0</code>)
+	 */
+	public static long primitiveRootAfter(long n, long m)
+			throws InvalidModulusException, NoSuchElementException, IllegalStateException {
+		return AlgebraUtil.primitiveRootAfter(n, m, false);
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param hash
+	 *            specifies whether the data structure used to store the factors, should be a
+	 *            <code>HashMap</code> instead of a <code>TreeMap</code> when factoring <code>m</code>
+	 *            and <code>phi(m)</code>
+	 * 
+	 * @param print
+	 *            specifies whether the factoring of <code>m</code> and <code>phi(m)</code> should be
+	 *            printed to the standard output stream
+	 * 
+	 * @return The first <code>primitive root mod m</code> greater than <code>n (mod m)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws NoSuchElementException
+	 *             If there are no <code>primitive roots mod m</code> greater than
+	 *             <code>n (mod m)</code>
+	 * 
+	 * @throws IllegalStateException
+	 *             If there are no <code>primitive roots mod m</code> (i.e.,
+	 *             <code>AlgebraUtil.primitiveRoots(m).length == 0</code>)
+	 */
+	public static int primitiveRootAfter(int n, int m, boolean hash, boolean print)
+			throws InvalidModulusException, NoSuchElementException, IllegalStateException {
+		return ((int) AlgebraUtil.primitiveRootAfter((long) n, (long) m, hash, print));
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param hash
+	 *            specifies whether the data structure used to store the factors, should be a
+	 *            <code>HashMap</code> instead of a <code>TreeMap</code> when factoring <code>m</code>
+	 *            and <code>phi(m)</code>
+	 * 
+	 * @return <code>AlgebraUtil.primitiveRootAfter(n, m, hash, false)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws NoSuchElementException
+	 *             If there are no <code>primitive roots mod m</code> greater than
+	 *             <code>n (mod m)</code>
+	 * 
+	 * @throws IllegalStateException
+	 *             If there are no <code>primitive roots mod m</code> (i.e.,
+	 *             <code>AlgebraUtil.primitiveRoots(m).length == 0</code>)
+	 */
+	public static int primitiveRootAfter(int n, int m, boolean hash)
+			throws InvalidModulusException, NoSuchElementException, IllegalStateException {
+		return AlgebraUtil.primitiveRootAfter(n, m, hash, false);
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>AlgebraUtil.primitiveRootAfter(n, m, false)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws NoSuchElementException
+	 *             If there are no <code>primitive roots mod m</code> greater than
+	 *             <code>n (mod m)</code>
+	 * 
+	 * @throws IllegalStateException
+	 *             If there are no <code>primitive roots mod m</code> (i.e.,
+	 *             <code>AlgebraUtil.primitiveRoots(m).length == 0</code>)
+	 */
+	public static int primitiveRootAfter(int n, int m)
+			throws InvalidModulusException, NoSuchElementException, IllegalStateException {
+		return AlgebraUtil.primitiveRootAfter(n, m, false);
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param hash
+	 *            specifies whether the data structure used to store the factors, should be a
+	 *            <code>HashMap</code> instead of a <code>TreeMap</code> when factoring <code>m</code>
+	 *            and <code>phi(m)</code>
+	 * 
+	 * @param print
+	 *            specifies whether the factoring of <code>m</code> and <code>phi(m)</code> should be
+	 *            printed to the standard output stream
+	 * 
+	 * @return The first <code>primitive root mod m</code> greater than <code>n (mod m)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws NoSuchElementException
+	 *             If there are no <code>primitive roots mod m</code> greater than
+	 *             <code>n (mod m)</code>
+	 * 
+	 * @throws IllegalStateException
+	 *             If there are no <code>primitive roots mod m</code> (i.e.,
+	 *             <code>AlgebraUtil.primitiveRoots(m).length == 0</code>)
+	 */
+	public static short primitiveRootAfter(short n, short m, boolean hash, boolean print)
+			throws InvalidModulusException, NoSuchElementException, IllegalStateException {
+		return ((short) AlgebraUtil.primitiveRootAfter((long) n, (long) m, hash, print));
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param hash
+	 *            specifies whether the data structure used to store the factors, should be a
+	 *            <code>HashMap</code> instead of a <code>TreeMap</code> when factoring <code>m</code>
+	 *            and <code>phi(m)</code>
+	 * 
+	 * @return <code>AlgebraUtil.primitiveRootAfter(n, m, hash, false)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws NoSuchElementException
+	 *             If there are no <code>primitive roots mod m</code> greater than
+	 *             <code>n (mod m)</code>
+	 * 
+	 * @throws IllegalStateException
+	 *             If there are no <code>primitive roots mod m</code> (i.e.,
+	 *             <code>AlgebraUtil.primitiveRoots(m).length == 0</code>)
+	 */
+	public static short primitiveRootAfter(short n, short m, boolean hash)
+			throws InvalidModulusException, NoSuchElementException, IllegalStateException {
+		return AlgebraUtil.primitiveRootAfter(n, m, hash, false);
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>AlgebraUtil.primitiveRootAfter(n, m, false)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws NoSuchElementException
+	 *             If there are no <code>primitive roots mod m</code> greater than
+	 *             <code>n (mod m)</code>
+	 * 
+	 * @throws IllegalStateException
+	 *             If there are no <code>primitive roots mod m</code> (i.e.,
+	 *             <code>AlgebraUtil.primitiveRoots(m).length == 0</code>)
+	 */
+	public static short primitiveRootAfter(short n, short m)
+			throws InvalidModulusException, NoSuchElementException, IllegalStateException {
+		return AlgebraUtil.primitiveRootAfter(n, m, false);
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param hash
+	 *            specifies whether the data structure used to store the factors, should be a
+	 *            <code>HashMap</code> instead of a <code>TreeMap</code> when factoring <code>m</code>
+	 *            and <code>phi(m)</code>
+	 * 
+	 * @param print
+	 *            specifies whether the factoring of <code>m</code> and <code>phi(m)</code> should be
+	 *            printed to the standard output stream
+	 * 
+	 * @return The first <code>primitive root mod m</code> greater than <code>n (mod m)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws NoSuchElementException
+	 *             If there are no <code>primitive roots mod m</code> greater than
+	 *             <code>n (mod m)</code>
+	 * 
+	 * @throws IllegalStateException
+	 *             If there are no <code>primitive roots mod m</code> (i.e.,
+	 *             <code>AlgebraUtil.primitiveRoots(m).length == 0</code>)
+	 */
+	public static byte primitiveRootAfter(byte n, byte m, boolean hash, boolean print)
+			throws InvalidModulusException, NoSuchElementException, IllegalStateException {
+		return ((byte) AlgebraUtil.primitiveRootAfter((long) n, (long) m, hash, print));
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param hash
+	 *            specifies whether the data structure used to store the factors, should be a
+	 *            <code>HashMap</code> instead of a <code>TreeMap</code> when factoring <code>m</code>
+	 *            and <code>phi(m)</code>
+	 * 
+	 * @return <code>AlgebraUtil.primitiveRootAfter(n, m, hash, false)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws NoSuchElementException
+	 *             If there are no <code>primitive roots mod m</code> greater than
+	 *             <code>n (mod m)</code>
+	 * 
+	 * @throws IllegalStateException
+	 *             If there are no <code>primitive roots mod m</code> (i.e.,
+	 *             <code>AlgebraUtil.primitiveRoots(m).length == 0</code>)
+	 */
+	public static byte primitiveRootAfter(byte n, byte m, boolean hash)
+			throws InvalidModulusException, NoSuchElementException, IllegalStateException {
+		return AlgebraUtil.primitiveRootAfter(n, m, hash, false);
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>AlgebraUtil.primitiveRootAfter(n, m, false)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws NoSuchElementException
+	 *             If there are no <code>primitive roots mod m</code> greater than
+	 *             <code>n (mod m)</code>
+	 * 
+	 * @throws IllegalStateException
+	 *             If there are no <code>primitive roots mod m</code> (i.e.,
+	 *             <code>AlgebraUtil.primitiveRoots(m).length == 0</code>)
+	 */
+	public static byte primitiveRootAfter(byte n, byte m)
+			throws InvalidModulusException, NoSuchElementException, IllegalStateException {
+		return AlgebraUtil.primitiveRootAfter(n, m, false);
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param hash
+	 *            specifies whether the data structure used to store the factors, should be a
+	 *            <code>HashMap</code> instead of a <code>TreeMap</code> when factoring <code>m</code>
+	 *            and <code>phi(m)</code>
+	 * 
+	 * @param print
+	 *            specifies whether the factoring of <code>m</code> and <code>phi(m)</code> should be
+	 *            printed to the standard output stream
+	 * 
+	 * @return The first <code>primitive root mod m</code> smaller than <code>n (mod m)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws NoSuchElementException
+	 *             If there are no <code>primitive roots mod m</code> smaller than
+	 *             <code>n (mod m)</code>
+	 * 
+	 * @throws IllegalStateException
+	 *             If there are no <code>primitive roots mod m</code> (i.e.,
+	 *             <code>AlgebraUtil.primitiveRoots(m).length == 0</code>)
+	 */
+	public static long primitiveRootBefore(long n, long m, boolean hash, boolean print)
+			throws InvalidModulusException, NoSuchElementException, IllegalStateException {
+		if (m < 7L) { // i.e., (m < 1) || (m == 1) || (m == 2) || (m == 3) || (m == 4) || (m == 5) || (m == 6)
+			if (m < 1L) {
+				throw new InvalidModulusException();
+			} else if (m == 1L) { // i.e., n == 0 (mod m)
+				throw new NoSuchElementException();
+			}
+			// 1 < m
+			// i.e., (m == 2) || (m == 3) || (m == 4) || (m == 5) || (m == 6)
+
+			// Fix n to be in [0, m - 1] \cap \doubleZ.
+			if ((n %= m) < 0L) {
+				n += m;
+			}
+
+			// Handle the simple special cases.
+			if (m == 5L) {
+				// Only primitive roots mod 5, are 2 and 3.
+				if (n == 4L) { // i.e., 3 < n
+					return 3L;
+				} else if (n == 3L) {
+					return 2L;
+				}
+				// n < 3
+				// i.e., n <= 2
+				throw new NoSuchElementException();
+			}
+			// m != 5
+			// i.e., (m == 2) || (m == 3) || (m == 4) || (m == 6)
+			// Only primitive root mod m, is m - 1 for m in { 2, 3, 4, 6 }, but n <= m - 1.
+			throw new NoSuchElementException();
+		}
+		// 7 <= m
+
+		/**
+		 * There is a primitive root mod <code>m</code>, if and only if <code>m</code> factors into
+		 * <code>p<sup>e</sup></code> or <code>2 * p<sup>e</sup></code> where <code>p</code> is an odd prime
+		 * number and <code>e</code> is a natural number. Therefore, make sure that <code>2</code> divides
+		 * <code>m</code> at most once.
+		 */
+		long mOddFactor = m;
+		if ((mOddFactor & 1L) == 0L) { // i.e., NumUtil.isEven(mOddFactor)
+			/**
+			 * Don't do <code>(mOddFactor &= 1L) == 0L</code> since we need the value of <code>mOddFactor</code>
+			 * to remain unchanged. Note that the difference is the <code>&=</code> instead of the
+			 * <code>&</code> which will mutate <code>mOddFactor</code>. <br>
+			 * <br>
+			 * 
+			 * However, the following is meant to be an assignment of <code>mOddFactor</code> when we do
+			 * <code>mOddFactor /= 2L</code> instead of <code>mOddFactor / 2L</code>.
+			 */
+			if (((mOddFactor /= 2L) & 1L) == 0L) { // i.e., NumUtil.isEven(mOddFactor)
+				// There are no primitive roots mod m since m % 4 == 0.
+				throw new IllegalStateException();
+			}
+		}
+		// ((m % 2 != 0) && (mOddFactor == m)) || (((m / 2) % 2 != 0) && (mOddFactor == m / 2))
+
+		/**
+		 * Factor the largest odd divisor of <code>m</code> and check whether it is a prime power.
+		 */
+		final Map<Long, Byte> mOddFactors = NumUtil.factorSqrt(mOddFactor, hash, false);
+		// Only print if requested.
+		if (print) {
+			if (m == mOddFactor) {
+				System.out.print("m = " + m + " = ");
+			} else { // m != mOddFactor
+				// i.e., m == 2 * mOddFactor
+				System.out.print("m = " + m + " = 2 * ");
+			}
+			NumUtil.printFactorsLong(mOddFactors, hash);
+		}
+		if (mOddFactors.size() != 1) {
+			// There are no primitive roots mod m since mOddFactor isn't a prime power.
+			throw new IllegalStateException();
+		}
+
+		// Fix n to be in [0, m - 1] \cap \doubleZ.
+		if ((n %= m) < 0L) {
+			n += m;
+		}
+
+		/**
+		 * Note that the following case needs to be handled here instead of before the factoring of
+		 * <code>mOddFactor</code>. This is because at that point we still do not know if there are any
+		 * primitive roots modulo <code>m</code>, which means that we cannot know whether to throw a
+		 * <code>NoSuchElementException</code> or an <code>IllegalStateException</code>. <br>
+		 * <br>
+		 * 
+		 * For all <code>7 <= m</code>, we know that <code>0</code> and <code>1</code> can never be a
+		 * primitive root modulo <code>m</code> since <code>3 <= phi(m)</code> but <code>order(0) DNE</code>
+		 * and <code>order(1) == 1</code>.
+		 */
+		if (n < 2L) { // i.e., (n == 0) || (n == 1)
+			throw new NoSuchElementException();
+		}
+		// (2 <= n) && (n <= m - 1)
+		// i.e., (1 < n) && (n < m)
+
+		/**
+		 * Compute <code>phi(m)</code> and then factor it. <br>
+		 * <br>
+		 * 
+		 * At this point, we know that one of the following is true: <br>
+		 * Case I: <code>m == mOddFactor</code> <br>
+		 * Therefore, <code>phi(m) == phi(mOddFactor)</code> <br>
+		 * Case II: <code>m == 2 * mOddFactor</code> <br>
+		 * Therefore, <code>phi(m) == phi(2) * phi(mOddFactor) == 1 * phi(mOddFactor)</code> <br>
+		 * <br>
+		 * 
+		 * However, we also know that <code>mOddFactor == p<sup>e</sup></code> and so we can conclude that
+		 * <code>phi(m) == phi(mOddFactor) == mOddFactor * (1 - <sup>1</sup>&frasl;<sub>p</sub>)</code>.
+		 */
+		final long p = mOddFactors.entrySet().iterator().next().getKey();
+		final long phiM = mOddFactor - (mOddFactor / p);
+		final Map<Long, Byte> phiMFactors = NumUtil.factorSqrt(phiM, hash, false);
+		// Only print if requested.
+		if (print) {
+			System.out.print("phi(m) = " + phiM + " = ");
+			NumUtil.printFactorsLong(phiMFactors, hash);
+		}
+		final Set<Long> phiMFactorsKeySet = phiMFactors.keySet();
+
+		/**
+		 * Compute <code>phi(phi(m))</code> which is the number of primitive roots mod <code>m</code> using
+		 * the following fact: <br>
+		 * <br>
+		 * 
+		 * We know that
+		 * <code>phi(n) = product(phi(p<sub>i</sub><sup>e<sub>i</sub></sup>) from i = 1 to i = t)</code>
+		 * where <code>p<sub>i</sub></code>'s are the prime factors of <code>n</code> with natural powers
+		 * <code>e<sub>i</sub></code> and natural number <code>t</code>. After a little bit of
+		 * simplification, we can find that
+		 * <code>phi(n) = n * product((1 - <sup>1</sup>&frasl;<sub>p<sub>i</sub></sub>) from i = 1 to i = t)</code>.
+		 */
+		long phiPhiM = phiM;
+		final Iterator<Long> it = phiMFactorsKeySet.iterator();
+		do {
+			phiPhiM -= (phiPhiM / it.next());
+		} while (it.hasNext());
+
+		// Find the greatest primitive root smaller than n and return it.
+		if (m == mOddFactor) { // i.e., m % 2 != 0
+			for (--n; n != 1L; --n) {
+				if (n % p != 0L) { // i.e., gcd(n, m) == 1
+					if (AlgebraUtil.isPrimitiveRootFixedInput(n, m, phiM, phiMFactorsKeySet)) {
+						return n;
+					}
+				}
+			}
+		} else { // i.e., m % 2 == 0
+			/**
+			 * Don't do <code>(n &= 1L) == 0L</code> since we need the value of <code>n</code> to remain
+			 * unchanged. Note that the difference is the <code>&=</code> instead of the <code>&</code> which
+			 * will mutate <code>n</code>.
+			 */
+			if ((n & 1L) == 0L) { // i.e., NumUtil.isEven(n)
+				--n;
+			} else {
+				n -= 2L;
+			}
+			for (/* Already initialized. */; n != 1L; n -= 2L) {
+				if (n % p != 0L) { // i.e., gcd(n, m) == 1
+					if (AlgebraUtil.isPrimitiveRootFixedInput(n, m, phiM, phiMFactorsKeySet)) {
+						return n;
+					}
+				}
+			}
+		}
+		throw new NoSuchElementException();
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param hash
+	 *            specifies whether the data structure used to store the factors, should be a
+	 *            <code>HashMap</code> instead of a <code>TreeMap</code> when factoring <code>m</code>
+	 *            and <code>phi(m)</code>
+	 * 
+	 * @return <code>AlgebraUtil.primitiveRootBefore(n, m, hash, false)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws NoSuchElementException
+	 *             If there are no <code>primitive roots mod m</code> smaller than
+	 *             <code>n (mod m)</code>
+	 * 
+	 * @throws IllegalStateException
+	 *             If there are no <code>primitive roots mod m</code> (i.e.,
+	 *             <code>AlgebraUtil.primitiveRoots(m).length == 0</code>)
+	 */
+	public static long primitiveRootBefore(long n, long m, boolean hash)
+			throws InvalidModulusException, NoSuchElementException, IllegalStateException {
+		return AlgebraUtil.primitiveRootBefore(n, m, hash, false);
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>AlgebraUtil.primitiveRootBefore(n, m, false)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws NoSuchElementException
+	 *             If there are no <code>primitive roots mod m</code> smaller than
+	 *             <code>n (mod m)</code>
+	 * 
+	 * @throws IllegalStateException
+	 *             If there are no <code>primitive roots mod m</code> (i.e.,
+	 *             <code>AlgebraUtil.primitiveRoots(m).length == 0</code>)
+	 */
+	public static long primitiveRootBefore(long n, long m)
+			throws InvalidModulusException, NoSuchElementException, IllegalStateException {
+		return AlgebraUtil.primitiveRootBefore(n, m, false);
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param hash
+	 *            specifies whether the data structure used to store the factors, should be a
+	 *            <code>HashMap</code> instead of a <code>TreeMap</code> when factoring <code>m</code>
+	 *            and <code>phi(m)</code>
+	 * 
+	 * @param print
+	 *            specifies whether the factoring of <code>m</code> and <code>phi(m)</code> should be
+	 *            printed to the standard output stream
+	 * 
+	 * @return The first <code>primitive root mod m</code> smaller than <code>n (mod m)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws NoSuchElementException
+	 *             If there are no <code>primitive roots mod m</code> smaller than
+	 *             <code>n (mod m)</code>
+	 * 
+	 * @throws IllegalStateException
+	 *             If there are no <code>primitive roots mod m</code> (i.e.,
+	 *             <code>AlgebraUtil.primitiveRoots(m).length == 0</code>)
+	 */
+	public static int primitiveRootBefore(int n, int m, boolean hash, boolean print)
+			throws InvalidModulusException, NoSuchElementException, IllegalStateException {
+		return ((int) AlgebraUtil.primitiveRootBefore((long) n, (long) m, hash, print));
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param hash
+	 *            specifies whether the data structure used to store the factors, should be a
+	 *            <code>HashMap</code> instead of a <code>TreeMap</code> when factoring <code>m</code>
+	 *            and <code>phi(m)</code>
+	 * 
+	 * @return <code>AlgebraUtil.primitiveRootBefore(n, m, hash, false)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws NoSuchElementException
+	 *             If there are no <code>primitive roots mod m</code> smaller than
+	 *             <code>n (mod m)</code>
+	 * 
+	 * @throws IllegalStateException
+	 *             If there are no <code>primitive roots mod m</code> (i.e.,
+	 *             <code>AlgebraUtil.primitiveRoots(m).length == 0</code>)
+	 */
+	public static int primitiveRootBefore(int n, int m, boolean hash)
+			throws InvalidModulusException, NoSuchElementException, IllegalStateException {
+		return AlgebraUtil.primitiveRootBefore(n, m, hash, false);
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>AlgebraUtil.primitiveRootBefore(n, m, false)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws NoSuchElementException
+	 *             If there are no <code>primitive roots mod m</code> smaller than
+	 *             <code>n (mod m)</code>
+	 * 
+	 * @throws IllegalStateException
+	 *             If there are no <code>primitive roots mod m</code> (i.e.,
+	 *             <code>AlgebraUtil.primitiveRoots(m).length == 0</code>)
+	 */
+	public static int primitiveRootBefore(int n, int m)
+			throws InvalidModulusException, NoSuchElementException, IllegalStateException {
+		return AlgebraUtil.primitiveRootBefore(n, m, false);
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param hash
+	 *            specifies whether the data structure used to store the factors, should be a
+	 *            <code>HashMap</code> instead of a <code>TreeMap</code> when factoring <code>m</code>
+	 *            and <code>phi(m)</code>
+	 * 
+	 * @param print
+	 *            specifies whether the factoring of <code>m</code> and <code>phi(m)</code> should be
+	 *            printed to the standard output stream
+	 * 
+	 * @return The first <code>primitive root mod m</code> smaller than <code>n (mod m)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws NoSuchElementException
+	 *             If there are no <code>primitive roots mod m</code> smaller than
+	 *             <code>n (mod m)</code>
+	 * 
+	 * @throws IllegalStateException
+	 *             If there are no <code>primitive roots mod m</code> (i.e.,
+	 *             <code>AlgebraUtil.primitiveRoots(m).length == 0</code>)
+	 */
+	public static short primitiveRootBefore(short n, short m, boolean hash, boolean print)
+			throws InvalidModulusException, NoSuchElementException, IllegalStateException {
+		return ((short) AlgebraUtil.primitiveRootBefore((long) n, (long) m, hash, print));
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param hash
+	 *            specifies whether the data structure used to store the factors, should be a
+	 *            <code>HashMap</code> instead of a <code>TreeMap</code> when factoring <code>m</code>
+	 *            and <code>phi(m)</code>
+	 * 
+	 * @return <code>AlgebraUtil.primitiveRootBefore(n, m, hash, false)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws NoSuchElementException
+	 *             If there are no <code>primitive roots mod m</code> smaller than
+	 *             <code>n (mod m)</code>
+	 * 
+	 * @throws IllegalStateException
+	 *             If there are no <code>primitive roots mod m</code> (i.e.,
+	 *             <code>AlgebraUtil.primitiveRoots(m).length == 0</code>)
+	 */
+	public static short primitiveRootBefore(short n, short m, boolean hash)
+			throws InvalidModulusException, NoSuchElementException, IllegalStateException {
+		return AlgebraUtil.primitiveRootBefore(n, m, hash, false);
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>AlgebraUtil.primitiveRootBefore(n, m, false)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws NoSuchElementException
+	 *             If there are no <code>primitive roots mod m</code> smaller than
+	 *             <code>n (mod m)</code>
+	 * 
+	 * @throws IllegalStateException
+	 *             If there are no <code>primitive roots mod m</code> (i.e.,
+	 *             <code>AlgebraUtil.primitiveRoots(m).length == 0</code>)
+	 */
+	public static short primitiveRootBefore(short n, short m)
+			throws InvalidModulusException, NoSuchElementException, IllegalStateException {
+		return AlgebraUtil.primitiveRootBefore(n, m, false);
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param hash
+	 *            specifies whether the data structure used to store the factors, should be a
+	 *            <code>HashMap</code> instead of a <code>TreeMap</code> when factoring <code>m</code>
+	 *            and <code>phi(m)</code>
+	 * 
+	 * @param print
+	 *            specifies whether the factoring of <code>m</code> and <code>phi(m)</code> should be
+	 *            printed to the standard output stream
+	 * 
+	 * @return The first <code>primitive root mod m</code> smaller than <code>n (mod m)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws NoSuchElementException
+	 *             If there are no <code>primitive roots mod m</code> smaller than
+	 *             <code>n (mod m)</code>
+	 * 
+	 * @throws IllegalStateException
+	 *             If there are no <code>primitive roots mod m</code> (i.e.,
+	 *             <code>AlgebraUtil.primitiveRoots(m).length == 0</code>)
+	 */
+	public static byte primitiveRootBefore(byte n, byte m, boolean hash, boolean print)
+			throws InvalidModulusException, NoSuchElementException, IllegalStateException {
+		return ((byte) AlgebraUtil.primitiveRootBefore((long) n, (long) m, hash, print));
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @param hash
+	 *            specifies whether the data structure used to store the factors, should be a
+	 *            <code>HashMap</code> instead of a <code>TreeMap</code> when factoring <code>m</code>
+	 *            and <code>phi(m)</code>
+	 * 
+	 * @return <code>AlgebraUtil.primitiveRootBefore(n, m, hash, false)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws NoSuchElementException
+	 *             If there are no <code>primitive roots mod m</code> smaller than
+	 *             <code>n (mod m)</code>
+	 * 
+	 * @throws IllegalStateException
+	 *             If there are no <code>primitive roots mod m</code> (i.e.,
+	 *             <code>AlgebraUtil.primitiveRoots(m).length == 0</code>)
+	 */
+	public static byte primitiveRootBefore(byte n, byte m, boolean hash)
+			throws InvalidModulusException, NoSuchElementException, IllegalStateException {
+		return AlgebraUtil.primitiveRootBefore(n, m, hash, false);
+	}
+
+	/**
+	 * @param n
+	 *            the given number
+	 * 
+	 * @param m
+	 *            the given modulus
+	 * 
+	 * @return <code>AlgebraUtil.primitiveRootBefore(n, m, false)</code>.
+	 * 
+	 * @throws InvalidModulusException
+	 *             If <code>m <= 0</code>
+	 * 
+	 * @throws NoSuchElementException
+	 *             If there are no <code>primitive roots mod m</code> smaller than
+	 *             <code>n (mod m)</code>
+	 * 
+	 * @throws IllegalStateException
+	 *             If there are no <code>primitive roots mod m</code> (i.e.,
+	 *             <code>AlgebraUtil.primitiveRoots(m).length == 0</code>)
+	 */
+	public static byte primitiveRootBefore(byte n, byte m)
+			throws InvalidModulusException, NoSuchElementException, IllegalStateException {
+		return AlgebraUtil.primitiveRootBefore(n, m, false);
+	}
+
+	/**
 	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>(m == 1) implies (Result.length == 0)</code> <br>
+	 * Postcondition: <code>(m == 1) implies ((Result.length == 1) && (Result[0] == 0))</code> <br>
 	 * Postcondition: <code>(m == 2) implies ((Result.length == 1) && (Result[0] == 1))</code> <br>
 	 * Postcondition: <code>(m == 4) implies ((Result.length == 1) && (Result[0] == 3))</code> <br>
 	 * Postcondition: <code>(m % 4 == 0) implies ((m != 4) if and only if (Result.length == 0))</code>
-	 * <br>
-	 * Postcondition:
-	 * <code>((m != 2) && (m % 4 != 0)) implies ((NumUtil.factorSqrt((m % 2 == 0) ? (m / 2) : m).size() == 1) if and only if (Result.length != 0))</code>
 	 * <br>
 	 * Postcondition: <code>(valid i) implies (Result[i] is a primitive root mod m)</code>
 	 * 
@@ -957,12 +2011,13 @@ public class AlgebraUtil {
 			if (m < 1L) {
 				throw new InvalidModulusException();
 			} else if (m == 1L) {
-				return new long[] {}; // There are no primitive roots mod 1.
+				return new long[] { 0L };
 			}
 			// 1 < m
 			// i.e., (m == 2) || (m == 3) || (m == 4) || (m == 5) || (m == 6)
 			if (m == 5L) {
-				return new long[] { 2L, 3L }; // Only primitive roots mod 5, are 2 and 3.
+				// Only primitive roots mod 5, are 2 and 3.
+				return new long[] { 2L, 3L };
 			}
 			// m != 5
 			// i.e., (m == 2) || (m == 3) || (m == 4) || (m == 6)
@@ -970,7 +2025,8 @@ public class AlgebraUtil {
 			 * It's fine to do <code>--m</code> instead of <code>m - 1</code> since we don't need the value of
 			 * <code>m</code> to remain unchanged.
 			 */
-			return new long[] { --m }; // Only primitive root mod m, is m - 1 for m in { 2, 3, 4, 6 }.
+			// Only primitive root mod m, is m - 1 for m in { 2, 3, 4, 6 }.
+			return new long[] { --m };
 		}
 		// 7 <= m
 
@@ -992,7 +2048,8 @@ public class AlgebraUtil {
 			 * <code>mOddFactor /= 2L</code> instead of <code>mOddFactor / 2L</code>.
 			 */
 			if (((mOddFactor /= 2L) & 1L) == 0L) { // i.e., NumUtil.isEven(mOddFactor)
-				return new long[] {}; // There are no primitive roots mod m since m % 4 == 0.
+				// There are no primitive roots mod m since m % 4 == 0.
+				return new long[] {};
 			}
 		}
 		// ((m % 2 != 0) && (mOddFactor == m)) || (((m / 2) % 2 != 0) && (mOddFactor == m / 2))
@@ -1012,7 +2069,8 @@ public class AlgebraUtil {
 			NumUtil.printFactorsLong(mOddFactors, hash);
 		}
 		if (mOddFactors.size() != 1) {
-			return new long[] {}; // There are no primitive roots mod m since mOddFactor isn't a prime power.
+			// There are no primitive roots mod m since mOddFactor isn't a prime power.
+			return new long[] {};
 		}
 
 		/**
@@ -1093,13 +2151,10 @@ public class AlgebraUtil {
 
 	/**
 	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>(m == 1) implies (Result.length == 0)</code> <br>
+	 * Postcondition: <code>(m == 1) implies ((Result.length == 1) && (Result[0] == 0))</code> <br>
 	 * Postcondition: <code>(m == 2) implies ((Result.length == 1) && (Result[0] == 1))</code> <br>
 	 * Postcondition: <code>(m == 4) implies ((Result.length == 1) && (Result[0] == 3))</code> <br>
 	 * Postcondition: <code>(m % 4 == 0) implies ((m != 4) if and only if (Result.length == 0))</code>
-	 * <br>
-	 * Postcondition:
-	 * <code>((m != 2) && (m % 4 != 0)) implies ((NumUtil.factorSqrt((m % 2 == 0) ? (m / 2) : m).size() == 1) if and only if (Result.length != 0))</code>
 	 * <br>
 	 * Postcondition: <code>(valid i) implies (Result[i] is a primitive root mod m)</code>
 	 * 
@@ -1125,13 +2180,10 @@ public class AlgebraUtil {
 
 	/**
 	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>(m == 1) implies (Result.length == 0)</code> <br>
+	 * Postcondition: <code>(m == 1) implies ((Result.length == 1) && (Result[0] == 0))</code> <br>
 	 * Postcondition: <code>(m == 2) implies ((Result.length == 1) && (Result[0] == 1))</code> <br>
 	 * Postcondition: <code>(m == 4) implies ((Result.length == 1) && (Result[0] == 3))</code> <br>
 	 * Postcondition: <code>(m % 4 == 0) implies ((m != 4) if and only if (Result.length == 0))</code>
-	 * <br>
-	 * Postcondition:
-	 * <code>((m != 2) && (m % 4 != 0)) implies ((NumUtil.factorSqrt((m % 2 == 0) ? (m / 2) : m).size() == 1) if and only if (Result.length != 0))</code>
 	 * <br>
 	 * Postcondition: <code>(valid i) implies (Result[i] is a primitive root mod m)</code>
 	 * 
@@ -1152,13 +2204,10 @@ public class AlgebraUtil {
 
 	/**
 	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>(m == 1) implies (Result.length == 0)</code> <br>
+	 * Postcondition: <code>(m == 1) implies ((Result.length == 1) && (Result[0] == 0))</code> <br>
 	 * Postcondition: <code>(m == 2) implies ((Result.length == 1) && (Result[0] == 1))</code> <br>
 	 * Postcondition: <code>(m == 4) implies ((Result.length == 1) && (Result[0] == 3))</code> <br>
 	 * Postcondition: <code>(m % 4 == 0) implies ((m != 4) if and only if (Result.length == 0))</code>
-	 * <br>
-	 * Postcondition:
-	 * <code>((m != 2) && (m % 4 != 0)) implies ((NumUtil.factorSqrt((m % 2 == 0) ? (m / 2) : m).size() == 1) if and only if (Result.length != 0))</code>
 	 * <br>
 	 * Postcondition: <code>(valid i) implies (Result[i] is a primitive root mod m)</code>
 	 * 
@@ -1184,12 +2233,13 @@ public class AlgebraUtil {
 			if (m < 1) {
 				throw new InvalidModulusException();
 			} else if (m == 1) {
-				return new int[] {}; // There are no primitive roots mod 1.
+				return new int[] { 0 };
 			}
 			// 1 < m
 			// i.e., (m == 2) || (m == 3) || (m == 4) || (m == 5) || (m == 6)
 			if (m == 5) {
-				return new int[] { 2, 3 }; // Only primitive roots mod 5, are 2 and 3.
+				// Only primitive roots mod 5, are 2 and 3.
+				return new int[] { 2, 3 };
 			}
 			// m != 5
 			// i.e., (m == 2) || (m == 3) || (m == 4) || (m == 6)
@@ -1197,7 +2247,8 @@ public class AlgebraUtil {
 			 * It's fine to do <code>--m</code> instead of <code>m - 1</code> since we don't need the value of
 			 * <code>m</code> to remain unchanged.
 			 */
-			return new int[] { --m }; // Only primitive root mod m, is m - 1 for m in { 2, 3, 4, 6 }.
+			// Only primitive root mod m, is m - 1 for m in { 2, 3, 4, 6 }.
+			return new int[] { --m };
 		}
 		// 7 <= m
 
@@ -1225,7 +2276,8 @@ public class AlgebraUtil {
 			 * <code>mOddFactor /= 2L</code> instead of <code>mOddFactor / 2L</code>.
 			 */
 			if (((mOddFactor /= 2L) & 1L) == 0L) { // i.e., NumUtil.isEven(mOddFactor)
-				return new int[] {}; // There are no primitive roots mod m since m % 4 == 0.
+				// There are no primitive roots mod m since m % 4 == 0.
+				return new int[] {};
 			}
 		}
 		// ((m % 2 != 0) && (mOddFactor == m)) || (((m / 2) % 2 != 0) && (mOddFactor == m / 2))
@@ -1245,7 +2297,8 @@ public class AlgebraUtil {
 			NumUtil.printFactorsLong(mOddFactors, hash);
 		}
 		if (mOddFactors.size() != 1) {
-			return new int[] {}; // There are no primitive roots mod m since mOddFactor isn't a prime power.
+			// There are no primitive roots mod m since mOddFactor isn't a prime power.
+			return new int[] {};
 		}
 
 		/**
@@ -1323,13 +2376,10 @@ public class AlgebraUtil {
 
 	/**
 	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>(m == 1) implies (Result.length == 0)</code> <br>
+	 * Postcondition: <code>(m == 1) implies ((Result.length == 1) && (Result[0] == 0))</code> <br>
 	 * Postcondition: <code>(m == 2) implies ((Result.length == 1) && (Result[0] == 1))</code> <br>
 	 * Postcondition: <code>(m == 4) implies ((Result.length == 1) && (Result[0] == 3))</code> <br>
 	 * Postcondition: <code>(m % 4 == 0) implies ((m != 4) if and only if (Result.length == 0))</code>
-	 * <br>
-	 * Postcondition:
-	 * <code>((m != 2) && (m % 4 != 0)) implies ((NumUtil.factorSqrt((m % 2 == 0) ? (m / 2) : m).size() == 1) if and only if (Result.length != 0))</code>
 	 * <br>
 	 * Postcondition: <code>(valid i) implies (Result[i] is a primitive root mod m)</code>
 	 * 
@@ -1352,13 +2402,10 @@ public class AlgebraUtil {
 
 	/**
 	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>(m == 1) implies (Result.length == 0)</code> <br>
+	 * Postcondition: <code>(m == 1) implies ((Result.length == 1) && (Result[0] == 0))</code> <br>
 	 * Postcondition: <code>(m == 2) implies ((Result.length == 1) && (Result[0] == 1))</code> <br>
 	 * Postcondition: <code>(m == 4) implies ((Result.length == 1) && (Result[0] == 3))</code> <br>
 	 * Postcondition: <code>(m % 4 == 0) implies ((m != 4) if and only if (Result.length == 0))</code>
-	 * <br>
-	 * Postcondition:
-	 * <code>((m != 2) && (m % 4 != 0)) implies ((NumUtil.factorSqrt((m % 2 == 0) ? (m / 2) : m).size() == 1) if and only if (Result.length != 0))</code>
 	 * <br>
 	 * Postcondition: <code>(valid i) implies (Result[i] is a primitive root mod m)</code>
 	 * 
@@ -1376,13 +2423,10 @@ public class AlgebraUtil {
 
 	/**
 	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>(m == 1) implies (Result.length == 0)</code> <br>
+	 * Postcondition: <code>(m == 1) implies ((Result.length == 1) && (Result[0] == 0))</code> <br>
 	 * Postcondition: <code>(m == 2) implies ((Result.length == 1) && (Result[0] == 1))</code> <br>
 	 * Postcondition: <code>(m == 4) implies ((Result.length == 1) && (Result[0] == 3))</code> <br>
 	 * Postcondition: <code>(m % 4 == 0) implies ((m != 4) if and only if (Result.length == 0))</code>
-	 * <br>
-	 * Postcondition:
-	 * <code>((m != 2) && (m % 4 != 0)) implies ((NumUtil.factorSqrt((m % 2 == 0) ? (m / 2) : m).size() == 1) if and only if (Result.length != 0))</code>
 	 * <br>
 	 * Postcondition: <code>(valid i) implies (Result[i] is a primitive root mod m)</code>
 	 * 
@@ -1408,12 +2452,13 @@ public class AlgebraUtil {
 			if (m < 1) {
 				throw new InvalidModulusException();
 			} else if (m == 1) {
-				return new short[] {}; // There are no primitive roots mod 1.
+				return new short[] { 0 };
 			}
 			// 1 < m
 			// i.e., (m == 2) || (m == 3) || (m == 4) || (m == 5) || (m == 6)
 			if (m == 5) {
-				return new short[] { 2, 3 }; // Only primitive roots mod 5, are 2 and 3.
+				// Only primitive roots mod 5, are 2 and 3.
+				return new short[] { 2, 3 };
 			}
 			// m != 5
 			// i.e., (m == 2) || (m == 3) || (m == 4) || (m == 6)
@@ -1421,7 +2466,8 @@ public class AlgebraUtil {
 			 * It's fine to do <code>--m</code> instead of <code>m - 1</code> since we don't need the value of
 			 * <code>m</code> to remain unchanged.
 			 */
-			return new short[] { --m }; // Only primitive root mod m, is m - 1 for m in { 2, 3, 4, 6 }.
+			// Only primitive root mod m, is m - 1 for m in { 2, 3, 4, 6 }.
+			return new short[] { --m };
 		}
 		// 7 <= m
 
@@ -1449,7 +2495,8 @@ public class AlgebraUtil {
 			 * <code>mOddFactor /= 2L</code> instead of <code>mOddFactor / 2L</code>.
 			 */
 			if (((mOddFactor /= 2L) & 1L) == 0L) { // i.e., NumUtil.isEven(mOddFactor)
-				return new short[] {}; // There are no primitive roots mod m since m % 4 == 0.
+				// There are no primitive roots mod m since m % 4 == 0.
+				return new short[] {};
 			}
 		}
 		// ((m % 2 != 0) && (mOddFactor == m)) || (((m / 2) % 2 != 0) && (mOddFactor == m / 2))
@@ -1469,7 +2516,8 @@ public class AlgebraUtil {
 			NumUtil.printFactorsLong(mOddFactors, hash);
 		}
 		if (mOddFactors.size() != 1) {
-			return new short[] {}; // There are no primitive roots mod m since mOddFactor isn't a prime power.
+			// There are no primitive roots mod m since mOddFactor isn't a prime power.
+			return new short[] {};
 		}
 
 		/**
@@ -1547,13 +2595,10 @@ public class AlgebraUtil {
 
 	/**
 	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>(m == 1) implies (Result.length == 0)</code> <br>
+	 * Postcondition: <code>(m == 1) implies ((Result.length == 1) && (Result[0] == 0))</code> <br>
 	 * Postcondition: <code>(m == 2) implies ((Result.length == 1) && (Result[0] == 1))</code> <br>
 	 * Postcondition: <code>(m == 4) implies ((Result.length == 1) && (Result[0] == 3))</code> <br>
 	 * Postcondition: <code>(m % 4 == 0) implies ((m != 4) if and only if (Result.length == 0))</code>
-	 * <br>
-	 * Postcondition:
-	 * <code>((m != 2) && (m % 4 != 0)) implies ((NumUtil.factorSqrt((m % 2 == 0) ? (m / 2) : m).size() == 1) if and only if (Result.length != 0))</code>
 	 * <br>
 	 * Postcondition: <code>(valid i) implies (Result[i] is a primitive root mod m)</code>
 	 * 
@@ -1576,13 +2621,10 @@ public class AlgebraUtil {
 
 	/**
 	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>(m == 1) implies (Result.length == 0)</code> <br>
+	 * Postcondition: <code>(m == 1) implies ((Result.length == 1) && (Result[0] == 0))</code> <br>
 	 * Postcondition: <code>(m == 2) implies ((Result.length == 1) && (Result[0] == 1))</code> <br>
 	 * Postcondition: <code>(m == 4) implies ((Result.length == 1) && (Result[0] == 3))</code> <br>
 	 * Postcondition: <code>(m % 4 == 0) implies ((m != 4) if and only if (Result.length == 0))</code>
-	 * <br>
-	 * Postcondition:
-	 * <code>((m != 2) && (m % 4 != 0)) implies ((NumUtil.factorSqrt((m % 2 == 0) ? (m / 2) : m).size() == 1) if and only if (Result.length != 0))</code>
 	 * <br>
 	 * Postcondition: <code>(valid i) implies (Result[i] is a primitive root mod m)</code>
 	 * 
@@ -1600,13 +2642,10 @@ public class AlgebraUtil {
 
 	/**
 	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>(m == 1) implies (Result.length == 0)</code> <br>
+	 * Postcondition: <code>(m == 1) implies ((Result.length == 1) && (Result[0] == 0))</code> <br>
 	 * Postcondition: <code>(m == 2) implies ((Result.length == 1) && (Result[0] == 1))</code> <br>
 	 * Postcondition: <code>(m == 4) implies ((Result.length == 1) && (Result[0] == 3))</code> <br>
 	 * Postcondition: <code>(m % 4 == 0) implies ((m != 4) if and only if (Result.length == 0))</code>
-	 * <br>
-	 * Postcondition:
-	 * <code>((m != 2) && (m % 4 != 0)) implies ((NumUtil.factorSqrt((m % 2 == 0) ? (m / 2) : m).size() == 1) if and only if (Result.length != 0))</code>
 	 * <br>
 	 * Postcondition: <code>(valid i) implies (Result[i] is a primitive root mod m)</code>
 	 * 
@@ -1632,12 +2671,13 @@ public class AlgebraUtil {
 			if (m < 1) {
 				throw new InvalidModulusException();
 			} else if (m == 1) {
-				return new byte[] {}; // There are no primitive roots mod 1.
+				return new byte[] { 0 };
 			}
 			// 1 < m
 			// i.e., (m == 2) || (m == 3) || (m == 4) || (m == 5) || (m == 6)
 			if (m == 5) {
-				return new byte[] { 2, 3 }; // Only primitive roots mod 5, are 2 and 3.
+				// Only primitive roots mod 5, are 2 and 3.
+				return new byte[] { 2, 3 };
 			}
 			// m != 5
 			// i.e., (m == 2) || (m == 3) || (m == 4) || (m == 6)
@@ -1645,7 +2685,8 @@ public class AlgebraUtil {
 			 * It's fine to do <code>--m</code> instead of <code>m - 1</code> since we don't need the value of
 			 * <code>m</code> to remain unchanged.
 			 */
-			return new byte[] { --m }; // Only primitive root mod m, is m - 1 for m in { 2, 3, 4, 6 }.
+			// Only primitive root mod m, is m - 1 for m in { 2, 3, 4, 6 }.
+			return new byte[] { --m };
 		}
 		// 7 <= m
 
@@ -1673,7 +2714,8 @@ public class AlgebraUtil {
 			 * <code>mOddFactor /= 2L</code> instead of <code>mOddFactor / 2L</code>.
 			 */
 			if (((mOddFactor /= 2L) & 1L) == 0L) { // i.e., NumUtil.isEven(mOddFactor)
-				return new byte[] {}; // There are no primitive roots mod m since m % 4 == 0.
+				// There are no primitive roots mod m since m % 4 == 0.
+				return new byte[] {};
 			}
 		}
 		// ((m % 2 != 0) && (mOddFactor == m)) || (((m / 2) % 2 != 0) && (mOddFactor == m / 2))
@@ -1693,7 +2735,8 @@ public class AlgebraUtil {
 			NumUtil.printFactorsLong(mOddFactors, hash);
 		}
 		if (mOddFactors.size() != 1) {
-			return new byte[] {}; // There are no primitive roots mod m since mOddFactor isn't a prime power.
+			// There are no primitive roots mod m since mOddFactor isn't a prime power.
+			return new byte[] {};
 		}
 
 		/**
@@ -1771,13 +2814,10 @@ public class AlgebraUtil {
 
 	/**
 	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>(m == 1) implies (Result.length == 0)</code> <br>
+	 * Postcondition: <code>(m == 1) implies ((Result.length == 1) && (Result[0] == 0))</code> <br>
 	 * Postcondition: <code>(m == 2) implies ((Result.length == 1) && (Result[0] == 1))</code> <br>
 	 * Postcondition: <code>(m == 4) implies ((Result.length == 1) && (Result[0] == 3))</code> <br>
 	 * Postcondition: <code>(m % 4 == 0) implies ((m != 4) if and only if (Result.length == 0))</code>
-	 * <br>
-	 * Postcondition:
-	 * <code>((m != 2) && (m % 4 != 0)) implies ((NumUtil.factorSqrt((m % 2 == 0) ? (m / 2) : m).size() == 1) if and only if (Result.length != 0))</code>
 	 * <br>
 	 * Postcondition: <code>(valid i) implies (Result[i] is a primitive root mod m)</code>
 	 * 
@@ -1800,13 +2840,10 @@ public class AlgebraUtil {
 
 	/**
 	 * Postcondition: <code>Result != null</code> <br>
-	 * Postcondition: <code>(m == 1) implies (Result.length == 0)</code> <br>
+	 * Postcondition: <code>(m == 1) implies ((Result.length == 1) && (Result[0] == 0))</code> <br>
 	 * Postcondition: <code>(m == 2) implies ((Result.length == 1) && (Result[0] == 1))</code> <br>
 	 * Postcondition: <code>(m == 4) implies ((Result.length == 1) && (Result[0] == 3))</code> <br>
 	 * Postcondition: <code>(m % 4 == 0) implies ((m != 4) if and only if (Result.length == 0))</code>
-	 * <br>
-	 * Postcondition:
-	 * <code>((m != 2) && (m % 4 != 0)) implies ((NumUtil.factorSqrt((m % 2 == 0) ? (m / 2) : m).size() == 1) if and only if (Result.length != 0))</code>
 	 * <br>
 	 * Postcondition: <code>(valid i) implies (Result[i] is a primitive root mod m)</code>
 	 * 
