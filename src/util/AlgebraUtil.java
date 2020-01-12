@@ -595,11 +595,11 @@ public class AlgebraUtil {
 			}
 			// m != 5
 			// i.e., (m == 2) || (m == 3) || (m == 4) || (m == 6)
+			// Only primitive root mod m, is m - 1 for m in { 2, 3, 4, 6 }.
 			/**
 			 * It's fine to do <code>++n</code> instead of <code>n + 1</code> since we don't need the value of
 			 * <code>n</code> to remain unchanged.
 			 */
-			// Only primitive root mod m, is m - 1 for m in { 2, 3, 4, 6 }.
 			return (++n == m);
 		}
 		// 7 <= m
@@ -985,7 +985,11 @@ public class AlgebraUtil {
 			// i.e., (m == 2) || (m == 3) || (m == 4) || (m == 6)
 			if (n != m - 1L) { // i.e., n < m - 1
 				// Only primitive root mod m, is m - 1 for m in { 2, 3, 4, 6 }.
-				return (m - 1L);
+				/**
+				 * It's fine to do <code>--m</code> instead of <code>m - 1</code> since we don't need the value of
+				 * <code>m</code> to remain unchanged.
+				 */
+				return (--m);
 			}
 			// n == m - 1
 			// i.e., n == -1 (mod m)
