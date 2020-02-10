@@ -22,26 +22,31 @@ public class Digester {
 		MD2, // MD2.toString() returns MD2.name() which is "MD2".
 		MD5, // MD5.toString() returns MD5.name() which is "MD5".
 		SHA_1 {
+			@Override
 			public final String toString() {
 				return "SHA-1";
 			}
 		},
 		SHA_224 {
+			@Override
 			public final String toString() {
 				return "SHA-224";
 			}
 		},
 		SHA_256 {
+			@Override
 			public final String toString() {
 				return "SHA-256";
 			}
 		},
 		SHA_384 {
+			@Override
 			public final String toString() {
 				return "SHA-384";
 			}
 		},
 		SHA_512 {
+			@Override
 			public final String toString() {
 				return "SHA-512";
 			}
