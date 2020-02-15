@@ -15,15 +15,242 @@ public class ArrayUtil {
 	 */
 
 	/**
-	 * Pseudo Random Number Generator.
-	 */
-	private static Random prng = null;
-
-	/**
 	 * Prevent instantiation.
 	 */
 	private ArrayUtil() {
 		// Empty by design.
+	}
+
+	/**
+	 * @param copy
+	 *            specifies whether the array should be copied
+	 * 
+	 * @param args
+	 *            any number of boolean primitives
+	 * 
+	 * @return <code>(copy ? Arrays.copyOf(args, args.length) : args)</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static boolean[] toArrayPrimitive(boolean copy, boolean... args) throws NullPointerException {
+		return (copy ? Arrays.copyOf(args, args.length) : args);
+	}
+
+	/**
+	 * @param copy
+	 *            specifies whether the array should be copied
+	 * 
+	 * @param args
+	 *            any number of byte primitives
+	 * 
+	 * @return <code>(copy ? Arrays.copyOf(args, args.length) : args)</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static byte[] toArrayPrimitive(boolean copy, byte... args) throws NullPointerException {
+		return (copy ? Arrays.copyOf(args, args.length) : args);
+	}
+
+	/**
+	 * @param args
+	 *            any number of byte primitives
+	 * 
+	 * @return <code>args</code>.
+	 */
+	public static byte[] toArrayPrimitive(byte... args) {
+		return args;
+	}
+
+	/**
+	 * @param copy
+	 *            specifies whether the array should be copied
+	 * 
+	 * @param args
+	 *            any number of char primitives
+	 * 
+	 * @return <code>(copy ? Arrays.copyOf(args, args.length) : args)</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static char[] toArrayPrimitive(boolean copy, char... args) throws NullPointerException {
+		return (copy ? Arrays.copyOf(args, args.length) : args);
+	}
+
+	/**
+	 * @param args
+	 *            any number of char primitives
+	 * 
+	 * @return <code>args</code>.
+	 */
+	public static char[] toArrayPrimitive(char... args) {
+		return args;
+	}
+
+	/**
+	 * @param copy
+	 *            specifies whether the array should be copied
+	 * 
+	 * @param args
+	 *            any number of short primitives
+	 * 
+	 * @return <code>(copy ? Arrays.copyOf(args, args.length) : args)</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static short[] toArrayPrimitive(boolean copy, short... args) throws NullPointerException {
+		return (copy ? Arrays.copyOf(args, args.length) : args);
+	}
+
+	/**
+	 * @param args
+	 *            any number of short primitives
+	 * 
+	 * @return <code>args</code>.
+	 */
+	public static short[] toArrayPrimitive(short... args) {
+		return args;
+	}
+
+	/**
+	 * @param copy
+	 *            specifies whether the array should be copied
+	 * 
+	 * @param args
+	 *            any number of int primitives
+	 * 
+	 * @return <code>(copy ? Arrays.copyOf(args, args.length) : args)</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static int[] toArrayPrimitive(boolean copy, int... args) throws NullPointerException {
+		return (copy ? Arrays.copyOf(args, args.length) : args);
+	}
+
+	/**
+	 * @param args
+	 *            any number of int primitives
+	 * 
+	 * @return <code>args</code>.
+	 */
+	public static int[] toArrayPrimitive(int... args) {
+		return args;
+	}
+
+	/**
+	 * @param copy
+	 *            specifies whether the array should be copied
+	 * 
+	 * @param args
+	 *            any number of long primitives
+	 * 
+	 * @return <code>(copy ? Arrays.copyOf(args, args.length) : args)</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static long[] toArrayPrimitive(boolean copy, long... args) throws NullPointerException {
+		return (copy ? Arrays.copyOf(args, args.length) : args);
+	}
+
+	/**
+	 * @param args
+	 *            any number of long primitives
+	 * 
+	 * @return <code>args</code>.
+	 */
+	public static long[] toArrayPrimitive(long... args) {
+		return args;
+	}
+
+	/**
+	 * @param copy
+	 *            specifies whether the array should be copied
+	 * 
+	 * @param args
+	 *            any number of float primitives
+	 * 
+	 * @return <code>(copy ? Arrays.copyOf(args, args.length) : args)</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static float[] toArrayPrimitive(boolean copy, float... args) throws NullPointerException {
+		return (copy ? Arrays.copyOf(args, args.length) : args);
+	}
+
+	/**
+	 * @param args
+	 *            any number of float primitives
+	 * 
+	 * @return <code>args</code>.
+	 */
+	public static float[] toArrayPrimitive(float... args) {
+		return args;
+	}
+
+	/**
+	 * @param copy
+	 *            specifies whether the array should be copied
+	 * 
+	 * @param args
+	 *            any number of double primitives
+	 * 
+	 * @return <code>(copy ? Arrays.copyOf(args, args.length) : args)</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	public static double[] toArrayPrimitive(boolean copy, double... args) throws NullPointerException {
+		return (copy ? Arrays.copyOf(args, args.length) : args);
+	}
+
+	/**
+	 * @param args
+	 *            any number of double primitives
+	 * 
+	 * @return <code>args</code>.
+	 */
+	public static double[] toArrayPrimitive(double... args) {
+		return args;
+	}
+
+	/**
+	 * @param <T>
+	 *            the common type of all of the given objects
+	 * 
+	 * @param copy
+	 *            specifies whether the array should be copied
+	 * 
+	 * @param args
+	 *            any number of objects of type <code>T</code>
+	 * 
+	 * @return <code>(copy ? Arrays.copyOf(args, args.length) : args)</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>args == null</code>
+	 */
+	@SafeVarargs
+	public static <T> T[] toArray(boolean copy, T... args) throws NullPointerException {
+		return (copy ? Arrays.copyOf(args, args.length) : args);
+	}
+
+	/**
+	 * @param <T>
+	 *            the common type of all of the given objects
+	 * 
+	 * @param args
+	 *            any number of objects of type <code>T</code>
+	 * 
+	 * @return <code>args</code>.
+	 */
+	@SafeVarargs
+	public static <T> T[] toArray(T... args) {
+		return args;
 	}
 
 	/**
@@ -427,6 +654,412 @@ public class ArrayUtil {
 	}
 
 	/**
+	 * Postcondition: <code>(Result != null) && Result.equals(Arrays.deepToString(a))</code>
+	 * 
+	 * @param a
+	 *            the given boolean[][]
+	 * 
+	 * @return The resulting String.
+	 */
+	public static String toString(boolean[][] a) {
+		if (a == null) {
+			return "null";
+		}
+
+		final int length = a.length;
+		if (length == 0) {
+			return "[]";
+		}
+
+		final StringBuilder sb = new StringBuilder();
+		sb.append('[').append(Arrays.toString(a[0]));
+		for (int i = 1; i != length; ++i) {
+			sb.append(", ").append(Arrays.toString(a[i]));
+		}
+		return sb.append(']').toString();
+	}
+
+	/**
+	 * Postcondition: <code>(Result != null) && Result.equals(Arrays.deepToString(a))</code>
+	 * 
+	 * @param a
+	 *            the given byte[][]
+	 * 
+	 * @return The resulting String.
+	 */
+	public static String toString(byte[][] a) {
+		if (a == null) {
+			return "null";
+		}
+
+		final int length = a.length;
+		if (length == 0) {
+			return "[]";
+		}
+
+		final StringBuilder sb = new StringBuilder();
+		sb.append('[').append(Arrays.toString(a[0]));
+		for (int i = 1; i != length; ++i) {
+			sb.append(", ").append(Arrays.toString(a[i]));
+		}
+		return sb.append(']').toString();
+	}
+
+	/**
+	 * Postcondition: <code>(Result != null) && Result.equals(Arrays.deepToString(a))</code>
+	 * 
+	 * @param a
+	 *            the given char[][]
+	 * 
+	 * @return The resulting String.
+	 */
+	public static String toString(char[][] a) {
+		if (a == null) {
+			return "null";
+		}
+
+		final int length = a.length;
+		if (length == 0) {
+			return "[]";
+		}
+
+		final StringBuilder sb = new StringBuilder();
+		sb.append('[').append(Arrays.toString(a[0]));
+		for (int i = 1; i != length; ++i) {
+			sb.append(", ").append(Arrays.toString(a[i]));
+		}
+		return sb.append(']').toString();
+	}
+
+	/**
+	 * Postcondition: <code>(Result != null) && Result.equals(Arrays.deepToString(a))</code>
+	 * 
+	 * @param a
+	 *            the given short[][]
+	 * 
+	 * @return The resulting String.
+	 */
+	public static String toString(short[][] a) {
+		if (a == null) {
+			return "null";
+		}
+
+		final int length = a.length;
+		if (length == 0) {
+			return "[]";
+		}
+
+		final StringBuilder sb = new StringBuilder();
+		sb.append('[').append(Arrays.toString(a[0]));
+		for (int i = 1; i != length; ++i) {
+			sb.append(", ").append(Arrays.toString(a[i]));
+		}
+		return sb.append(']').toString();
+	}
+
+	/**
+	 * Postcondition: <code>(Result != null) && Result.equals(Arrays.deepToString(a))</code>
+	 * 
+	 * @param a
+	 *            the given int[][]
+	 * 
+	 * @return The resulting String.
+	 */
+	public static String toString(int[][] a) {
+		if (a == null) {
+			return "null";
+		}
+
+		final int length = a.length;
+		if (length == 0) {
+			return "[]";
+		}
+
+		final StringBuilder sb = new StringBuilder();
+		sb.append('[').append(Arrays.toString(a[0]));
+		for (int i = 1; i != length; ++i) {
+			sb.append(", ").append(Arrays.toString(a[i]));
+		}
+		return sb.append(']').toString();
+	}
+
+	/**
+	 * Postcondition: <code>(Result != null) && Result.equals(Arrays.deepToString(a))</code>
+	 * 
+	 * @param a
+	 *            the given long[][]
+	 * 
+	 * @return The resulting String.
+	 */
+	public static String toString(long[][] a) {
+		if (a == null) {
+			return "null";
+		}
+
+		final int length = a.length;
+		if (length == 0) {
+			return "[]";
+		}
+
+		final StringBuilder sb = new StringBuilder();
+		sb.append('[').append(Arrays.toString(a[0]));
+		for (int i = 1; i != length; ++i) {
+			sb.append(", ").append(Arrays.toString(a[i]));
+		}
+		return sb.append(']').toString();
+	}
+
+	/**
+	 * Postcondition: <code>(Result != null) && Result.equals(Arrays.deepToString(a))</code>
+	 * 
+	 * @param a
+	 *            the given float[][]
+	 * 
+	 * @return The resulting String.
+	 */
+	public static String toString(float[][] a) {
+		if (a == null) {
+			return "null";
+		}
+
+		final int length = a.length;
+		if (length == 0) {
+			return "[]";
+		}
+
+		final StringBuilder sb = new StringBuilder();
+		sb.append('[').append(Arrays.toString(a[0]));
+		for (int i = 1; i != length; ++i) {
+			sb.append(", ").append(Arrays.toString(a[i]));
+		}
+		return sb.append(']').toString();
+	}
+
+	/**
+	 * Postcondition: <code>(Result != null) && Result.equals(Arrays.deepToString(a))</code>
+	 * 
+	 * @param a
+	 *            the given double[][]
+	 * 
+	 * @return The resulting String.
+	 */
+	public static String toString(double[][] a) {
+		if (a == null) {
+			return "null";
+		}
+
+		final int length = a.length;
+		if (length == 0) {
+			return "[]";
+		}
+
+		final StringBuilder sb = new StringBuilder();
+		sb.append('[').append(Arrays.toString(a[0]));
+		for (int i = 1; i != length; ++i) {
+			sb.append(", ").append(Arrays.toString(a[i]));
+		}
+		return sb.append(']').toString();
+	}
+
+	/**
+	 * @param a
+	 *            the given boolean[]
+	 * 
+	 * @param i
+	 *            the given index
+	 * 
+	 * @return <code>i</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>a == null</code>
+	 * 
+	 * @throws ArrayIndexOutOfBoundsException
+	 *             If <code>(i < 0) || (a.length <= i)</code>
+	 */
+	public static int validateIndex(boolean[] a, int i) throws NullPointerException, ArrayIndexOutOfBoundsException {
+		if ((i < 0) || (a.length <= i)) {
+			throw new ArrayIndexOutOfBoundsException();
+		}
+		return i;
+	}
+
+	/**
+	 * @param a
+	 *            the given byte[]
+	 * 
+	 * @param i
+	 *            the given index
+	 * 
+	 * @return <code>i</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>a == null</code>
+	 * 
+	 * @throws ArrayIndexOutOfBoundsException
+	 *             If <code>(i < 0) || (a.length <= i)</code>
+	 */
+	public static int validateIndex(byte[] a, int i) throws NullPointerException, ArrayIndexOutOfBoundsException {
+		if ((i < 0) || (a.length <= i)) {
+			throw new ArrayIndexOutOfBoundsException();
+		}
+		return i;
+	}
+
+	/**
+	 * @param a
+	 *            the given char[]
+	 * 
+	 * @param i
+	 *            the given index
+	 * 
+	 * @return <code>i</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>a == null</code>
+	 * 
+	 * @throws ArrayIndexOutOfBoundsException
+	 *             If <code>(i < 0) || (a.length <= i)</code>
+	 */
+	public static int validateIndex(char[] a, int i) throws NullPointerException, ArrayIndexOutOfBoundsException {
+		if ((i < 0) || (a.length <= i)) {
+			throw new ArrayIndexOutOfBoundsException();
+		}
+		return i;
+	}
+
+	/**
+	 * @param a
+	 *            the given short[]
+	 * 
+	 * @param i
+	 *            the given index
+	 * 
+	 * @return <code>i</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>a == null</code>
+	 * 
+	 * @throws ArrayIndexOutOfBoundsException
+	 *             If <code>(i < 0) || (a.length <= i)</code>
+	 */
+	public static int validateIndex(short[] a, int i) throws NullPointerException, ArrayIndexOutOfBoundsException {
+		if ((i < 0) || (a.length <= i)) {
+			throw new ArrayIndexOutOfBoundsException();
+		}
+		return i;
+	}
+
+	/**
+	 * @param a
+	 *            the given int[]
+	 * 
+	 * @param i
+	 *            the given index
+	 * 
+	 * @return <code>i</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>a == null</code>
+	 * 
+	 * @throws ArrayIndexOutOfBoundsException
+	 *             If <code>(i < 0) || (a.length <= i)</code>
+	 */
+	public static int validateIndex(int[] a, int i) throws NullPointerException, ArrayIndexOutOfBoundsException {
+		if ((i < 0) || (a.length <= i)) {
+			throw new ArrayIndexOutOfBoundsException();
+		}
+		return i;
+	}
+
+	/**
+	 * @param a
+	 *            the given long[]
+	 * 
+	 * @param i
+	 *            the given index
+	 * 
+	 * @return <code>i</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>a == null</code>
+	 * 
+	 * @throws ArrayIndexOutOfBoundsException
+	 *             If <code>(i < 0) || (a.length <= i)</code>
+	 */
+	public static int validateIndex(long[] a, int i) throws NullPointerException, ArrayIndexOutOfBoundsException {
+		if ((i < 0) || (a.length <= i)) {
+			throw new ArrayIndexOutOfBoundsException();
+		}
+		return i;
+	}
+
+	/**
+	 * @param a
+	 *            the given float[]
+	 * 
+	 * @param i
+	 *            the given index
+	 * 
+	 * @return <code>i</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>a == null</code>
+	 * 
+	 * @throws ArrayIndexOutOfBoundsException
+	 *             If <code>(i < 0) || (a.length <= i)</code>
+	 */
+	public static int validateIndex(float[] a, int i) throws NullPointerException, ArrayIndexOutOfBoundsException {
+		if ((i < 0) || (a.length <= i)) {
+			throw new ArrayIndexOutOfBoundsException();
+		}
+		return i;
+	}
+
+	/**
+	 * @param a
+	 *            the given double[]
+	 * 
+	 * @param i
+	 *            the given index
+	 * 
+	 * @return <code>i</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>a == null</code>
+	 * 
+	 * @throws ArrayIndexOutOfBoundsException
+	 *             If <code>(i < 0) || (a.length <= i)</code>
+	 */
+	public static int validateIndex(double[] a, int i) throws NullPointerException, ArrayIndexOutOfBoundsException {
+		if ((i < 0) || (a.length <= i)) {
+			throw new ArrayIndexOutOfBoundsException();
+		}
+		return i;
+	}
+
+	/**
+	 * @param a
+	 *            the given Object[]
+	 * 
+	 * @param i
+	 *            the given index
+	 * 
+	 * @return <code>i</code>.
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>a == null</code>
+	 * 
+	 * @throws ArrayIndexOutOfBoundsException
+	 *             If <code>(i < 0) || (a.length <= i)</code>
+	 */
+	public static int validateIndex(Object[] a, int i) throws NullPointerException, ArrayIndexOutOfBoundsException {
+		if ((i < 0) || (a.length <= i)) {
+			throw new ArrayIndexOutOfBoundsException();
+		}
+		return i;
+	}
+
+	/**
 	 * Precondition: <code>a != null</code> <br>
 	 * Precondition: <code>(0 <= i) && (i < a.length)</code> <br>
 	 * Precondition: <code>(0 <= j) && (j < a.length)</code>
@@ -435,15 +1068,35 @@ public class ArrayUtil {
 	 *            the given boolean[]
 	 * 
 	 * @param i
-	 *            the given first index
+	 *            the first given index
 	 * 
 	 * @param j
-	 *            the given second index
+	 *            the second given index
 	 */
-	protected static void swap(boolean[] a, int i, int j) {
+	protected static void swapFixedInput(boolean[] a, int i, int j) {
 		final boolean tmp = a[i];
 		a[i] = a[j];
 		a[j] = tmp;
+	}
+
+	/**
+	 * @param a
+	 *            the given boolean[]
+	 * 
+	 * @param i
+	 *            the first given index
+	 * 
+	 * @param j
+	 *            the first given index
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>a == null</code>
+	 * 
+	 * @throws ArrayIndexOutOfBoundsException
+	 *             If <code>(i < 0) || (a.length <= i) || (j < 0) || (a.length <= j)</code>
+	 */
+	public static void swap(boolean[] a, int i, int j) throws NullPointerException, ArrayIndexOutOfBoundsException {
+		ArrayUtil.swapFixedInput(a, ArrayUtil.validateIndex(a, i), ArrayUtil.validateIndex(a, j));
 	}
 
 	/**
@@ -455,15 +1108,35 @@ public class ArrayUtil {
 	 *            the given byte[]
 	 * 
 	 * @param i
-	 *            the given first index
+	 *            the first given index
 	 * 
 	 * @param j
-	 *            the given second index
+	 *            the second given index
 	 */
-	protected static void swap(byte[] a, int i, int j) {
+	protected static void swapFixedInput(byte[] a, int i, int j) {
 		final byte tmp = a[i];
 		a[i] = a[j];
 		a[j] = tmp;
+	}
+
+	/**
+	 * @param a
+	 *            the given byte[]
+	 * 
+	 * @param i
+	 *            the first given index
+	 * 
+	 * @param j
+	 *            the first given index
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>a == null</code>
+	 * 
+	 * @throws ArrayIndexOutOfBoundsException
+	 *             If <code>(i < 0) || (a.length <= i) || (j < 0) || (a.length <= j)</code>
+	 */
+	public static void swap(byte[] a, int i, int j) throws NullPointerException, ArrayIndexOutOfBoundsException {
+		ArrayUtil.swapFixedInput(a, ArrayUtil.validateIndex(a, i), ArrayUtil.validateIndex(a, j));
 	}
 
 	/**
@@ -475,15 +1148,35 @@ public class ArrayUtil {
 	 *            the given char[]
 	 * 
 	 * @param i
-	 *            the given first index
+	 *            the first given index
 	 * 
 	 * @param j
-	 *            the given second index
+	 *            the second given index
 	 */
-	protected static void swap(char[] a, int i, int j) {
+	protected static void swapFixedInput(char[] a, int i, int j) {
 		final char tmp = a[i];
 		a[i] = a[j];
 		a[j] = tmp;
+	}
+
+	/**
+	 * @param a
+	 *            the given char[]
+	 * 
+	 * @param i
+	 *            the first given index
+	 * 
+	 * @param j
+	 *            the first given index
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>a == null</code>
+	 * 
+	 * @throws ArrayIndexOutOfBoundsException
+	 *             If <code>(i < 0) || (a.length <= i) || (j < 0) || (a.length <= j)</code>
+	 */
+	public static void swap(char[] a, int i, int j) throws NullPointerException, ArrayIndexOutOfBoundsException {
+		ArrayUtil.swapFixedInput(a, ArrayUtil.validateIndex(a, i), ArrayUtil.validateIndex(a, j));
 	}
 
 	/**
@@ -495,15 +1188,35 @@ public class ArrayUtil {
 	 *            the given short[]
 	 * 
 	 * @param i
-	 *            the given first index
+	 *            the first given index
 	 * 
 	 * @param j
-	 *            the given second index
+	 *            the second given index
 	 */
-	protected static void swap(short[] a, int i, int j) {
+	protected static void swapFixedInput(short[] a, int i, int j) {
 		final short tmp = a[i];
 		a[i] = a[j];
 		a[j] = tmp;
+	}
+
+	/**
+	 * @param a
+	 *            the given short[]
+	 * 
+	 * @param i
+	 *            the first given index
+	 * 
+	 * @param j
+	 *            the first given index
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>a == null</code>
+	 * 
+	 * @throws ArrayIndexOutOfBoundsException
+	 *             If <code>(i < 0) || (a.length <= i) || (j < 0) || (a.length <= j)</code>
+	 */
+	public static void swap(short[] a, int i, int j) throws NullPointerException, ArrayIndexOutOfBoundsException {
+		ArrayUtil.swapFixedInput(a, ArrayUtil.validateIndex(a, i), ArrayUtil.validateIndex(a, j));
 	}
 
 	/**
@@ -515,15 +1228,35 @@ public class ArrayUtil {
 	 *            the given int[]
 	 * 
 	 * @param i
-	 *            the given first index
+	 *            the first given index
 	 * 
 	 * @param j
-	 *            the given second index
+	 *            the second given index
 	 */
-	protected static void swap(int[] a, int i, int j) {
+	protected static void swapFixedInput(int[] a, int i, int j) {
 		final int tmp = a[i];
 		a[i] = a[j];
 		a[j] = tmp;
+	}
+
+	/**
+	 * @param a
+	 *            the given int[]
+	 * 
+	 * @param i
+	 *            the first given index
+	 * 
+	 * @param j
+	 *            the first given index
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>a == null</code>
+	 * 
+	 * @throws ArrayIndexOutOfBoundsException
+	 *             If <code>(i < 0) || (a.length <= i) || (j < 0) || (a.length <= j)</code>
+	 */
+	public static void swap(int[] a, int i, int j) throws NullPointerException, ArrayIndexOutOfBoundsException {
+		ArrayUtil.swapFixedInput(a, ArrayUtil.validateIndex(a, i), ArrayUtil.validateIndex(a, j));
 	}
 
 	/**
@@ -535,15 +1268,35 @@ public class ArrayUtil {
 	 *            the given long[]
 	 * 
 	 * @param i
-	 *            the given first index
+	 *            the first given index
 	 * 
 	 * @param j
-	 *            the given second index
+	 *            the second given index
 	 */
-	protected static void swap(long[] a, int i, int j) {
+	protected static void swapFixedInput(long[] a, int i, int j) {
 		final long tmp = a[i];
 		a[i] = a[j];
 		a[j] = tmp;
+	}
+
+	/**
+	 * @param a
+	 *            the given long[]
+	 * 
+	 * @param i
+	 *            the first given index
+	 * 
+	 * @param j
+	 *            the first given index
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>a == null</code>
+	 * 
+	 * @throws ArrayIndexOutOfBoundsException
+	 *             If <code>(i < 0) || (a.length <= i) || (j < 0) || (a.length <= j)</code>
+	 */
+	public static void swap(long[] a, int i, int j) throws NullPointerException, ArrayIndexOutOfBoundsException {
+		ArrayUtil.swapFixedInput(a, ArrayUtil.validateIndex(a, i), ArrayUtil.validateIndex(a, j));
 	}
 
 	/**
@@ -555,15 +1308,35 @@ public class ArrayUtil {
 	 *            the given float[]
 	 * 
 	 * @param i
-	 *            the given first index
+	 *            the first given index
 	 * 
 	 * @param j
-	 *            the given second index
+	 *            the second given index
 	 */
-	protected static void swap(float[] a, int i, int j) {
+	protected static void swapFixedInput(float[] a, int i, int j) {
 		final float tmp = a[i];
 		a[i] = a[j];
 		a[j] = tmp;
+	}
+
+	/**
+	 * @param a
+	 *            the given float[]
+	 * 
+	 * @param i
+	 *            the first given index
+	 * 
+	 * @param j
+	 *            the first given index
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>a == null</code>
+	 * 
+	 * @throws ArrayIndexOutOfBoundsException
+	 *             If <code>(i < 0) || (a.length <= i) || (j < 0) || (a.length <= j)</code>
+	 */
+	public static void swap(float[] a, int i, int j) throws NullPointerException, ArrayIndexOutOfBoundsException {
+		ArrayUtil.swapFixedInput(a, ArrayUtil.validateIndex(a, i), ArrayUtil.validateIndex(a, j));
 	}
 
 	/**
@@ -575,15 +1348,35 @@ public class ArrayUtil {
 	 *            the given double[]
 	 * 
 	 * @param i
-	 *            the given first index
+	 *            the first given index
 	 * 
 	 * @param j
-	 *            the given second index
+	 *            the second given index
 	 */
-	protected static void swap(double[] a, int i, int j) {
+	protected static void swapFixedInput(double[] a, int i, int j) {
 		final double tmp = a[i];
 		a[i] = a[j];
 		a[j] = tmp;
+	}
+
+	/**
+	 * @param a
+	 *            the given double[]
+	 * 
+	 * @param i
+	 *            the first given index
+	 * 
+	 * @param j
+	 *            the first given index
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>a == null</code>
+	 * 
+	 * @throws ArrayIndexOutOfBoundsException
+	 *             If <code>(i < 0) || (a.length <= i) || (j < 0) || (a.length <= j)</code>
+	 */
+	public static void swap(double[] a, int i, int j) throws NullPointerException, ArrayIndexOutOfBoundsException {
+		ArrayUtil.swapFixedInput(a, ArrayUtil.validateIndex(a, i), ArrayUtil.validateIndex(a, j));
 	}
 
 	/**
@@ -595,15 +1388,60 @@ public class ArrayUtil {
 	 *            the given Object[]
 	 * 
 	 * @param i
-	 *            the given first index
+	 *            the first given index
 	 * 
 	 * @param j
-	 *            the given second index
+	 *            the second given index
 	 */
-	protected static void swap(Object[] a, int i, int j) {
+	protected static void swapFixedInput(Object[] a, int i, int j) {
 		final Object tmp = a[i];
 		a[i] = a[j];
 		a[j] = tmp;
+	}
+
+	/**
+	 * @param a
+	 *            the given Object[]
+	 * 
+	 * @param i
+	 *            the first given index
+	 * 
+	 * @param j
+	 *            the first given index
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>a == null</code>
+	 * 
+	 * @throws ArrayIndexOutOfBoundsException
+	 *             If <code>(i < 0) || (a.length <= i) || (j < 0) || (a.length <= j)</code>
+	 */
+	public static void swap(Object[] a, int i, int j) throws NullPointerException, ArrayIndexOutOfBoundsException {
+		ArrayUtil.swapFixedInput(a, ArrayUtil.validateIndex(a, i), ArrayUtil.validateIndex(a, j));
+	}
+
+	/**
+	 * @param a
+	 *            the given boolean[]
+	 * 
+	 * @param prng
+	 *            source of random bits used to generate indices
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>a == null</code>
+	 */
+	public static void shuffle(boolean[] a, Random prng) throws NullPointerException {
+		if (a.length < 2) { // i.e., Nothing to shuffle.
+			return;
+		}
+		// 2 <= a.length
+		if (prng == null) {
+			prng = ThreadLocalRandom.current();
+		}
+
+		// Fisher-Yates Algorithm.
+		for (int i = a.length - 1; i != 0; --i) {
+			ArrayUtil.swapFixedInput(a, i, prng.nextInt(i + 1));
+		}
 	}
 
 	/**
@@ -614,19 +1452,31 @@ public class ArrayUtil {
 	 *             If <code>a == null</code>
 	 */
 	public static void shuffle(boolean[] a) throws NullPointerException {
-		// Nothing to shuffle.
-		if (a.length < 2) {
+		ArrayUtil.shuffle(a, null);
+	}
+
+	/**
+	 * @param a
+	 *            the given byte[]
+	 * 
+	 * @param prng
+	 *            source of random bits used to generate indices
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>a == null</code>
+	 */
+	public static void shuffle(byte[] a, Random prng) throws NullPointerException {
+		if (a.length < 2) { // i.e., Nothing to shuffle.
 			return;
 		}
-
-		// Construct ArrayUtil.prng if needed. Executed at most once.
-		if (ArrayUtil.prng == null) {
-			ArrayUtil.prng = ThreadLocalRandom.current();
+		// 2 <= a.length
+		if (prng == null) {
+			prng = ThreadLocalRandom.current();
 		}
 
 		// Fisher-Yates Algorithm.
 		for (int i = a.length - 1; i != 0; --i) {
-			ArrayUtil.swap(a, i, ArrayUtil.prng.nextInt(i + 1));
+			ArrayUtil.swapFixedInput(a, i, prng.nextInt(i + 1));
 		}
 	}
 
@@ -638,19 +1488,31 @@ public class ArrayUtil {
 	 *             If <code>a == null</code>
 	 */
 	public static void shuffle(byte[] a) throws NullPointerException {
-		// Nothing to shuffle.
-		if (a.length < 2) {
+		ArrayUtil.shuffle(a, null);
+	}
+
+	/**
+	 * @param a
+	 *            the given char[]
+	 * 
+	 * @param prng
+	 *            source of random bits used to generate indices
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>a == null</code>
+	 */
+	public static void shuffle(char[] a, Random prng) throws NullPointerException {
+		if (a.length < 2) { // i.e., Nothing to shuffle.
 			return;
 		}
-
-		// Construct ArrayUtil.prng if needed. Executed at most once.
-		if (ArrayUtil.prng == null) {
-			ArrayUtil.prng = ThreadLocalRandom.current();
+		// 2 <= a.length
+		if (prng == null) {
+			prng = ThreadLocalRandom.current();
 		}
 
 		// Fisher-Yates Algorithm.
 		for (int i = a.length - 1; i != 0; --i) {
-			ArrayUtil.swap(a, i, ArrayUtil.prng.nextInt(i + 1));
+			ArrayUtil.swapFixedInput(a, i, prng.nextInt(i + 1));
 		}
 	}
 
@@ -662,19 +1524,31 @@ public class ArrayUtil {
 	 *             If <code>a == null</code>
 	 */
 	public static void shuffle(char[] a) throws NullPointerException {
-		// Nothing to shuffle.
-		if (a.length < 2) {
+		ArrayUtil.shuffle(a, null);
+	}
+
+	/**
+	 * @param a
+	 *            the given short[]
+	 * 
+	 * @param prng
+	 *            source of random bits used to generate indices
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>a == null</code>
+	 */
+	public static void shuffle(short[] a, Random prng) throws NullPointerException {
+		if (a.length < 2) { // i.e., Nothing to shuffle.
 			return;
 		}
-
-		// Construct ArrayUtil.prng if needed. Executed at most once.
-		if (ArrayUtil.prng == null) {
-			ArrayUtil.prng = ThreadLocalRandom.current();
+		// 2 <= a.length
+		if (prng == null) {
+			prng = ThreadLocalRandom.current();
 		}
 
 		// Fisher-Yates Algorithm.
 		for (int i = a.length - 1; i != 0; --i) {
-			ArrayUtil.swap(a, i, ArrayUtil.prng.nextInt(i + 1));
+			ArrayUtil.swapFixedInput(a, i, prng.nextInt(i + 1));
 		}
 	}
 
@@ -686,19 +1560,31 @@ public class ArrayUtil {
 	 *             If <code>a == null</code>
 	 */
 	public static void shuffle(short[] a) throws NullPointerException {
-		// Nothing to shuffle.
-		if (a.length < 2) {
+		ArrayUtil.shuffle(a, null);
+	}
+
+	/**
+	 * @param a
+	 *            the given int[]
+	 * 
+	 * @param prng
+	 *            source of random bits used to generate indices
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>a == null</code>
+	 */
+	public static void shuffle(int[] a, Random prng) throws NullPointerException {
+		if (a.length < 2) { // i.e., Nothing to shuffle.
 			return;
 		}
-
-		// Construct ArrayUtil.prng if needed. Executed at most once.
-		if (ArrayUtil.prng == null) {
-			ArrayUtil.prng = ThreadLocalRandom.current();
+		// 2 <= a.length
+		if (prng == null) {
+			prng = ThreadLocalRandom.current();
 		}
 
 		// Fisher-Yates Algorithm.
 		for (int i = a.length - 1; i != 0; --i) {
-			ArrayUtil.swap(a, i, ArrayUtil.prng.nextInt(i + 1));
+			ArrayUtil.swapFixedInput(a, i, prng.nextInt(i + 1));
 		}
 	}
 
@@ -710,19 +1596,31 @@ public class ArrayUtil {
 	 *             If <code>a == null</code>
 	 */
 	public static void shuffle(int[] a) throws NullPointerException {
-		// Nothing to shuffle.
-		if (a.length < 2) {
+		ArrayUtil.shuffle(a, null);
+	}
+
+	/**
+	 * @param a
+	 *            the given long[]
+	 * 
+	 * @param prng
+	 *            source of random bits used to generate indices
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>a == null</code>
+	 */
+	public static void shuffle(long[] a, Random prng) throws NullPointerException {
+		if (a.length < 2) { // i.e., Nothing to shuffle.
 			return;
 		}
-
-		// Construct ArrayUtil.prng if needed. Executed at most once.
-		if (ArrayUtil.prng == null) {
-			ArrayUtil.prng = ThreadLocalRandom.current();
+		// 2 <= a.length
+		if (prng == null) {
+			prng = ThreadLocalRandom.current();
 		}
 
 		// Fisher-Yates Algorithm.
 		for (int i = a.length - 1; i != 0; --i) {
-			ArrayUtil.swap(a, i, ArrayUtil.prng.nextInt(i + 1));
+			ArrayUtil.swapFixedInput(a, i, prng.nextInt(i + 1));
 		}
 	}
 
@@ -734,19 +1632,31 @@ public class ArrayUtil {
 	 *             If <code>a == null</code>
 	 */
 	public static void shuffle(long[] a) throws NullPointerException {
-		// Nothing to shuffle.
-		if (a.length < 2) {
+		ArrayUtil.shuffle(a, null);
+	}
+
+	/**
+	 * @param a
+	 *            the given float[]
+	 * 
+	 * @param prng
+	 *            source of random bits used to generate indices
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>a == null</code>
+	 */
+	public static void shuffle(float[] a, Random prng) throws NullPointerException {
+		if (a.length < 2) { // i.e., Nothing to shuffle.
 			return;
 		}
-
-		// Construct ArrayUtil.prng if needed. Executed at most once.
-		if (ArrayUtil.prng == null) {
-			ArrayUtil.prng = ThreadLocalRandom.current();
+		// 2 <= a.length
+		if (prng == null) {
+			prng = ThreadLocalRandom.current();
 		}
 
 		// Fisher-Yates Algorithm.
 		for (int i = a.length - 1; i != 0; --i) {
-			ArrayUtil.swap(a, i, ArrayUtil.prng.nextInt(i + 1));
+			ArrayUtil.swapFixedInput(a, i, prng.nextInt(i + 1));
 		}
 	}
 
@@ -758,19 +1668,31 @@ public class ArrayUtil {
 	 *             If <code>a == null</code>
 	 */
 	public static void shuffle(float[] a) throws NullPointerException {
-		// Nothing to shuffle.
-		if (a.length < 2) {
+		ArrayUtil.shuffle(a, null);
+	}
+
+	/**
+	 * @param a
+	 *            the given double[]
+	 * 
+	 * @param prng
+	 *            source of random bits used to generate indices
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>a == null</code>
+	 */
+	public static void shuffle(double[] a, Random prng) throws NullPointerException {
+		if (a.length < 2) { // i.e., Nothing to shuffle.
 			return;
 		}
-
-		// Construct ArrayUtil.prng if needed. Executed at most once.
-		if (ArrayUtil.prng == null) {
-			ArrayUtil.prng = ThreadLocalRandom.current();
+		// 2 <= a.length
+		if (prng == null) {
+			prng = ThreadLocalRandom.current();
 		}
 
 		// Fisher-Yates Algorithm.
 		for (int i = a.length - 1; i != 0; --i) {
-			ArrayUtil.swap(a, i, ArrayUtil.prng.nextInt(i + 1));
+			ArrayUtil.swapFixedInput(a, i, prng.nextInt(i + 1));
 		}
 	}
 
@@ -782,19 +1704,31 @@ public class ArrayUtil {
 	 *             If <code>a == null</code>
 	 */
 	public static void shuffle(double[] a) throws NullPointerException {
-		// Nothing to shuffle.
-		if (a.length < 2) {
+		ArrayUtil.shuffle(a, null);
+	}
+
+	/**
+	 * @param a
+	 *            the given Object[]
+	 * 
+	 * @param prng
+	 *            source of random bits used to generate indices
+	 * 
+	 * @throws NullPointerException
+	 *             If <code>a == null</code>
+	 */
+	public static void shuffle(Object[] a, Random prng) throws NullPointerException {
+		if (a.length < 2) { // i.e., Nothing to shuffle.
 			return;
 		}
-
-		// Construct ArrayUtil.prng if needed. Executed at most once.
-		if (ArrayUtil.prng == null) {
-			ArrayUtil.prng = ThreadLocalRandom.current();
+		// 2 <= a.length
+		if (prng == null) {
+			prng = ThreadLocalRandom.current();
 		}
 
 		// Fisher-Yates Algorithm.
 		for (int i = a.length - 1; i != 0; --i) {
-			ArrayUtil.swap(a, i, ArrayUtil.prng.nextInt(i + 1));
+			ArrayUtil.swapFixedInput(a, i, prng.nextInt(i + 1));
 		}
 	}
 
@@ -806,19 +1740,6 @@ public class ArrayUtil {
 	 *             If <code>a == null</code>
 	 */
 	public static void shuffle(Object[] a) throws NullPointerException {
-		// Nothing to shuffle.
-		if (a.length < 2) {
-			return;
-		}
-
-		// Construct ArrayUtil.prng if needed. Executed at most once.
-		if (ArrayUtil.prng == null) {
-			ArrayUtil.prng = ThreadLocalRandom.current();
-		}
-
-		// Fisher-Yates Algorithm.
-		for (int i = a.length - 1; i != 0; --i) {
-			ArrayUtil.swap(a, i, ArrayUtil.prng.nextInt(i + 1));
-		}
+		ArrayUtil.shuffle(a, null);
 	}
 }

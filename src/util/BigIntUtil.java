@@ -931,6 +931,7 @@ public class BigIntUtil {
 		if (bitLength < 3) { // The first safe prime is 5, which requires 3 bits to represent.
 			throw new IllegalArgumentException();
 		}
+		// 3 <= bitLength
 		if (prng == null) {
 			prng = ThreadLocalRandom.current();
 		}
