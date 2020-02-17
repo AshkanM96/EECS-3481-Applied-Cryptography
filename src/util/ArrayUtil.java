@@ -22,35 +22,13 @@ public class ArrayUtil {
 	}
 
 	/**
-	 * @param copy
-	 *            specifies whether the array should be copied
-	 * 
 	 * @param args
 	 *            any number of boolean primitives
 	 * 
-	 * @return <code>(copy ? Arrays.copyOf(args, args.length) : args)</code>.
-	 * 
-	 * @throws NullPointerException
-	 *             If <code>args == null</code>
+	 * @return <code>args</code>.
 	 */
-	public static boolean[] toArrayPrimitive(boolean copy, boolean... args) throws NullPointerException {
-		return (copy ? Arrays.copyOf(args, args.length) : args);
-	}
-
-	/**
-	 * @param copy
-	 *            specifies whether the array should be copied
-	 * 
-	 * @param args
-	 *            any number of byte primitives
-	 * 
-	 * @return <code>(copy ? Arrays.copyOf(args, args.length) : args)</code>.
-	 * 
-	 * @throws NullPointerException
-	 *             If <code>args == null</code>
-	 */
-	public static byte[] toArrayPrimitive(boolean copy, byte... args) throws NullPointerException {
-		return (copy ? Arrays.copyOf(args, args.length) : args);
+	public static boolean[] toArrayPrimitive(boolean... args) {
+		return args;
 	}
 
 	/**
@@ -64,22 +42,6 @@ public class ArrayUtil {
 	}
 
 	/**
-	 * @param copy
-	 *            specifies whether the array should be copied
-	 * 
-	 * @param args
-	 *            any number of char primitives
-	 * 
-	 * @return <code>(copy ? Arrays.copyOf(args, args.length) : args)</code>.
-	 * 
-	 * @throws NullPointerException
-	 *             If <code>args == null</code>
-	 */
-	public static char[] toArrayPrimitive(boolean copy, char... args) throws NullPointerException {
-		return (copy ? Arrays.copyOf(args, args.length) : args);
-	}
-
-	/**
 	 * @param args
 	 *            any number of char primitives
 	 * 
@@ -87,22 +49,6 @@ public class ArrayUtil {
 	 */
 	public static char[] toArrayPrimitive(char... args) {
 		return args;
-	}
-
-	/**
-	 * @param copy
-	 *            specifies whether the array should be copied
-	 * 
-	 * @param args
-	 *            any number of short primitives
-	 * 
-	 * @return <code>(copy ? Arrays.copyOf(args, args.length) : args)</code>.
-	 * 
-	 * @throws NullPointerException
-	 *             If <code>args == null</code>
-	 */
-	public static short[] toArrayPrimitive(boolean copy, short... args) throws NullPointerException {
-		return (copy ? Arrays.copyOf(args, args.length) : args);
 	}
 
 	/**
@@ -116,22 +62,6 @@ public class ArrayUtil {
 	}
 
 	/**
-	 * @param copy
-	 *            specifies whether the array should be copied
-	 * 
-	 * @param args
-	 *            any number of int primitives
-	 * 
-	 * @return <code>(copy ? Arrays.copyOf(args, args.length) : args)</code>.
-	 * 
-	 * @throws NullPointerException
-	 *             If <code>args == null</code>
-	 */
-	public static int[] toArrayPrimitive(boolean copy, int... args) throws NullPointerException {
-		return (copy ? Arrays.copyOf(args, args.length) : args);
-	}
-
-	/**
 	 * @param args
 	 *            any number of int primitives
 	 * 
@@ -139,22 +69,6 @@ public class ArrayUtil {
 	 */
 	public static int[] toArrayPrimitive(int... args) {
 		return args;
-	}
-
-	/**
-	 * @param copy
-	 *            specifies whether the array should be copied
-	 * 
-	 * @param args
-	 *            any number of long primitives
-	 * 
-	 * @return <code>(copy ? Arrays.copyOf(args, args.length) : args)</code>.
-	 * 
-	 * @throws NullPointerException
-	 *             If <code>args == null</code>
-	 */
-	public static long[] toArrayPrimitive(boolean copy, long... args) throws NullPointerException {
-		return (copy ? Arrays.copyOf(args, args.length) : args);
 	}
 
 	/**
@@ -168,22 +82,6 @@ public class ArrayUtil {
 	}
 
 	/**
-	 * @param copy
-	 *            specifies whether the array should be copied
-	 * 
-	 * @param args
-	 *            any number of float primitives
-	 * 
-	 * @return <code>(copy ? Arrays.copyOf(args, args.length) : args)</code>.
-	 * 
-	 * @throws NullPointerException
-	 *             If <code>args == null</code>
-	 */
-	public static float[] toArrayPrimitive(boolean copy, float... args) throws NullPointerException {
-		return (copy ? Arrays.copyOf(args, args.length) : args);
-	}
-
-	/**
 	 * @param args
 	 *            any number of float primitives
 	 * 
@@ -194,22 +92,6 @@ public class ArrayUtil {
 	}
 
 	/**
-	 * @param copy
-	 *            specifies whether the array should be copied
-	 * 
-	 * @param args
-	 *            any number of double primitives
-	 * 
-	 * @return <code>(copy ? Arrays.copyOf(args, args.length) : args)</code>.
-	 * 
-	 * @throws NullPointerException
-	 *             If <code>args == null</code>
-	 */
-	public static double[] toArrayPrimitive(boolean copy, double... args) throws NullPointerException {
-		return (copy ? Arrays.copyOf(args, args.length) : args);
-	}
-
-	/**
 	 * @param args
 	 *            any number of double primitives
 	 * 
@@ -217,26 +99,6 @@ public class ArrayUtil {
 	 */
 	public static double[] toArrayPrimitive(double... args) {
 		return args;
-	}
-
-	/**
-	 * @param <T>
-	 *            the common type of all of the given objects
-	 * 
-	 * @param copy
-	 *            specifies whether the array should be copied
-	 * 
-	 * @param args
-	 *            any number of objects of type <code>T</code>
-	 * 
-	 * @return <code>(copy ? Arrays.copyOf(args, args.length) : args)</code>.
-	 * 
-	 * @throws NullPointerException
-	 *             If <code>args == null</code>
-	 */
-	@SafeVarargs
-	public static <T> T[] toArray(boolean copy, T... args) throws NullPointerException {
-		return (copy ? Arrays.copyOf(args, args.length) : args);
 	}
 
 	/**
