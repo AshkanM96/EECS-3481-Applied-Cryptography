@@ -236,27 +236,6 @@ public class RSA {
 	}
 
 	/**
-	 * @return <code>this.n</code>.
-	 */
-	public BigInteger getN() {
-		return this.n;
-	}
-
-	/**
-	 * @return <code>this.e</code>.
-	 */
-	public BigInteger getE() {
-		return this.e;
-	}
-
-	/**
-	 * @return <code>this.d</code>.
-	 */
-	public BigInteger getD() {
-		return this.d;
-	}
-
-	/**
 	 * RSA static factory: construct an RSA object with the given p, q, and e.
 	 * 
 	 * @param p
@@ -335,6 +314,27 @@ public class RSA {
 	public static RSA knownKeys(BigInteger n, BigInteger e, BigInteger d)
 			throws NullPointerException, IllegalArgumentException {
 		return new RSA(n, e, d);
+	}
+
+	/**
+	 * @return <code>this.n</code>.
+	 */
+	public BigInteger getN() {
+		return this.n;
+	}
+
+	/**
+	 * @return <code>this.e</code>.
+	 */
+	public BigInteger getE() {
+		return this.e;
+	}
+
+	/**
+	 * @return <code>this.d</code>.
+	 */
+	public BigInteger getD() {
+		return this.d;
 	}
 
 	/**
