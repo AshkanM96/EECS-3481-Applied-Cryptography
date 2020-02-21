@@ -26,14 +26,13 @@ public class T2Q5 {
 		final byte[] ct2 = Hex.toBytes("3D54024D531442454C0941175404150A");
 		final byte[] xored = Binary.xor(ct1, ct2);
 
-		final byte[] pt1_sub = "bridge".getBytes();
-		final int crib_len = pt1_sub.length, maxI = xored.length - crib_len + 1;
-		final byte[] pt2_sub = new byte[crib_len];
+		final byte[] pt1Sub = "bridge".getBytes();
+		final int cribLen = pt1Sub.length, maxI = xored.length - cribLen + 1;
+		final byte[] pt2Sub = new byte[cribLen];
 		for (int i = 0; i != maxI; ++i) {
-			System.arraycopy(xored, i, pt2_sub, 0, crib_len);
-			Binary.xorEquals(pt2_sub, pt1_sub);
-
-			System.out.println(CryptoTools.toString(pt2_sub));
+			System.arraycopy(xored, i, pt2Sub, 0, cribLen);
+			Binary.xorEquals(pt2Sub, pt1Sub);
+			System.out.println(CryptoTools.toString(pt2Sub));
 		}
 	}
 }
