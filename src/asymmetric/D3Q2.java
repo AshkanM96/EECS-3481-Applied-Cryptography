@@ -53,6 +53,11 @@ public class D3Q2 {
 		// Empty by design.
 	}
 
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException();
+	}
+
 	public static void main(String[] args) {
 		assert (D3Q2.B.equals(D3Q2.G.modPow(D3Q2.b, D3Q2.P)));
 

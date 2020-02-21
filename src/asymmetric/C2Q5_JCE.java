@@ -53,6 +53,11 @@ public class C2Q5_JCE {
 		// Empty by design.
 	}
 
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException();
+	}
+
 	public static void main(String[] args)
 			throws InvalidKeySpecException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
 		// Create the cipher engine with the appropriate attributes.

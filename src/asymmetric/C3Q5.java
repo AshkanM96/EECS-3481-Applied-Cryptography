@@ -48,6 +48,11 @@ public class C3Q5 {
 		// Empty by design.
 	}
 
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException();
+	}
+
 	public static void main(String[] args) {
 		// Create the cipher engine with the appropriate attributes.
 		final RSA r = RSA.knownFactors(C3Q5.P, C3Q5.N.divide(C3Q5.P), C3Q5.E);

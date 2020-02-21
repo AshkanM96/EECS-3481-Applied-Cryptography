@@ -31,6 +31,11 @@ public class D2Q5 {
 		// Empty by design.
 	}
 
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException();
+	}
+
 	public static void main(String[] args) {
 		final BigInteger alice_x = new BigInteger(
 				"35231692989156503979546454037473634095881844065093413538198180176131787025013952129436607166120764958611422838336479");

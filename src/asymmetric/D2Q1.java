@@ -23,6 +23,11 @@ public class D2Q1 {
 		// Empty by design.
 	}
 
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException();
+	}
+
 	public static void main(String[] args) {
 		System.out.println(
 				"Discrete logarithm of 3 to base 2 mod 11 is " + MathUtil.discreteLogLinearSearch(2, 3, 11) + ".\n");

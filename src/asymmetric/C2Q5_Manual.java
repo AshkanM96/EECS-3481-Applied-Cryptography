@@ -48,6 +48,11 @@ public class C2Q5_Manual {
 		// Empty by design.
 	}
 
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException();
+	}
+
 	public static void main(String[] args) {
 		// Create the cipher engine with the appropriate attributes.
 		final RSA r = RSA.knownKeys(C2Q5_Manual.N, C2Q5_Manual.E, C2Q5_Manual.D);

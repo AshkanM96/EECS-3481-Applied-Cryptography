@@ -38,6 +38,11 @@ public class C2Q1 {
 		// Empty by design.
 	}
 
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException();
+	}
+
 	public static void main(String[] args) {
 		// Create the cipher engine with the appropriate attributes.
 		final RSA r = RSA.knownFactors(C2Q1.P, C2Q1.Q, C2Q1.E);
@@ -46,7 +51,7 @@ public class C2Q1 {
 		boolean allPass = true;
 
 		// Loop through all numbers in [1, n) coprime with n.
-		final BigInteger n = r.n;
+		final BigInteger n = r.getN();
 		for (BigInteger m = BigInteger.ONE, c = null, mPrime = null; !m.equals(n); m = m.add(BigInteger.ONE)) {
 			if (m.gcd(n).equals(BigInteger.ONE)) {
 				// Compute the ciphertext by encrypting with public key.
