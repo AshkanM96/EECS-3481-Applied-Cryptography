@@ -33,6 +33,11 @@ public class A2Q4 {
 		// Empty by design.
 	}
 
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException();
+	}
+
 	@SuppressWarnings("null")
 	public static void main(String[] args) {
 		final byte[] ciphertext = A2Q4.CIPHERTEXT;

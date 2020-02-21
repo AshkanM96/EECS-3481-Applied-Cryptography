@@ -28,6 +28,11 @@ public class A2Q1 {
 		// Empty by design.
 	}
 
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException();
+	}
+
 	public static void main(String[] args) {
 		final byte[] ciphertext = A2Q1.CIPHERTEXT;
 		if (ciphertext.length == 0) {

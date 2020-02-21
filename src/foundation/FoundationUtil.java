@@ -52,6 +52,11 @@ public class FoundationUtil {
 		// Empty by design.
 	}
 
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException();
+	}
+
 	/**
 	 * Get the output file name of either an exhaustive or a cryptanalytic decryption algorithm.
 	 * 

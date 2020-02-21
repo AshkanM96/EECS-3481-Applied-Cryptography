@@ -66,6 +66,11 @@ public class C_Encrypt {
 		// Empty by design.
 	}
 
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException();
+	}
+
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 		/*
 		 * Read the plaintext from the file and clean it up so that it only contains uppercase English

@@ -43,6 +43,11 @@ public class V_Crypta2 {
 		// Empty by design.
 	}
 
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException();
+	}
+
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 		// Read the ciphertext from the file.
 		final byte[] ciphertext = CryptoTools.clean(CryptoTools.fileToBytes(V_Crypta2.CIPHERTEXT_LOCATION));

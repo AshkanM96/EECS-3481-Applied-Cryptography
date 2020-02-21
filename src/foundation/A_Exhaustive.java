@@ -43,6 +43,11 @@ public class A_Exhaustive {
 		// Empty by design.
 	}
 
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException();
+	}
+
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 		// Read the ciphertext from the file.
 		final byte[] ciphertext = CryptoTools.clean(CryptoTools.fileToBytes(A_Exhaustive.CIPHERTEXT_LOCATION));
