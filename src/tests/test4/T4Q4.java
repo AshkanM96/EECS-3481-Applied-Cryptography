@@ -7,6 +7,18 @@ public class T4Q4 {
 	 * No dependencies.
 	 */
 
+	/**
+	 * Prevent instantiation.
+	 */
+	private T4Q4() {
+		// Empty by design.
+	}
+
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException();
+	}
+
 	public static void main(String[] args) {
 		final BigInteger p = new BigInteger("565209496520876299");
 		final BigInteger g = BigInteger.valueOf(101L);

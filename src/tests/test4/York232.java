@@ -1,15 +1,25 @@
 package tests.test4;
 
 import java.security.MessageDigest;
+import java.util.Objects;
 
 public class York232 {
-	private final byte[] msg, sha;
+	private byte[] msg, sha;
 
 	public York232(byte[] msg) throws Exception {
-		if ((this.msg = msg) == null) {
-			throw new NullPointerException();
-		}
+		this.msg = Objects.requireNonNull(msg, "msg == null");
 		this.sha = MessageDigest.getInstance("SHA-224").digest(this.msg);
+	}
+
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException();
+	}
+
+	@Override
+	protected void finalize() { // semi-dtor
+		this.msg = null;
+		this.sha = null;
 	}
 
 	public byte[] getHash() {

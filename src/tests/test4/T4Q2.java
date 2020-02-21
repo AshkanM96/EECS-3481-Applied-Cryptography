@@ -9,6 +9,18 @@ public class T4Q2 {
 	 * </code>
 	 */
 
+	/**
+	 * Prevent instantiation.
+	 */
+	private T4Q2() {
+		// Empty by design.
+	}
+
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException();
+	}
+
 	public static void main(String[] args) {
 		final int d = 365;
 		System.out.println(StatUtil.birthday2Linear(d, 16, 16));
