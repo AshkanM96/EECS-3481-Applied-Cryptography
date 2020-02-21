@@ -21,6 +21,11 @@ public class D1Q4 {
 		// Empty by design.
 	}
 
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException();
+	}
+
 	public static void main(String[] args) {
 		/**
 		 * Every York student has an ID made up of 9 digits. We will assume that these ID's are uniformly
