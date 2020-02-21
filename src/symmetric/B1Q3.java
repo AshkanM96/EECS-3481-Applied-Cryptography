@@ -33,6 +33,11 @@ public class B1Q3 {
 		// Empty by design.
 	}
 
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException();
+	}
+
 	public static void main(String[] args) {
 		System.out.println("The key is:\n" + CryptoTools.toString(B1Q3.KEY) + "\n");
 		System.out.println("The plaintext is:\n" + CryptoTools.toString(B1Q3.PLAINTEXT) + "\n");

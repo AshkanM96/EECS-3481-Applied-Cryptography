@@ -58,6 +58,11 @@ public class B2Q1 {
 		// Empty by design.
 	}
 
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException();
+	}
+
 	public static void main(String[] args) throws InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
 			InvalidAlgorithmParameterException {
 		System.out.println("The key is:\n" + CryptoTools.toString(B2Q1.KEY) + "\n");
