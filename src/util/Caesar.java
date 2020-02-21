@@ -21,6 +21,11 @@ public class Caesar {
 		// Empty by design.
 	}
 
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException();
+	}
+
 	/**
 	 * Return the equivalent key to the given key <code>(mod CryptoTools.ENGLISH_ALPHABET_SIZE)</code>.
 	 * 
@@ -558,6 +563,11 @@ public class Caesar {
 			}
 			this.key = key;
 			this.plaintext = plaintext;
+		}
+
+		@Override
+		protected Object clone() throws CloneNotSupportedException { // semi-copy
+			throw new CloneNotSupportedException();
 		}
 	}
 }

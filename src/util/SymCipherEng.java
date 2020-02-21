@@ -81,7 +81,7 @@ public class SymCipherEng {
 	/**
 	 * Cipher algorithm.
 	 */
-	private final ALGO_SYM algo;
+	private ALGO_SYM algo;
 
 	/**
 	 * Cipher secret key.
@@ -223,6 +223,21 @@ public class SymCipherEng {
 		this.opmode = other.opmode; // Since enum type assignment is a deep enough copy.
 		this.padding = other.padding; // Since enum type assignment is a deep enough copy.
 		this.iv = (other.iv == null) ? null : new IvParameterSpec(other.iv.getIV());
+	}
+
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException("Use the copy ctor instead.");
+	}
+
+	@Override
+	protected void finalize() { // semi-dtor
+		this.engine = null;
+		this.algo = null;
+		this.key = null;
+		this.opmode = null;
+		this.padding = null;
+		this.iv = null;
 	}
 
 	/**

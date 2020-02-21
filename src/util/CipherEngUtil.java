@@ -50,6 +50,11 @@ public class CipherEngUtil {
 		// Empty by design.
 	}
 
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException();
+	}
+
 	/**
 	 * @param algo
 	 *            the given algorithm

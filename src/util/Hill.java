@@ -135,6 +135,21 @@ public class Hill implements Iterable<Integer> {
 		this.keyInverse = other.keyInverse();
 	}
 
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException("Use the copy ctor instead.");
+	}
+
+	@Override
+	protected void finalize() { // semi-dtor
+		this.key.finalize();
+		this.key = null;
+		if (this.keyInverse != null) {
+			this.keyInverse.finalize();
+			this.keyInverse = null;
+		}
+	}
+
 	/**
 	 * @return <code>this.key.numRows</code> or <code>this.key.numCols</code>.
 	 */

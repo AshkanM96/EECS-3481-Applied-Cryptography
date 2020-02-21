@@ -21,6 +21,11 @@ public class ArrayUtil {
 		// Empty by design.
 	}
 
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException();
+	}
+
 	/**
 	 * @param args
 	 *            any number of boolean primitives

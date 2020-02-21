@@ -142,6 +142,17 @@ public class Scytale implements Iterable<Integer> {
 		this.isValidKey = other.isValidKey;
 	}
 
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException("Use the copy ctor instead.");
+	}
+
+	@Override
+	protected void finalize() { // semi-dtor
+		this.key.finalize();
+		this.key = null;
+	}
+
 	/**
 	 * @return <code>this.key.numRows</code> or <code>this.key.numCols</code>.
 	 */

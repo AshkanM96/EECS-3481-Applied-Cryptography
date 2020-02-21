@@ -71,6 +71,11 @@ public class StatUtil {
 		// Empty by design.
 	}
 
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException();
+	}
+
 	/**
 	 * Clear <code>StatUtil.fibonaccis</code>.
 	 */

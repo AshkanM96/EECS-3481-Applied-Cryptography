@@ -111,6 +111,11 @@ public class Affine {
 		this.beta = other.beta;
 	}
 
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException("Use the copy ctor instead.");
+	}
+
 	/**
 	 * @return A shallow copy of <code>Affine.VALID_ALPHA_VALUES</code>.
 	 */
@@ -1056,6 +1061,11 @@ public class Affine {
 			this.alphas = new int[] { alpha };
 			this.betas = new int[] { beta };
 			this.plaintexts = new byte[][] { plaintext };
+		}
+
+		@Override
+		protected Object clone() throws CloneNotSupportedException { // semi-copy
+			throw new CloneNotSupportedException();
 		}
 
 		/**

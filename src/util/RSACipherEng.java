@@ -50,39 +50,34 @@ public class RSACipherEng {
 	protected Cipher engine;
 
 	/**
-	 * BigInteger objects are immutable. Therefore, it is "safe" to make the following final class
-	 * attributes public.
-	 */
-
-	/**
 	 * Cipher modulus. <br>
 	 * Guaranteed to be non-<code>null</code>.
 	 */
-	public final BigInteger n;
+	private BigInteger n;
 
 	/**
 	 * Cipher public key. <br>
 	 * Guaranteed to be non-<code>null</code>.
 	 */
-	public final BigInteger e;
+	private BigInteger e;
 
 	/**
 	 * Cipher private key. <br>
 	 * Guaranteed to be non-<code>null</code>.
 	 */
-	public final BigInteger d;
+	private BigInteger d;
 
 	/**
 	 * Cipher public key. <br>
 	 * Guaranteed to be non-<code>null</code>.
 	 */
-	protected final RSAPublicKey publicKey;
+	private RSAPublicKey publicKey;
 
 	/**
 	 * Cipher private key. <br>
 	 * Guaranteed to be non-<code>null</code>.
 	 */
-	protected final RSAPrivateKey privateKey;
+	private RSAPrivateKey privateKey;
 
 	/**
 	 * Mode of operation.
@@ -318,6 +313,21 @@ public class RSACipherEng {
 		this.privateKey = other.privateKey; // Since attribute is immutable, we can do a shallow copy.
 		this.opmode = other.opmode; // Since enum type assignment is a deep enough copy.
 		this.padding = other.padding; // Since enum type assignment is a deep enough copy.
+	}
+
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException("Use the copy ctor instead.");
+	}
+
+	@Override
+	protected void finalize() { // semi-dtor
+		this.engine = null;
+		this.n = this.e = this.d = null;
+		this.publicKey = null;
+		this.privateKey = null;
+		this.opmode = null;
+		this.padding = null;
 	}
 
 	/**
@@ -651,6 +661,27 @@ public class RSACipherEng {
 	public static RSACipherEng knownKeys(BigInteger n, BigInteger e, BigInteger d)
 			throws NullPointerException, IllegalArgumentException, InvalidKeySpecException {
 		return RSACipherEng.knownKeys(n, e, d, CipherEngUtil.DEFAULT_MODE);
+	}
+
+	/**
+	 * @return <code>this.n</code>.
+	 */
+	public BigInteger getN() {
+		return this.n;
+	}
+
+	/**
+	 * @return <code>this.e</code>.
+	 */
+	public BigInteger getE() {
+		return this.e;
+	}
+
+	/**
+	 * @return <code>this.d</code>.
+	 */
+	public BigInteger getD() {
+		return this.d;
 	}
 
 	/**

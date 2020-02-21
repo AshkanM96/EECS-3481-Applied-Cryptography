@@ -17,6 +17,11 @@ public class OTP {
 		// Empty by design.
 	}
 
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException();
+	}
+
 	/**
 	 * Apply the given key to the given char.
 	 * 

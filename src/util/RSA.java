@@ -15,60 +15,55 @@ public class RSA {
 	 */
 
 	/**
-	 * BigInteger objects are immutable. Therefore, it is "safe" to make the following final class
-	 * attributes public.
-	 */
-
-	/**
 	 * One of the two prime factors of the cipher modulus. <br>
 	 * May be <code>null</code>. <br>
 	 * <code>(this.p == null) == (this.q == null)</code>.
 	 */
-	public final BigInteger p;
+	private BigInteger p;
 
 	/**
 	 * One of the two prime factors of the cipher modulus. <br>
 	 * May be <code>null</code>. <br>
 	 * <code>(this.q == null) == (this.p == null)</code>.
 	 */
-	public final BigInteger q;
+	private BigInteger q;
 
 	/**
 	 * Cipher modulus. <br>
 	 * Guaranteed to be non-<code>null</code>.
 	 */
-	public final BigInteger n;
+	private BigInteger n;
 
 	/**
 	 * Cipher public key. <br>
 	 * Guaranteed to be non-<code>null</code>.
 	 */
-	public final BigInteger e;
+	private BigInteger e;
 
 	/**
 	 * Cipher private key. <br>
 	 * Guaranteed to be non-<code>null</code>.
 	 */
-	public final BigInteger d;
+	private BigInteger d;
 
 	/**
 	 * <code>this.d (mod (this.p - 1))</code>. <br>
 	 * <code>(this.dP == null) == (this.p == null)</code>.
 	 */
-	public final BigInteger dP;
+	private BigInteger dP;
 
 	/**
 	 * <code>this.d (mod (this.q - 1))</code>. <br>
 	 * <code>(this.dQ == null) == (this.q == null)</code>.
 	 */
-	public final BigInteger dQ;
+	private BigInteger dQ;
 
 	/**
 	 * <code>1 / this.q (mod this.p)</code>. <br>
 	 * <code>(this.qInv == null) == (this.q == null)</code>. <br>
 	 * <code>(this.qInv == null) == (this.p == null)</code>.
 	 */
-	public final BigInteger qInv;
+	private BigInteger qInv;
 
 	/**
 	 * Construct an RSA object with the given p, q, and e.
@@ -228,6 +223,38 @@ public class RSA {
 	/**
 	 * Since this class is immutable, there is no need for a copy ctor.
 	 */
+
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException();
+	}
+
+	@Override
+	protected void finalize() { // semi-dtor
+		this.n = this.e = this.d = null;
+		this.p = this.q = this.dP = this.dQ = this.qInv = null;
+	}
+
+	/**
+	 * @return <code>this.n</code>.
+	 */
+	public BigInteger getN() {
+		return this.n;
+	}
+
+	/**
+	 * @return <code>this.e</code>.
+	 */
+	public BigInteger getE() {
+		return this.e;
+	}
+
+	/**
+	 * @return <code>this.d</code>.
+	 */
+	public BigInteger getD() {
+		return this.d;
+	}
 
 	/**
 	 * RSA static factory: construct an RSA object with the given p, q, and e.

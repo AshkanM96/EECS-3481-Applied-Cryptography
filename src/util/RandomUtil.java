@@ -36,6 +36,11 @@ public class RandomUtil {
 		// Empty by design.
 	}
 
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException();
+	}
+
 	/**
 	 * @param bound
 	 *            the given upper bound

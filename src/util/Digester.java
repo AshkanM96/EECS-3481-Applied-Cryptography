@@ -82,6 +82,11 @@ public class Digester {
 		// Empty by design.
 	}
 
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException();
+	}
+
 	/**
 	 * Initialize <code>Digester.digesters[algo.ordinal()]</code> using the following:
 	 * 

@@ -13,19 +13,14 @@ public class Fermat {
 	 */
 
 	/**
-	 * BigInteger objects are immutable. Therefore, it is "safe" to make the following final attributes
-	 * public.
-	 */
-
-	/**
 	 * The number being tested.
 	 */
-	public final BigInteger n;
+	private BigInteger n;
 
 	/**
 	 * <code>this.n.subtract(BigInteger.ONE)</code>.
 	 */
-	public final BigInteger n_minus_1;
+	private BigInteger n_minus_1;
 
 	/**
 	 * Construct a Fermat object from the given number.
@@ -54,6 +49,24 @@ public class Fermat {
 	/**
 	 * Since this class is immutable, there is no need for a copy ctor.
 	 */
+
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException();
+	}
+
+	@Override
+	protected void finalize() { // semi-dtor
+		this.n = null;
+		this.n_minus_1 = null;
+	}
+
+	/**
+	 * @return <code>this.n</code>.
+	 */
+	public BigInteger getN() {
+		return this.n;
+	}
 
 	@Override
 	public String toString() {
@@ -250,7 +263,7 @@ public class Fermat {
 		/**
 		 * The number being tested.
 		 */
-		public final BigInteger n;
+		private BigInteger n;
 
 		/**
 		 * Indicates whether the test was inconclusive.
@@ -261,7 +274,7 @@ public class Fermat {
 		 * A potential witness of the number being tested. An actual witness if
 		 * <code>!this.isInconclusive</code>.
 		 */
-		public final BigInteger witness;
+		private BigInteger witness;
 
 		/**
 		 * Construct a TestResultFermat object from the given attributes.
@@ -282,16 +295,25 @@ public class Fermat {
 		}
 
 		/**
-		 * Copy ctor.
-		 * 
-		 * @param other
-		 *            the given TestResultFermat object
-		 * 
-		 * @throws NullPointerException
-		 *             If <code>other == null</code>
+		 * Since this class is immutable, there is no need for a copy ctor.
 		 */
-		public TestResultFermat(TestResultFermat other) throws NullPointerException {
-			this(other.n, other.isInconclusive, other.witness);
+
+		@Override
+		protected Object clone() throws CloneNotSupportedException { // semi-copy
+			throw new CloneNotSupportedException();
+		}
+
+		@Override
+		protected void finalize() { // semi-dtor
+			this.n = null;
+			this.witness = null;
+		}
+
+		/**
+		 * @return <code>this.n</code>.
+		 */
+		public BigInteger getN() {
+			return this.n;
 		}
 
 		/**
@@ -299,6 +321,13 @@ public class Fermat {
 		 */
 		public boolean isComposite() {
 			return (!this.isInconclusive);
+		}
+
+		/**
+		 * @return <code>this.witness</code>.
+		 */
+		public BigInteger getWitness() {
+			return this.witness;
 		}
 	}
 }

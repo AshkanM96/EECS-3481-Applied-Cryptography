@@ -28,6 +28,11 @@ public class AlgebraUtil {
 		// Empty by design.
 	}
 
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException();
+	}
+
 	/**
 	 * Postcondition: <code>Result != null</code> <br>
 	 * Postcondition: <code>(0 < Result.size()) && (Result.size() < m)</code> <br>

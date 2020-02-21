@@ -55,6 +55,11 @@ public class CryptoTools {
 		// Empty by design.
 	}
 
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException();
+	}
+
 	/**
 	 * @return A shallow copy of <code>CryptoTools.ENGLISH_LETTER_PROBABILITY</code>.
 	 */

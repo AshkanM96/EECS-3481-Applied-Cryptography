@@ -50,6 +50,19 @@ public class SinglyLinkedList<T> implements Iterable<T> {
 		this.addFirst(other);
 	}
 
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException("Use the copy ctor instead.");
+	}
+
+	@Override
+	protected void finalize() { // semi-dtor
+		this.clear(true);
+		assert ((this.header.data == null) && (this.header.next == null));
+		// Therefore, there is no need to do this.header.finalize().
+		this.header = null;
+	}
+
 	/**
 	 * @return <code>this.size</code>.
 	 */
@@ -392,17 +405,15 @@ public class SinglyLinkedList<T> implements Iterable<T> {
 			this(null, null);
 		}
 
-		/**
-		 * Copy ctor.
-		 * 
-		 * @param other
-		 *            the given SLLNode object
-		 * 
-		 * @throws NullPointerException
-		 *             If <code>other == null</code>
-		 */
-		public SLLNode(SLLNode<T> other) throws NullPointerException {
-			this(other.data, other.next);
+		@Override
+		protected Object clone() throws CloneNotSupportedException { // semi-copy
+			throw new CloneNotSupportedException();
+		}
+
+		@Override
+		protected void finalize() { // semi-dtor
+			this.data = null;
+			this.next = null;
 		}
 	}
 
@@ -427,12 +438,12 @@ public class SinglyLinkedList<T> implements Iterable<T> {
 		/**
 		 * List pointer used to update the size of the original list when inserting or removing.
 		 */
-		protected final SinglyLinkedList<T> sll;
+		protected SinglyLinkedList<T> sll;
 
 		/**
 		 * List header sentinel node.
 		 */
-		protected final SLLNode<T> header;
+		protected SLLNode<T> header;
 
 		/**
 		 * Previous cursor node.
@@ -477,6 +488,30 @@ public class SinglyLinkedList<T> implements Iterable<T> {
 		 */
 		public SLLIterator(SinglyLinkedList<T> sll) throws NullPointerException {
 			this(sll, true);
+		}
+
+		@Override
+		protected Object clone() throws CloneNotSupportedException { // semi-copy
+			throw new CloneNotSupportedException();
+		}
+
+		@Override
+		protected void finalize() { // semi-dtor
+			this.sll.finalize();
+			this.sll = null;
+			assert ((this.header.data == null) && (this.header.next == null));
+			// Therefore, there is no need to do this.header.finalize().
+			this.header = null;
+			if (this.prev != null) {
+				assert ((this.prev.data == null) && (this.prev.next == null));
+				// Therefore, there is no need to do this.prev.finalize().
+				this.prev = null;
+			}
+			if (this.curr != null) {
+				assert ((this.curr.data == null) && (this.curr.next == null));
+				// Therefore, there is no need to do this.curr.finalize().
+				this.curr = null;
+			}
 		}
 
 		/**

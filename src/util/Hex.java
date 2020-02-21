@@ -55,6 +55,11 @@ public class Hex {
 		// Empty by design.
 	}
 
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException();
+	}
+
 	/**
 	 * Given a byte, convert it to a string of hex digits.
 	 * 

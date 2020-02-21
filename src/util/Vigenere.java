@@ -83,6 +83,16 @@ public class Vigenere implements Iterable<Character> {
 		this.index = other.index;
 	}
 
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException("Use the copy ctor instead.");
+	}
+
+	@Override
+	protected void finalize() { // semi-dtor
+		this.key = null;
+	}
+
 	/**
 	 * Get the key representation of the given English word.
 	 * 

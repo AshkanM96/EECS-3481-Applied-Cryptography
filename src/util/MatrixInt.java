@@ -66,7 +66,7 @@ public class MatrixInt implements Iterable<Integer> {
 	/**
 	 * Two dimensional integer array containing the matrix entries.
 	 */
-	protected final int[][] data;
+	protected int[][] data;
 
 	/**
 	 * Construct a MatrixInt object with the given number of rows and the given number of columns and
@@ -186,6 +186,16 @@ public class MatrixInt implements Iterable<Integer> {
 		for (int rowNum = 0; rowNum != this.numRows; ++rowNum) {
 			System.arraycopy(other.data[rowNum], 0, this.data[rowNum], 0, this.numCols);
 		}
+	}
+
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException("Use the copy ctor instead.");
+	}
+
+	@Override
+	protected void finalize() { // semi-dtor
+		this.data = null;
 	}
 
 	/**

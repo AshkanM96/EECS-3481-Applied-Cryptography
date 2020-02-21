@@ -95,6 +95,11 @@ public class BigIntUtil {
 		// Empty by design.
 	}
 
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException();
+	}
+
 	/**
 	 * @param n
 	 *            the given BigInteger object

@@ -15,24 +15,19 @@ public class MillerRabinTopDown {
 	 */
 
 	/**
-	 * BigInteger objects are immutable. Therefore, it is "safe" to make the following final attributes
-	 * public.
-	 */
-
-	/**
 	 * The number being tested.
 	 */
-	public final BigInteger n;
+	private BigInteger n;
 
 	/**
 	 * <code>this.n.subtract(BigInteger.ONE)</code>.
 	 */
-	public final BigInteger n_minus_1;
+	private BigInteger n_minus_1;
 
 	/**
 	 * Iterator over a singly linked list of all exponents.
 	 */
-	protected final SinglyLinkedList.SLLIterator<BigInteger> exponents_it;
+	protected SinglyLinkedList.SLLIterator<BigInteger> exponents_it;
 
 	/**
 	 * Construct a MillerRabinTopDown object from the given number.
@@ -80,6 +75,26 @@ public class MillerRabinTopDown {
 	/**
 	 * Since this class is immutable, there is no need for a copy ctor.
 	 */
+
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException();
+	}
+
+	@Override
+	protected void finalize() { // semi-dtor
+		this.n = null;
+		this.n_minus_1 = null;
+		this.exponents_it.finalize();
+		this.exponents_it = null;
+	}
+
+	/**
+	 * @return <code>this.n</code>.
+	 */
+	public BigInteger getN() {
+		return this.n;
+	}
 
 	@Override
 	public String toString() {
@@ -353,7 +368,7 @@ public class MillerRabinTopDown {
 		/**
 		 * The number being tested.
 		 */
-		public final BigInteger n;
+		private BigInteger n;
 
 		/**
 		 * Indicates whether the test was inconclusive.
@@ -364,17 +379,17 @@ public class MillerRabinTopDown {
 		 * A potential witness of the number being tested. An actual witness if
 		 * <code>!this.isInconclusive</code>.
 		 */
-		public final BigInteger witness;
+		private BigInteger witness;
 
 		/**
 		 * Contains some of the factors of the number being tested.
 		 */
-		public final BigInteger superFactor1;
+		private BigInteger superFactor1;
 
 		/**
 		 * Contains some of the factors of the number being tested.
 		 */
-		public final BigInteger superFactor2;
+		private BigInteger superFactor2;
 
 		/**
 		 * Construct a TestResultMillerRabinTopDown object from the given attributes.
@@ -420,16 +435,27 @@ public class MillerRabinTopDown {
 		}
 
 		/**
-		 * Copy ctor.
-		 * 
-		 * @param other
-		 *            the given TestResultMillerRabinTopDown object
-		 * 
-		 * @throws NullPointerException
-		 *             If <code>other == null</code>
+		 * Since this class is immutable, there is no need for a copy ctor.
 		 */
-		public TestResultMillerRabinTopDown(TestResultMillerRabinTopDown other) throws NullPointerException {
-			this(other.n, other.isInconclusive, other.witness, other.superFactor1, other.superFactor2);
+
+		@Override
+		protected Object clone() throws CloneNotSupportedException { // semi-copy
+			throw new CloneNotSupportedException();
+		}
+
+		@Override
+		protected void finalize() { // semi-dtor
+			this.n = null;
+			this.witness = null;
+			this.superFactor1 = null;
+			this.superFactor2 = null;
+		}
+
+		/**
+		 * @return <code>this.n</code>.
+		 */
+		public BigInteger getN() {
+			return this.n;
 		}
 
 		/**
@@ -437,6 +463,27 @@ public class MillerRabinTopDown {
 		 */
 		public boolean isComposite() {
 			return (!this.isInconclusive);
+		}
+
+		/**
+		 * @return <code>this.witness</code>.
+		 */
+		public BigInteger getWitness() {
+			return this.witness;
+		}
+
+		/**
+		 * @return <code>this.superFactor1</code>.
+		 */
+		public BigInteger getSuperFactor1() {
+			return this.superFactor1;
+		}
+
+		/**
+		 * @return <code>this.superFactor2</code>.
+		 */
+		public BigInteger getSuperFactor2() {
+			return this.superFactor2;
 		}
 	}
 }

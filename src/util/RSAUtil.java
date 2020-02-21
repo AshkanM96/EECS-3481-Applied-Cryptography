@@ -59,6 +59,11 @@ public class RSAUtil {
 		// Empty by design.
 	}
 
+	@Override
+	protected Object clone() throws CloneNotSupportedException { // semi-copy
+		throw new CloneNotSupportedException();
+	}
+
 	/**
 	 * Initialize <code>RSAUtil.keyGenerator</code> using the following:
 	 * 
